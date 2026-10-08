@@ -95,8 +95,8 @@
   }
   function exportAll(){
     downloadJson('ai-daily-learning-backup-'+hkDate()+'.json',{
-      type:'ai-daily-learning-backup', version:4,exported_at:new Date().toISOString(),
-      words:saved,readRecords,writtenAnswers,progressRecords
+      type:'ai-daily-learning-backup', version:5,exported_at:new Date().toISOString(),
+      words:saved,readRecords,writtenAnswers,progressRecords,quizSelections
     });
     toast('完整學習進度備份已下載。');
   }
@@ -104,7 +104,7 @@
     if(!file || file.size>1_200_000){toast('檔案不存在或超過 1.2 MB。');return;}
     try{
       const data=JSON.parse(await file.text());
-      if(data.type!=='ai-daily-learning-backup'||![3,4].includes(data.version)||!data.words||!data.readRecords||!data.writtenAnswers)throw Error('format');
+      if(data.type!=='ai-daily-learning-backup'||![3,4,5].includes(data.version)||!data.words||!data.readRecords||!data.writtenAnswers)throw Error('format');
       const w=Object.entries(data.words);
       if(w.length>5000||Object.keys(data.readRecords).length>1500||Object.keys(data.writtenAnswers).length>3000)throw Error('size');
       const clean={};
@@ -114,13 +114,22 @@
       }
       const rr={},wa={};
       for(const [key,value] of Object.entries(data.readRecords))if(/^\d{4}-\d{2}-\d{2}$/.test(key)&&typeof value==='string')rr[key]=value.slice(0,45);
-      for(const [key,value] of Object.entries(data.writtenAnswers))if(/^\d{4}-\d{2}-\d{2}-\d$/.test(key)&&typeof value==='string')wa[key]=value.slice(0,2000);
+      for(const [key,value] of Object.entries(data.writtenAnswers))if(/^\d{4}-\d{2}-\d{2}-(?:\d+|v[67]-Q\d+|v[67]-legacy-\d+)$/.test(key)&&typeof value==='string')wa[key]=value.slice(0,2500);
       const pp={};
       if(data.progressRecords && typeof data.progressRecords==='object' && !Array.isArray(data.progressRecords)) {
         for(const [key,value] of Object.entries(data.progressRecords)) {
           if(/^\d{4}-\d{2}-\d{2}$/.test(key) && Number.isFinite(Number(value))) pp[key]=Math.max(0,Math.min(100,Number(value)));
         }
       }
+      const qa={};
+      if(data.quizSelections&&typeof data.quizSelections==='object'&&!Array.isArray(data.quizSelections)){
+        for(const [key,value] of Object.entries(data.quizSelections).slice(0,2500)){
+          if(!/^\d{4}-\d{2}-\d{2}-v[67]-Q\d+$/.test(key)||!value||typeof value!=='object')continue;
+          if(!Number.isInteger(value.selected)||value.selected<0||value.selected>5)continue;
+          qa[key]={selected:value.selected,correct:Boolean(value.correct),submittedAt:String(value.submittedAt||'').slice(0,40)};
+        }
+      }
+      quizSelections={...quizSelections,...qa};safeStorage.set('ai-daily-quiz-v6',quizSelections);
       saved={...saved,...clean};readRecords={...readRecords,...rr};writtenAnswers={...writtenAnswers,...wa};
       progressRecords={...progressRecords,...pp};safeStorage.set(PROGRESS_KEY,progressRecords);
       safeStorage.set(SAVED_KEY,saved);safeStorage.set(READ_KEY,readRecords);safeStorage.set(ANSWERS_KEY,writtenAnswers);
