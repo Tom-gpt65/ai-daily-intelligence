@@ -283,7 +283,10 @@
     $('reading-quality').textContent=r.quality_note||'資料可能有誤；請核實來源。';
     renderStoryCards(r);refreshDashboard();renderResume();
     setModeBanner(r.mode); renderFreshness(); renderReader(); readingStatus();
-    $('translate-toggle').textContent = state.showTranslation ? '隱藏中文譯文' : '顯示中文譯文';
+    const translationReady=Array.isArray(r.translations) && r.translations.length===r.essay.length && r.translations.every(v=>typeof v==='string'&&v.trim());
+    $('translate-toggle').disabled=!translationReady;
+    $('translate-toggle').title=translationReady?'切換完整繁體中文段落翻譯':'免費自動化預設不產生全文翻譯；點擊任何英文生字仍可即時查詢';
+    $('translate-toggle').textContent=translationReady?(state.showTranslation?'隱藏中文譯文':'顯示中文譯文'):'全文譯文暫不可用 · 可點字查譯';
     const sources = $('source-list'); sources.replaceChildren();
     if (!(r.stories || []).length) { const note = document.createElement('div'); note.className='empty-state'; note.textContent='此為離線示範教材，不包含實際新聞來源。'; sources.appendChild(note); }
     (r.stories || []).forEach(s => {
