@@ -221,16 +221,29 @@
   function renderReader() {
     const root = $('reader'); root.replaceChildren();
     const r = state.report; if (!r) { root.textContent = '暫時未有報告。'; return; }
+    const translated=translationProgress(r);
     r.essay.forEach((p, idx) => {
-      root.appendChild(paragraphNodes(p, idx));
-      if (state.showTranslation && Array.isArray(r.translations) && r.translations[idx]) {
-        const trans = document.createElement('p'); trans.className = 'translation-paragraph'; trans.lang = 'zh-Hant'; trans.textContent = r.translations[idx]; root.appendChild(trans);
+      const paragraph=paragraphNodes(p, idx);
+      paragraph.id='reading-paragraph-'+idx;
+      root.appendChild(paragraph);
+      const actions=document.createElement('div');actions.className='paragraph-tools';
+      const button=document.createElement('button');button.type='button';button.className='paragraph-translate';
+      button.textContent=translated[idx]?(state.showTranslation||paragraphOpen.has(idx)?'收起此段譯文':'查看此段譯文'):'翻譯這一段';
+      button.disabled=translationBusy;
+      button.setAttribute('aria-label','第 '+(idx+1)+' 段翻譯');
+      button.addEventListener('click',()=>{
+        if(translated[idx]){
+          if(paragraphOpen.has(idx))paragraphOpen.delete(idx);
+          else paragraphOpen.add(idx);
+          renderReader();
+        }else translateOneParagraph(idx);
+      });
+      actions.appendChild(button);root.appendChild(actions);
+      if(translated[idx]&&(state.showTranslation||paragraphOpen.has(idx))){
+        const trans=document.createElement('p');trans.className='translation-paragraph';
+        trans.lang='zh-Hant';trans.textContent=translated[idx];root.appendChild(trans);
       }
     });
-    if (state.showTranslation && !(r.translations || []).length) {
-      const note = document.createElement('div'); note.className = 'translation-warning';
-      note.textContent = '此版本沒有經可靠生成的完整繁體中文譯文。你仍可直接點擊英文生字查詢。'; root.appendChild(note);
-    }
     root.classList.toggle('font-large', state.fontScale>=1);root.classList.toggle('font-xlarge', state.fontScale>=2); updateProgress();
   }
   function translationCacheKey(report){
@@ -238,63 +251,138 @@
     for(let i=0;i<text.length;i++)hash=Math.imul(hash^text.charCodeAt(i),16777619);
     return 'ai-daily-zh-v6-'+report.date+'-'+(hash>>>0);
   }
+  let translationConsent=false;
+  let translationCancel=false;
+  const paragraphOpen=new Set();
   function validTranslations(english,translations){
-    return Array.isArray(translations)&&translations.length===english.length&&translations.every(p=>typeof p==='string'&&/[\u3400-\u9fff]/.test(p));
+    return Array.isArray(translations)&&translations.length===english.length&&translations.every(v=>typeof v==='string'&&/[\u3400-\u9fff]/.test(v));
   }
-  function translationPieces(text,max=430){
-    const pieces=[];let rest=String(text);
-    while(rest.length>max){
-      let cut=rest.lastIndexOf(' ',max);if(cut<max/2)cut=max;
-      pieces.push(rest.slice(0,cut).trim());rest=rest.slice(cut).trim();
+  function translationProgress(report){
+    const full=Array.isArray(report.translations)?report.translations:[];
+    if(validTranslations(report.essay,full))return full.slice();
+    const local=safeStorage.get(translationCacheKey(report),[]);
+    const result=report.essay.map((_,i)=>{
+      const v=local?.[i]||full[i];
+      return typeof v==='string'&&/[\u3400-\u9fff]/.test(v)?v:'';
+    });
+    return result;
+  }
+  function storeTranslationProgress(report, progress){
+    safeStorage.set(translationCacheKey(report),progress);
+    report.translations=progress;
+  }
+  function translationPieces(text,maxBytes=380){
+    const encoder=new TextEncoder();
+    const result=[];let remaining=String(text||'').trim();
+    while(remaining){
+      if(encoder.encode(remaining).length<=maxBytes){result.push(remaining);break;}
+      let low=1,high=remaining.length,limit=1;
+      while(low<=high){
+        const mid=(low+high)>>1;
+        if(encoder.encode(remaining.slice(0,mid)).length<=maxBytes){limit=mid;low=mid+1;}
+        else high=mid-1;
+      }
+      let cut=remaining.lastIndexOf(' ',limit);
+      if(cut<Math.max(35,Math.floor(limit/2)))cut=limit;
+      result.push(remaining.slice(0,cut).trim());
+      remaining=remaining.slice(cut).trim();
     }
-    if(rest)pieces.push(rest);return pieces;
+    return result;
   }
   async function publicTranslationSegment(text){
     const url='https://api.mymemory.translated.net/get?langpair=en%7Czh-TW&q='+encodeURIComponent(text);
-    const response=await fetch(url,{mode:'cors',cache:'no-store'});
-    if(!response.ok)throw new Error('網絡或免費額度限制');
-    const data=await response.json();
-    if(Number(data.responseStatus||200)>=400)throw new Error('免費翻譯額度已用完');
-    const result=String(data.responseData?.translatedText||'').trim();
-    if(!/[\u3400-\u9fff]/.test(result))throw new Error('未取得有效的繁體中文');
-    return result;
+    for(let attempt=0;attempt<2;attempt++){
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(),15000);
+      try{
+        const response=await fetch(url,{mode:'cors',cache:'no-store',signal:controller.signal});
+        if(!response.ok)throw new Error('免費翻譯服務網絡錯誤（HTTP '+response.status+'）');
+        const data=await response.json();
+        const status=Number(data.responseStatus??200);
+        if(status>=400)throw new Error('翻譯服務已達用量上限或拒絕請求（'+status+'）');
+        const result=String(data.responseData?.translatedText||'').trim();
+        if(!/[\u3400-\u9fff]/.test(result))throw new Error('翻譯結果沒有中文，可能是服務額度不足');
+        return result;
+      }catch(error){
+        if(attempt===1||!navigator.onLine)throw error;
+        await new Promise(resolve=>setTimeout(resolve,650));
+      }finally{clearTimeout(timeout);}
+    }
+    throw new Error('免費翻譯暫時不可用');
+  }
+  function agreeToTranslation(){
+    if(translationConsent)return true;
+    if(!navigator.onLine){toast('目前離線，可閱讀已儲存譯文，但不能取得新翻譯。');return false;}
+    const agree=window.confirm('翻譯需要把公開英文文章內容傳送到免費第三方 MyMemory 翻譯服務。服務可能記錄請求、設有免費額度及產生錯誤譯文。是否同意？');
+    if(agree)translationConsent=true;
+    return agree;
   }
   function syncTranslationButton(){
     const button=$('translate-toggle');
-    button.disabled=translationBusy;
-    button.textContent=translationBusy?'正在翻譯…':state.showTranslation?'隱藏繁體中文譯文':'翻譯全文（免費・需連線）';
-    button.title='全文譯文由免費第三方服務按需要生成，非離線模型；首次使用前會徵求同意。';
+    const report=state.report;
+    if(!report)return;
+    const partial=translationProgress(report).filter(Boolean).length;
+    button.disabled=false;
+    button.textContent=translationBusy?'停止翻譯（已完成 '+partial+'/'+report.essay.length+' 段）':
+       state.showTranslation?'隱藏繁體中文譯文':'翻譯全文（免費・需連線）';
+    button.title='可先譯單一段落；全部翻譯會分段保存，失敗後可再嘗試。';
+  }
+  async function translateOneParagraph(index){
+    const report=state.report;
+    if(!report||translationBusy||index<0||index>=report.essay.length)return;
+    const partial=translationProgress(report);
+    if(partial[index]){
+      paragraphOpen.add(index);
+      renderReader();return;
+    }
+    if(!agreeToTranslation())return;
+    translationBusy=true;translationCancel=false;syncTranslationButton();
+    try{
+      const parts=[];
+      for(const segment of translationPieces(report.essay[index])){
+        if(translationCancel)break;
+        parts.push(await publicTranslationSegment(segment));
+      }
+      if(!translationCancel&&parts.length===translationPieces(report.essay[index]).length){
+        partial[index]=parts.join(' ');
+        storeTranslationProgress(report,partial);
+        paragraphOpen.add(index);
+      }
+    }catch(error){
+      toast('翻譯未完成：'+String(error.message||error).slice(0,60));
+    }finally{translationBusy=false;translationCancel=false;renderReader();syncTranslationButton();}
   }
   async function toggleWholeTranslation(){
-    const r=state.report;if(!r||translationBusy)return;
+    const report=state.report;if(!report)return;
+    if(translationBusy){translationCancel=true;toast('已要求停止翻譯；完成當前請求後會保留已譯段落。');return;}
     if(state.showTranslation){state.showTranslation=false;renderReader();syncTranslationButton();return;}
-    if(!validTranslations(r.essay,r.translations)){
-      const cached=safeStorage.get(translationCacheKey(r),[]);
-      if(validTranslations(r.essay,cached))r.translations=cached;
+    let partial=translationProgress(report);
+    if(partial.every(Boolean)){
+      state.showTranslation=true;renderReader();syncTranslationButton();return;
     }
-    if(!validTranslations(r.essay,r.translations)){
-      if(!navigator.onLine){toast('目前離線，全文翻譯暫不可用。');return;}
-      if(!window.confirm('翻譯全文需要將公開英文文章傳送至免費第三方 MyMemory 翻譯服務，翻譯可能有錯且有每日用量限制。是否同意？'))return;
-      translationBusy=true;syncTranslationButton();
-      const translated=[];
-      try{
-        for(const paragraph of r.essay){
-          const parts=[];
-          for(const chunk of translationPieces(paragraph))parts.push(await publicTranslationSegment(chunk));
-          translated.push(parts.join(' '));
-          $('translate-toggle').textContent='正在翻譯 '+translated.length+'/'+r.essay.length+' 段…';
+    if(!agreeToTranslation())return;
+    translationBusy=true;translationCancel=false;
+    state.showTranslation=true;syncTranslationButton();
+    try{
+      for(let i=0;i<report.essay.length;i++){
+        if(translationCancel)break;
+        if(partial[i])continue;
+        const pieces=translationPieces(report.essay[i]);
+        const translated=[];
+        for(const piece of pieces){
+          if(translationCancel)break;
+          translated.push(await publicTranslationSegment(piece));
         }
-        if(!validTranslations(r.essay,translated))throw new Error('段落數量不一致');
-        r.translations=translated;
-        safeStorage.set(translationCacheKey(r),translated);
-      }catch(error){
-        translationBusy=false;syncTranslationButton();
-        toast('翻譯未完成：'+String(error.message||error).slice(0,40)+'。生字查譯不受影響。');
-        return;
+        if(translationCancel)break;
+        partial[i]=translated.join(' ');
+        storeTranslationProgress(report,partial);
+        paragraphOpen.add(i);
+        syncTranslationButton();
+        renderReader();
       }
-      translationBusy=false;
-    }
-    state.showTranslation=true;renderReader();syncTranslationButton();
+    }catch(error){
+      toast('暫停在已完成段落：'+String(error.message||error).slice(0,60));
+    }finally{translationBusy=false;translationCancel=false;renderReader();syncTranslationButton();}
   }
   function setModeBanner(mode) {
     const el = $('status-banner'); el.classList.toggle('demo', mode === 'demo');
