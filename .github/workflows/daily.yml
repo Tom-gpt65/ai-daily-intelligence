@@ -58,6 +58,8 @@ jobs:
         if: github.event_name != 'push'
         id: preflight
         shell: bash
+        env:
+          ENRICH_ENABLED: '1'
         run: |
           python scripts/build.py --prefetch
           if test -s .cache/candidates.json; then
