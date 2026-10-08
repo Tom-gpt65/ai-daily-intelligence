@@ -25,6 +25,8 @@
   let reviewPosition = 0;
   const PHRASE_RE = /(\[S\d+\]|[A-Za-z]+(?:['’\-][A-Za-z]+)*)/g;
   let saved = safeStorage.get(SAVED_KEY, {});
+  let translationBusy=false;
+  let quizSelections=safeStorage.get('ai-daily-quiz-v6',{});
   let toastTimeout;
   function toast(message) { const el = $('toast'); el.textContent = message; el.classList.remove('hidden'); clearTimeout(toastTimeout); toastTimeout = setTimeout(() => el.classList.add('hidden'), 2800); }
   function formatDate(d) { if (!/^\d{4}-\d{2}-\d{2}$/.test(d || '')) return d || ''; return new Date(d + 'T12:00:00+08:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Hong_Kong' }); }
@@ -231,6 +233,69 @@
     }
     root.classList.toggle('font-large', state.fontScale>=1);root.classList.toggle('font-xlarge', state.fontScale>=2); updateProgress();
   }
+  function translationCacheKey(report){
+    const text=report.essay.join('\n');let hash=2166136261;
+    for(let i=0;i<text.length;i++)hash=Math.imul(hash^text.charCodeAt(i),16777619);
+    return 'ai-daily-zh-v6-'+report.date+'-'+(hash>>>0);
+  }
+  function validTranslations(english,translations){
+    return Array.isArray(translations)&&translations.length===english.length&&translations.every(p=>typeof p==='string'&&/[\u3400-\u9fff]/.test(p));
+  }
+  function translationPieces(text,max=430){
+    const pieces=[];let rest=String(text);
+    while(rest.length>max){
+      let cut=rest.lastIndexOf(' ',max);if(cut<max/2)cut=max;
+      pieces.push(rest.slice(0,cut).trim());rest=rest.slice(cut).trim();
+    }
+    if(rest)pieces.push(rest);return pieces;
+  }
+  async function publicTranslationSegment(text){
+    const url='https://api.mymemory.translated.net/get?langpair=en%7Czh-TW&q='+encodeURIComponent(text);
+    const response=await fetch(url,{mode:'cors',cache:'no-store'});
+    if(!response.ok)throw new Error('網絡或免費額度限制');
+    const data=await response.json();
+    if(Number(data.responseStatus||200)>=400)throw new Error('免費翻譯額度已用完');
+    const result=String(data.responseData?.translatedText||'').trim();
+    if(!/[\u3400-\u9fff]/.test(result))throw new Error('未取得有效的繁體中文');
+    return result;
+  }
+  function syncTranslationButton(){
+    const button=$('translate-toggle');
+    button.disabled=translationBusy;
+    button.textContent=translationBusy?'正在翻譯…':state.showTranslation?'隱藏繁體中文譯文':'翻譯全文（免費・需連線）';
+    button.title='全文譯文由免費第三方服務按需要生成，非離線模型；首次使用前會徵求同意。';
+  }
+  async function toggleWholeTranslation(){
+    const r=state.report;if(!r||translationBusy)return;
+    if(state.showTranslation){state.showTranslation=false;renderReader();syncTranslationButton();return;}
+    if(!validTranslations(r.essay,r.translations)){
+      const cached=safeStorage.get(translationCacheKey(r),[]);
+      if(validTranslations(r.essay,cached))r.translations=cached;
+    }
+    if(!validTranslations(r.essay,r.translations)){
+      if(!navigator.onLine){toast('目前離線，全文翻譯暫不可用。');return;}
+      if(!window.confirm('翻譯全文需要將公開英文文章傳送至免費第三方 MyMemory 翻譯服務，翻譯可能有錯且有每日用量限制。是否同意？'))return;
+      translationBusy=true;syncTranslationButton();
+      const translated=[];
+      try{
+        for(const paragraph of r.essay){
+          const parts=[];
+          for(const chunk of translationPieces(paragraph))parts.push(await publicTranslationSegment(chunk));
+          translated.push(parts.join(' '));
+          $('translate-toggle').textContent='正在翻譯 '+translated.length+'/'+r.essay.length+' 段…';
+        }
+        if(!validTranslations(r.essay,translated))throw new Error('段落數量不一致');
+        r.translations=translated;
+        safeStorage.set(translationCacheKey(r),translated);
+      }catch(error){
+        translationBusy=false;syncTranslationButton();
+        toast('翻譯未完成：'+String(error.message||error).slice(0,40)+'。生字查譯不受影響。');
+        return;
+      }
+      translationBusy=false;
+    }
+    state.showTranslation=true;renderReader();syncTranslationButton();
+  }
   function setModeBanner(mode) {
     const el = $('status-banner'); el.classList.toggle('demo', mode === 'demo');
     el.textContent = ({demo:'⚠ 示範教材 · 非即時新聞', editorial:'✦ 已整理當日新聞 · AI 英文改寫', source_digest:'ⓘ 來源摘要模式 · 模型未能完成改寫'})[mode] || '已發布報告';
@@ -283,10 +348,7 @@
     $('reading-quality').textContent=r.quality_note||'資料可能有誤；請核實來源。';
     renderStoryCards(r);refreshDashboard();renderResume();
     setModeBanner(r.mode); renderFreshness(); renderReader(); readingStatus();
-    const translationReady=Array.isArray(r.translations) && r.translations.length===r.essay.length && r.translations.every(v=>typeof v==='string'&&v.trim());
-    $('translate-toggle').disabled=!translationReady;
-    $('translate-toggle').title=translationReady?'切換完整繁體中文段落翻譯':'免費自動化預設不產生全文翻譯；點擊任何英文生字仍可即時查詢';
-    $('translate-toggle').textContent=translationReady?(state.showTranslation?'隱藏中文譯文':'顯示中文譯文'):'全文譯文暫不可用 · 可點字查譯';
+    syncTranslationButton();
     const sources = $('source-list'); sources.replaceChildren();
     if (!(r.stories || []).length) { const note = document.createElement('div'); note.className='empty-state'; note.textContent='此為離線示範教材，不包含實際新聞來源。'; sources.appendChild(note); }
     (r.stories || []).forEach(s => {
@@ -339,6 +401,7 @@
   }
   function placePopover(target) {
     const pop=$('dictionary-popover');pop.classList.remove('hidden');
+    if(innerWidth<=650){pop.style.left='0';pop.style.top='auto';return;}
     const rect=target.getBoundingClientRect(),width=Math.min(326,innerWidth-28);
     const x=Math.max(14,Math.min(rect.left,innerWidth-width-14));
     pop.style.maxHeight=Math.max(180,innerHeight-22)+'px';pop.style.overflowY='auto';
@@ -492,7 +555,8 @@
   function initEvents(){
     document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
     $('reader').addEventListener('click',e=>{const t=e.target.closest('button.word');if(t)showLookup(t.textContent,t);});
-    $('translate-toggle').addEventListener('click',()=>{state.showTranslation=!state.showTranslation;renderReader();$('translate-toggle').textContent=state.showTranslation?'隱藏中文譯文':'顯示中文譯文';});
+    $('translate-toggle').addEventListener('click',toggleWholeTranslation);
+    $('tools-toggle').addEventListener('click',()=>{const expanded=document.body.classList.toggle('tools-expanded');$('tools-toggle').setAttribute('aria-expanded',String(expanded));$('tools-toggle').textContent=expanded?'收起其他閱讀工具 ▴':'更多閱讀工具 ▾';});
     $('focus-toggle').addEventListener('click',()=>{focusMode=!focusMode;document.body.classList.toggle('focus-mode',focusMode);$('focus-toggle').setAttribute('aria-pressed',String(focusMode));$('focus-toggle').textContent=focusMode?'離開專注模式':'專注閱讀';});
     $('reading-speed').addEventListener('click',()=>{const speeds=[90,115,145];state.readingWpm=speeds[(speeds.indexOf(state.readingWpm)+1)%speeds.length];safeStorage.set('ai-daily-reading-wpm',state.readingWpm);renderReadingEstimate();});
     $('font-button').addEventListener('click',()=>{state.fontScale=(state.fontScale+1)%3;safeStorage.set('ai-daily-font-scale',state.fontScale);renderReader();toast(['標準字體','放大字體','特大字體'][state.fontScale]);});
