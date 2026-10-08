@@ -1,0 +1,86 @@
+/* V3 Editorial Studio — source-first dashboard, responsive and keyboard accessible. */
+:root{--focus-ring:#d3f68b;--decor:#8897aa}
+:root.light{--focus-ring:#4c641f}
+.skip-link{position:fixed;top:-90px;left:16px;z-index:300;background:var(--accent);color:var(--bg);padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:700}
+.skip-link:focus{top:12px}
+.page{max-width:1220px;margin-inline:auto}
+.intro{padding-top:62px}
+.intro h1{letter-spacing:-1.9px}
+.intro p{max-width:560px;font-size:14px;line-height:1.8}
+.status-row{flex-wrap:wrap}
+.edition-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0 28px}
+.overview-stat{min-width:0;min-height:104px;border:1px solid var(--border);background:var(--surface);padding:17px 18px;border-radius:12px;display:flex;flex-direction:column;gap:6px}
+.overview-label{font-size:11px;color:var(--muted)}
+.overview-stat strong{font-size:23px;line-height:1.4;letter-spacing:-.5px;font-weight:650}
+.overview-stat small{color:var(--muted);font-size:10px;line-height:1.55}
+.story-overview{margin-bottom:28px}
+.story-heading{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:14px}
+.story-heading h2{font:normal 29px/1.25 Georgia,serif;letter-spacing:-.35px;margin:9px 0 0}
+.section-hint{font-size:11px;color:var(--muted)}
+.story-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.story-card{position:relative;min-height:154px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;text-decoration:none;border:1px solid var(--border);background:var(--surface);border-radius:13px;padding:16px;transition:transform .15s,border-color .15s}
+.story-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.story-card strong{font-size:13px;line-height:1.55;font-weight:650;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.story-num{position:absolute;top:13px;right:15px;font-size:10px;color:var(--muted);letter-spacing:1px}
+.story-topic{background:var(--accent-low);color:var(--accent);padding:5px 8px;border-radius:5px;font-size:10px;font-weight:700;max-width:calc(100% - 36px)}
+.story-origin{font-size:10px;line-height:1.5;color:var(--muted);margin-top:auto}
+.demo-explainer{grid-column:1/-1;border:1px dashed var(--border);border-radius:12px;padding:20px;font-size:13px;line-height:1.8;color:var(--muted);margin:0}
+.pipeline-alert{font-size:12px;line-height:1.7;border:1px solid var(--border);border-left:3px solid var(--warm);padding:11px 14px;margin:22px 0 8px;background:var(--surface);border-radius:8px}
+.pipeline-alert.pipeline-success{border-left-color:var(--accent)}
+.briefing-card{scroll-margin-top:22px}
+.card-header{padding-top:32px}
+.reader-toolbar{position:relative;gap:10px}
+.reader{max-width:860px;margin-inline:auto;letter-spacing:.12px;overflow-wrap:break-word}
+.reader .word:focus-visible{outline:2px solid var(--accent);outline-offset:3px;background:var(--accent-low)}
+.reader .word:hover,.reader .word:focus-visible{color:var(--accent)}
+.reading-quality{max-width:760px;margin:0 auto 32px;padding:10px 20px;font-size:11px;line-height:1.75;color:var(--muted);border-left:2px solid var(--border)}
+.source-item:focus-visible,.story-card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.online-lookup{display:block;width:100%;margin-top:9px;font-size:11px;line-height:1.4}
+.archive-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:27px}
+.archive-tools input,.archive-tools select{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:12px 14px;font-size:13px;font-family:inherit}
+.archive-tools input{flex:1;min-width:210px}
+.archive-list{margin-top:19px}
+.archive-card{min-height:92px}
+.archive-title{overflow-wrap:anywhere}
+.review-actions .small-button{font-size:12px;padding:11px 13px}
+.word-tools{gap:8px}
+.word-tools .small-button{min-height:40px}
+.word-card{min-width:0;overflow-wrap:anywhere}
+:root.light .edition-symbol{color:#ffffff}
+:root.light .save-button{color:#ffffff}
+/* Focus reading removes surrounding distractions, but retains facts, status and source links. */
+body.focus-mode .sidebar,body.focus-mode .intro,body.focus-mode .story-overview,body.focus-mode .edition-overview,body.focus-mode .vocab-panel,body.focus-mode .lower-grid,body.focus-mode .footer-note{display:none!important}
+body.focus-mode .layout{display:block}
+body.focus-mode .main{width:min(100%,1000px);margin:0 auto}
+body.focus-mode .page{padding-top:22px}
+body.focus-mode .briefing-card{border-color:var(--border)}
+body.focus-mode .status-row{margin-top:16px}
+body.focus-mode .card-header{padding-top:24px}
+@media(max-width:1080px){.story-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:960px){.edition-overview{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+  .page{padding-top:31px}
+  .intro{padding-top:28px}
+  .intro h1{font-size:clamp(37px,9.6vw,50px);letter-spacing:-1.4px}
+  .intro p{font-size:13px}
+  .edition-overview{gap:8px;margin-top:16px}
+  .overview-stat{padding:13px;min-height:94px}
+  .overview-stat strong{font-size:20px}
+  .story-cards{grid-template-columns:1fr;gap:9px}
+  .story-card{min-height:110px;gap:6px;padding:13px}
+  .story-heading{align-items:start;flex-direction:column;gap:5px}
+  .story-heading h2{font-size:26px}
+  .reader-toolbar{align-items:stretch}
+  .toolbar-right{flex:1;justify-content:flex-start;flex-wrap:wrap}
+  .small-button{font-size:12px;min-height:36px}
+  .reader{font-size:17px;line-height:1.94}
+  .reading-quality{margin:0 19px 23px;padding:9px 11px}
+  .dictionary-popover{padding:16px;max-height:70vh!important;overflow-y:auto}
+  .pipeline-alert{margin:8px 0 13px}
+  .archive-tools input{width:100%;flex-basis:100%}
+  .archive-tools select{width:100%}
+  body.focus-mode .sidebar{display:none!important}
+  body.focus-mode .page{padding:24px 13px 45px}
+  body.focus-mode .reader{padding-inline:18px}
+}
+@media(prefers-reduced-motion:reduce){.story-card{transition:none}.story-card:hover{transform:none}*{scroll-behavior:auto!important}}

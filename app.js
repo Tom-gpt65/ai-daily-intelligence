@@ -1,0 +1,562 @@
+/* V5: evidence-first, offline-friendly, accessible reader; no tracking or paid APIs. */
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const state = { report: null, index: [], dictCache: new Map(), showTranslation: false, largeText: false, fontScale: 0, readingWpm: 115, view: 'today', lookup: '' };
+  const safeStorage = {
+    get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } },
+    set(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch { toast('瀏覽器無法儲存資料。'); } }
+  };
+  const SAVED_KEY = 'ai-daily-saved-v2'; // keep keys compatible with v2, never discard prior words
+  const READ_KEY = 'ai-daily-read-v1';
+  const ANSWERS_KEY = 'ai-daily-answers-v1';
+  const PROGRESS_KEY = 'ai-daily-reading-progress-v1';
+  let progressRecords = safeStorage.get(PROGRESS_KEY, {});
+  let lastFocus = null;
+  let requestSerial = 0;
+  let scrollingTimer = 0;
+  let readRecords = safeStorage.get(READ_KEY, {});
+  let writtenAnswers = safeStorage.get(ANSWERS_KEY, {});
+  let wordFilter = '';
+  let archiveFilter = '';
+  let archiveMode = 'all';
+  let focusMode = false;
+  let reviewQueue = [];
+  let reviewPosition = 0;
+  const PHRASE_RE = /(\[S\d+\]|[A-Za-z]+(?:['’\-][A-Za-z]+)*)/g;
+  let saved = safeStorage.get(SAVED_KEY, {});
+  let toastTimeout;
+  function toast(message) { const el = $('toast'); el.textContent = message; el.classList.remove('hidden'); clearTimeout(toastTimeout); toastTimeout = setTimeout(() => el.classList.add('hidden'), 2800); }
+  function formatDate(d) { if (!/^\d{4}-\d{2}-\d{2}$/.test(d || '')) return d || ''; return new Date(d + 'T12:00:00+08:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Hong_Kong' }); }
+  const wordKey = w => String(w || '').toLowerCase().replace(/[^a-z'-]/g, '').replace(/'s$/, '');
+  const has = (obj, key) => Object.prototype.hasOwnProperty.call(obj || {}, key);
+  function stems(w) {
+    const v=wordKey(w), forms=[v];
+    if(v.length>5 && v.endsWith('ies')) forms.push(v.slice(0,-3)+'y');
+    if(v.length>5 && v.endsWith('ing')) {forms.push(v.slice(0,-3),v.slice(0,-3)+'e'); if(v.length>6 && v[v.length-4]===v[v.length-5]) forms.push(v.slice(0,-4));}
+    if(v.length>4 && v.endsWith('ed')) forms.push(v.slice(0,-2),v.slice(0,-1));
+    if(v.length>4 && v.endsWith('es')) forms.push(v.slice(0,-2));
+    if(v.length>4 && v.endsWith('s')) forms.push(v.slice(0,-1));
+    if(v.length>5 && v.endsWith('ly')) forms.push(v.slice(0,-2));
+    return [...new Set(forms)].filter(Boolean);
+  }
+  function localMeaning(word) { const dic = state.report?.dictionary || {}; for (const key of stems(word)) if (dic[key]) return { ...dic[key], key }; return null; }
+  function dueWords() {return Object.keys(saved).filter(key=>!saved[key]?.nextReview || saved[key].nextReview<=hkDate());}
+  function updateSavedCount() { $('saved-count').textContent = Object.keys(saved).length; $('review-count').textContent=`(${dueWords().length})`; }
+  function reviewNextDate(days) {const dt=new Date(hkDate()+'T00:00:00Z');dt.setUTCDate(dt.getUTCDate()+days);return dt.toISOString().slice(0,10);}
+  function renderReview(){
+    const panel=$('review-panel');
+    if(reviewQueue.length===0){panel.classList.add('hidden');updateSavedCount();return;}
+    panel.classList.remove('hidden');
+    const key=reviewQueue[0];
+    $('review-front').textContent=key;
+    $('review-back').textContent=saved[key]?.translation||'暫無可用詞義，請參考原文。';
+    $('review-back').classList.add('hidden');
+    $('review-show').classList.remove('hidden');
+    ['review-again','review-hard','review-remember','review-easy'].forEach(id=>$(id).classList.add('hidden'));
+    $('review-position').textContent=`本輪第 ${reviewPosition+1} 張，尚餘 ${reviewQueue.length} 張`;
+  }
+  function finishReview(rating) {
+    const key=reviewQueue.shift(); if(!key || !has(saved,key))return;
+    const old=Math.max(0,Math.min(6,Number(saved[key].reviewLevel)||0));
+    const levels={again:0,hard:Math.max(0,old),good:Math.min(6,old+1),easy:Math.min(6,old+2)};
+    const level=levels[rating] ?? old;
+    const days={again:1,hard:[1,1,2,3,5,8,12][old],good:[1,2,4,7,14,28,45][level],easy:[3,5,9,16,30,50,75][level]}[rating] || 1;
+    saved[key].reviewLevel=level;
+    saved[key].nextReview=reviewNextDate(days);
+    saved[key].lastReviewed=new Date().toISOString();
+    reviewPosition++;
+    safeStorage.set(SAVED_KEY,saved);
+    renderWords();renderReview();refreshDashboard();
+    if(!reviewQueue.length)toast('本次複習已完成。');
+  }
+  function readingStreak() {
+    const dates = new Set(Object.values(readRecords).filter(v=>typeof v==='string'&&Number.isFinite(Date.parse(v))).map(v=>{const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(v));const get=k=>parts.find(p=>p.type===k)?.value||'';return get('year')+'-'+get('month')+'-'+get('day');}));
+    let day = new Date(hkDate() + 'T00:00:00Z');
+    if (!dates.has(hkDate())) day.setUTCDate(day.getUTCDate() - 1);
+    let length = 0;
+    while (dates.has(day.toISOString().slice(0, 10))) {
+      length++;
+      day.setUTCDate(day.getUTCDate() - 1);
+    }
+    return length;
+  }
+  function refreshDashboard(){
+    const readCount=Object.keys(readRecords).filter(d=>readRecords[d]).length;
+    $('overview-read').textContent=readCount+' 篇';
+    $('overview-due').textContent=dueWords().length+' 個待複習 · '+readingStreak()+' 日連續閱讀';
+  }
+  function downloadJson(name,data){
+    const content=new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'});
+    const url=URL.createObjectURL(content),a=document.createElement('a');
+    a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),800);
+  }
+  function exportAll(){
+    downloadJson('ai-daily-learning-backup-'+hkDate()+'.json',{
+      type:'ai-daily-learning-backup', version:4,exported_at:new Date().toISOString(),
+      words:saved,readRecords,writtenAnswers,progressRecords
+    });
+    toast('完整學習進度備份已下載。');
+  }
+  async function importAll(file){
+    if(!file || file.size>1_200_000){toast('檔案不存在或超過 1.2 MB。');return;}
+    try{
+      const data=JSON.parse(await file.text());
+      if(data.type!=='ai-daily-learning-backup'||![3,4].includes(data.version)||!data.words||!data.readRecords||!data.writtenAnswers)throw Error('format');
+      const w=Object.entries(data.words);
+      if(w.length>5000||Object.keys(data.readRecords).length>1500||Object.keys(data.writtenAnswers).length>3000)throw Error('size');
+      const clean={};
+      for(const [key,value] of w){
+        if(!/^[a-z][a-z'-]{0,45}$/.test(key)||!value||typeof value!=='object'||Array.isArray(value))continue;
+        clean[key]={translation:String(value.translation||'').slice(0,300),phonetic:String(value.phonetic||'').slice(0,90),savedAt:String(value.savedAt||'').slice(0,45),reviewLevel:Math.max(0,Math.min(6,Number(value.reviewLevel)||0)),nextReview:/^\d{4}-\d{2}-\d{2}$/.test(value.nextReview||'')?value.nextReview:''};
+      }
+      const rr={},wa={};
+      for(const [key,value] of Object.entries(data.readRecords))if(/^\d{4}-\d{2}-\d{2}$/.test(key)&&typeof value==='string')rr[key]=value.slice(0,45);
+      for(const [key,value] of Object.entries(data.writtenAnswers))if(/^\d{4}-\d{2}-\d{2}-\d$/.test(key)&&typeof value==='string')wa[key]=value.slice(0,2000);
+      const pp={};
+      if(data.progressRecords && typeof data.progressRecords==='object' && !Array.isArray(data.progressRecords)) {
+        for(const [key,value] of Object.entries(data.progressRecords)) {
+          if(/^\d{4}-\d{2}-\d{2}$/.test(key) && Number.isFinite(Number(value))) pp[key]=Math.max(0,Math.min(100,Number(value)));
+        }
+      }
+      saved={...saved,...clean};readRecords={...readRecords,...rr};writtenAnswers={...writtenAnswers,...wa};
+      progressRecords={...progressRecords,...pp};safeStorage.set(PROGRESS_KEY,progressRecords);
+      safeStorage.set(SAVED_KEY,saved);safeStorage.set(READ_KEY,readRecords);safeStorage.set(ANSWERS_KEY,writtenAnswers);
+      updateSavedCount();refreshDashboard();renderWords();readingStatus();toast('學習進度已合併還原。');
+    }catch{toast('備份檔案無效，沒有修改現有紀錄。');}
+  }
+  async function renderPipelineStatus(){
+    try{
+      const response=await fetch('./system-status.json',{cache:'no-store'});
+      if(!response.ok) return;
+      const info=await response.json();
+      const el=$('pipeline-alert');
+      if(info.state==='feed_error'){el.textContent='新聞來源目前無法讀取；沒有證據表示今天沒有重要新聞。請檢查網絡或 GitHub Actions。';el.classList.remove('hidden');}
+      else if(info.state==='no_new_stories'){
+        el.textContent='最後檢查：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。在可讀取的來源中未發現適合發布的新消息，現保留上一份報告。';
+        el.classList.remove('hidden');
+      } else if(info.state==='new_stories_found'){
+        el.textContent='資料更新正在進行或未完成；這並不代表報告已成功發布。';el.classList.remove('hidden');
+      } else if(info.state==='published'){
+        el.textContent='資料流程最近一次成功發表：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。';
+        el.classList.remove('hidden');el.classList.add('pipeline-success');
+      }
+      if(!el.classList.contains('hidden')) {
+        if(Number(info.feeds_failed)>0){el.textContent+=' ⚠ '+info.feeds_failed+' 個 RSS 來源無法讀取，本次新聞可能不完整。';el.classList.remove('pipeline-success');}
+        const age=(Date.now()-Date.parse(info.checked_at||''))/3_600_000;
+        if(Number.isFinite(age)&&age>48){el.textContent+=' ⚠ 最近一次檢查距今超過 48 小時，請確認排程是否仍在執行。';el.classList.remove('pipeline-success');}
+      }
+    }catch{showConnectivity(true);}
+  }
+  function readingEstimate(){
+    const words=Number(state.report?.word_count)||0;
+    return words ? Math.max(1, Math.round(words/state.readingWpm*10)/10) : 0;
+  }
+  function renderReadingEstimate(){
+    const estimate=readingEstimate();
+    $('overview-minutes').textContent=estimate ? `約 ${estimate} 分鐘` : '—';
+    $('reading-speed').textContent=`閱讀速度：${state.readingWpm} 字／分鐘`;
+  }
+  function renderStoryCards(r){
+    const root=$('story-cards');root.replaceChildren();
+    if(r.mode==='demo'){
+      const p=document.createElement('p');p.className='demo-explainer';p.textContent='本頁只提供虛構閱讀練習，沒有今日真實新聞。完成部署後，最新報道將顯示在這裏。';root.append(p);return;
+    }
+    (r.stories||[]).forEach((story,index)=>{
+      const card=document.createElement('a');card.className='story-card';
+      try{const u=new URL(story.url);if(!['https:','http:'].includes(u.protocol))return;card.href=u.href;}catch{return;}
+      card.target='_blank';card.rel='noopener noreferrer';card.referrerPolicy='no-referrer';
+      const num=document.createElement('span');num.className='story-num';num.textContent=String(index+1).padStart(2,'0');
+      const topic=document.createElement('span');topic.className='story-topic';topic.textContent=story.topic||'General AI';
+      const title=document.createElement('strong');title.textContent=story.title||'Source';
+      const source=document.createElement('span');source.className='story-origin';source.textContent=(story.publisher||'')+' · '+(story.source_type||'RSS 報道')+' · '+formatSourceDate(story.published);
+      const count=Number(story.coverage_count||1);
+      const coverage=document.createElement('span');coverage.className='story-evidence';
+      coverage.textContent=count>1?`${count} 家不同來源曾報道同一事件 · 非獨立事實核查`:'目前只收錄一個來源 · 重要內容請自行核實';
+      card.append(num,topic,title,source,coverage);root.append(card);
+    });
+  }
+
+  function formatSourceDate(s) {
+    if(!s || !Number.isFinite(Date.parse(s))) return '日期未明';
+    return new Date(s).toLocaleDateString('zh-HK',{timeZone:'Asia/Hong_Kong',month:'short',day:'numeric'});
+  }
+  function paragraphNodes(text, paragraphIndex) {
+    const p = document.createElement('p'); p.className = 'essay-paragraph'; p.dataset.index = paragraphIndex;
+    String(text || '').split(PHRASE_RE).forEach(part => {
+      if (/^\[S\d+\]$/.test(part)) {
+        const match=(state.report?.stories || []).find(story=>'['+story.id+']'===part);
+        if(match){
+          const link=document.createElement('a');link.textContent=part;link.className='source-ref';
+          try {const u=new URL(match.url);if(['http:','https:'].includes(u.protocol)){link.href=u.href;link.target='_blank';link.rel='noopener noreferrer';link.referrerPolicy='no-referrer';}}
+          catch{}
+          if(link.href){link.setAttribute('aria-label','查看來源 '+part);p.appendChild(link);}else p.appendChild(document.createTextNode(part));
+        }else p.appendChild(document.createTextNode(part));
+      } else if (/^[A-Za-z]/.test(part)) {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'word'; button.textContent = part;
+        button.setAttribute('aria-label', '查詢 ' + part);
+        p.appendChild(button);
+      } else p.appendChild(document.createTextNode(part));
+    });
+    return p;
+  }
+  function updateProgress(persist=false) {
+    if (state.view !== 'today') return;
+    const card = document.querySelector('.briefing-card'); if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const span = Math.max(1, rect.height - window.innerHeight);
+    const done = Math.min(100, Math.max(0, Math.round((-rect.top / span) * 100)));
+    $('progress-bar').style.width = done + '%'; $('progress-percent').textContent = done + '%';
+    if(persist && state.report && state.report.mode!=='demo') {
+      const key=state.report.date;
+      if(Math.abs((Number(progressRecords[key])||0)-done)>=3) {
+        progressRecords[key]=done;
+        clearTimeout(scrollingTimer);
+        scrollingTimer=setTimeout(()=>safeStorage.set(PROGRESS_KEY,progressRecords),850);
+      }
+    }
+  }
+  function renderReader() {
+    const root = $('reader'); root.replaceChildren();
+    const r = state.report; if (!r) { root.textContent = '暫時未有報告。'; return; }
+    r.essay.forEach((p, idx) => {
+      root.appendChild(paragraphNodes(p, idx));
+      if (state.showTranslation && Array.isArray(r.translations) && r.translations[idx]) {
+        const trans = document.createElement('p'); trans.className = 'translation-paragraph'; trans.lang = 'zh-Hant'; trans.textContent = r.translations[idx]; root.appendChild(trans);
+      }
+    });
+    if (state.showTranslation && !(r.translations || []).length) {
+      const note = document.createElement('div'); note.className = 'translation-warning';
+      note.textContent = '此版本沒有經可靠生成的完整繁體中文譯文。你仍可直接點擊英文生字查詢。'; root.appendChild(note);
+    }
+    root.classList.toggle('font-large', state.fontScale>=1);root.classList.toggle('font-xlarge', state.fontScale>=2); updateProgress();
+  }
+  function setModeBanner(mode) {
+    const el = $('status-banner'); el.classList.toggle('demo', mode === 'demo');
+    el.textContent = ({demo:'⚠ 示範教材 · 非即時新聞', editorial:'✦ 已整理當日新聞 · AI 英文改寫', source_digest:'ⓘ 來源摘要模式 · 模型未能完成改寫'})[mode] || '已發布報告';
+  }
+  function hkDate() {
+    const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    const get=x=>parts.find(p=>p.type===x)?.value || '';
+    return `${get('year')}-${get('month')}-${get('day')}`;
+  }
+  function daysOld(date) {
+    const current=hkDate();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return 0;
+    return Math.round((Date.parse(current+'T00:00:00Z')-Date.parse(date+'T00:00:00Z'))/86400000);
+  }
+  function readingStatus() {
+    const r=state.report;if(!r) return;
+    const completed=has(readRecords,r.date) && !!readRecords[r.date];
+    $('reading-state').textContent=completed?'✓ 已完成閱讀':'';
+    $('mark-read').textContent=completed?'取消已讀標記':'✓ 標記為已讀';
+    $('mark-read').setAttribute('aria-pressed',String(completed));
+  }
+  function renderFreshness() {
+    const r=state.report, el=$('freshness-note');
+    if(!r) return;
+    let message='';
+    if(r.mode==='demo') message='目前正在顯示虛構示範文章，並非最新 AI 新聞。正式部署並成功完成首次更新後才會顯示真實報告。';
+    else if(daysOld(r.date)>0) message=`此為 ${formatDate(r.date)} 的舊報告，距今已 ${daysOld(r.date)} 日。最新排程可能尚未完成、來源暫無足夠新消息或更新失敗；請查看 GitHub Actions。`;
+    else if(daysOld(r.date)<0) message='報告日期晚於目前香港日期，請檢查資料或裝置時間。';
+    else if(r.mode==='source_digest') message='目前只有來源摘要，不是完整的五分鐘 DSE 英文報告。原始 RSS 內容未經獨立核實。';
+    else message='本篇由免費本地 AI 模型根據 RSS 摘要改寫，並非由記者獨立核實的報道；重要細節請查閱原始來源。';
+    el.textContent=message;
+    el.classList.toggle('hidden',!message);
+  }
+  function renderResume() {
+    const b=$('resume-reading');
+    if(!state.report || state.report.mode==='demo') { b.classList.add('hidden'); return; }
+    const amount=Number(progressRecords[state.report.date]||0);
+    b.classList.toggle('hidden',!(amount>=8 && amount<96));
+    b.textContent='接續上次閱讀（'+Math.round(amount)+'%）';
+  }
+  function renderReport() {
+    const r = state.report; if (!r) return;
+    $('report-headline').textContent = r.headline || 'AI Daily Briefing';
+    $('report-subtitle').textContent = r.subtitle || '';
+    $('report-metadata').textContent = `${formatDate(r.date)} · ${r.word_count || 0} words · ${(r.stories || []).length} sources`;
+    renderReadingEstimate();
+    $('overview-words').textContent=`${r.word_count||0} English words${r.mode==='source_digest'?' · 精簡來源摘要':''}`;
+    $('overview-stories').textContent=(r.stories||[]).length+' 則';
+    $('overview-vocab').textContent=(r.advanced_vocabulary||[]).length+' 個';
+    $('reading-quality').textContent=r.quality_note||'資料可能有誤；請核實來源。';
+    renderStoryCards(r);refreshDashboard();renderResume();
+    setModeBanner(r.mode); renderFreshness(); renderReader(); readingStatus();
+    $('translate-toggle').textContent = state.showTranslation ? '隱藏中文譯文' : '顯示中文譯文';
+    const sources = $('source-list'); sources.replaceChildren();
+    if (!(r.stories || []).length) { const note = document.createElement('div'); note.className='empty-state'; note.textContent='此為離線示範教材，不包含實際新聞來源。'; sources.appendChild(note); }
+    (r.stories || []).forEach(s => {
+      const a = document.createElement('a'); a.className = 'source-item';
+      try { const u = new URL(s.url); if (!['http:', 'https:'].includes(u.protocol)) return; a.href=u.href; } catch { return; }
+      a.target='_blank'; a.rel='noopener noreferrer';a.referrerPolicy='no-referrer';
+      const publisher=document.createElement('div'); publisher.className='source-publisher'; publisher.textContent=s.publisher || 'Source';
+      const title=document.createElement('div'); title.className='source-title'; title.textContent=s.title || 'Original report';
+      const date=document.createElement('div'); date.className='source-date'; date.textContent=(s.source_type ? s.source_type+' · ' : '')+(s.published ? new Date(s.published).toLocaleString('en-GB',{timeZone:'Asia/Hong_Kong',dateStyle:'medium'}) : '');
+      a.append(publisher,title,date);
+      const wrap=document.createElement('div');wrap.className='source-cluster';wrap.append(a);
+      const alternates=(Array.isArray(s.coverage)?s.coverage:[]).filter(c=>c.publisher!==s.publisher);
+      if(alternates.length){
+        const evidence=document.createElement('div');evidence.className='source-alternates';
+        const prefix=document.createElement('span');prefix.textContent='同一事件的其他報道（並非獨立核查）：';evidence.append(prefix);
+        alternates.forEach(c=>{
+          try{const u=new URL(c.url);if(!['http:','https:'].includes(u.protocol))return;
+            const link=document.createElement('a');link.href=u.href;link.rel='noopener noreferrer';link.target='_blank';
+            link.referrerPolicy='no-referrer';link.textContent=c.publisher;evidence.append(link);
+          }catch{}
+        });
+        wrap.append(evidence);
+      }
+      sources.appendChild(wrap);
+    });
+    const spotlight=$('vocab-spotlight'); spotlight.replaceChildren();
+    (r.advanced_vocabulary || []).forEach(word => {
+      const chip=document.createElement('button'); chip.className='vocab-chip'; chip.type='button';
+      const label=document.createElement('span');label.textContent=word;
+      const small=document.createElement('small');small.textContent=r.dictionary?.[word]?.translation || '點擊查字';
+      chip.append(label,small);chip.addEventListener('click',()=>showLookup(word,chip));spotlight.appendChild(chip);
+    });
+    const questions = $('question-list'); questions.replaceChildren();
+    (r.questions || []).forEach((q, index) => {
+      const div=document.createElement('div'); div.className='question-item';
+      const num=document.createElement('span');num.className='question-number';num.textContent=`0${index+1}`;
+      const body=document.createElement('div');body.className='question-content';
+      const label=document.createElement('label');label.className='question-label';label.textContent=q;
+      const answer=document.createElement('textarea');answer.className='question-answer';answer.rows=3;
+      answer.placeholder='用英文記下你的答案（不會自動評分）';
+      answer.setAttribute('aria-label',`Question ${index+1} answer`);
+      const id=`${r.date}-${index}`;answer.value=writtenAnswers[id] || '';
+      answer.addEventListener('input',()=>{
+        if(answer.value.trim()) writtenAnswers[id]=answer.value.slice(0,2000);
+        else delete writtenAnswers[id];
+        safeStorage.set(ANSWERS_KEY,writtenAnswers);
+      });
+      body.append(label,answer);div.append(num,body);questions.appendChild(div);
+    });
+  }
+  function placePopover(target) {
+    const pop=$('dictionary-popover');pop.classList.remove('hidden');
+    const rect=target.getBoundingClientRect(),width=Math.min(326,innerWidth-28);
+    const x=Math.max(14,Math.min(rect.left,innerWidth-width-14));
+    pop.style.maxHeight=Math.max(180,innerHeight-22)+'px';pop.style.overflowY='auto';
+    const height=Math.min(pop.scrollHeight,innerHeight-22);
+    let y=rect.bottom+9;
+    if(y+height>innerHeight-10) y=rect.top-height-9;
+    y=Math.max(8,Math.min(y,innerHeight-height-8));
+    pop.style.left=x+'px';pop.style.top=y+'px';
+  }
+  function sentenceOf(target) {
+    const paragraph=target.closest('p');
+    if(!paragraph) return '';
+    const all=paragraph.textContent;
+    const word=target.textContent;
+    let index=0;
+    for(const node of paragraph.childNodes){
+      if(node===target)break;
+      index+=node.textContent.length;
+    }
+    // Vocabulary chips are not necessarily inside paragraphs.
+    if(!paragraph.contains(target)) index=Math.max(0,all.toLowerCase().indexOf(word.toLowerCase()));
+    const before=all.slice(0,index);
+    const start=Math.max(0,before.search(/[^.!?]*$/));
+    const suffix=all.slice(index).search(/[.!?](?:\s|$)/);
+    const end=suffix<0?all.length:index+suffix+1;
+    return all.slice(start,end).trim().slice(0,320);
+  }
+  async function showLookup(word, target) {
+    const key=wordKey(word); if (!key) return;
+    state.lookup=word; state.lookupOpened=Date.now(); $('lookup-word').textContent=word; $('lookup-ipa').textContent='';
+    $('lookup-note').textContent='詞典列出常見詞義；實際意思須結合文章理解。';
+    const entry=localMeaning(key) || (saved[key]?.translation ? saved[key] : null);
+    $('lookup-translation').textContent=entry?.translation || '正在查詢繁體中文詞義…';
+    $('lookup-ipa').textContent=entry?.phonetic || '';
+    $('lookup-pos').textContent=entry?.part_of_speech || '';
+    $('lookup-definition').textContent=entry?.definition || '';
+    $('lookup-context').textContent=sentenceOf(target);
+    $('save-word').textContent=has(saved,key) ? '✓ 已儲存' : '＋ 儲存生字';
+    lastFocus=target;placePopover(target);
+    $('lookup-online').classList.toggle('hidden',!!entry);
+    if(entry)return;
+    if(state.dictCache.has(key)){renderRemote(key,state.dictCache.get(key));$('lookup-online').classList.add('hidden');return;}
+    $('lookup-translation').textContent='離線詞典未收錄此詞（或其詞形）';
+    $('lookup-note').textContent='如有需要，可自行按下方按鈕查詢第三方翻譯服務；只有選定的英文單字會送出。';
+  }
+  async function queryRemoteDictionary(){
+    const key=wordKey(state.lookup);if(!key)return;
+    $('lookup-translation').textContent='正在查詢…';
+    try {
+      const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(key)+'&langpair=en%7Czh-TW';
+      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),7000);
+      let response;
+      try { response=await fetch(url,{signal:controller.signal}); } finally {clearTimeout(timer);}
+      if(!response.ok)throw Error('Unavailable');
+      const data=await response.json(),text=String(data.responseData?.translatedText||'').trim();
+      if(!text||text.length>350||/MYMEMORY WARNING|PLEASE SELECT|QUERY LENGTH/i.test(text)||text.toLowerCase()===key)throw Error('No meaning');
+      const result={translation:text,phonetic:''};state.dictCache.set(key,result);
+      if(wordKey(state.lookup)===key){renderRemote(key,result);$('lookup-online').classList.add('hidden');$('lookup-note').textContent='第三方機器翻譯：可能不符合本文語境，請自行判斷。';}
+    }catch{if(wordKey(state.lookup)===key)$('lookup-translation').textContent='無法取得線上詞義，請稍後再試。';}
+  }
+  function renderRemote(key,result) { if (wordKey(state.lookup)!==key) return;$('lookup-translation').textContent=result.translation;$('lookup-ipa').textContent=result.phonetic || ''; }
+  function closePopover(returnFocus=false){$('dictionary-popover').classList.add('hidden');if(returnFocus&&lastFocus?.isConnected)lastFocus.focus({preventScroll:true});}
+  function renderArchive() {
+    const root=$('archive-list');root.replaceChildren();
+    if(!state.index.length){const box=document.createElement('div');box.className='empty-state';box.textContent='尚未有歷史報告。';root.appendChild(box);return;}
+    const matches=state.index.filter(item=>(archiveMode==='all'||item.mode===archiveMode)&&(String(item.headline||'').toLowerCase().includes(archiveFilter)||String(item.date||'').includes(archiveFilter)));
+    if(!matches.length){const note=document.createElement('p');note.className='empty-state';note.textContent='沒有符合目前搜尋條件的報告。';root.append(note);return;}
+    matches.forEach(item=>{
+      const b=document.createElement('button');b.className='archive-card';b.type='button';
+      const info=document.createElement('div');
+      const d=document.createElement('div');d.className='archive-date';d.textContent=`${formatDate(item.date)} · ${item.word_count} words`;
+      const title=document.createElement('div');title.className='archive-title';title.textContent=item.headline;
+      if(has(readRecords,item.date) && readRecords[item.date]){const done=document.createElement('span');done.className='archive-complete';done.textContent='✓ 已讀';info.appendChild(done);}
+      const arrow=document.createElement('span');arrow.className='archive-arrow';arrow.textContent='↗';
+      info.append(d,title);b.append(info,arrow);b.addEventListener('click',()=>loadReport(item.date));root.appendChild(b);
+    });
+  }
+  function renderWords(){
+    const root=$('word-list');root.replaceChildren();const items=Object.entries(saved).filter(([key,v])=>key.includes(wordFilter) || String(v.translation||'').includes(wordFilter)).sort((a,b)=>(b[1].savedAt||'').localeCompare(a[1].savedAt||''));
+    if(!items.length){const el=document.createElement('div');el.className='empty-state';el.textContent=Object.keys(saved).length?'沒有符合搜尋條件的生字。':'你的生字庫目前是空的。返回每日簡報，點擊英文單字後選擇「儲存生字」。';root.append(el);return;}
+    items.forEach(([key,v])=>{
+      const card=document.createElement('div');card.className='word-card';
+      const info=document.createElement('div');const phon=document.createElement('div');phon.className='word-pronunciation';phon.textContent=v.phonetic||'VOCABULARY';
+      const title=document.createElement('div');title.className='word-title';title.textContent=key;
+      const meaning=document.createElement('div');meaning.className='word-meaning';meaning.textContent=v.translation || '未有中文詞義';info.append(phon,title,meaning);
+      if(v.nextReview){const review=document.createElement('div');review.className='word-review-date';review.textContent='下次複習：'+v.nextReview;info.appendChild(review);}
+      const acts=document.createElement('div');acts.className='word-actions';const del=document.createElement('button');del.type='button';del.textContent='移除';del.addEventListener('click',()=>{delete saved[key];reviewQueue=reviewQueue.filter(w=>w!==key);safeStorage.set(SAVED_KEY,saved);updateSavedCount();renderWords();renderReview();});acts.append(del);card.append(info,acts);root.append(card);
+    });
+  }
+  function exportVocabulary() {
+    const payload={format:'ai-daily-vocabulary',version:1,exported_at:new Date().toISOString(),words:saved};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;
+    a.download=`ai-daily-vocabulary-${hkDate()}.json`;document.body.append(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  async function importVocabulary(file) {
+    if(!file || file.size>2_000_000){toast('檔案不可超過 2 MB。');return;}
+    try {
+      const data=JSON.parse(await file.text());
+      if(data?.format!=='ai-daily-vocabulary' || data.version!==1 || !data.words || Array.isArray(data.words) || typeof data.words!=='object') throw new Error('invalid file');
+      const rows=Object.entries(data.words);if(rows.length>5000) throw new Error('too many words');
+      let accepted=0;
+      for(const [key,value] of rows){
+        if(!/^[a-z][a-z'\-]{0,45}$/.test(key) || !value || typeof value!=='object' || Array.isArray(value)) continue;
+        const translation=String(value.translation||'').slice(0,300);
+        const phonetic=String(value.phonetic||'').slice(0,90);
+        if(!has(saved,key)){saved[key]={translation,phonetic,savedAt:typeof value.savedAt==='string'?value.savedAt.slice(0,45):new Date().toISOString(),reviewLevel:Math.max(0,Math.min(4,Number(value.reviewLevel)||0)),nextReview:/^\d{4}-\d{2}-\d{2}$/.test(value.nextReview||'')?value.nextReview:''};accepted++;}
+      }
+      safeStorage.set(SAVED_KEY,saved);updateSavedCount();renderWords();toast(`匯入完成，新增 ${accepted} 個生字。`);
+    } catch {toast('無法匯入：請使用本網站匯出的 JSON 備份。');}
+  }
+  function setView(view){
+    state.view=view;['today','archive','words'].forEach(name=>{ $('view-'+name).classList.toggle('hidden',name!==view); const b=document.querySelector(`[data-view="${name}"]`); b.classList.toggle('selected',name===view); if(name===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current'); });
+    $('crumb').textContent=({today:'DAILY BRIEFING',archive:'PAST EDITIONS',words:'VOCABULARY BANK'})[view];
+    if(view==='archive')renderArchive();if(view==='words')renderWords();closePopover();window.scrollTo({top:0,behavior:'smooth'});
+  }
+  async function loadReport(date){
+    const serial=++requestSerial;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return;
+    try{
+      const response=await fetch(`./reports/${date}.json`,{cache:'no-store'});
+      if(!response.ok) throw new Error('missing report');
+      const r=await response.json();if(!isValidReport(r,date))throw new Error('invalid report');
+      if(serial!==requestSerial)return;
+      state.report=r;state.showTranslation=false;renderReport();setView('today');
+    }catch{if(serial===requestSerial)toast('載入報告失敗，請檢查網絡或離線快取。');}
+  }
+  function isValidReport(r, date){
+    return r && r.date===date && ['demo','editorial','source_digest'].includes(r.mode) &&
+      Array.isArray(r.essay) && r.essay.length>0 && r.essay.length<=15 &&
+      r.essay.every(p=>typeof p==='string'&&p.length<=5000) &&
+      Array.isArray(r.stories) && r.stories.length<=8 &&
+      r.stories.every(s=>typeof s==='object' && ['http:','https:'].includes((()=>{try{return new URL(s.url).protocol;}catch{return ''}})()));
+  }
+  function showConnectivity(failed=false){
+    const el=$('connection-alert');
+    if(!el)return;
+    const offline=failed||!navigator.onLine;
+    el.classList.toggle('hidden',!offline);
+    el.textContent=!navigator.onLine?'目前離線。若已快取文章仍可閱讀；最新新聞及線上查字暫不可用。':'無法確認最新資料，可能正在使用瀏覽器快取。';
+  }
+  function exportBriefing(){
+    if(!state.report)return;
+    const r=state.report;
+    const sources=(r.stories||[]).map(s=>`[${s.id}] ${s.publisher} · ${s.title}\n${s.url}`).join('\n\n');
+    const text=[r.headline,`${r.date} | ${r.mode} | ${r.word_count||0} words`,r.editorial_notice||'',...r.essay,'ORIGINAL SOURCES',sources,'Generated from RSS descriptions; verify claims against originals.'].join('\n\n');
+    const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=`ai-daily-${r.date}.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);
+  }
+  function initEvents(){
+    document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+    $('reader').addEventListener('click',e=>{const t=e.target.closest('button.word');if(t)showLookup(t.textContent,t);});
+    $('translate-toggle').addEventListener('click',()=>{state.showTranslation=!state.showTranslation;renderReader();$('translate-toggle').textContent=state.showTranslation?'隱藏中文譯文':'顯示中文譯文';});
+    $('focus-toggle').addEventListener('click',()=>{focusMode=!focusMode;document.body.classList.toggle('focus-mode',focusMode);$('focus-toggle').setAttribute('aria-pressed',String(focusMode));$('focus-toggle').textContent=focusMode?'離開專注模式':'專注閱讀';});
+    $('reading-speed').addEventListener('click',()=>{const speeds=[90,115,145];state.readingWpm=speeds[(speeds.indexOf(state.readingWpm)+1)%speeds.length];safeStorage.set('ai-daily-reading-wpm',state.readingWpm);renderReadingEstimate();});
+    $('font-button').addEventListener('click',()=>{state.fontScale=(state.fontScale+1)%3;safeStorage.set('ai-daily-font-scale',state.fontScale);renderReader();toast(['標準字體','放大字體','特大字體'][state.fontScale]);});
+    $('theme-button').addEventListener('click',()=>{document.documentElement.classList.toggle('light');safeStorage.set('ai-daily-light',document.documentElement.classList.contains('light'));});
+    $('pop-close').addEventListener('click',()=>closePopover(true));
+    $('resume-reading').addEventListener('click',()=>{const amount=Number(progressRecords[state.report?.date]||0);const card=document.querySelector('.briefing-card');const target=card.getBoundingClientRect().top+scrollY+(card.offsetHeight-innerHeight)*(amount/100);window.scrollTo({top:Math.max(0,target),behavior:'smooth'});});
+    $('export-report').addEventListener('click',exportBriefing);
+    $('print-report').addEventListener('click',()=>window.print());
+    $('lookup-online').addEventListener('click',queryRemoteDictionary);
+    $('mark-read').addEventListener('click',()=>{
+      if(!state.report)return;
+      const date=state.report.date;
+      if(readRecords[date])delete readRecords[date];else readRecords[date]=new Date().toISOString();
+      safeStorage.set(READ_KEY,readRecords);readingStatus();refreshDashboard();
+      toast(readRecords[date]?'已記錄這一篇的閱讀完成狀態。':'已取消完成標記。');
+    });
+    $('word-search').addEventListener('input',e=>{wordFilter=e.target.value.trim().toLowerCase();renderWords();});
+    $('archive-search').addEventListener('input',e=>{archiveFilter=e.target.value.toLowerCase().trim();renderArchive();});
+    $('archive-mode').addEventListener('change',e=>{archiveMode=e.target.value;renderArchive();});
+    $('export-vocab').addEventListener('click',exportVocabulary);
+    $('import-vocab').addEventListener('click',()=>$('import-file').click());
+    $('export-all').addEventListener('click',exportAll);
+    $('import-all').addEventListener('click',()=>$('import-all-file').click());
+    $('import-all-file').addEventListener('change',async e=>{await importAll(e.target.files?.[0]);e.target.value='';});
+    $('import-file').addEventListener('change',async e=>{await importVocabulary(e.target.files?.[0]);e.target.value='';});
+    $('start-review').addEventListener('click',()=>{reviewQueue=dueWords().sort();reviewPosition=0;if(!reviewQueue.length){toast('目前沒有需要複習的生字。');return;}renderReview();$('review-panel').scrollIntoView({behavior:'smooth',block:'center'});});
+    $('review-show').addEventListener('click',()=>{$('review-back').classList.remove('hidden');$('review-show').classList.add('hidden');['review-again','review-hard','review-remember','review-easy'].forEach(id=>$(id).classList.remove('hidden'));});
+    $('review-again').addEventListener('click',()=>finishReview('again'));
+    $('review-hard').addEventListener('click',()=>finishReview('hard'));
+    $('review-remember').addEventListener('click',()=>finishReview('good'));
+    $('review-easy').addEventListener('click',()=>finishReview('easy'));
+    $('review-stop').addEventListener('click',()=>{reviewQueue=[];renderReview();});
+    $('speak-button').addEventListener('click',()=>{if(!('speechSynthesis' in window)){toast('此瀏覽器不支援語音播放。');return;} speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(state.lookup);u.lang='en-GB';u.rate=.88;speechSynthesis.speak(u);});
+    $('save-word').addEventListener('click',()=>{
+      const key=wordKey(state.lookup);if(!key)return;
+      if(has(saved,key)){toast('此單字已儲存。');return;}
+      const entry=localMeaning(key)||state.dictCache.get(key)||{};
+      saved[key]={translation:entry.translation||'',phonetic:entry.phonetic||'',savedAt:new Date().toISOString()};
+      safeStorage.set(SAVED_KEY,saved);updateSavedCount();$('save-word').textContent='✓ 已儲存';toast('生字已儲存在此瀏覽器。');
+    });
+    window.addEventListener('scroll',()=>{updateProgress(true);if(Date.now()-(state.lookupOpened||0)>350)closePopover();},{passive:true});
+    window.addEventListener('resize',()=>closePopover());
+    window.addEventListener('pagehide',()=>safeStorage.set(PROGRESS_KEY,progressRecords));
+    window.addEventListener('offline',()=>showConnectivity());
+    window.addEventListener('online',()=>showConnectivity());
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopover(true);if(e.key==='/'&&state.view==='words'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();$('word-search').focus();}});
+    document.addEventListener('pointerdown',e=>{if(!$('dictionary-popover').contains(e.target) && !e.target.closest('.word'))closePopover();});
+  }
+  async function init(){
+    if(safeStorage.get('ai-daily-light',false))document.documentElement.classList.add('light');
+    state.fontScale=Math.max(0,Math.min(2,Number(safeStorage.get('ai-daily-font-scale',0))||0));
+    const storedSpeed=Number(safeStorage.get('ai-daily-reading-wpm',115));state.readingWpm=[90,115,145].includes(storedSpeed)?storedSpeed:115;
+    renderReadingEstimate();
+    showConnectivity();
+    $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
+    updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();
+    if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+    try{
+      const response=await fetch('./reports/index.json',{cache:'no-store'});if(!response.ok)throw new Error('No report index');
+      state.index=await response.json();if(!Array.isArray(state.index)||state.index.length>400||!state.index.every(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date||'')))throw new Error('Invalid index');
+      if(!state.index.length)throw new Error('Empty index');
+      await loadReport(state.index[0].date);
+    }catch{
+      showConnectivity(true);
+      $('status-banner').textContent='無法取得最新報告';$('report-headline').textContent='報告正在準備中';
+      $('reader').textContent='目前沒有可載入的文章。可能尚未首次發布，也可能是離線而未快取。請重新連線或檢查 GitHub Actions。';
+    }
+  }
+  init();
+})();

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1222">
+  <meta name="color-scheme" content="dark light">
+  <meta name="referrer" content="no-referrer">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="description" content="Free, source-linked AI briefings for advanced DSE English reading. Tap any word for a Chinese translation.">
+  <title>AI Daily Intelligence — Read deeper, every day</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./v3.css">
+  <link rel="stylesheet" href="./v4.css">
+  <link rel="stylesheet" href="./v5.css">
+</head>
+<body>
+  <a class="skip-link" href="#reader">跳到英文閱讀文章</a>
+  <div class="layout">
+    <aside class="sidebar">
+      <a class="brand" href="./" aria-label="AI Daily Intelligence home">
+        <div class="brand-glyph">◈</div>
+        <div><div class="brand-name">AI <span>Daily</span></div><div class="brand-sub">INTELLIGENCE</div></div>
+      </a>
+      <div class="side-label">閱讀空間 <span>MY SPACE</span></div>
+      <nav class="navigation" aria-label="主要導覽">
+        <button type="button" class="nav-item selected" data-view="today"><span class="nav-icon">▣</span><span>每日簡報</span></button>
+        <button type="button" class="nav-item" data-view="archive"><span class="nav-icon">▤</span><span>過往報告</span></button>
+        <button type="button" class="nav-item" data-view="words"><span class="nav-icon">✧</span><span>我的生字庫</span><span id="saved-count" class="count">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="brief-info"><span class="live-dot"></span> 香港時間每日 08:00 排程</div>
+        <div class="brief-sub">零付費 API · 免費來源 · 本機學習紀錄</div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>LEARNING DASHBOARD</span><span class="slash">/</span><span id="crumb">DAILY BRIEFING</span></div>
+        <div class="top-actions"><span id="today-label" class="date-label"></span><button type="button" id="theme-button" class="icon-button" aria-label="切換深淺色">☼</button></div>
+      </header>
+      <div class="page" id="view-today">
+        <div id="connection-alert" class="connection-alert hidden" role="status"></div>
+        <div id="pipeline-alert" class="pipeline-alert hidden" role="status"></div>
+        <section class="intro">
+          <div class="eyebrow"><span class="star">✦</span> KNOW MORE. READ BETTER.</div>
+          <h1>Your five-minute<br><em>AI perspective.</em></h1>
+          <p>每日掌握人工智能重要發展，同時鍛鍊 HKDSE 5★ 目標英文閱讀能力。</p>
+        </section>
+        <div class="status-row"><span id="status-banner" class="status-pill">載入中…</span><div id="report-metadata" class="report-metadata"></div></div>
+        <div id="freshness-note" class="freshness-note hidden" role="status"></div>
+        <section class="edition-overview" aria-label="本日閱讀概況">
+          <div class="overview-stat"><span class="overview-label">閱讀長度</span><strong id="overview-minutes">約 5 分鐘</strong><small id="overview-words">按英文篇幅估計</small></div>
+          <div class="overview-stat"><span class="overview-label">新聞線索</span><strong id="overview-stories">—</strong><small>附原文與日期</small></div>
+          <div class="overview-stat"><span class="overview-label">今日生字</span><strong id="overview-vocab">—</strong><small>點擊立即查字</small></div>
+          <div class="overview-stat"><span class="overview-label">本機學習紀錄</span><strong id="overview-read">0 篇</strong><small id="overview-due">0 個待複習</small></div>
+        </section>
+        <section class="story-overview" aria-label="本日新聞重點">
+          <div class="story-heading"><div><span class="section-overline">THE DAILY RADAR</span><h2>今日重點一覽</h2></div><span class="section-hint">先掌握主題，再深入閱讀</span></div>
+          <div id="story-cards" class="story-cards"></div>
+        </section>
+        <section class="briefing-card" aria-label="AI briefing">
+          <div class="card-header"><div><div class="section-overline">DAILY EDITION</div><h2 id="report-headline">正在載入每日簡報</h2><p id="report-subtitle">新聞來源會列於文章下方。</p></div><div class="edition-symbol">AI<span>↗</span></div></div>
+          <div class="reading-bar"><span class="bar-track"><span id="progress-bar" class="bar-fill"></span></span><span id="progress-percent" aria-live="off">0%</span></div>
+          <div class="reader-toolbar"><span class="helper"><span class="mini-spark">✧</span> 點擊任何英文生字即可查詢中文意思</span><div class="toolbar-right"><button class="small-button" type="button" id="reading-speed" title="調整估算閱讀速度；不會影響文章難度">閱讀速度：115 字／分鐘</button><button class="small-button" type="button" id="resume-reading">接續閱讀</button><button class="small-button" type="button" id="focus-toggle" aria-pressed="false">專注閱讀</button><button class="small-button" type="button" id="translate-toggle">顯示中文譯文</button><button class="small-button" type="button" id="font-button" aria-label="調整英文字體大小（三級循環）">A<span class="font-bigger">A</span></button><button class="small-button" type="button" id="export-report">匯出文章</button><button class="small-button" type="button" id="print-report">列印</button></div></div>
+          <div id="reader" class="reader" lang="en" tabindex="-1"></div>
+          <div class="reading-quality" id="reading-quality"></div>
+          <div class="reading-end"><span>✦</span> END OF BRIEFING <span id="reading-state" class="reading-state"></span><button type="button" id="mark-read" class="small-button read-button">標記為已讀</button></div>
+        </section>
+        <section class="vocab-panel panel">
+          <div class="panel-top"><span class="section-overline">ADVANCED VOCABULARY</span><span class="panel-icon">✧</span></div>
+          <h3>Words worth knowing.</h3><p class="panel-copy">本日高階詞彙精選；點擊生字可查看詞義、發音及儲存。</p><div id="vocab-spotlight" class="vocab-spotlight"></div>
+        </section>
+        <section class="lower-grid">
+          <div class="panel"><div class="panel-top"><span class="section-overline">SOURCES & VERIFICATION</span><span class="panel-icon">↗</span></div><h3>Source desk</h3><p class="panel-copy">閱讀原始資料，區分媒體報道、機構聲明與推測。</p><div id="source-list" class="source-list"></div></div>
+          <div class="panel"><div class="panel-top"><span class="section-overline">ENGLISH DEVELOPMENT</span><span class="panel-icon">◇</span></div><h3>Think beyond the text</h3><p class="panel-copy">選答以下推論題，練習 DSE 所需的批判分析能力。</p><div id="question-list" class="question-list"></div></div>
+        </section>
+        <div class="footer-note" id="legal-note">所有報告均由公開資料整理。自動改寫可能出錯，重要事實應以原始來源為準。練習文章不代表真實新聞。</div>
+      </div>
+      <div class="page alternate hidden" id="view-archive"><div class="eyebrow">YOUR READING HISTORY</div><h1 class="secondary-title">Past <em>editions.</em></h1><p class="alternate-subtitle">選取過往報告，回顧 AI 發展脈絡。</p><div class="archive-tools"><input type="search" id="archive-search" placeholder="搜尋標題或日期…" aria-label="搜尋歷史報告"><select id="archive-mode" aria-label="報告類型"><option value="all">全部類型</option><option value="editorial">AI 英文改寫</option><option value="source_digest">來源摘要</option><option value="demo">示範文章</option></select></div><div id="archive-list" class="archive-list"></div></div>
+      <div class="page alternate hidden" id="view-words"><div class="eyebrow">YOUR PERSONAL LEXICON</div><h1 class="secondary-title">Vocabulary <em>bank.</em></h1><p class="alternate-subtitle">在文章中點擊單字並儲存；資料只保存在你目前使用的瀏覽器。</p><div class="word-tools"><input id="word-search" type="search" placeholder="搜尋已儲存的生字…" aria-label="搜尋生字"><button type="button" id="start-review" class="small-button review-cta">開始生字複習 <span id="review-count"></span></button><button type="button" id="export-vocab" class="small-button">匯出生字庫</button><button type="button" id="import-vocab" class="small-button">匯入生字庫</button><button type="button" id="export-all" class="small-button">備份全部學習進度</button><button type="button" id="import-all" class="small-button">還原學習進度</button><input id="import-all-file" type="file" accept=".json,application/json" class="hidden" aria-label="選擇學習進度備份"><input id="import-file" type="file" accept=".json,application/json" class="hidden" aria-label="選擇生字備份"></div><p class="small-explanation">備份檔案以 JSON 格式儲存，不會上傳至任何伺服器。此網站無法跨裝置自動同步。</p><section id="review-panel" class="review-panel hidden" aria-label="間隔複習卡片"><div class="section-overline">SPACED VOCABULARY REVIEW</div><div id="review-position" class="review-position"></div><h2 id="review-front" class="review-front"></h2><p id="review-back" class="review-back hidden"></p><div class="review-actions"><button type="button" id="review-show" class="small-button">顯示中文意思</button><button type="button" id="review-again" class="small-button hidden">忘記了</button><button type="button" id="review-hard" class="small-button hidden">有點難</button><button type="button" id="review-remember" class="small-button hidden">記得</button><button type="button" id="review-easy" class="small-button hidden">非常熟悉</button><button type="button" id="review-stop" class="small-button">結束複習</button></div><p class="review-disclaimer">此為輕量化間隔複習：記得的單字會延後出現；忘記的單字翌日再練習。進度只保存在此瀏覽器。</p></section><div id="word-list" class="word-list"></div></div>
+    </main>
+  </div>
+  <div id="dictionary-popover" class="dictionary-popover hidden" role="region" aria-label="英文生字解釋">
+    <button type="button" class="popover-close" id="pop-close" aria-label="關閉">×</button>
+    <div class="dictionary-tag">QUICK DICTIONARY</div>
+    <div class="lookup-title"><strong id="lookup-word"></strong><button type="button" id="speak-button" aria-label="播放英文讀音">◖))</button></div>
+    <div id="lookup-ipa" class="lookup-ipa"></div>
+    <div id="lookup-pos" class="lookup-pos"></div>
+    <div id="lookup-translation" class="lookup-translation"></div>
+    <div id="lookup-definition" class="lookup-definition"></div>
+    <div id="lookup-context" class="lookup-context"></div>
+    <div id="lookup-note" class="lookup-note"></div>
+    <button type="button" id="save-word" class="save-button">＋ 儲存生字</button><button type="button" id="lookup-online" class="small-button online-lookup hidden">查詢線上免費詞典（只傳送此單字）</button>
+  </div>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="./app.js" defer></script>
+</body>
+</html>

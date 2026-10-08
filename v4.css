@@ -1,0 +1,22 @@
+/* V4: editorial priority, accessible controls, offline and print support. */
+.connection-alert{margin-bottom:16px;padding:15px 18px;background:var(--surface2);border-left:4px solid #eab66e;border-radius:9px;color:var(--text);font-size:12px;line-height:1.7}
+.reader.font-xlarge{font-size:24px;line-height:1.92}
+.reader p{max-width:78ch;overflow-wrap:break-word}
+.reader .word{white-space:normal;touch-action:manipulation}
+.reader .word:focus-visible{outline:2px solid var(--accent);border-radius:3px;outline-offset:2px}
+.reader-toolbar .toolbar-right{flex-wrap:wrap;justify-content:flex-end}
+.story-card{overflow-wrap:anywhere}
+.source-item{overflow-wrap:anywhere}
+button,select,input,textarea{accent-color:var(--accent)}
+.small-button{min-height:38px}
+#resume-reading{background:var(--accent-low);color:var(--accent)}
+#overview-due{line-height:1.35}
+#connection-alert,#freshness-note,.pipeline-alert{max-width:100%;overflow-wrap:anywhere}
+@media(max-width:650px){.reader-toolbar .toolbar-right{justify-content:flex-start}.reader.font-xlarge{font-size:21px}.dictionary-popover{padding:17px}.nav-item{min-height:48px}.toolbar-right button{min-height:42px}}
+@media(prefers-contrast:more){.nav-item,.small-button,.word-card,.source-item,.reader .word:focus-visible{border-width:2px}.reader .word:hover{text-decoration:underline}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media print{
+  :root,:root.light{color-scheme:light;--text:#111;--bg:white;--surface:white;--surface2:white;--border:#aaa;--muted:#333;--accent:#222}
+  body{background:white;color:#111}.layout{display:block}.sidebar,.topbar,.intro,.status-row,.freshness-note,.edition-overview,.story-overview,.reader-toolbar,.reading-bar,.reading-end,.vocab-panel,.lower-grid,.footer-note,.pipeline-alert,.connection-alert,.dictionary-popover,.toast{display:none!important}
+  .page{padding:0!important;max-width:none!important}.briefing-card{border:0;box-shadow:none}.card-header{padding:0 0 15px}.edition-symbol{display:none}.reader{padding:0;font-size:12pt;line-height:1.65}.reader p{max-width:none;break-inside:avoid;margin-bottom:13pt}.reader .word{color:#111}.reading-quality{font-size:9pt}
+}

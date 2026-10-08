@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-09",
+  "updated_at": "2026-10-09T00:29:31.724333+08:00",
+  "headline": "Understanding AI announcements — reading practice",
+  "subtitle": "Offline demonstration with fictional scenarios; NOT today's news",
+  "mode": "demo",
+  "demo": true,
+  "word_count": 455,
+  "reading_metrics": {
+    "word_count": 455,
+    "estimated_minutes": 4.0,
+    "note": "示範教材，未經 DSE 評級。"
+  },
+  "quality_note": "此篇屬完全虛構的閱讀示範，不包含今日新聞及真實新聞來源。",
+  "schema": 3,
+  "essay": [
+    "Artificial intelligence is often portrayed as a succession of spectacular breakthroughs. Yet the most consequential developments may be considerably less dramatic: improved reliability, lower operating costs, and the ability to integrate advanced systems into everyday institutions. This practice briefing explores three hypothetical developments in an imaginary AI sector. None of the scenarios is a real news report, and the purpose is to demonstrate the reading interface rather than to document current events.",
+    "In the first scenario, a fictional research laboratory introduces a new language model that performs better on a carefully selected benchmark. The announcement attracts considerable attention, but its implications remain ambiguous. A benchmark can measure particular capabilities under controlled conditions; it does not necessarily establish that a model will behave consistently in unfamiliar workplaces, classrooms or hospitals. Independent evaluation, transparent methodology and systematic scrutiny would therefore be essential before broader claims could be substantiated.",
+    "A second imaginary story concerns a technology company offering more affordable computational infrastructure. Lower prices might accelerate adoption by smaller organisations and independent developers. Nevertheless, commercial accessibility should not be confused with equitable access. Businesses still require expertise, reliable data and appropriate safeguards. Moreover, if cheaper computing encouraged extensive deployment, total energy demand could conceivably rise despite gains in efficiency. Such consequences depend on behaviour and implementation, not simply on the advertised price of a service.",
+    "The third fictional development involves proposed rules requiring AI-generated material to be more clearly identified. Supporters might regard such oversight as a means of strengthening transparency and public confidence. Critics could question whether technical labelling systems are sufficiently robust, particularly when digital material is repeatedly modified or redistributed. The debate illustrates a recurring policy dilemma: safeguards must respond to genuine risks without imposing disproportionate burdens on beneficial innovation.",
+    "Although these scenarios differ in emphasis, they reveal a shared analytical challenge. An announcement is not the same as an independently verified outcome, and a plausible benefit is not an inevitable consequence. Readers should ask who produced the evidence, what assumptions were made, whether alternative explanations exist and which groups might bear the costs. Such questions are particularly important in a field where impressive demonstrations can overshadow less visible limitations.",
+    "The wider lesson is that technological progress must be judged against context, rather than publicity alone. A sophisticated reader remains receptive to transformative possibilities while resisting unwarranted certainty. This balance of curiosity and critical evaluation is useful both for understanding artificial intelligence and for developing the argumentative precision expected in demanding English examinations. Rather than accepting a persuasive narrative at face value, a careful reader identifies its underlying assumptions, compares conflicting interpretations, and considers which observations would change the conclusion. These habits make technical developments more intelligible without diminishing their complexity or encouraging exaggerated confidence."
+  ],
+  "translations": [],
+  "stories": [],
+  "dictionary": {
+    "scrutiny": {
+      "translation": "仔細審查",
+      "phonetic": ""
+    },
+    "equitable": {
+      "translation": "公平的；公正的",
+      "phonetic": ""
+    },
+    "ambiguous": {
+      "translation": "含糊不清的",
+      "phonetic": ""
+    },
+    "disproportionate": {
+      "translation": "不成比例的",
+      "phonetic": ""
+    },
+    "substantiated": {
+      "translation": "經證據證實的",
+      "phonetic": ""
+    },
+    "reliability": {
+      "translation": "可靠性",
+      "phonetic": ""
+    },
+    "inevitable": {
+      "translation": "不可避免的",
+      "phonetic": ""
+    },
+    "infrastructure": {
+      "translation": "基礎設施",
+      "phonetic": ""
+    },
+    "deployment": {
+      "translation": "部署；應用",
+      "phonetic": ""
+    }
+  },
+  "advanced_vocabulary": [
+    "scrutiny",
+    "equitable",
+    "ambiguous",
+    "disproportionate",
+    "substantiated",
+    "reliability",
+    "infrastructure",
+    "deployment"
+  ],
+  "questions": [
+    "Why does the article distinguish a benchmark from real-world reliability?",
+    "What possible trade-offs arise when AI computing becomes cheaper?"
+  ]
+}
