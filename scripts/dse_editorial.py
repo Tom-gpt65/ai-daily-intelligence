@@ -2,6 +2,7 @@
 Articles contain attributed RSS information and original analytical study material;
 they do not reproduce HKEAA papers or claim fact-checking."""
 import re
+import hashlib
 
 def word_count(text):
     return len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b",text))
@@ -9,9 +10,17 @@ def word_count(text):
 def compose_briefing(stories):
     if not stories:return []
     entries=list(stories[:5])
-    paragraphs=[
-        "The latest wave of artificial-intelligence reporting poses a deceptively difficult question: how much can readers infer from an announcement before examining the evidence behind it? For a technology whose ambitions extend from research laboratories to ordinary workplaces, the distinction matters. A headline may identify an important development, yet the consequences it appears to promise remain provisional until their scope, limitations and practical relevance have been established. Today's selection is therefore best read not as a catalogue of breakthroughs but as an invitation to examine how technological claims acquire credibility."
+    # Rotate the editorial lens with the stories, not the calendar alone.
+    # This prevents a formally different date from producing the same essay.
+    digest=hashlib.sha256("|".join(s.get("title","") for s in entries).encode("utf-8")).digest()
+    variant=digest[0] % 4
+    leads=[
+      "Every prominent AI announcement carries two stories: the development being reported and the interpretation that readers are invited to draw from it. Confusing the two can make a provisional claim appear settled. This selection ranges across technical promises and institutional decisions, each of which raises a different question about evidence. Rather than assume that an attractive headline proves a durable outcome, a careful reader must ask what was observed, what remains speculative, and how competing explanations might alter the eventual judgement.",
+      "It is tempting to describe technological change as a procession of breakthroughs, but that narrative rarely captures the uncertainties behind a headline. A product may be announced before its limitations are understood; a policy may be published long before its enforcement can be assessed. Today's accounts show why provisional judgement is a strength rather than a weakness. The aim is not to dismiss innovation, but to distinguish statements that the available sources support from consequences that would require further inquiry.",
+      "Who decides whether an AI breakthrough is genuinely significant: the organisation announcing it, the researcher testing it, or the people expected to live with its consequences? No single headline can answer that question. These reports describe separate developments whose wider significance remains provisional, not because progress is impossible, but because technological claims operate within social and institutional constraints. A sophisticated reading must therefore distinguish the source's account from the author's interpretation, paying equal attention to what is known and what is absent.",
+      "The pace of artificial-intelligence news often rewards certainty; the strongest interpretation, however, may be provisional. Reports of tools, studies and new rules bring genuine matters of public interest into view, while leaving important evidential gaps. Although readers should not underestimate the possibilities of technological change, neither should they confuse an announced intention with a demonstrated outcome. Examining the qualifications, contrasts and unresolved questions in today's sources offers a more useful intellectual exercise than merely memorising the latest names and products."
     ]
+    paragraphs=[leads[variant]]
     transitions=[
         "The question of credibility is particularly clear in",
         "Elsewhere in the selection,",
@@ -56,6 +65,15 @@ def compose_briefing(stories):
     if word_count(' '.join(paragraphs))<550:
         paragraphs.insert(-1,
          "Because descriptions are necessarily selective, omissions may be as important as what is emphasised. A responsible comparison should ask whose interests are represented, whether contrary evidence is available, and which assumptions the discussion leaves unstated. This is not a reason to dismiss the reports; instead, it is an invitation to treat apparently conclusive language with care while seeking information capable of challenging the original interpretation."
+        )
+    if variant in (1,3):
+        paragraphs[-1] = (
+            "Consequently, a responsible account of AI progress cannot be reduced to a sequence of confident headlines. "
+            "The more defensible judgement is provisional: it distinguishes evidence supplied by a source from "
+            "inference introduced by the reader, and it remains open to revision. Before settling on any conclusion, "
+            "one should consult the linked original and ask which independent measurements, alternative perspectives "
+            "or practical constraints could change its meaning. Such scrutiny makes a daily news briefing a lesson "
+            "in informed judgement rather than a rehearsal of publicity."
         )
     return paragraphs
 
