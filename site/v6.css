@@ -45,3 +45,7 @@ body:not(.tools-expanded) .toolbar-right :is(#reading-speed,#resume-reading,#foc
 .intro h1{overflow-wrap:anywhere}
 }
 @media(max-width:360px){.page{padding-inline:10px}.reader{padding-inline:12px;font-size:16px}.reader.font-xlarge{font-size:19px}.overview-stat strong{font-size:17px}}
+
+.jump-to-reader{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:700;color:var(--accent);padding:9px 14px;border:1px solid var(--accent);border-radius:10px;margin:0 0 14px;text-decoration:none}
+.jump-to-reader:hover{text-decoration:underline}
+@media(max-width:650px){.intro{margin-bottom:13px!important}.intro h1{font-size:clamp(28px,8vw,40px)!important;line-height:1.12}.intro p{font-size:12px!important;line-height:1.5!important}.jump-to-reader{display:flex;justify-content:space-between;width:100%;min-height:46px;font-size:13px;margin-bottom:10px}.edition-overview{margin-top:14px}.story-overview{margin-top:26px}}
