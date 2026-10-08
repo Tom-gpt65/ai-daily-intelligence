@@ -2,6 +2,8 @@ name: Independent daily publication audit
 
 on:
   schedule:
+    - cron: '5 8 * * *'
+      timezone: 'Asia/Hong_Kong'
     - cron: '17 9 * * *'
       timezone: 'Asia/Hong_Kong'
   workflow_dispatch:
