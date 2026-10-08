@@ -32,7 +32,7 @@ class DeploymentTests(unittest.TestCase):
             self.assertTrue(item.get("demo"))
         else:
             self.assertFalse(item.get("demo", False))
-            self.assertTrue(item.get("sources"))
+            self.assertTrue(item.get("stories"))
     def test_pwa_manifest(self):
         manifest = json.loads((SITE / "manifest.webmanifest").read_text(encoding="utf-8"))
         self.assertEqual(manifest["display"], "standalone")
