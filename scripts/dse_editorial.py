@@ -12,25 +12,41 @@ def compose_briefing(stories):
     paragraphs=[
         "The latest wave of artificial-intelligence reporting poses a deceptively difficult question: how much can readers infer from an announcement before examining the evidence behind it? For a technology whose ambitions extend from research laboratories to ordinary workplaces, the distinction matters. A headline may identify an important development, yet the consequences it appears to promise remain provisional until their scope, limitations and practical relevance have been established. Today's selection is therefore best read not as a catalogue of breakthroughs but as an invitation to examine how technological claims acquire credibility."
     ]
-    transitions=["One strand of this debate emerges from","A rather different concern surfaces in",
-                 "The contrast becomes more apparent in","Another dimension is raised by","Rounding out the picture is"]
-    endings=[
-      "Without the original evidence, any conclusion must remain qualified.",
-      "Its wider consequences cannot be established from an abbreviated extract.",
-      "Its importance does not establish the consequences suggested by its headline.",
-      "An unresolved question deserves investigation rather than an immediate verdict.",
-      "The crucial issue is which consequences can genuinely be inferred."
+    transitions=[
+        "The question of credibility is particularly clear in",
+        "Elsewhere in the selection,",
+        "A separate tension emerges from",
+        "The practical implications are less straightforward in",
+        "A further perspective can be found in"
+    ]
+    analysis=[
+        "Its summary supplies an initial account rather than a complete assessment; whether the anticipated benefit will prove reliable requires evidence of the conditions under which it was tested.",
+        "Read on its own, the description leaves open questions about scale, competing interpretations and the people most affected. Those gaps should shape, rather than prematurely settle, a judgement.",
+        "What makes the claim significant is not necessarily what makes it conclusive: a persuasive demonstration would need transparent methods, relevant comparisons and a discussion of failure cases.",
+        "If the proposed change were adopted more widely, its implications might extend beyond the immediate announcement. Yet that hypothetical consequence cannot be mistaken for an outcome already observed.",
+        "The scope of the reported development remains important. One must distinguish what the source specifically describes from the broader ambitions that its headline may evoke."
+    ]
+    openers=[
+        "In the source extract, the writer notes that",
+        "The accompanying description draws attention to",
+        "A detail singled out in the brief account is",
+        "The short report also refers to",
+        "The summary itself highlights"
     ]
     for i,s in enumerate(entries):
         title=str(s.get("title","an AI development")).strip()
         publisher=str(s.get("publisher") or "the cited publisher")
         excerpt=re.sub(r"<[^>]*>"," ",str(s.get("excerpt") or ""))
         excerpt=re.sub(r"(?i)(register now|subscribe now|click here|read more|grab a second of the same pass).*","",excerpt)
-        excerpt=' '.join(excerpt.split()[:18]).rstrip(".,; ")
-        details=(" Its short description mentions "+excerpt+".") if excerpt else " The feed supplies little further context."
+        excerpt=re.sub(r"\s+"," ",excerpt).strip()
+        snippet=re.split(r"(?<=[.!?])\s+",excerpt,1)[0].strip()
+        if not (30 <= len(snippet) <= 170 and re.search(r"[.!?]$",snippet)):
+            snippet=""
+        details=(f" {openers[i]} {snippet}" if snippet else
+                 " Because the feed offers only limited context, a reader should consult the linked original before attributing specific results.")
         paragraphs.append(
             f"{transitions[i]} {publisher}'s report, ‘{title}’ [{s.get('id',f'S{i+1}')}]."
-            +details+" This is an attributed account, not an independently verified account of results. "+endings[i]
+            +details+" "+analysis[i]
         )
     paragraphs.extend([
         "Seen side by side, these accounts resist a single, uncomplicated verdict. Some titles emphasise possibility; others draw attention to constraints, institutional choices or unresolved risks. Although such distinctions can sharpen a reader's sense of what is at stake, they cannot substitute for checking how claims were obtained. A commercial announcement, for example, may establish what an organisation says it intends to offer without showing how reliably the product works in different settings. Equally, a research abstract may describe a promising method without demonstrating that its findings will generalise beyond the conditions in which it was evaluated.",
