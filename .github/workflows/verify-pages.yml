@@ -1,0 +1,36 @@
+name: Verify public AI Daily website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check GitHub Pages public access and asset responses
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          base="https://tom-gpt65.github.io/ai-daily-intelligence/"
+          for path in "" "index.html" "app.js" "style.css" "reports/index.json"; do
+            url="${base}${path}"
+            status=$(curl --location --silent --show-error --retry 5 --retry-delay 6 --retry-connrefused --max-time 30 --output /tmp/ai-response --write-out "%{http_code}" "$url")
+            echo "Public URL check: ${url} => HTTP ${status}"
+            if [ "$status" != 200 ]; then
+              echo "::error::Website resource returned HTTP ${status}: ${url}"
+              exit 1
+            fi
+            if [ "$path" = "index.html" ] || [ -z "$path" ]; then
+              grep -q 'AI Daily Intelligence' /tmp/ai-response || { echo "::error::Unexpected home page content"; exit 1; }
+            fi
+          done
+          echo "PUBLIC_SITE_VERIFIED=true" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://tom-gpt65.github.io/ai-daily-intelligence/" >> "$GITHUB_STEP_SUMMARY"
