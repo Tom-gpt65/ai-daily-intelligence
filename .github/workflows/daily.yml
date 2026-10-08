@@ -2,7 +2,7 @@ name: AI Daily Intelligence — free daily briefing
 
 on:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '40 7 * * *'
       timezone: 'Asia/Hong_Kong'
   push:
     branches: [main]
