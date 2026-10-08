@@ -15,6 +15,26 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+
+      - name: Check free whole-passage translation provider (external dependency)
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          url='https://api.mymemory.translated.net/get?langpair=en%7Czh-TW&q=Evidence%20must%20be%20evaluated'
+          curl --fail --location --silent --show-error --retry 2 --max-time 25 \
+            -D /tmp/translation-headers -o /tmp/translation-response "$url"
+          python - <<'PY'
+          import json
+          data=json.load(open('/tmp/translation-response',encoding='utf-8'))
+          value=str(data.get('responseData',{}).get('translatedText',''))
+          assert any('\u3400' <= c <= '\u9fff' for c in value), 'Provider did not return Chinese text'
+          print('Free translation API returned Chinese text')
+          PY
+          if grep -iq '^access-control-allow-origin:' /tmp/translation-headers; then
+            grep -i '^access-control-allow-origin:' /tmp/translation-headers
+          else
+            echo "::warning::No CORS response header found; browsers may block direct full-passage translation"
+          fi
       - name: Check GitHub Pages public access and asset responses
         shell: bash
         run: |
