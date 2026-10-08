@@ -40,7 +40,7 @@ jobs:
         run: |
           set -Eeuo pipefail
           base="https://tom-gpt65.github.io/ai-daily-intelligence/"
-          for path in "" "index.html" "app.js" "style.css" "reports/index.json"; do
+          for path in "" "index.html" "app.js" "style.css" "v6.css" "sw.js" "reports/index.json"; do
             url="${base}${path}"
             status=$(curl --location --silent --show-error --retry 5 --retry-delay 6 --retry-connrefused --max-time 30 --output /tmp/ai-response --write-out "%{http_code}" "$url")
             echo "Public URL check: ${url} => HTTP ${status}"
@@ -54,3 +54,29 @@ jobs:
           done
           echo "PUBLIC_SITE_VERIFIED=true" >> "$GITHUB_STEP_SUMMARY"
           echo "https://tom-gpt65.github.io/ai-daily-intelligence/" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Verify published article and original HKDSE-style exercise schema
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python - <<'PY'
+          import json,urllib.request
+          base='https://tom-gpt65.github.io/ai-daily-intelligence/'
+          def load(url):
+              with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'AI-Daily-Public-Schema-Audit'}),timeout=20) as response:
+                  return json.load(response)
+          index=load(base+'reports/index.json')
+          assert index and index[0].get('date'), 'Missing latest article'
+          date=index[0]['date']
+          report=load(base+'reports/'+date+'.json')
+          assert not report.get('demo'), 'Latest report is a demo, not current news'
+          assert len(report.get('stories',[]))>=3,'Source links missing'
+          assert len(report.get('essay',[]))>=5,'Reading text incomplete'
+          assert report.get('word_count',0)>=550,'English practice is too short'
+          questions=report.get('practice',{}).get('items',[])
+          assert len(questions)>=3,'HKDSE-style questions missing'
+          assert all(q.get('evidence') for q in questions),'Answer evidence pointers missing'
+          print('Published edition:',date)
+          print('Words:',report['word_count'],'DSE-style questions:',len(questions))
+          print('Mode:',report['mode'],'Official HKEAA endorsement: not claimed')
+          PY
