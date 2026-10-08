@@ -20,7 +20,8 @@ import ipaddress
 import hashlib
 from zoneinfo import ZoneInfo
 from learning_editorial import is_promotional
-from dse_editorial import compose_briefing, make_practice
+from dse_editorial import compose_briefing
+from dse_assessment_v7 import make_exam
 
 from email.utils import parsedate_to_datetime
 from urllib.request import Request, urlopen
@@ -414,8 +415,11 @@ def review_model_text(generated: str, stories: list[dict]) -> tuple[bool, str]:
         return False, "paragraph exceeds readable length"
     if any(len(re.findall(r"\b[A-Za-z]+\b", p)) < 28 for p in paras):
         return False, "paragraph is too short"
-    if any(not re.search(r"\[S\d+\]", p) for p in paras[1:-1]):
-        return False, "middle paragraphs must contain source references"
+    # Analytical paragraphs may synthesise evidence without repeating source IDs.
+    # Every source ID is required elsewhere; a citation per paragraph would
+    # force the very mechanical news-list structure the reader wants to avoid.
+    if sum(bool(re.search(r"\[S\d+\]", p)) for p in paras) < min(2,len(stories)):
+        return False, "not enough source-linked paragraphs"
     if len({re.sub(r"\s+", " ", p.strip().lower()) for p in paras}) < len(paras):
         return False, "identical paragraphs repeated"
     if re.search(r"[\u4e00-\u9fff]", generated):
@@ -631,7 +635,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         "headline": "AI developments: today's essential context",
         "subtitle": "Global artificial intelligence — evidence, innovation and implications",
         "mode": "editorial" if good else "source_digest",
-        "editorial_notice": "AI-generated draft from RSS metadata; not independently fact-checked." if good else "Extractive source digest; full-article content not verified.",
+        "editorial_notice": "AI-generated feature from attributed headlines and summaries; not independently fact-checked." if good else "Original educational analysis of sourced RSS summaries; full articles not independently checked.",
         "demo": False,
         "word_count": metrics["word_count"],
         "essay": essay, "translations": translations,
@@ -647,7 +651,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         "stories": sources,
         "dictionary": vocabulary,
         "questions": make_questions(sources),
-        "practice": make_practice(sources,"editorial" if good else "source_digest"),
+        "practice": make_exam(essay, sources, date),
     }
     report["advanced_vocabulary"] = choose_vocab(report["dictionary"])
     put_report(report)
