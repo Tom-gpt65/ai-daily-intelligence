@@ -1,6 +1,6 @@
 # AI Daily Intelligence v5 — Evidence First
 
-**繁體中文 · 免費新聞來源與免費開源本地模型 · 只用互動網站 · 每日香港時間 08:00 預定觸發**
+**繁體中文 · 免費新聞來源與免費開源本地模型 · 只用互動網站 · 每日香港時間 07:40 預定開始生成 · 08:00 目標可閱讀**
 
 v5 專注改善三個目標：**內容價值、準確性、計算及閱讀效率**。不需要 OpenAI API，不會寄送電子郵件，也不會把個人學習紀錄送到伺服器。
 
@@ -44,7 +44,7 @@ python scripts/preview.py
 4. 前往 **Actions → Daily AI intelligence v5 (zero paid API) → Run workflow**，手動執行一次並查看完整日誌。
 5. 檢查模型安裝、RSS 預抓取、模型生成、網站發布及 Diagnostics。成功後，從 **Settings → Pages** 取得實際網址。
 
-**重要限制：** GitHub 排程可指定 `Asia/Hong_Kong`，但預定 08:00 不保證準時完成；RSS 可能失敗，免費公開 Repository 的排程長期無活動時可能停用。下載 Ollama 與模型也可能在免費 Runner 超時或資源不足。只有在真實部署後才可確認實際成功率。公開網站上的日報任何人都能讀取，請勿將個人備份或秘密金鑰上傳到 Repository。
+**重要限制：** GitHub 排程可指定 `Asia/Hong_Kong`，但預定 07:40 觸發不保證準時，08:00 可閱讀是目標而非保證；RSS 可能失敗，免費公開 Repository 的排程長期無活動時可能停用。下載 Ollama 與模型也可能在免費 Runner 超時或資源不足。只有在真實部署後才可確認實際成功率。公開網站上的日報任何人都能讀取，請勿將個人備份或秘密金鑰上傳到 Repository。
 
 ## 模型與翻譯的速度選擇
 
@@ -69,8 +69,8 @@ python tests/browser_smoke_optional.py
 
 ## 每日公開發布與準時性驗證（2026-10）
 
-- **08:00 香港時間**：`daily.yml` 預定觸發 RSS 新聞收集及免費本地模型報告生成。GitHub Actions 可能延遲或略過排程，不能保證整點交付。
-- **09:17 香港時間**：`audit.yml` 從公開 GitHub Pages 獨立檢查當日文章及來源，並核對是否有當日 `schedule` 觸發且成功的正式生成流程。
+- **07:40 香港時間**：`daily.yml` 預定觸發 RSS 新聞收集及免費本地模型報告生成，預留約 20 分鐘，目標在 **08:00 前可閱讀**。GitHub Actions 可能延遲或略過排程，不能保證整點交付。
+- **08:05 與 09:17 香港時間**：`audit.yml` 分別進行早段和覆核兩次獨立檢查，從公開 GitHub Pages 核對當日文章及來源，並核對是否有當日 `schedule` 觸發且成功的生成流程。08:05 的驗證成功僅證明驗證執行時文章可讀，不能精確證明 08:00 已上線；GitHub 可能延遲觸發檢查。
 - 驗證結果分開顯示 **最新文章可用性** 與 **品質警告**（來源摘要、少於 550 字）；流程成功不等於新聞獲完整事實核查。
 - 日期過期、缺乏來源、示範文章被當作正式新聞、或沒有成功的定時生成流程，驗證會顯示紅色失敗，而不是冒稱每日有新報告。
 - [查看每日獨立驗證](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml)；[查看每日生成紀錄](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml)。
