@@ -1,78 +1,2055 @@
 {
+  "schema": 4,
   "date": "2026-10-09",
-  "updated_at": "2026-10-09T00:29:31.724333+08:00",
-  "headline": "Understanding AI announcements — reading practice",
-  "subtitle": "Offline demonstration with fictional scenarios; NOT today's news",
-  "mode": "demo",
-  "demo": true,
-  "word_count": 455,
-  "reading_metrics": {
-    "word_count": 455,
-    "estimated_minutes": 4.0,
-    "note": "示範教材，未經 DSE 評級。"
-  },
-  "quality_note": "此篇屬完全虛構的閱讀示範，不包含今日新聞及真實新聞來源。",
-  "schema": 3,
+  "updated_at": "2026-10-09T02:02:09.532386+08:00",
+  "headline": "AI developments: today's essential context",
+  "subtitle": "Global artificial intelligence — evidence, innovation and implications",
+  "mode": "source_digest",
+  "editorial_notice": "Extractive source digest; full-article content not verified.",
+  "demo": false,
+  "word_count": 483,
   "essay": [
-    "Artificial intelligence is often portrayed as a succession of spectacular breakthroughs. Yet the most consequential developments may be considerably less dramatic: improved reliability, lower operating costs, and the ability to integrate advanced systems into everyday institutions. This practice briefing explores three hypothetical developments in an imaginary AI sector. None of the scenarios is a real news report, and the purpose is to demonstrate the reading interface rather than to document current events.",
-    "In the first scenario, a fictional research laboratory introduces a new language model that performs better on a carefully selected benchmark. The announcement attracts considerable attention, but its implications remain ambiguous. A benchmark can measure particular capabilities under controlled conditions; it does not necessarily establish that a model will behave consistently in unfamiliar workplaces, classrooms or hospitals. Independent evaluation, transparent methodology and systematic scrutiny would therefore be essential before broader claims could be substantiated.",
-    "A second imaginary story concerns a technology company offering more affordable computational infrastructure. Lower prices might accelerate adoption by smaller organisations and independent developers. Nevertheless, commercial accessibility should not be confused with equitable access. Businesses still require expertise, reliable data and appropriate safeguards. Moreover, if cheaper computing encouraged extensive deployment, total energy demand could conceivably rise despite gains in efficiency. Such consequences depend on behaviour and implementation, not simply on the advertised price of a service.",
-    "The third fictional development involves proposed rules requiring AI-generated material to be more clearly identified. Supporters might regard such oversight as a means of strengthening transparency and public confidence. Critics could question whether technical labelling systems are sufficiently robust, particularly when digital material is repeatedly modified or redistributed. The debate illustrates a recurring policy dilemma: safeguards must respond to genuine risks without imposing disproportionate burdens on beneficial innovation.",
-    "Although these scenarios differ in emphasis, they reveal a shared analytical challenge. An announcement is not the same as an independently verified outcome, and a plausible benefit is not an inevitable consequence. Readers should ask who produced the evidence, what assumptions were made, whether alternative explanations exist and which groups might bear the costs. Such questions are particularly important in a field where impressive demonstrations can overshadow less visible limitations.",
-    "The wider lesson is that technological progress must be judged against context, rather than publicity alone. A sophisticated reader remains receptive to transformative possibilities while resisting unwarranted certainty. This balance of curiosity and critical evaluation is useful both for understanding artificial intelligence and for developing the argumentative precision expected in demanding English examinations. Rather than accepting a persuasive narrative at face value, a careful reader identifies its underlying assumptions, compares conflicting interpretations, and considers which observations would change the conclusion. These habits make technical developments more intelligible without diminishing their complexity or encouraging exaggerated confidence."
+    "Today's briefing is presented as a source-based news digest because the local writing model was unavailable. The reporting below preserves the publishers' attribution and distinguishes their descriptions from independently verified findings.",
+    "According to TechCrunch AI, a recent report titled “Hear from Ambrosia Energy and Bloom Energy execs on where the AI infrastructure boom is creating opportunity at TechCrunch Disrupt 2026” [S1] covers the following: Ambrosia Energy CEO Ben Longmier and Bloom Energy SVP Bill Thayer join the Smart Systems Stage at TechCrunch Disrupt. Register now to save up to $100. Grab a second of the same pass to save 50%. Read the linked original before drawing conclusions about significance or outcomes.",
+    "According to MIT Technology Review, a recent report titled “AI breakthroughs in robotics won’t change your life any time soon” [S2] covers the following: The story is a collaboration between MIT Technology Review and Aventine, a non-profit research foundation that creates and supports content about how technology and science are changing the way we live. A robot shaped like a human—white with a black head and torso—has been popping up on video feeds. Perhaps you’ve seen it dance or… Read the linked original before drawing conclusions about significance or outcomes.",
+    "According to TechCrunch AI, a recent report titled “China’s Manus raises over $500M in first funding round since split with Meta” [S3] covers the following: Boyu Capital and IDG Capital led the funding round, and existing shareholders Tencent, HSG (formerly known as Sequoia China), ZhenFund, and others also participated. Read the linked original before drawing conclusions about significance or outcomes.",
+    "According to arXiv AI, a recent report titled “AdaGuard: Enhancing Safety and Policy Compliance with Reasoning-Enabled LLM-As-A-Judge Guardrails” [S4] covers the following: arXiv:2610.08923v1 Announce Type: new Abstract: Enterprise generative AI applications require robust safety mechanisms that can accommodate diverse risk postures, evolving policies, and varying latency constraints. Current guardrail solutions often suffer from rigidity, relying on fixed policy sets and offering limited transparency or reasoning flexibility. We present Adaguard, an adaptive LLM-as-a-Judge framework designed to address these challenges through dynamic policy enforcement and adaptive reasoning-budget Read the linked original before drawing conclusions about significance or outcomes.",
+    "According to The Verge AI, a recent report titled “Anthropic bans ‘abusive or cruel behavior’ toward Claude” [S5] covers the following: Anthropic is making changes to its usage policy for the first time in over a year to reflect new and high-risk cases of misuse - including election interference, weapons development, surveillance, and health and financial uses. But one of the most significant changes prohibits \"sustained and needless abusive or cruel behavior\" toward Claude. Last August, […] Read the linked original before drawing conclusions about significance or outcomes.",
+    "Taken together, these reports illustrate the variety of developments currently being discussed in artificial intelligence. A headline should not be mistaken for independent evidence: implementation details, limitations and broader consequences warrant further examination."
   ],
   "translations": [],
-  "stories": [],
+  "reading_metrics": {
+    "word_count": 469,
+    "estimated_minutes": 4.1,
+    "average_sentence_words": 23.4,
+    "long_word_share": 18.8,
+    "note": "閱讀量及詞長屬描述性統計，不能換算成 HKDSE 等級。"
+  },
+  "processing": {
+    "source_count": 5,
+    "attribution_only": true,
+    "evidence_word_count": 306,
+    "evidence_sufficient_for_draft": true,
+    "multi_source_events": 0,
+    "translation_enabled": false,
+    "model_seconds": 122.996,
+    "translation_seconds": 0,
+    "dictionary_seconds": 2.413
+  },
+  "quality_note": "來源資訊或模型品質不足，只顯示保守摘要，不代表完整五分鐘英文文章。",
+  "stories": [
+    {
+      "id": "S1",
+      "publisher": "TechCrunch AI",
+      "title": "Hear from Ambrosia Energy and Bloom Energy execs on where the AI infrastructure boom is creating opportunity at TechCrunch Disrupt 2026",
+      "excerpt": "Ambrosia Energy CEO Ben Longmier and Bloom Energy SVP Bill Thayer join the Smart Systems Stage at TechCrunch Disrupt. Register now to save up to $100. Grab a second of the same pass to save 50%.",
+      "url": "https://techcrunch.com/2026/10/08/hear-from-ambrosia-energy-and-bloom-energy-execs-on-where-the-ai-infrastructure-boom-is-creating-opportunity-at-disrupt-2026/",
+      "published": "2026-10-08T15:00:00+00:00",
+      "topic": "Infrastructure",
+      "source_type": "媒體報道／RSS 公告",
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/10/08/hear-from-ambrosia-energy-and-bloom-energy-execs-on-where-the-ai-infrastructure-boom-is-creating-opportunity-at-disrupt-2026/",
+          "title": "Hear from Ambrosia Energy and Bloom Energy execs on where the AI infrastructure boom is creating opportunity at TechCrunch Disrupt 2026",
+          "published": "2026-10-08T15:00:00+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S2",
+      "publisher": "MIT Technology Review",
+      "title": "AI breakthroughs in robotics won’t change your life any time soon",
+      "excerpt": "The story is a collaboration between MIT Technology Review and Aventine, a non-profit research foundation that creates and supports content about how technology and science are changing the way we live. A robot shaped like a human—white with a black head and torso—has been popping up on video feeds. Perhaps you’ve seen it dance or…",
+      "url": "https://www.technologyreview.com/2026/10/08/1145923/ai-breakthroughs-in-robotics-wont-change-your-life-any-time-soon/",
+      "published": "2026-10-08T09:00:00+00:00",
+      "topic": "Research",
+      "source_type": "媒體報道／RSS 公告",
+      "coverage": [
+        {
+          "publisher": "MIT Technology Review",
+          "url": "https://www.technologyreview.com/2026/10/08/1145923/ai-breakthroughs-in-robotics-wont-change-your-life-any-time-soon/",
+          "title": "AI breakthroughs in robotics won’t change your life any time soon",
+          "published": "2026-10-08T09:00:00+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S3",
+      "publisher": "TechCrunch AI",
+      "title": "China’s Manus raises over $500M in first funding round since split with Meta",
+      "excerpt": "Boyu Capital and IDG Capital led the funding round, and existing shareholders Tencent, HSG (formerly known as Sequoia China), ZhenFund, and others also participated.",
+      "url": "https://techcrunch.com/2026/10/08/chinas-manus-raises-over-500m-in-first-funding-round-since-split-with-meta/",
+      "published": "2026-10-08T13:20:32+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/10/08/chinas-manus-raises-over-500m-in-first-funding-round-since-split-with-meta/",
+          "title": "China’s Manus raises over $500M in first funding round since split with Meta",
+          "published": "2026-10-08T13:20:32+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S4",
+      "publisher": "arXiv AI",
+      "title": "AdaGuard: Enhancing Safety and Policy Compliance with Reasoning-Enabled LLM-As-A-Judge Guardrails",
+      "excerpt": "arXiv:2610.08923v1 Announce Type: new Abstract: Enterprise generative AI applications require robust safety mechanisms that can accommodate diverse risk postures, evolving policies, and varying latency constraints. Current guardrail solutions often suffer from rigidity, relying on fixed policy sets and offering limited transparency or reasoning flexibility. We present Adaguard, an adaptive LLM-as-a-Judge framework designed to address these challenges through dynamic policy enforcement and adaptive reasoning-budget",
+      "url": "https://arxiv.org/abs/2610.08923",
+      "published": "2026-10-08T04:00:00+00:00",
+      "topic": "Policy & Society",
+      "source_type": "研究論文（未必經同儕審查）",
+      "coverage": [
+        {
+          "publisher": "arXiv AI",
+          "url": "https://arxiv.org/abs/2610.08923",
+          "title": "AdaGuard: Enhancing Safety and Policy Compliance with Reasoning-Enabled LLM-As-A-Judge Guardrails",
+          "published": "2026-10-08T04:00:00+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S5",
+      "publisher": "The Verge AI",
+      "title": "Anthropic bans ‘abusive or cruel behavior’ toward Claude",
+      "excerpt": "Anthropic is making changes to its usage policy for the first time in over a year to reflect new and high-risk cases of misuse - including election interference, weapons development, surveillance, and health and financial uses. But one of the most significant changes prohibits \"sustained and needless abusive or cruel behavior\" toward Claude. Last August, […]",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1008100/anthropic-new-usage-policy-abuse-claude",
+      "published": "2026-10-08T17:00:00+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/1008100/anthropic-new-usage-policy-abuse-claude",
+          "title": "Anthropic bans ‘abusive or cruel behavior’ toward Claude",
+          "published": "2026-10-08T17:00:00+00:00"
+        }
+      ],
+      "coverage_count": 1
+    }
+  ],
   "dictionary": {
-    "scrutiny": {
-      "translation": "仔細審查",
-      "phonetic": ""
-    },
-    "equitable": {
-      "translation": "公平的；公正的",
-      "phonetic": ""
-    },
-    "ambiguous": {
-      "translation": "含糊不清的",
-      "phonetic": ""
-    },
-    "disproportionate": {
-      "translation": "不成比例的",
-      "phonetic": ""
-    },
-    "substantiated": {
-      "translation": "經證據證實的",
-      "phonetic": ""
-    },
-    "reliability": {
-      "translation": "可靠性",
-      "phonetic": ""
-    },
-    "inevitable": {
-      "translation": "不可避免的",
-      "phonetic": ""
-    },
     "infrastructure": {
       "translation": "基礎設施",
-      "phonetic": ""
+      "phonetic": "'infrәstrʌktʃә",
+      "part_of_speech": "",
+      "definition": "n. the basic structure or features of a system or organization\\nn. the stock of basic facilities and capital equipment needed for the functioning of a country or area"
     },
-    "deployment": {
-      "translation": "部署；應用",
-      "phonetic": ""
+    "transparency": {
+      "translation": "透明度",
+      "phonetic": "træns'pærәnsi",
+      "part_of_speech": "",
+      "definition": "n. permitting the free passage of electromagnetic radiation\\nn. the quality of being clear and transparent"
+    },
+    "limitations": {
+      "translation": "局限",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a principle that limits the extent of something\\nn the quality of being limited or restricted\\nn the greatest amount of something that is possible or allowed\\nn (law) a time period after w"
+    },
+    "constraints": {
+      "translation": "限制",
+      "phonetic": "kən'streɪnt",
+      "part_of_speech": "",
+      "definition": "n. the state of being physically constrained\\nn. a device that retards something's motion\\nn. the act of constraining; the threat or use of force to control the thoughts or behavior of other"
+    },
+    "evidence": {
+      "translation": "證據",
+      "phonetic": "'evidәns",
+      "part_of_speech": "",
+      "definition": "n. your basis for belief or disbelief; knowledge on which to base belief\\nn. an indication that makes something evident\\nn. (law) all the means by which any alleged matter of fact whose trut"
+    },
+    "consequences": {
+      "translation": "後果",
+      "phonetic": "ˈkɔnsikwənsiz",
+      "part_of_speech": "",
+      "definition": "n. a phenomenon that follows and is caused by some previous phenomenon\\nn. the outcome of an event especially as relative to an individual\\nn. having important effects or influence"
+    },
+    "robust": {
+      "translation": "穩健的",
+      "phonetic": "rәu'bʌst",
+      "part_of_speech": "",
+      "definition": "a. sturdy and strong in form, constitution, or construction\\ns. strong enough to withstand or overcome intellectual challenges or adversity\\ns. rough and crude"
+    },
+    "about": {
+      "translation": "prep. 在...周圍, 大約, 有關, 關於\\nadv. 大約, 四處, 在附近, 周圍",
+      "phonetic": "ә'baut",
+      "part_of_speech": "",
+      "definition": "s. on the move\\nr. all around or on all sides\\nr. in the area or vicinity\\nr. used of movement to or among many different places or in no particular direction"
+    },
+    "abstract": {
+      "translation": "a. 抽象的, 深奧的\\nn. 摘要, 抽象概念\\nvt. 摘要, 提煉, 使抽象化\\n[計] 摘錄; 摘要; 抽象",
+      "phonetic": "'æbstrækt",
+      "part_of_speech": "",
+      "definition": "v. consider a concept without thinking of a specific example; consider abstractly or theoretically\\nv. consider apart from a particular case or instance\\nv. give an abstract (of)\\na. existin"
+    },
+    "abusive": {
+      "translation": "a. 惡言謾罵的, 被濫用的, 腐敗的, 虐待的",
+      "phonetic": "ә'bju:siv",
+      "part_of_speech": "",
+      "definition": "s. expressing offensive reproach\\ns. characterized by physical or psychological maltreatment"
+    },
+    "accommodate": {
+      "translation": "vt. 使適應, 調和, 通融, 容納, 向...提供\\nvi. 適應",
+      "phonetic": "ә'kɒmәdeit",
+      "part_of_speech": "",
+      "definition": "v. provide with something desired or needed\\nv. have room for; hold without crowding\\nv. make (one thing) compatible with (another)"
+    },
+    "accord": {
+      "translation": "n. 一致, 調和, 協定\\nvt. 給與, 使一致\\nvi. 相符合",
+      "phonetic": "ә'kɒ:d",
+      "part_of_speech": "",
+      "definition": "n. concurrence of opinion\\nn. sympathetic compatibility\\nv. allow to have"
+    },
+    "according": {
+      "translation": "a. 相符的, 根據...而定的\\nadv. 相應地",
+      "phonetic": "ә'kɒ:diŋ",
+      "part_of_speech": "",
+      "definition": "s. (followed by `to') in agreement with or accordant with\\ns. (followed by `to') as reported or stated by"
+    },
+    "adaptive": {
+      "translation": "a. 適應的, 能適應的",
+      "phonetic": "ә'dæptiv",
+      "part_of_speech": "",
+      "definition": "a. having a capacity for adaptation"
+    },
+    "address": {
+      "translation": "n. 住址, 演說, 舉止, 靈巧, 求愛\\nvt. 發表(演說或講話), 對付, 寫地址\\n[計] 地址, 尋址",
+      "phonetic": "ә'dres",
+      "part_of_speech": "",
+      "definition": "n. (computer science) the code that identifies where a piece of information is stored\\nn. the place where a person or organization can be found or communicated with\\nn. the act of delivering"
+    },
+    "also": {
+      "translation": "adv. 也, 並且, 同樣地",
+      "phonetic": "'ɒ:lsәu",
+      "part_of_speech": "",
+      "definition": "r in addition"
+    },
+    "ambrosia": {
+      "translation": "n. 仙果, 特別美味的食物\\n[醫] 豕草屬",
+      "phonetic": "æm'brәuʒiә",
+      "part_of_speech": "",
+      "definition": "n. fruit dessert made of oranges and bananas with shredded coconut\\nn. (classical mythology) the food and drink of the gods; mortals who ate it became immortal"
+    },
+    "and": {
+      "translation": "conj. 和, 與\\n[計] 與",
+      "phonetic": "ænd",
+      "part_of_speech": "",
+      "definition": "conj. A particle which expresses the relation of connection or\\n addition. It is used to conjoin a word with a word, a clause with a\\n clause, or a sentence with a sentence.\\nconj. In order"
+    },
+    "announce": {
+      "translation": "vt. 宣佈, 聲稱, 顯示, 預告\\nvi. 當報幕員, 宣佈參加競選",
+      "phonetic": "ә'nauns",
+      "part_of_speech": "",
+      "definition": "v. make known; make an announcement\\nv. announce publicly or officially\\nv. give the names of\\nv. foreshadow or presage"
+    },
+    "anthropic": {
+      "translation": "a. 人類的, 有關人類的",
+      "phonetic": "æn'θrɔpik",
+      "part_of_speech": "",
+      "definition": "a. relating to mankind or the period of mankind's existence"
+    },
+    "any": {
+      "translation": "a. 任何的\\npron. 任何",
+      "phonetic": "'eni",
+      "part_of_speech": "",
+      "definition": "s. one or some or every or all without specification\\nr. to any degree or extent"
+    },
+    "application": {
+      "translation": "n. 應用, 申請, 志願書, 應用程序\\n[計] 應用, 應用程序",
+      "phonetic": ".æpli'keiʃәn",
+      "part_of_speech": "",
+      "definition": "n. the act of bringing something to bear; using it for a particular purpose\\nn. a verbal or written request for assistance or employment or admission to a school\\nn. the work of applying som"
+    },
+    "applications": {
+      "translation": "n. 應用；應用程序；應用軟件（application的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n the act of bringing something to bear; using it for a particular purpose\\nn a verbal or written request for assistance or employment or admission to a school\\nn the work of applying someth"
+    },
+    "are": {
+      "translation": "be的現在時複數或第二人稱單數",
+      "phonetic": "ɑ:",
+      "part_of_speech": "",
+      "definition": "n. a unit of surface area equal to 100 square meters"
+    },
+    "artificial": {
+      "translation": "a. 人造的, 假的, 非原地產的\\n[醫] 人工的, 人造的, 偉牟",
+      "phonetic": ".ɑ:ti'fiʃәl",
+      "part_of_speech": "",
+      "definition": "a. contrived by art rather than nature\\ns. artificially formal\\ns. not arising from natural growth or characterized by vital processes"
+    },
+    "attribution": {
+      "translation": "n. 歸因\\n[法] 歸因, 歸屬, 屬性",
+      "phonetic": "әtri'bju:ʃәn",
+      "part_of_speech": "",
+      "definition": "n. assigning some quality or character to a person or thing\\nn. assigning to a cause or source"
+    },
+    "august": {
+      "translation": "n. 八月\\na. 威嚴的, 令人敬畏的",
+      "phonetic": "ɒ:'gʌst. 'ɒ:gәst",
+      "part_of_speech": "",
+      "definition": "n. the month following July and preceding September\\ns. of or befitting a lord\\ns. profoundly honored"
+    },
+    "aventine": {
+      "translation": " 阿文丁（古羅馬七座山峯之一。於公元前 456年成爲平民居住地 ）",
+      "phonetic": "ˈævənˌtaɪn, -ˌti:n",
+      "part_of_speech": "",
+      "definition": "a. Pertaining to Mons Aventinus, one of the seven hills on\\n which Rome stood.\\nn. A post of security or defense."
+    },
+    "bans": {
+      "translation": "n. 結婚預告（等於banns）",
+      "phonetic": "bænz",
+      "part_of_speech": "",
+      "definition": "n a decree that prohibits something\\nn 100 bani equal 1 leu in Moldova\\nn 100 bani equal 1 leu in Romania\\nn an official prohibition or edict against something\\nn a bachelor's degree in nurs"
+    },
+    "be": {
+      "translation": "v. 是, 表示, 在\\n[計] 後端, 總線允許",
+      "phonetic": "bi:",
+      "part_of_speech": "",
+      "definition": "v. have the quality of being; (copula, used with an adjective or a predicate noun)\\nv. be identical to; be someone or something\\nv. occupy a certain position or area; be somewhere\\nv. happen"
+    },
+    "because": {
+      "translation": "conj. 因爲",
+      "phonetic": "bi'kɒ:z",
+      "part_of_speech": "",
+      "definition": "conj. By or for the cause that; on this account that; for the\\n reason that.\\nconj. In order that; that."
+    },
+    "bee": {
+      "translation": "n. 蜜蜂, 聚會",
+      "phonetic": "bi:",
+      "part_of_speech": "",
+      "definition": "n. any of numerous hairy-bodied insects including social and solitary species\\nn. a social gathering to carry out some communal task or to hold competitions"
+    },
+    "been": {
+      "translation": "be的過去分詞",
+      "phonetic": "bi:n",
+      "part_of_speech": "",
+      "definition": "v have the quality of being; (copula, used with an adjective or a predicate noun)\\nv be identical to; be someone or something\\nv occupy a certain position or area; be somewhere\\nv have an ex"
+    },
+    "before": {
+      "translation": "prep. 在...之前\\nconj. 在...之前\\nadv. 在前",
+      "phonetic": "bi'fɒ:",
+      "part_of_speech": "",
+      "definition": "r earlier in time; previously\\nr at or in the front"
+    },
+    "behavior": {
+      "translation": "n. 行爲, 舉止\\n[醫] 行爲",
+      "phonetic": "bi'heivjә",
+      "part_of_speech": "",
+      "definition": "n. manner of acting or controlling yourself\\nn. the action or reaction of something (as a machine or substance) under specified circumstances\\nn. (psychology) the aggregate of the responses"
+    },
+    "being": {
+      "translation": "n. 存在, 性質, 生命, 人, 生物, be的現在分詞",
+      "phonetic": "'bi:iŋ",
+      "part_of_speech": "",
+      "definition": "n. the state or fact of existing"
+    },
+    "below": {
+      "translation": "prep. 在下面\\nadv. 在下面",
+      "phonetic": "bi'lәu",
+      "part_of_speech": "",
+      "definition": "r. in or to a place that is lower\\nr. at a later place\\nr. (in writing) see below"
+    },
+    "ben": {
+      "translation": "n. 內室\\n[醫] 貝昂(俗名,一般指辣木Moringa oleifera,有時也指一些不同屬的植物)",
+      "phonetic": "ben",
+      "part_of_speech": "",
+      "definition": "n. a mountain or tall hill"
+    },
+    "between": {
+      "translation": "prep. 在...之間",
+      "phonetic": "bi'twi:n",
+      "part_of_speech": "",
+      "definition": "r. in the interval\\nr. in between"
+    },
+    "bill": {
+      "translation": "n. 帳單, 清單, 鈔票, 鳥嘴, 廣告, 法案, 票據\\nvt. 開帳單, (用招貼)宣佈",
+      "phonetic": "bil",
+      "part_of_speech": "",
+      "definition": "n. a statute in draft before it becomes law\\nn. an itemized statement of money owed for goods shipped or services rendered\\nn. a piece of paper money (especially one issued by a central bank"
+    },
+    "black": {
+      "translation": "n. 黑色, 黑顏料\\na. 黑色的",
+      "phonetic": "blæk",
+      "part_of_speech": "",
+      "definition": "n. the quality or state of the achromatic color of least lightness (bearing the least resemblance to white)\\nn. British chemist who identified carbon dioxide and who formulated the concepts"
+    },
+    "bloom": {
+      "translation": "n. 花, 開花, 青春, 鋼塊\\nvi. 開花, 煥發青春, 茂盛\\nvt. 使茂盛, 把...軋成鋼坯",
+      "phonetic": "blu:m",
+      "part_of_speech": "",
+      "definition": "n. the best time of youth\\nn. a rosy color (especially in the cheeks) taken as a sign of good health\\nv. produce or yield flowers"
+    },
+    "boom": {
+      "translation": "n. 繁榮, 隆隆聲\\nvi. 急速發展, 發隆隆聲\\nvt. 使興旺, 發隆隆聲",
+      "phonetic": "bu:m",
+      "part_of_speech": "",
+      "definition": "n. a deep prolonged loud noise\\nn. a state of economic prosperity\\nn. a sudden happening that brings good fortune (as a sudden opportunity to make money)\\nn. a pole carrying an overhead micr"
+    },
+    "breakthrough": {
+      "translation": "n. 突破\\n[經] 突破, 新發現, 新進展",
+      "phonetic": "'breikθru:",
+      "part_of_speech": "",
+      "definition": "n. making an important discovery\\nn. a penetration of a barrier such as an enemy's defense"
+    },
+    "breakthroughs": {
+      "translation": "n. 突破點, 突破性進展, 重要的新發現( breakthrough的複數形式 )",
+      "phonetic": "b'reɪkθru:z",
+      "part_of_speech": "",
+      "definition": "n. a productive insight\\nn. making an important discovery\\nn. a penetration of a barrier such as an enemy's defense"
+    },
+    "brief": {
+      "translation": "n. 摘要, 簡報\\na. 簡短的, 短暫的\\nvt. 對...作簡報, 摘要, 節錄",
+      "phonetic": "bri:f",
+      "part_of_speech": "",
+      "definition": "n. a document stating the facts and points of law of a client's case\\nn. a condensed written summary or abstract\\nv. give essential information to someone\\ns. of short duration or distance"
+    },
+    "briefing": {
+      "translation": "n. 簡報\\n[法] 簡報, 情況的簡要介紹",
+      "phonetic": "'bri:fiŋ",
+      "part_of_speech": "",
+      "definition": "n. detailed instructions, as for a military operation"
+    },
+    "broader": {
+      "translation": "a. 廣大的；一片的比較級",
+      "phonetic": "brɔːdə",
+      "part_of_speech": "",
+      "definition": "a having great (or a certain) extent from one side to the other\\ns broad in scope or content\\ns not detailed or specific\\ns lacking subtlety; obvious\\ns being at a peak or culminating point\\"
+    },
+    "but": {
+      "translation": "prep. 除了\\nconj. 但是\\nadv. 僅僅",
+      "phonetic": "bʌt",
+      "part_of_speech": "",
+      "definition": "r and nothing more"
+    },
+    "can": {
+      "translation": "vt. 裝罐\\nn. 罐頭, 容器\\naux. 能, 可以\\n[計] 作廢字符",
+      "phonetic": "kæn",
+      "part_of_speech": "",
+      "definition": "n. airtight sealed metal container for food or drink or paint etc.\\nn. the quantity contained in a can\\nn. a buoy with a round bottom and conical top\\nv. preserve in a can or tin"
+    },
+    "capital": {
+      "translation": "n. 首都, 大寫字母, 資本\\na. 首都的, 重要的",
+      "phonetic": "'kæpitәl",
+      "part_of_speech": "",
+      "definition": "n. assets available for use in the production of further assets\\nn. wealth in the form of money or property owned by a person or business and human resources of economic value\\nn. a seat of"
+    },
+    "cas": {
+      "translation": "abbr. 中國科學院（Chinese Academy of Sciences）；計算機技術學會（Computer Arts Society）；控制自動化系統（Control Automatic System）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a white metallic element that burns with a brilliant light; the fifth most abundant element in the earth's crust; an important component of most plants and animals\\nn a state in the wester"
+    },
+    "case": {
+      "translation": "n. 情形, 情況, 箱, 容器, 事實, 病例, 案例, 框子\\nvt. 裝箱, 包蓋",
+      "phonetic": "keis",
+      "part_of_speech": "",
+      "definition": "n. an occurrence of something\\nn. the actual state of things\\nn. a portable container for carrying several objects\\nn. a person requiring professional services"
+    },
+    "cases": {
+      "translation": "n. 案例；箱；情況（case的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n an occurrence of something\\nn a special set of circumstances\\nn a comprehensive term for any proceeding in a court of law whereby an individual seeks a legal remedy\\nn the actual state of"
+    },
+    "ceo": {
+      "translation": "abbr. 首席執行官；執行總裁（chief executive officer）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n the corporate executive responsible for the operations of the firm; reports to a board of directors; may appoint other managers (including a president)"
+    },
+    "challenge": {
+      "translation": "n. 挑戰, 盤問\\nvt. 向...挑戰, 要求, 懷疑\\nvi. 挑戰, 對(證據等)表示異議",
+      "phonetic": "'tʃælindʒ",
+      "part_of_speech": "",
+      "definition": "n. a demanding or stimulating situation\\nn. a call to engage in a contest or fight\\nn. questioning a statement and demanding an explanation\\nn. a formal objection to the selection of a parti"
+    },
+    "challenges": {
+      "translation": "n. 挑戰( challenge的名詞複數 ); 要求; （警衛等）查問口令; 懷疑",
+      "phonetic": "ˈtʃælindʒz",
+      "part_of_speech": "",
+      "definition": "n a demanding or stimulating situation\\nn a call to engage in a contest or fight\\nn questioning a statement and demanding an explanation\\nn a formal objection to the selection of a particula"
+    },
+    "chang": {
+      "translation": "n. 青稞酒（等於chong）",
+      "phonetic": "tʃɑ:ŋ. tʃæŋ",
+      "part_of_speech": "",
+      "definition": "n the longest river of Asia; flows eastward from Tibet into the East China Sea near Shanghai"
+    },
+    "change": {
+      "translation": "n. 變化, 找回的零錢, 找頭, 更換\\nvt. 改變, 更換, 兌換",
+      "phonetic": "tʃeindʒ",
+      "part_of_speech": "",
+      "definition": "n. an event that occurs when something passes from one state or phase to another\\nn. a relational difference between states; especially between states before and after some event\\nn. the act"
+    },
+    "changes": {
+      "translation": "n. 變化, 改變（change的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n an event that occurs when something passes from one state or phase to another\\nn a relational difference between states; especially between states before and after some event\\nn the action"
+    },
+    "changing": {
+      "translation": "v. 交換；兌換；改變（change的ing形式）",
+      "phonetic": "'tʃeindʒiŋ",
+      "part_of_speech": "",
+      "definition": "s. marked by continuous change or effective action"
+    },
+    "china": {
+      "translation": "n. 中國, 瓷器\\na. 中國的",
+      "phonetic": "'tʃainә",
+      "part_of_speech": "",
+      "definition": "n. a communist nation that covers a vast territory in eastern Asia; the most populous country in the world\\nn. high quality porcelain originally made only in China"
+    },
+    "claude": {
+      "translation": "n. 克勞德（男子名）",
+      "phonetic": "klɔ:d",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "collaboration": {
+      "translation": "n. 合作, 勾結\\n[法] 通敵賣國者, 奸細",
+      "phonetic": "kә.læbә'ræʃәn",
+      "part_of_speech": "",
+      "definition": "n. act of working jointly\\nn. act of cooperating traitorously with an enemy that is occupying your country"
+    },
+    "compliance": {
+      "translation": "n. 遵從, 順從, 屈從\\n[化] 柔順; 順應",
+      "phonetic": "kәm'plaiәns",
+      "part_of_speech": "",
+      "definition": "n acting according to certain accepted standards\\nn a disposition or tendency to yield to the will of others\\nn the act of submitting; usually surrendering power to another"
+    },
+    "conclusion": {
+      "translation": "n. 結論, 結尾, 推論\\n[法] 締結, 結論, 推論",
+      "phonetic": "kәn'klu:ʒәn",
+      "part_of_speech": "",
+      "definition": "n. an intuitive assumption\\nn. the proposition arrived at by logical reasoning (such as the proposition that must follow from the major and minor premises of a syllogism)\\nn. a final settlem"
+    },
+    "conclusions": {
+      "translation": "n. 結束( conclusion的複數形式 ); 結論; 推論; 簽訂",
+      "phonetic": "kənk'lu:ʒnz",
+      "part_of_speech": "",
+      "definition": "n. a position or opinion or judgment reached after consideration\\nn. an intuitive assumption\\nn. the temporal end; the concluding time"
+    },
+    "consequence": {
+      "translation": "n. 結果, 重要性\\n[法] 結果, 後果, 推斷",
+      "phonetic": "'kɒnsikwәns",
+      "part_of_speech": "",
+      "definition": "n. a phenomenon that follows and is caused by some previous phenomenon\\nn. the outcome of an event especially as relative to an individual\\nn. having important effects or influence"
+    },
+    "constraint": {
+      "translation": "n. 強制, 約束\\n[計] 約束",
+      "phonetic": "kәn'streint",
+      "part_of_speech": "",
+      "definition": "n. the state of being physically constrained\\nn. the act of constraining; the threat or use of force to control the thoughts or behavior of others"
+    },
+    "content": {
+      "translation": "n. 內容, 滿足, 意義, 要旨\\na. 滿足的, 滿意的\\nvt. 使...滿足, 使...安心\\n[計] 內容",
+      "phonetic": "kәn'tent",
+      "part_of_speech": "",
+      "definition": "n. everything that is included in a collection and that is held or included in something\\nn. the proportion of a substance that is contained in a mixture or alloy etc.\\nn. the sum or range o"
+    },
+    "cover": {
+      "translation": "n. 蓋子, 封面, 藉口\\nvt. 覆蓋, 掩飾, 保護, 掩護, 包括\\nvi. 覆蓋",
+      "phonetic": "'kʌvә",
+      "part_of_speech": "",
+      "definition": "n. the act of concealing the existence of something by obstructing the view of it\\nn. fire that makes it difficult for the enemy to fire on your own individuals or formations\\nn. a recording"
+    },
+    "covers": {
+      "translation": "n. 覆蓋；封面, 蓋子；暗礁, 保證金, 暗礁羣",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a covering that serves to conceal or shelter something\\nn bedding that keeps a person warm in bed\\nn the act of concealing the existence of something by obstructing the view of it\\nn the p"
+    },
+    "creat": {
+      "translation": "n. 穿心蓮",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n. An usher to a riding master."
+    },
+    "create": {
+      "translation": "vt. 創造, 建造, 引起, 任命",
+      "phonetic": "kri:'eit",
+      "part_of_speech": "",
+      "definition": "v. bring into existence\\nv. pursue a creative activity; be engaged in a creative activity\\nv. invest with a new title, office, or rank\\nv. create by artistic means"
+    },
+    "creates": {
+      "translation": "[n. 創建；創立",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "v make or cause to be or to become\\nv bring into existence\\nv pursue a creative activity; be engaged in a creative activity\\nv invest with a new title, office, or rank\\nv create by artistic"
+    },
+    "creating": {
+      "translation": "[計] 生成的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "v make or cause to be or to become\\nv bring into existence\\nv pursue a creative activity; be engaged in a creative activity\\nv invest with a new title, office, or rank\\nv create by artistic"
+    },
+    "cruel": {
+      "translation": "a. 殘酷的, 令人極痛苦的\\n[法] 殘忍的, 殘酷的",
+      "phonetic": "'kru:әl",
+      "part_of_speech": "",
+      "definition": "s (of persons or their actions) able or disposed to inflict pain or suffering"
+    },
+    "current": {
+      "translation": "n. 湧流, 趨勢, 流\\na. 流通的, 現在的, 當前的, 流行的\\n[計] 當前的",
+      "phonetic": "'kʌrәnt",
+      "part_of_speech": "",
+      "definition": "n. a flow of electricity through a conductor\\nn. a steady flow of a fluid (usually from natural causes)\\na. occurring in or belonging to the present time"
+    },
+    "currently": {
+      "translation": "adv. 現在, 當前, 一般, 普通\\n[計] 當前",
+      "phonetic": "'kʌrәntli",
+      "part_of_speech": "",
+      "definition": "r at this time or period; now"
+    },
+    "dance": {
+      "translation": "n. 跳舞, 舞蹈, 舞會\\nv. 跳舞",
+      "phonetic": "dæns. dɑ:ns",
+      "part_of_speech": "",
+      "definition": "n. an artistic form of nonverbal communication\\nn. a party of people assembled for dancing\\nn. a party for social dancing\\nv. move in a graceful and rhythmical way"
+    },
+    "description": {
+      "translation": "n. 描述, 說明, 種類\\n[經] 說明書(物品), 品名種類, 貨物名稱",
+      "phonetic": "di'skripʃәn",
+      "part_of_speech": "",
+      "definition": "n. a statement that represents something in words\\nn. the act of describing something\\nn. sort or variety"
+    },
+    "descriptions": {
+      "translation": "n. 說明, 說明書；摘要；描述（description的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a statement that represents something in words\\nn the act of describing something\\nn sort or variety"
+    },
+    "design": {
+      "translation": "n. 設計, 圖樣, 方案, 企圖\\nv. 設計, 計劃",
+      "phonetic": "di'zain",
+      "part_of_speech": "",
+      "definition": "n. the act of working out the form of something (as by making a sketch or outline or plan)\\nn. an arrangement scheme\\nn. a decorative or artistic work\\nn. a preliminary sketch indicating the"
+    },
+    "designed": {
+      "translation": "a. 故意的, 有計劃的, 特意的",
+      "phonetic": "di'zaind",
+      "part_of_speech": "",
+      "definition": "a. done or made or performed with purpose and intent"
+    },
+    "detail": {
+      "translation": "n. 細節, 詳情\\nvt. 詳述, 選派\\nvi. 畫詳圖\\n[計] 詳細數據",
+      "phonetic": "'di:teil",
+      "part_of_speech": "",
+      "definition": "n. an isolated fact that is considered separately from the whole\\nn. a small part that can be considered separately from the whole\\nn. extended treatment of particulars\\nn. a crew of workers"
+    },
+    "details": {
+      "translation": "n. 詳細資料；細節（detail的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n. true confidential information"
+    },
+    "development": {
+      "translation": "n. 發展\\n[化] 展開",
+      "phonetic": "di'velәpmәnt",
+      "part_of_speech": "",
+      "definition": "n. act of improving by expanding or enlarging or refining\\nn. a process in which something passes by degrees to a different stage (especially a more advanced or mature stage)\\nn. a recent ev"
+    },
+    "developments": {
+      "translation": "n. 建設；發展；進展（development的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n act of improving by expanding or enlarging or refining\\nn a process in which something passes by degrees to a different stage (especially a more advanced or mature stage)\\nn (biology) the"
+    },
+    "digest": {
+      "translation": "n. 文摘\\nvi. 消化\\nvt. 消化, 理解\\n[計] 摘要",
+      "phonetic": "di'dʒest",
+      "part_of_speech": "",
+      "definition": "n. a periodical that summarizes the news\\nv. convert food into absorbable substances\\nv. arrange and integrate in the mind\\nv. put up with something or somebody unpleasant"
+    },
+    "discuss": {
+      "translation": "vt. 討論, 論述\\n[醫] 討論, 辯論",
+      "phonetic": "dis'kʌs",
+      "part_of_speech": "",
+      "definition": "n an athletic competition in which a disk-shaped object is thrown as far as possible\\nn a disk used in throwing competitions\\nv to consider or examine in speech or writing\\nv speak with othe"
+    },
+    "discussed": {
+      "translation": "v. 商討；討論（discuss的過去分詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "v to consider or examine in speech or writing\\nv speak with others about (something); talk (something) over in detail; have a discussion"
+    },
+    "disrupt": {
+      "translation": "a. 分裂的, 中斷的\\nvt. 使分裂, 使瓦解",
+      "phonetic": "dis'rʌpt",
+      "part_of_speech": "",
+      "definition": "v. throw into disorder"
+    },
+    "distinguish": {
+      "translation": "v. 區別, 辨別",
+      "phonetic": "dis'tiŋgwiʃ",
+      "part_of_speech": "",
+      "definition": "v. mark as different\\nv. be a distinctive feature, attribute, or trait; sometimes in a very positive sense"
+    },
+    "distinguishes": {
+      "translation": "v. 辨別, 區別( distinguish的第三人稱單數 ); 使出衆; （憑任何感覺器官）識別出; 看清",
+      "phonetic": "disˈtiŋɡwiʃiz",
+      "part_of_speech": "",
+      "definition": "v mark as different\\nv detect with the senses\\nv be a distinctive feature, attribute, or trait; sometimes in a very positive sense\\nv make conspicuous or noteworthy\\nv identify as in botany"
+    },
+    "diverse": {
+      "translation": "a. 不同的, 變化多的",
+      "phonetic": "dai'vә:s",
+      "part_of_speech": "",
+      "definition": "s. distinctly dissimilar or unlike"
+    },
+    "draw": {
+      "translation": "vi. 拉, 拖, 拔劍\\nvt. 拖拉, 挨近, 領取, 打成平局, 引導, 抽籤決定, 畫, 描寫, 制訂, 草擬, 吸引\\nn. 拉, 拖, 拔出, 抽籤, 平局\\n[計] 翻牌, 繪圖",
+      "phonetic": "drɒ:",
+      "part_of_speech": "",
+      "definition": "n. a gully that is shallower than a ravine\\nn. the finish of a contest in which the score is tied and the winner is undecided\\nn. anything (straws or pebbles etc.) taken or chosen at random\\"
+    },
+    "drawe": {
+      "translation": "n. (Drawe)人名；(德)德拉韋",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "drawing": {
+      "translation": "n. 圖畫, 製圖, 拉\\n[計] 繪圖",
+      "phonetic": "'drɒ:iŋ",
+      "part_of_speech": "",
+      "definition": "n. an illustration that is drawn by hand and published in a book, magazine, or newspaper\\nn. a representation of forms or objects on a surface by means of lines\\nn. the creation of artistic"
+    },
+    "dynamic": {
+      "translation": "a. 動態的, 有活力的, 有力的, 動力的, 不斷變化的\\nn. 動力, 動態\\n[計] 動態的",
+      "phonetic": "dai'næmik",
+      "part_of_speech": "",
+      "definition": "a. characterized by action or forcefulness or force of personality\\na. of or relating to dynamics"
+    },
+    "election": {
+      "translation": "n. 選舉, 當選, 選擇權\\n[法] 選舉, 當選",
+      "phonetic": "i'lekʃәn",
+      "part_of_speech": "",
+      "definition": "n. a vote to select the winner of a position or political office\\nn. the act of selecting someone or something; the exercise of deliberate choice\\nn. the status or fact of being elected\\nn."
+    },
+    "energy": {
+      "translation": "n. 精力, 精神, 活力, 能量\\n[化] 能; 能量",
+      "phonetic": "'enәdʒi",
+      "part_of_speech": "",
+      "definition": "n. (physics) a thermodynamic quantity equivalent to the capacity of a physical system to do work; the units of energy are joules or ergs\\nn. forceful exertion\\nn. enterprising or ambitious d"
+    },
+    "enforcement": {
+      "translation": "n. 執行, 強制\\n[法] 實施, 加強, 厲行",
+      "phonetic": "in'fɒ:smәnt",
+      "part_of_speech": "",
+      "definition": "n. the act of enforcing; ensuring observance of or obedience to"
+    },
+    "enhance": {
+      "translation": "vt. 提高, 加強, 增加",
+      "phonetic": "in'hæns",
+      "part_of_speech": "",
+      "definition": "v. increase\\nv. make better or more attractive"
+    },
+    "enhancing": {
+      "translation": "v. 提高( enhance的現在分詞 ); 增進; 用計算機增強（照片等）; 提高…的價值（或價格）; 探溯語源, 指示語源( etymologize的過去式和過去分詞 ); 增進; 用計算機增強（照片等）; 提高…的價值（或價格）",
+      "phonetic": "inˈhɑ:nsɪŋ",
+      "part_of_speech": "",
+      "definition": "v increase\\nv make better or more attractive"
+    },
+    "enterprise": {
+      "translation": "n. 企業, 事業心, 進取心, 幹事業\\n[計] 企業",
+      "phonetic": "'entәpraiz",
+      "part_of_speech": "",
+      "definition": "n. a purposeful or industrious undertaking (especially one that requires effort or boldness)\\nn. an organization created for business ventures\\nn. readiness to embark on bold new ventures"
+    },
+    "evolve": {
+      "translation": "vi. 進展, 進化, 展開\\nvt. 使發展, 使推斷出, 使進化",
+      "phonetic": "i'vɒlv",
+      "part_of_speech": "",
+      "definition": "v. work out\\nv. undergo development or evolution"
+    },
+    "evolving": {
+      "translation": "a. 展開的；進化的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "v work out\\nv undergo development or evolution\\nv gain through experience"
+    },
+    "examination": {
+      "translation": "n. 考試, 測驗, 審查\\n[醫] 檢查, 診察",
+      "phonetic": "ig.zæmi'neiʃәn",
+      "part_of_speech": "",
+      "definition": "n. the act of examining something closely (as for mistakes)\\nn. a set of questions or exercises evaluating skill or knowledge\\nn. the act of giving students or candidates a test (as by quest"
+    },
+    "exec": {
+      "translation": "n. 主任參謀, 副艦長\\n[計] 執行, 執行程序",
+      "phonetic": "i^'zek",
+      "part_of_speech": "",
+      "definition": "n the chief executive department of the United States government"
+    },
+    "execs": {
+      "translation": "abbr. executives 執行者, 經理主管人員\\nn. execute 實行( exec的複數形式 ); executive 實行的",
+      "phonetic": "ɪɡ'zeks",
+      "part_of_speech": "",
+      "definition": "n. the chief executive department of the United States government"
+    },
+    "exist": {
+      "translation": "vi. 存在, 生存, 發生",
+      "phonetic": "ig'zist",
+      "part_of_speech": "",
+      "definition": "v. have an existence, be extant\\nv. support oneself"
+    },
+    "existing": {
+      "translation": "a. 存在的, 目前的, 現存的, 現有的\\n[計] 現成的, 已有的, 現存的",
+      "phonetic": "i^'zistiŋ",
+      "part_of_speech": "",
+      "definition": "s. presently existing\\ns. existing in something specified"
+    },
+    "feed": {
+      "translation": "n. 飼料, 一餐, 飼養\\nvt. 喂, 飼養, 放牧, 靠...爲生\\nvi. 喫東西, 用餐, 流入\\n[計] 送紙",
+      "phonetic": "fi:d",
+      "part_of_speech": "",
+      "definition": "n. food for domestic livestock\\nv. provide as food\\nv. give food to\\nv. feed into; supply"
+    },
+    "feeds": {
+      "translation": "n. 飼料；一餐（feed的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n food for domestic livestock\\nv provide as food\\nv give food to\\nv feed into; supply\\nv introduce continuously\\nv support or promote\\nv take in food; used of animals only\\nv serve as food f"
+    },
+    "financial": {
+      "translation": "a. 財政的, 金融的\\n[經] 財政的, 金融的, 財務的",
+      "phonetic": "fai'nænʃәl",
+      "part_of_speech": "",
+      "definition": "a involving financial matters"
+    },
+    "finding": {
+      "translation": "n. 發現, 發現物, 決定, 裁決\\n[法] 調查結果, 對事實的認定, 判定的要素",
+      "phonetic": "'faindiŋ",
+      "part_of_speech": "",
+      "definition": "n. the decision of a court on issues of fact or law\\nn. something that is found"
+    },
+    "findings": {
+      "translation": "n. 發現, 調查結果；檢驗發現的情況（finding複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n. a collection of tools and other articles used by an artisan to make jewelry or clothing or shoes"
+    },
+    "first": {
+      "translation": "adv. 首先, 第一, 優先\\na. 第一的\\nnum. 第一\\nn. 開始, 第一",
+      "phonetic": "fә:st",
+      "part_of_speech": "",
+      "definition": "n. the first or highest in an ordering or series\\nn. the first element in a countable series\\nn. an honours degree of the highest class\\na. preceding all others in time or space or degree"
+    },
+    "fix": {
+      "translation": "vt. 使固定, 修理, 準備, 安裝, 凝視, 牢記, 確定, 整理\\nvi. 固定, 注視, 確定\\nn. 困境, 方位, 維修, 賄賂",
+      "phonetic": "fiks",
+      "part_of_speech": "",
+      "definition": "n. informal terms for a difficult situation\\nn. something craved, especially an intravenous injection of a narcotic drug\\nn. an exemption granted after influence (e.g., money) is brought to"
+    },
+    "fixed": {
+      "translation": "a. 固定的, 不變的\\n[法] 固定的, 確定的, 不變的",
+      "phonetic": "fikst",
+      "part_of_speech": "",
+      "definition": "s. (of a number) having a fixed and unchanging value\\ns. fixed and unmoving\\na. securely placed or fastened or set\\ns. incapable of being changed or moved or undone; e.g. \"frozen prices\""
+    },
+    "flexibility": {
+      "translation": "n. 彈性, 適應性\\n[計] 靈活性; 適應性",
+      "phonetic": ".fleksi'biliti",
+      "part_of_speech": "",
+      "definition": "n. the property of being flexible; easily bent or shaped\\nn. the quality of being adaptable or variable"
+    },
+    "follow": {
+      "translation": "vt. 跟隨, 沿行, 遵循, 追求\\nvi. 跟隨, 接着\\nn. 跟隨, 追隨",
+      "phonetic": "'fɒlәu",
+      "part_of_speech": "",
+      "definition": "v. to travel behind, go after, come after\\nv. come as a logical consequence; follow logically\\nv. travel along a certain course\\nv. come after in time, as a result"
+    },
+    "following": {
+      "translation": "n. 下列各項, 部下, 追隨者\\na. 下列的, 其次的",
+      "phonetic": "'fɒlәuiŋ",
+      "part_of_speech": "",
+      "definition": "n. a group of followers or enthusiasts\\ns. about to be mentioned or specified\\ns. immediately following in time or order\\na. going or proceeding or coming after in the same direction"
+    },
+    "for": {
+      "translation": "prep. 爲, 因爲, 至於\\nconj. 因爲\\n[計] DOS批處理命令:對一組參數重複執行指定的命令",
+      "phonetic": "fɒ:",
+      "part_of_speech": "",
+      "definition": "prep. In the most general sense, indicating that in consideration\\n of, in view of, or with reference to, which anything is done or takes\\n place.\\nprep. Indicating the antecedent cause or o"
+    },
+    "former": {
+      "translation": "a. 從前的, 前者的\\nn. 起形成作用的人(或物), 模型, 樣板",
+      "phonetic": "'fɒ:mә",
+      "part_of_speech": "",
+      "definition": "n. the first of two or the first mentioned of two\\na. referring to the first of two things or persons mentioned (or the earlier one or ones of several); I prefer the former version to the la"
+    },
+    "formerly": {
+      "translation": "adv. 從前, 以前",
+      "phonetic": "'fɒ:mәli",
+      "part_of_speech": "",
+      "definition": "r at a previous time;"
+    },
+    "foundation": {
+      "translation": "n. 基礎, 根據, 建立\\n[化] 地基",
+      "phonetic": "faun'deiʃәn",
+      "part_of_speech": "",
+      "definition": "n. the basis on which something is grounded\\nn. an institution supported by an endowment\\nn. lowest support of a structure\\nn. education or instruction in the fundamentals of a field of know"
+    },
+    "framework": {
+      "translation": "n. 結構, 骨架, 參照標準, 準則, 觀點\\n[醫] 構架組織",
+      "phonetic": "'freimwә:k",
+      "part_of_speech": "",
+      "definition": "n. the underlying structure\\nn. a structure supporting or containing something"
+    },
+    "from": {
+      "translation": "prep. 從, 來自, 根據",
+      "phonetic": "frɒm",
+      "part_of_speech": "",
+      "definition": "prep. Out of the neighborhood of; lessening or losing proximity\\n to; leaving behind; by reason of; out of; by aid of; -- used whenever\\n departure, setting out, commencement of action, bein"
+    },
+    "fund": {
+      "translation": "n. 基金, 資金, 存款, 財源, 貯藏\\nvt. 提供資金, 積累",
+      "phonetic": "fʌnd",
+      "part_of_speech": "",
+      "definition": "n. a reserve of money set aside for some purpose\\nv. convert (short-term floating debt) into long-term debt that bears fixed interest and is represented by bonds\\nv. place or store up in a f"
+    },
+    "funding": {
+      "translation": "[經] 債務轉期",
+      "phonetic": "'fʌndiŋ",
+      "part_of_speech": "",
+      "definition": "n financial resources provided to make some project possible\\nn the act of financing\\nv convert (short-term floating debt) into long-term debt that bears fixed interest and is represented by"
+    },
+    "further": {
+      "translation": "a. 更遠的, 此外的, 更多的\\nvt. 促進, 增進, 助長\\nadv. 更進一步地, 更遠地, 此外",
+      "phonetic": "'fә:ðә",
+      "part_of_speech": "",
+      "definition": "s. more distant in especially degree\\nr. to or at a greater extent or degree or a more advanced stage (`further' is used more often than `farther' in this abstract sense)\\nr. in addition or"
+    },
+    "generative": {
+      "translation": "a. 生殖的, 生產的, 有生殖力的\\n[醫] 生殖的, 發生的",
+      "phonetic": "'dʒenәrәtiv",
+      "part_of_speech": "",
+      "definition": "a. having the ability to produce or originate\\ns. producing new life or offspring"
+    },
+    "grab": {
+      "translation": "n. 抓握, 掠奪, 強佔, 東方沿岸帆船\\nvi. 抓取, 搶去\\nvt. 攫取, 捕獲, 霸佔",
+      "phonetic": "græb",
+      "part_of_speech": "",
+      "definition": "n. a mechanical device for gripping an object\\nv. make a grasping or snatching motion with the hand\\nv. obtain illegally or unscrupulously\\nv. take or grasp suddenly"
+    },
+    "guardrail": {
+      "translation": "n. 護欄, 護軌",
+      "phonetic": "'^ɑ:dreil",
+      "part_of_speech": "",
+      "definition": "n a railing placed alongside a stairway or road for safety"
+    },
+    "guardrails": {
+      "translation": "n. 護欄（guardrail的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n. a railing placed alongside a stairway or road for safety"
+    },
+    "has": {
+      "translation": "have的第三人稱單數現在式",
+      "phonetic": "hæz",
+      "part_of_speech": "",
+      "definition": "n (astronomy) the angular distance of a celestial point measured westward along the celestial equator from the zenith crossing; the right ascension for an observer at a particular location a"
+    },
+    "head": {
+      "translation": "n. 頭, 頭腦, 領袖, 腦袋, 最前的部分\\nvt. 爲首, 朝向, 前進, 用頭頂\\nvi. 朝特定方向行進, (作物)結穗\\na. 頭的, 在頂端的, 主要的\\n[計] 磁頭; 衝頭",
+      "phonetic": "hed",
+      "part_of_speech": "",
+      "definition": "n. the upper part of the human body or the front part of the body in animals; contains the face and brains\\nn. a single domestic animal\\nn. a person who is in charge\\nn. the front of a milit"
+    },
+    "headline": {
+      "translation": "n. 大標題, 新聞摘要\\nvt. 爲...做標題, 寫標題",
+      "phonetic": "'hedlain",
+      "part_of_speech": "",
+      "definition": "n. the heading or caption of a newspaper article\\nv. publicize widely or highly, as if with a headline\\nv. provide (a newspaper page or a story) with a headline"
+    },
+    "health": {
+      "translation": "n. 健康, 衛生, 蓬勃, 健康狀態\\n[醫] 健康",
+      "phonetic": "'helθ",
+      "part_of_speech": "",
+      "definition": "n. a healthy state of wellbeing free from disease\\nn. the general condition of body and mind"
+    },
+    "hear": {
+      "translation": "vt. 聽到, 傾聽, 聽說, 審理\\nvi. 聽見, 聽",
+      "phonetic": "hiә",
+      "part_of_speech": "",
+      "definition": "v. perceive (sound) via the auditory sense\\nv. examine or hear (evidence or a case) by judicial process\\nv. receive a communication from someone"
+    },
+    "high-risk": {
+      "translation": "a. 高危險度的, 充滿危險的",
+      "phonetic": "ˈhaɪˈrɪsk",
+      "part_of_speech": "",
+      "definition": "s not financially safe or secure"
+    },
+    "how": {
+      "translation": "adv. 如何, 怎樣, 多少, 多麼\\nn. 方式",
+      "phonetic": "hau",
+      "part_of_speech": "",
+      "definition": "adv. In what manner or way; by what means or process.\\nadv. To what degree or extent, number or amount; in what\\n proportion; by what measure or quality.\\nadv. For what reason; from what cau"
+    },
+    "human": {
+      "translation": "n. 人, 人類\\na. 人類的, 似人類的, 人性的, 有同情心的",
+      "phonetic": "'hju:mәn",
+      "part_of_speech": "",
+      "definition": "a. characteristic of humanity\\na. relating to a person\\na. having human form or attributes as opposed to those of animals or divine beings"
+    },
+    "idg": {
+      "translation": "abbr. 美國國際數據集團（International Data Corporation）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "illustrate": {
+      "translation": "vt. 舉例說明, 作圖解, 闡明\\nvi. 舉例說明",
+      "phonetic": "'ilәstreit",
+      "part_of_speech": "",
+      "definition": "v. depict with an illustration\\nv. supply with illustrations"
+    },
+    "implementation": {
+      "translation": "n. 安裝啓用, 實行, 履行\\n[計] 實施; 實現",
+      "phonetic": ".implimen'teiʃәn",
+      "part_of_speech": "",
+      "definition": "n. the act of implementing (providing a practical means for accomplishing something); carrying into effect"
+    },
+    "include": {
+      "translation": "vt. 包括, 把...算入, 包住\\n[計] DOS內部命令:在CONFIG.SYS文件的一個配置塊中包含另一配置塊的內容",
+      "phonetic": "in'klu:d",
+      "part_of_speech": "",
+      "definition": "v. have as a part, be made up out of\\nv. consider as part of something\\nv. add as part of something else; put in as part of a set, group, or category"
+    },
+    "including": {
+      "translation": "prep. 包含, 包括\\n[經] 包括, 算入",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "v have as a part, be made up out of\\nv consider as part of something\\nv add as part of something else; put in as part of a set, group, or category\\nv allow participation in or the right to b"
+    },
+    "independent": {
+      "translation": "n. 獨立自主者, 無黨派者\\na. 獨立的, 有主見的, 不須依賴的, 不受約束的",
+      "phonetic": ".indi'pendәnt",
+      "part_of_speech": "",
+      "definition": "a. free from external control and constraint\\na. (of a clause) capable of standing syntactically alone as a complete sentence\\ns. not controlled by a party or interest group"
+    },
+    "independently": {
+      "translation": "adv. 獨立地, 自立地",
+      "phonetic": ".indi'pendәntli",
+      "part_of_speech": "",
+      "definition": "r. on your own; without outside help\\nr. apart from others"
+    },
+    "intelligence": {
+      "translation": "n. 智力, 情報, 信息\\n[醫] 智力",
+      "phonetic": "in'telidʒәns",
+      "part_of_speech": "",
+      "definition": "n. the ability to comprehend; to understand and profit from experience\\nn. a unit responsible for gathering and interpreting information about an enemy\\nn. secret information about an enemy"
+    },
+    "interference": {
+      "translation": "n. 衝突, 干涉\\n[計] 干擾",
+      "phonetic": ".intә'fiәrәns",
+      "part_of_speech": "",
+      "definition": "n. (American football) blocking a player's path with your body"
+    },
+    "its": {
+      "translation": "pron. 它的",
+      "phonetic": "its",
+      "part_of_speech": "",
+      "definition": "n the branch of engineering that deals with the use of computers and telecommunications to retrieve and store and transmit information"
+    },
+    "join": {
+      "translation": "vi. 參加, 結合, 加入\\nvt. 連接, 結合, 參加, 加入\\nn. 連接, 結合, 接合點\\n[計] 連接; 匯合指令",
+      "phonetic": "dʒɒin",
+      "part_of_speech": "",
+      "definition": "v. become part of; become a member of a group or organization\\nv. cause to become joined or linked\\nv. come into the company of\\nv. make contact or come together"
+    },
+    "known": {
+      "translation": "a. 已知的, 有名的\\nknow的過去分詞",
+      "phonetic": "nәun",
+      "part_of_speech": "",
+      "definition": "a. apprehended with certainty"
+    },
+    "last": {
+      "translation": "a. 最後的, 末尾的, 最近的\\nvi. 持續, 支持, 維持\\nvt. 使維持, 夠...用\\nadv. 最後, 後來\\nn. 最後, 末尾, 鞋楦頭",
+      "phonetic": "lɑ:st",
+      "part_of_speech": "",
+      "definition": "n. the last or lowest in an ordering or series\\nn. a person's dying act; the final thing a person can do\\nn. a unit of weight equal to 4,000 pounds\\nn. a unit of capacity for grain equal to"
+    },
+    "latency": {
+      "translation": "n. 潛伏, 潛在\\n[計] 傳輸時間, 傳輸延遲時間",
+      "phonetic": "'leitnsi",
+      "part_of_speech": "",
+      "definition": "n. the state of being not yet evident or active"
+    },
+    "led": {
+      "translation": "lead的過去式和過去分詞\\n[計] 發光二極管",
+      "phonetic": "led",
+      "part_of_speech": "",
+      "definition": "n diode such that light emitted at a p-n junction is proportional to the bias current; color depends on the material used\\nv take somebody somewhere\\nv have as a result or residue\\nv tend to"
+    },
+    "life": {
+      "translation": "n. 生活, 生命, 人生, 世事, 生物, 壽命, 一生, 生命力, 靈魂, 無期徒刑\\n[醫] 生活, 生存, 生命, 壽命",
+      "phonetic": "laif",
+      "part_of_speech": "",
+      "definition": "n. a characteristic state or mode of living\\nn. the experience of being alive; the course of human events and activities\\nn. the course of existence of an individual; the actions and events"
+    },
+    "like": {
+      "translation": "a. 相似的, 同樣的\\nvt. 喜歡, 願意, 想\\nvi. 喜歡, 希望\\nn. 愛好, 同樣的人(或物)\\nprep. 象, 如同\\nadv. 可能",
+      "phonetic": "laik",
+      "part_of_speech": "",
+      "definition": "n. a similar kind\\nn. a kind of person\\nv. find enjoyable or agreeable\\nv. be fond of"
+    },
+    "limit": {
+      "translation": "n. 界限, 邊界, 限度, 極限, 限制\\nvt. 限制, 限定",
+      "phonetic": "'limit",
+      "part_of_speech": "",
+      "definition": "n. the greatest possible degree of something\\nn. as far as something can go\\nn. the boundary of a specific area\\nn. the mathematical value toward which a function goes as the independent var"
+    },
+    "limitation": {
+      "translation": "n. 限制, 缺陷, 限額\\n[醫] 限界, 限制, 限度",
+      "phonetic": ".limi'teiʃәn",
+      "part_of_speech": "",
+      "definition": "n. the quality of being limited or restricted\\nn. (law) a time period after which suits cannot be brought\\nn. an act of limiting or restricting (as by regulation)"
+    },
+    "limite": {
+      "translation": " [電影]界限",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "limited": {
+      "translation": "a. 有限制的, 有限的, 有限責任的\\nn. 特別快車",
+      "phonetic": "'limitid",
+      "part_of_speech": "",
+      "definition": "a. small in range or scope\\ns. including only a part\\ns. mediocre\\ns. not excessive"
+    },
+    "link": {
+      "translation": "n. 環, 連結物, 鏈接, 火把\\nvt. 連結, 聯合, 挽住\\nvi. 連接起來\\n[計] 連接, 鏈路",
+      "phonetic": "liŋk",
+      "part_of_speech": "",
+      "definition": "n. the means of connection between things linked in series\\nn. a fastener that serves to join or connect\\nn. a unit of length equal to 1/100 of a chain\\nn. (computing) an instruction that co"
+    },
+    "linke": {
+      "translation": " [地名] [緬甸] 林蓋",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "linked": {
+      "translation": "a. 連接的；顯示連環遺傳的；聯合的",
+      "phonetic": "liŋkt",
+      "part_of_speech": "",
+      "definition": "v make a logical or causal connection\\nv connect, fasten, or put together two or more pieces\\nv be or become joined or united or linked\\nv link with or as with a yoke\\ns connected by a link,"
+    },
+    "live": {
+      "translation": "a. 活的, 生動的, 精力充沛的, 實況轉播的\\nvi. 活, 生存, 居住\\nvt. 過着, 度過, 經歷\\nadv. 實況地",
+      "phonetic": "liv.laiv",
+      "part_of_speech": "",
+      "definition": "v. lead a certain kind of life; live in a certain style\\nv. pursue a positive and satisfying existence\\na. actually being performed at the time of hearing or viewing\\na. exerting force or co"
+    },
+    "local": {
+      "translation": "a. 地方性的, 當地的, 局部的, 鄉土的, 本地的\\nn. 當地居民, 本地新聞, 局部\\n[計] 本地的; 局部",
+      "phonetic": "'lәukәl",
+      "part_of_speech": "",
+      "definition": "n. public transport consisting of a bus or train that stops at all stations or stops\\na. relating to or applicable to or concerned with the administration of a city or town or district rathe"
+    },
+    "mak": {
+      "translation": "abbr. 多次激活密鑰（Multiple Activation Key）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a terrorist organization founded by Osama bin Laden in the 1980s to provide money and recruit fighters around the world; enlisted and transported thousands of men to Afghanistan to fight t"
+    },
+    "make": {
+      "translation": "vt. 製造, 安排, 創造, 構成, 使得, 產生, 造成, 整理, 佈置, 引起, 到達, 進行\\nvi. 開始, 前進, 增大, 被製造, 被處理\\nn. 製造, 構造, 性情",
+      "phonetic": "meik",
+      "part_of_speech": "",
+      "definition": "v. engage in\\nv. give certain properties to something\\nv. make or cause to be or to become\\nv. compel or make somebody or something to act in a certain way"
+    },
+    "making": {
+      "translation": "n. 製造, (手工)製造業, 製作, 形成, 發展, 要素, 內在因素, 賺頭, 製造物",
+      "phonetic": "'meikiŋ",
+      "part_of_speech": "",
+      "definition": "n. (usually plural) the components needed for making or doing something"
+    },
+    "manu": {
+      "translation": "n. 摩奴（印度神話中的人類祖先, 古印度《摩奴法典》的制訂者）",
+      "phonetic": "'mænu:",
+      "part_of_speech": "",
+      "definition": "n. One of a series of progenitors of human beings, and authors\\n of human wisdom."
+    },
+    "manus": {
+      "translation": "n. 手, 前肢, 夫權\\n[醫] 手",
+      "phonetic": "'meinәs",
+      "part_of_speech": "",
+      "definition": "n the (prehensile) extremity of the superior limb"
+    },
+    "mechanism": {
+      "translation": "n. 機械, 機構, 結構, 機理, 技巧\\n[化] 機理; 歷程; 機構",
+      "phonetic": "'mekәnizm",
+      "part_of_speech": "",
+      "definition": "n. the atomic process that occurs during a chemical reaction\\nn. the technical aspects of doing something\\nn. a natural object resembling a machine in structure or function\\nn. (philosophy)"
+    },
+    "mechanisms": {
+      "translation": "n. 機械( mechanism的複數形式 ); 機械裝置; [生物學] 機制; 機械作用",
+      "phonetic": "'mekənɪzəmz",
+      "part_of_speech": "",
+      "definition": "n. the atomic process that occurs during a chemical reaction\\nn. the technical aspects of doing something\\nn. a natural object resembling a machine in structure or function"
+    },
+    "meta": {
+      "translation": "[計] 元的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "mistaken": {
+      "translation": "a. 犯錯的, 錯誤的\\nmistake的過去分詞",
+      "phonetic": "mis'teikәn",
+      "part_of_speech": "",
+      "definition": "v identify incorrectly\\nv to make a mistake or be incorrect\\ns wrong in e.g. opinion or judgment\\ns arising from error"
+    },
+    "misuse": {
+      "translation": "n. 誤用, 濫用\\nvt. 誤用, 濫用, 虐待",
+      "phonetic": ".mis'ju:z",
+      "part_of_speech": "",
+      "definition": "n. improper or excessive use"
+    },
+    "mit": {
+      "translation": "n. 手, 連指手套, 棒球手套, 拳擊手套, 馬薩諸塞理工學院, 麻省理工學院\\nvt. 與...握手, 用手銬銬住, 逮捕\\n[計] 麻省理工學院, 模塊化智能終端",
+      "phonetic": "mit",
+      "part_of_speech": "",
+      "definition": "n an engineering university in Cambridge"
+    },
+    "model": {
+      "translation": "n. 模型, 模範, 模特兒\\na. 模範的, 作模型用的\\nvi. 做模型, 做模特兒\\nvt. 使模仿, 塑造\\n[計] 模型",
+      "phonetic": "'mɒdәl",
+      "part_of_speech": "",
+      "definition": "n. a hypothetical description of a complex entity or process\\nn. a type of product\\nn. a person who poses for a photographer or painter or sculptor\\nn. representation of something (sometimes"
+    },
+    "most": {
+      "translation": "n. 最多, 最大\\na. 大多數的, 幾乎全部的, 最多的\\nadv. 最, 最多, 極其",
+      "phonetic": "mәust",
+      "part_of_speech": "",
+      "definition": "a. (superlative of `many' used with count nouns and often preceded by `the') quantifier meaning the greatest in number\\na. the superlative of `much' that can be used with mass nouns and is u"
+    },
+    "needles": {
+      "translation": "n. 針數, 千針本；摺頁頂針（needle複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n the leaf of a conifer\\nn a slender pointer for indicating the reading on the scale of a measuring instrument\\nn a sharp pointed implement (usually steel)\\nn a stylus that formerly made sou"
+    },
+    "needless": {
+      "translation": "a. 不需要的, 不必要的",
+      "phonetic": "'ni:dlis",
+      "part_of_speech": "",
+      "definition": "n the leaf of a conifer\\nn a slender pointer for indicating the reading on the scale of a measuring instrument\\nn a sharp pointed implement (usually steel)\\nn a stylus that formerly made sou"
+    },
+    "new": {
+      "translation": "a. 新的, 陌生的, 最近的, 不熟悉的\\n[法] 新發現的, 新的, 重新開始的",
+      "phonetic": "nju:",
+      "part_of_speech": "",
+      "definition": "a. not of long duration; having just (or relatively recently) come into being or been made or acquired or discovered\\ns. having no previous example or precedent or parallel\\ns. other than th"
+    },
+    "news": {
+      "translation": "n. 新聞, 消息, 報導\\n[法] 新聞, 消息, 新聞報導",
+      "phonetic": "nju:z",
+      "part_of_speech": "",
+      "definition": "n. information about recent and important events\\nn. information reported in a newspaper or news magazine\\nn. informal information of any kind that is not previously known to someone"
+    },
+    "non-profit": {
+      "translation": "a. 非營利的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "not": {
+      "translation": "adv. 不, 非, 未\\n[計] 非",
+      "phonetic": "nɒt",
+      "part_of_speech": "",
+      "definition": "r. negation of a word or group of words"
+    },
+    "now": {
+      "translation": "adv. 現在, 剛纔, 目前\\nn. 現在\\na. 現在的\\nconj. 由於",
+      "phonetic": "nau",
+      "part_of_speech": "",
+      "definition": "n. the momentary present\\nr. in the historical present; at this point in the narration of a series of past events\\nr. used to preface a command or reproof or request\\nr. at the present momen"
+    },
+    "offer": {
+      "translation": "n. 給予(物), 出價, 提議, 意圖, 報價\\nvt. 提供, 出價, 奉獻, 試圖, 使出現, 演出\\nvi. 出現, 獻祭, 提議, 求婚",
+      "phonetic": "'ɒfә",
+      "part_of_speech": "",
+      "definition": "n. the verbal act of offering\\nn. something offered (as a proposal or bid)\\nv. make available or accessible, provide or furnish\\nv. present for acceptance or rejection"
+    },
+    "offering": {
+      "translation": "n. 提供, 奉獻物, 牲禮, 上市的股票(或證券等)\\n[經] 出售物",
+      "phonetic": "'ɒfәriŋ",
+      "part_of_speech": "",
+      "definition": "n. money contributed to a religious organization"
+    },
+    "often": {
+      "translation": "adv. 時常, 常常",
+      "phonetic": "'ɒ:fn",
+      "part_of_speech": "",
+      "definition": "r. in many cases or instances"
+    },
+    "one": {
+      "translation": "n. 一(個)\\npron. 一, 任何人\\nnum. 一, 一個\\na. 一致的, 完整的",
+      "phonetic": "wʌn",
+      "part_of_speech": "",
+      "definition": "n. the smallest whole number or a numeral representing this number\\nn. a single person or thing\\ns. used of a single unit or thing; not two or more\\ns. having the indivisible character of a"
+    },
+    "opportunity": {
+      "translation": "n. 機會, 時機",
+      "phonetic": ".ɒpә'tju:niti",
+      "part_of_speech": "",
+      "definition": "n. a possibility due to a favorable combination of circumstances"
+    },
+    "original": {
+      "translation": "a. 最初的, 原始的, 有創意的\\nn. 原物, 原作",
+      "phonetic": "ә'ridʒәnl",
+      "part_of_speech": "",
+      "definition": "n. something that serves as a model or a basis for making copies\\ns. preceding all others in time or being as first made or performed\\ns. (of e.g. information) not secondhand or by way of so"
+    },
+    "other": {
+      "translation": "a. 其他的, 另外的, 從前的\\npron. 其他的, 他人, 另外一個",
+      "phonetic": "'ʌðә",
+      "part_of_speech": "",
+      "definition": "a. not the same one or ones already mentioned or implied\\ns. recently past\\ns. very unusual; different in character or quality from the normal or expected"
+    },
+    "others": {
+      "translation": "pron. 其他人",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "outcome": {
+      "translation": "n. 結果, 出口",
+      "phonetic": "'autkʌm",
+      "part_of_speech": "",
+      "definition": "n something that results\\nn a phenomenon that follows and is caused by some previous phenomenon"
+    },
+    "outcomes": {
+      "translation": "n. 結果( outcome的複數形式 )",
+      "phonetic": "ˈautkʌmz",
+      "part_of_speech": "",
+      "definition": "n. something that results\\nn. a phenomenon that follows and is caused by some previous phenomenon"
+    },
+    "over": {
+      "translation": "adv. 結束, 越過, 從頭到尾\\nprep. 在...之上, 遍於...之上, 越過\\na. 上面的\\nvt. 越過",
+      "phonetic": "'әuvә",
+      "part_of_speech": "",
+      "definition": "n. (cricket) the division of play during which six balls are bowled at the batsman by one player from the other team from the same end of the pitch\\nr. at or to a point across intervening sp"
+    },
+    "participate": {
+      "translation": "vi. 參加, 分享, 參與, 帶有\\nvt. 分享, 分擔",
+      "phonetic": "pɑ:'tisipeit",
+      "part_of_speech": "",
+      "definition": "v. share in something"
+    },
+    "participated": {
+      "translation": "v. 參加, 參與( participate的過去式和過去分詞 )",
+      "phonetic": "pɑ:ˈtisipeitid",
+      "part_of_speech": "",
+      "definition": "imp. & p. p. of Participate"
+    },
+    "pass": {
+      "translation": "n. 經過, 要隘, 途徑, 通行, 護照, 及格\\nvt. 經過, 越過, 通過, 批准, 度過, 傳遞, 忽略\\nvi. 經過, 變化, 流通, 及格, 宣判, 終止, 消逝, 被忽略, 不叫牌, 傳遞\\n[計] 遍",
+      "phonetic": "pæs",
+      "part_of_speech": "",
+      "definition": "n. (military) a written leave of absence\\nn. (American football) a play that involves one player throwing the ball to a teammate\\nn. the location in a range of mountains of a geological form"
+    },
+    "perhaps": {
+      "translation": "adv. 也許, 大概",
+      "phonetic": "pә'hæps",
+      "part_of_speech": "",
+      "definition": "r by chance"
+    },
+    "policies": {
+      "translation": "n. 政策；保險單（policy的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a plan of action adopted by an individual or social group\\nn a line of argument rationalizing the course of action of a government\\nn written contract or certificate of insurance"
+    },
+    "policy": {
+      "translation": "n. 政策, 方針, 策略, 保險單\\n[醫] 憑單, 保險單",
+      "phonetic": "'pɒlisi",
+      "part_of_speech": "",
+      "definition": "n. a plan of action adopted by an individual or social group\\nn. a line of argument rationalizing the course of action of a government\\nn. written contract or certificate of insurance"
+    },
+    "pop": {
+      "translation": "n. 砰然聲, 槍擊, 含氣飲料, 流行音樂, 通俗藝術\\na. 流行的, 熱門的, 通俗的\\nvt. 使發出爆裂聲, 開槍打, 突然伸出\\nvi. 發出爆裂聲, 射擊, 突然出現, 瞪大\\nadv. 突然, 砰地\\n[計] 出現點, 郵局協議",
+      "phonetic": "pɒp",
+      "part_of_speech": "",
+      "definition": "n. a sweet drink containing carbonated water and flavoring\\nn. a sharp explosive sound as from a gunshot or drawing a cork\\nv. hit a pop-fly\\nv. make a sharp explosive noise"
+    },
+    "popp": {
+      "translation": " [醫][=peripheral occluded portal pressure]周圍阻塞性門靜脈壓",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "poppe": {
+      "translation": "n. (Poppe)人名；(德、匈、葡、捷、瑞典)波佩；(英)波普",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "popping": {
+      "translation": "a. 間歇的；凸出的",
+      "phonetic": "'pɔpiŋ",
+      "part_of_speech": "",
+      "definition": "n a sharp explosive sound as from a gunshot or drawing a cork\\nv bulge outward\\nv hit a pop-fly\\nv make a sharp explosive noise\\nv fire a weapon with a loud explosive noise\\nv cause to make"
+    },
+    "posture": {
+      "translation": "n. 姿勢, 態度, 情形, 形勢\\nvt. 作...的姿勢\\nvi. 作姿勢",
+      "phonetic": "'pɒstʃә",
+      "part_of_speech": "",
+      "definition": "n the arrangement of the body and its limbs\\nn characteristic way of bearing one's body\\nn a rationalized mental attitude\\nn capability in terms of personnel and materiel that affect the cap"
+    },
+    "postures": {
+      "translation": "n. 姿勢( posture的名詞複數 ); 看法; 態度; 立場\\nv. 做出某種姿勢( posture的第三人稱單數 )",
+      "phonetic": "ˈpɔstʃəz",
+      "part_of_speech": "",
+      "definition": "n the arrangement of the body and its limbs\\nn characteristic way of bearing one's body\\nn a rationalized mental attitude\\nn capability in terms of personnel and materiel that affect the cap"
+    },
+    "present": {
+      "translation": "n. 現在, 禮品, 瞄準\\na. 現在的, 出席的\\nvt. 介紹, 引見, 贈送, 提出, 呈現, 上演\\nvi. 舉槍瞄準",
+      "phonetic": "'preznt",
+      "part_of_speech": "",
+      "definition": "n. the period of time that is happening now; any continuous stretch of time including the moment of speech\\nn. something presented as a gift\\nn. a verb tense that expresses actions or states"
+    },
+    "presented": {
+      "translation": "vt.& vi. （動詞present的過去式及過去分詞形式）; 表示\"展示; 展現; 出示\"\\nv. 舉向( present的過去式和過去分詞 ); 面向; 舉槍瞄準; （分娩時嬰兒）露出",
+      "phonetic": "ˈprezəntid",
+      "part_of_speech": "",
+      "definition": "v give an exhibition of to an interested audience\\nv bring forward and present to the mind\\nv perform (a play), especially on a stage\\nv hand over formally\\nv introduce\\nv give, especially a"
+    },
+    "preserve": {
+      "translation": "vt. 保護, 保持, 保存, 維持, 醃, 禁獵\\nvi. 加工食品, 禁獵\\nn. 加工成的食品, 禁獵地, 保護區, 防護物",
+      "phonetic": "pri'zә:v",
+      "part_of_speech": "",
+      "definition": "n. a domain that seems to be specially reserved for someone\\nn. a reservation where animals are protected\\nv. prevent (food) from rotting\\nv. keep undisturbed for personal or private use for"
+    },
+    "preserves": {
+      "translation": "餞",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n fruit preserved by cooking with sugar\\nn a domain that seems to be specially reserved for someone\\nn a reservation where animals are protected\\nn fruit preserved by cooking with sugar\\nv k"
+    },
+    "prohibit": {
+      "translation": "vt. 禁止, 阻止\\n[經] 禁止",
+      "phonetic": "prә'hibit",
+      "part_of_speech": "",
+      "definition": "v command against"
+    },
+    "prohibits": {
+      "translation": "v. 禁止, 阻止( prohibit的第三人稱單數 )",
+      "phonetic": "prəˈhibits",
+      "part_of_speech": "",
+      "definition": "v command against"
+    },
+    "publisher": {
+      "translation": "n. 出版者, 發行人\\n[法] 發行人, 出版者, 報刊發行者",
+      "phonetic": "'pʌbliʃә",
+      "part_of_speech": "",
+      "definition": "n. a firm in the publishing business\\nn. a person engaged in publishing periodicals or books or music\\nn. the proprietor of a newspaper"
+    },
+    "publishers": {
+      "translation": "n. 出版商, 出版公司；出版社（publisher的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a firm in the publishing business\\nn a person engaged in publishing periodicals or books or music\\nn the proprietor of a newspaper"
+    },
+    "rais": {
+      "translation": "abbr. 輻射源監管信息系統；紅外反射-吸收光譜學（Reflection-Absorption Infrared Spectroscopy）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n. Same as 2d Reis."
+    },
+    "raise": {
+      "translation": "n. 上升, 高地, 增高\\nvt. 升起, 舉起, 喚起, 提高, 使出現, 使復活, 提出, 籌集, 飼養",
+      "phonetic": "reiz",
+      "part_of_speech": "",
+      "definition": "n. the amount a salary is increased\\nn. increasing the size of a bet (as in poker)\\nv. raise the level or amount of something\\nv. raise from a lower to a higher position"
+    },
+    "raises": {
+      "translation": "v. 舉起；建造；飼養（raise的三單形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n the amount a salary is increased\\nn an upward slope or grade (as in a road)\\nn increasing the size of a bet (as in poker)\\nn the act of raising something\\nv raise the level or amount of so"
+    },
+    "read": {
+      "translation": "v. 讀, 閱讀, 理解\\na. 有學問的\\nn. 讀取, 閱讀\\n[計] 讀取",
+      "phonetic": "ri:d",
+      "part_of_speech": "",
+      "definition": "n. something that is read\\nv. interpret something that is written or printed\\nv. have or contain a certain wording or form\\nv. look at, interpret, and say out loud something that is written"
+    },
+    "reason": {
+      "translation": "n. 理由, 原因, 理智, 道理, 前提, 理性\\nvt. 說服, 推論, 辯論\\nvi. 推論, 勸說, 思考",
+      "phonetic": "'ri:zn",
+      "part_of_speech": "",
+      "definition": "n. a rational motive for a belief or action\\nn. an explanation of the cause of some phenomenon\\nn. the capacity for rational thought or inference or discrimination\\nn. a fact that logically"
+    },
+    "reasoning": {
+      "translation": "n. 推論, 推理, 論證\\n[化] 推理",
+      "phonetic": "'ri:zniŋ",
+      "part_of_speech": "",
+      "definition": "n. thinking that is coherent and logical"
+    },
+    "recent": {
+      "translation": "a. 最近的, 近代的, 最新的\\n[經] 最近的, 新進的",
+      "phonetic": "'ri:snt",
+      "part_of_speech": "",
+      "definition": "s. new"
+    },
+    "reflect": {
+      "translation": "vt. 反射, 反映, 招致, 深思\\nvi. 被反射, 映出, 深思, 考慮, 指責",
+      "phonetic": "ri'flekt",
+      "part_of_speech": "",
+      "definition": "v. manifest or bring back\\nv. to throw or bend back (from a surface)\\nv. be bright by reflecting or casting light\\nv. show an image of"
+    },
+    "register": {
+      "translation": "n. 寄存器, 記錄, 登記簿, 註冊\\nvt. 記錄, 註冊, 提示, 表達, 把...掛號\\nvi. 登記, 註冊, 掛號\\n[計] 寄存器",
+      "phonetic": "'redʒistә",
+      "part_of_speech": "",
+      "definition": "n. an official written record of names or events or transactions\\nn. (music) the timbre that is characteristic of a certain range and manner of production of the human voice or of different"
+    },
+    "rely": {
+      "translation": "vi. 信賴, 依賴, 信任",
+      "phonetic": "ri'lai",
+      "part_of_speech": "",
+      "definition": "v have confidence or faith in"
+    },
+    "relying": {
+      "translation": "v. 信任( rely的現在分詞 ); 信賴; 依賴; 依靠",
+      "phonetic": "riˈlaiŋ",
+      "part_of_speech": "",
+      "definition": "p. pr. & vb. n. of Rely"
+    },
+    "report": {
+      "translation": "n. 報告, 報道, 傳說, 案情報告, 爆炸聲, 成績單\\nvt. 報告, 彙報, 轉述, 報道, 揭發, 使報到\\nvi. 報告, 寫報道, 報到\\n[計] 報告",
+      "phonetic": "ri'pɒ:t",
+      "part_of_speech": "",
+      "definition": "n. a written document describing the findings of some individual or group\\nn. the act of informing by verbal report\\nn. a short account of the news\\nn. a sharp explosive sound (especially th"
+    },
+    "reporte": {
+      "translation": "n. 通訊報（報紙名）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reporting": {
+      "translation": "n. 報道\\n[經] 報告, 彙報",
+      "phonetic": "ri'pɒ:tiŋ",
+      "part_of_speech": "",
+      "definition": "n the news as presented by reporters for newspapers or radio or television\\nv to give an account or representation of in words\\nv announce as the result of an investigation or experience or"
+    },
+    "reports": {
+      "translation": "n. 報表；專題；報告（report的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a written document describing the findings of some individual or group\\nn the act of informing by verbal report\\nn a short account of the news\\nn a sharp explosive sound (especially the so"
+    },
+    "require": {
+      "translation": "vt. 需要, 命令, 要求\\n[法] 需要, 要求, 命令",
+      "phonetic": "ri'kwaiә",
+      "part_of_speech": "",
+      "definition": "v require as useful, just, or proper\\nv consider obligatory; request and expect\\nv make someone do something\\nv have need of"
+    },
+    "research": {
+      "translation": "n. 研究, 調查, 考察\\nvi. 研究, 調查",
+      "phonetic": "ri'sә:tʃ",
+      "part_of_speech": "",
+      "definition": "n. systematic investigation to establish facts\\nv. attempt to find out in a systematically and scientific manner\\nv. inquire into"
+    },
+    "review": {
+      "translation": "n. 檢討, 複習, 回顧, 檢閱, 評論\\nvt. 溫習, 檢討, 評論, 再檢察, 複審\\nvi. 複習功課, 寫評論",
+      "phonetic": "ri'vju:",
+      "part_of_speech": "",
+      "definition": "n. an essay or article that gives a critical evaluation (as of a book or play)\\nn. (accounting) a service (less exhaustive than an audit) that provides some assurance to interested parties a"
+    },
+    "rigidity": {
+      "translation": "n. 堅硬, 僵化, 堅硬, 剛性, 剛度\\n[化] 剛度係數",
+      "phonetic": "ri'dʒiditi",
+      "part_of_speech": "",
+      "definition": "n. the physical property of being stiff and resisting bending"
+    },
+    "risk": {
+      "translation": "n. 冒險, 危險, 保險額\\nvt. 冒...的危險, 冒險幹",
+      "phonetic": "risk",
+      "part_of_speech": "",
+      "definition": "n. a venture undertaken without regard to possible loss or injury\\nn. the probability of becoming infected given that exposure to an infectious agent has occurred\\nn. the probability of bein"
+    },
+    "robot": {
+      "translation": "n. 機械人, 自動機械, 機械般工作的人\\n[計] 機器人; 自動機",
+      "phonetic": "'rәubәt",
+      "part_of_speech": "",
+      "definition": "n a mechanism that can move automatically"
+    },
+    "robotic": {
+      "translation": "a. 自動的；機器人的, 像機器人的",
+      "phonetic": "rәu'bɔtik",
+      "part_of_speech": "",
+      "definition": "a. of or relating to mechanical robots"
+    },
+    "robotics": {
+      "translation": "[計] 機器人學, 自動機工程學",
+      "phonetic": "rәu'bɔtiks",
+      "part_of_speech": "",
+      "definition": "n. the area of AI concerned with the practical use of robots"
+    },
+    "round": {
+      "translation": "n. 圓, 圓形物, 巡迴, 循環, 一輪, 一回合, 一局, 範圍, 輪唱\\na. 圓的, 球形的, 豐滿的, 肥胖的, 完全的, 大概的, 完美的, 圓潤的\\nprep. 圍着, 附近, 繞過, 在...周圍\\nadv. 圍繞着, 在周圍, 迂迴地, 挨個, 朝反方向\\nvt. 弄圓, 使成圓形, 繞行, 完成, 圍捕, 把...四捨五入\\nvi. 變圓, 發胖, 環行, 拐彎, 進展",
+      "phonetic": "raund",
+      "part_of_speech": "",
+      "definition": "n. a charge of ammunition for a single shot\\nn. (often plural) a series of professional calls (usually in a set order)\\nn. the usual activities in your day\\nn. the course along which communi"
+    },
+    "safety": {
+      "translation": "n. 安全, 保險, 平安, 保安設備\\nvt. 保護, 防護",
+      "phonetic": "'seifti",
+      "part_of_speech": "",
+      "definition": "n. the state of being certain that adverse effects will not be caused by some agent under defined conditions\\nn. a safe place\\nn. a score in American football; a player is tackled behind his"
+    },
+    "same": {
+      "translation": "a. 相同的, 同樣的\\npron. 相同的人(或事物)\\nadv. 同樣地",
+      "phonetic": "seim",
+      "part_of_speech": "",
+      "definition": "a. same in identity\\na. closely similar or comparable in kind or quality or quantity or degree\\ns. unchanged in character or nature"
+    },
+    "save": {
+      "translation": "n. 救球\\nvt. 解救, 挽救, 儲蓄, 保存, 節省, 保留\\nvi. 挽救, 節省, 救球\\nprep. 除...之外\\n[計] 保存",
+      "phonetic": "seiv",
+      "part_of_speech": "",
+      "definition": "n. (sports) the act of preventing the opposition from scoring\\nv. to keep up and reserve for personal or special use\\nv. bring into safety\\nv. spend less; buy at a reduced price"
+    },
+    "science": {
+      "translation": "n. 科學, 學科, 學問, 自然科學\\n[醫] 科學",
+      "phonetic": "'saiәns",
+      "part_of_speech": "",
+      "definition": "n. a particular branch of scientific knowledge"
+    },
+    "second": {
+      "translation": "n. 秒, 瞬間, 第二名, 支持者, 助手\\na. 第二的, 其次的, 次要的, 附加的, 輔助的\\nnum. 第二\\nvt. 當...助手, 支持",
+      "phonetic": "'sekәnd",
+      "part_of_speech": "",
+      "definition": "n. 1/60 of a minute; the basic unit of time adopted under the Systeme International d'Unites\\nn. following the first in an ordering or series\\nn. a 60th part of a minute of arc\\nn. the offic"
+    },
+    "seen": {
+      "translation": "see的過去分詞",
+      "phonetic": "si:n",
+      "part_of_speech": "",
+      "definition": "v perceive by sight or have the power to perceive by sight\\nv perceive (an idea or situation) mentally\\nv perceive or be contemporaneous with\\nv imagine; conceive of; see in one's mind\\nv de"
+    },
+    "sequoia": {
+      "translation": "n. 紅杉",
+      "phonetic": "si'kwɔiә",
+      "part_of_speech": "",
+      "definition": "n. either of two huge coniferous California trees that reach a height of 300 feet; sometimes placed in the Taxodiaceae"
+    },
+    "sets": {
+      "translation": "n. 集合, 設置（set的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a group of things of the same kind that belong together and are so used\\nn (mathematics) an abstract collection of numbers or symbols\\nn several exercises intended to be done in series\\nn"
+    },
+    "shap": {
+      "translation": "n. 世鵬科技電子",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "shape": {
+      "translation": "n. 形狀, 形態, 外形, 形式, 身材\\nvt. 定形, 使成形, 塑造, 計劃, 使符合\\nvi. 成形, 形成, 成長\\n[計] 形狀",
+      "phonetic": "ʃeip",
+      "part_of_speech": "",
+      "definition": "n. any spatial attributes (especially as defined by outline)\\nn. the spatial arrangement of something as distinct from its substance\\nn. a concrete representation of an otherwise nebulous co"
+    },
+    "shaped": {
+      "translation": "a. 成某種形狀的, 製成一定形狀的, 有某種形狀的, 合適的, 計劃好的, 有目標的\\n[醫] 具形的, 形似的",
+      "phonetic": "ʃeipt",
+      "part_of_speech": "",
+      "definition": "s. shaped to fit by or as if by altering the contours of a pliable mass (as by work or effort)\\na. having the shape of"
+    },
+    "shareholder": {
+      "translation": "n. 股東\\n[法] 股東, 股票持有人",
+      "phonetic": "'ʃєә.hәuldә",
+      "part_of_speech": "",
+      "definition": "n someone who holds shares of stock in a corporation"
+    },
+    "shareholders": {
+      "translation": "n. 股東( shareholder的複數形式 )",
+      "phonetic": "'ʃeəhəʊldəz",
+      "part_of_speech": "",
+      "definition": "n. someone who holds shares of stock in a corporation"
+    },
+    "should": {
+      "translation": "aux. 應該, 將要",
+      "phonetic": "ʃud",
+      "part_of_speech": "",
+      "definition": "imp. of Shall\\nimp. Used as an auxiliary verb, to express a conditional or\\n contingent act or state, or as a supposition of an actual fact; also,\\n to express moral obligation (see Shall);"
+    },
+    "significance": {
+      "translation": "n. 重要性, 意義, 意味\\n[計] 有效; 有效性",
+      "phonetic": "sig'nifikәns",
+      "part_of_speech": "",
+      "definition": "n. the quality of being significant\\nn. a meaning that is not expressly stated but can be inferred"
+    },
+    "significant": {
+      "translation": "a. 重要的, 有效的, 有含義的, 暗示的, 值得注意的",
+      "phonetic": "sig'nifikәnt",
+      "part_of_speech": "",
+      "definition": "a. important in effect or meaning\\ns. fairly large\\na. too closely correlated to be attributed to chance and therefore indicating a systematic relation"
+    },
+    "since": {
+      "translation": "prep. 自...以後, 自...以來\\nadv. 自那時以後\\nconj. 既然, 自...以後, 自...以來",
+      "phonetic": "sins",
+      "part_of_speech": "",
+      "definition": "adv. From a definite past time until now; as, he went a month\\n ago, and I have not seen him since.\\nadv. In the time past, counting backward from the present;\\n before this or now; ago.\\nad"
+    },
+    "smart": {
+      "translation": "a. 聰明的, 漂亮的, 刺痛的, 劇烈的, 敏捷的, 巧妙的, 伶俐的, 瀟灑的\\nn. 刺痛, 痛苦\\nvi. 刺痛",
+      "phonetic": "smɑ:t",
+      "part_of_speech": "",
+      "definition": "n. a kind of pain such as that caused by a wound or a burn or a sore\\na. showing mental alertness and calculation and resourcefulness\\ns. painfully severe\\ns. quick and brisk"
+    },
+    "solution": {
+      "translation": "n. 解決, 解答, 溶液\\n[化] 溶液",
+      "phonetic": "sә'lu:ʃәn",
+      "part_of_speech": "",
+      "definition": "n. a homogeneous mixture of two or more substances; frequently (but not necessarily) a liquid solution\\nn. a statement that solves a problem or explains how to solve the problem\\nn. a method"
+    },
+    "solutions": {
+      "translation": "n. 解決方案；應對措施；溶液劑（solution的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n a homogeneous mixture of two or more substances; frequently (but not necessarily) a liquid solution\\nn a statement that solves a problem or explains how to solve the problem\\nn a method fo"
+    },
+    "soon": {
+      "translation": "adv. 不久, 早, 快, 寧可",
+      "phonetic": "su:n",
+      "part_of_speech": "",
+      "definition": "r. in the near future"
+    },
+    "split": {
+      "translation": "n. 劈開, 裂片, 裂縫, 分裂, 派系, 派別, 柳條\\na. 劈開的\\nvi. 分離, 分開, 裂開, 被劈開\\nvt. 劈開, 切開, 使分裂, 使分離\\n[計] 拆分",
+      "phonetic": "split",
+      "part_of_speech": "",
+      "definition": "n. extending the legs at right angles to the trunk (one in front and the other in back)\\nn. a bottle containing half the usual amount\\nn. a promised or claimed share of loot or money\\nn. a l"
+    },
+    "stage": {
+      "translation": "n. 階段, 舞臺, 場所, 戲劇, 站, 驛站, 級, 層, 腳手架\\nvt. 上演, 表演, 籌劃\\nvi. 適於上演, 乘驛車旅行",
+      "phonetic": "steidʒ",
+      "part_of_speech": "",
+      "definition": "n. a large platform on which people can stand and can be seen by an audience\\nn. the theater as a profession (usually `the stage')\\nn. a section or portion of a journey or course\\nn. any sce"
+    },
+    "story": {
+      "translation": "n. 故事, 小說, 傳奇, 描述, 閱歷, 經歷, 層",
+      "phonetic": "'stɒ:ri",
+      "part_of_speech": "",
+      "definition": "n. a piece of fiction that narrates a chain of related events"
+    },
+    "suffer": {
+      "translation": "vt. 遭受, 經歷, 忍受\\nvi. 受痛苦, 受損害",
+      "phonetic": "'sʌfә",
+      "part_of_speech": "",
+      "definition": "v. undergo or be subjected to\\nv. undergo (as of injuries and illnesses)\\nv. experience (emotional) pain\\nv. get worse"
+    },
+    "support": {
+      "translation": "n. 支持, 支撐, 援助, 供養, 支撐物\\nvt. 支援, 支撐, 幫助, 支持, 忍受, 供養, 證實\\n[計] 後援; 支持",
+      "phonetic": "sә'pɒ:t",
+      "part_of_speech": "",
+      "definition": "n. the activity of providing for or maintaining by supplying with money or necessities\\nn. aiding the cause or policy or interests of\\nn. something providing immaterial assistance to a perso"
+    },
+    "supports": {
+      "translation": "n. 支承結構；支持；忍受；贍養（support的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n the activity of providing for or maintaining by supplying with money or necessities\\nn aiding the cause or policy or interests of\\nn something providing immaterial assistance to a person o"
+    },
+    "surveillance": {
+      "translation": "n. 監視, 監督\\n[電] 偵測",
+      "phonetic": "sә:'veilәns",
+      "part_of_speech": "",
+      "definition": "n. close observation of a person or group (usually by the police)"
+    },
+    "sustain": {
+      "translation": "vt. 承受, 支持, 供養, 繼續, 忍受, 蒙受, 證實, 准許\\n[電] 持續",
+      "phonetic": "sә'stein",
+      "part_of_speech": "",
+      "definition": "v. supply with necessities and support\\nv. admit as valid"
+    },
+    "sustained": {
+      "translation": "a. 持續的, 持久不變的, 持久的, 不懈的\\n[計] 持續的",
+      "phonetic": "sәs'teind",
+      "part_of_speech": "",
+      "definition": "s. maintained at length without interruption or weakening"
+    },
+    "svp": {
+      "translation": "abbr. Service Processor 業務處理程序",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "system": {
+      "translation": "n. 系統, 體系, 制度, 方式, 秩序, 分類原則\\n[計] 系統; 體制; 體系",
+      "phonetic": "'sistәm",
+      "part_of_speech": "",
+      "definition": "n. instrumentality that combines interrelated interacting artifacts designed to work as a coherent entity\\nn. a group of independent but interrelated elements comprising a unified whole\\nn."
+    },
+    "systems": {
+      "translation": "n. 體制, 體系；制度；系統（system的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n instrumentality that combines interrelated interacting artifacts designed to work as a coherent entity\\nn a group of independent but interrelated elements comprising a unified whole\\nn (ph"
+    },
+    "taken": {
+      "translation": "take的過去分詞",
+      "phonetic": "'teikәn",
+      "part_of_speech": "",
+      "definition": "s. be affected with an indisposition"
+    },
+    "technology": {
+      "translation": "n. 技術, 工業技術, 術語\\n[醫] 技術學, 工藝學",
+      "phonetic": "tek'nɒlәdʒi",
+      "part_of_speech": "",
+      "definition": "n. the practical application of science to commerce or industry"
+    },
+    "that": {
+      "translation": "a. 那, 那個\\nconj. 以致, 因爲\\npron. 那\\nadv. 那麼, 那樣",
+      "phonetic": "ðæt",
+      "part_of_speech": "",
+      "definition": "pron., a., conj., & As a demonstrative pronoun (pl. Those),\\n that usually points out, or refers to, a person or thing previously\\n mentioned, or supposed to be understood. That, as a demons"
+    },
+    "thayer": {
+      "translation": "n. 金縷梅；泰勒；賽耶（人名）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "the": {
+      "translation": "art. 那",
+      "phonetic": "ðә",
+      "part_of_speech": "",
+      "definition": "v. i. See Thee.\\ndefinite article. A word placed before nouns to limit or\\n individualize their meaning.\\nadv. By that; by how much; by so much; on that account; -- used\\n before comparative"
+    },
+    "their": {
+      "translation": "pron. 他們的",
+      "phonetic": "ðєә",
+      "part_of_speech": "",
+      "definition": "pron. & a. The possessive case of the personal pronoun they;\\n as, their houses; their country."
+    },
+    "these": {
+      "translation": "pron. 這些",
+      "phonetic": "ði:z",
+      "part_of_speech": "",
+      "definition": "pron. The plural of this. See This.\\npl. of This"
+    },
+    "through": {
+      "translation": "adv. 穿越, 從頭至尾, 到底, 因爲\\nprep. 經過, 穿過\\na. 對穿的, 直達的, 完結的",
+      "phonetic": "θru:",
+      "part_of_speech": "",
+      "definition": "s. (of a route or journey etc.) continuing without requiring stops or changes\\nr. from beginning to end\\nr. over the whole distance\\nr. to completion"
+    },
+    "time": {
+      "translation": "n. 時間, 時侯, 時機, 時期, 期限, 次數, 節拍, 暫停, 規定時間\\nvt. 測定...的時間, 記錄...的時間, 計時, 定時\\na. 時間的, 記時的, 定時的, 定期的, 分期的\\n[計] DOS內部命令:用於顯示或設定系統的時間",
+      "phonetic": "taim",
+      "part_of_speech": "",
+      "definition": "n. an instance or single occasion for some event\\nn. a period of time considered as a resource under your control and sufficient to accomplish something\\nn. an indefinite period (usually mar"
+    },
+    "title": {
+      "translation": "n. 頭銜, 名稱, 標題, 書名, 扉頁, 權利, 資格, 冠軍, 字幕\\nvt. 授予頭銜, 加標題於\\n[計] 標題",
+      "phonetic": "'taitl",
+      "part_of_speech": "",
+      "definition": "n. a heading that names a statute or legislative bill; may give a brief summary of the matters it deals with\\nn. the name of a work of art or literary composition etc.\\nn. a general or descr"
+    },
+    "titled": {
+      "translation": "a. 有頭銜的\\n[法] 有官銜的, 有爵位的",
+      "phonetic": "'taitld",
+      "part_of_speech": "",
+      "definition": "v give a title to\\nv designate by an identifying term\\ns belonging to the peerage"
+    },
+    "together": {
+      "translation": "adv. 一起, 共同, 彼此",
+      "phonetic": "tә'geðә",
+      "part_of_speech": "",
+      "definition": "s. mentally and emotionally stable\\nr. in contact with each other or in proximity\\nr. assembled in one place\\nr. in each other's company"
+    },
+    "torso": {
+      "translation": "n. 軀幹, 裸體軀幹雕像\\n[醫] 軀幹",
+      "phonetic": "'tɔ:sәu",
+      "part_of_speech": "",
+      "definition": "n. the body excluding the head and neck and limbs"
+    },
+    "toward": {
+      "translation": "prep. 向, 對於, 爲了\\na. 即將來臨的, 進行中的",
+      "phonetic": "tә'wɒ:d",
+      "part_of_speech": "",
+      "definition": "prep. Alt. of Towards\\nadv. Alt. of Towards\\nprep. Approaching; coming near.\\nprep. Readly to do or learn; compliant with duty; not froward;\\n apt; docile; tractable; as, a toward youth.\\npr"
+    },
+    "type": {
+      "translation": "n. 類型, 樣式, 典型, 榜樣, 標誌, 符號, 型, 式\\nvi. 打字\\nvt. 作爲代表, 測定類型, 用打字機打\\n[計] 類型; 鍵入; DOS內部命令:在屏幕上顯示指定文件的內容",
+      "phonetic": "taip",
+      "part_of_speech": "",
+      "definition": "n. a subdivision of a particular kind of thing\\nn. (biology) the taxonomic group whose characteristics are used to define the next higher taxon\\nn. printed characters\\nn. all of the tokens o"
+    },
+    "unavailable": {
+      "translation": "a. 得不到的, 不能利用的, 無用的\\n[化] 不可得的; 無效的; 不能利用的",
+      "phonetic": ".ʌnә'veilәbl",
+      "part_of_speech": "",
+      "definition": "a. not available or accessible or at hand"
+    },
+    "usage": {
+      "translation": "n. 用法, 使用, 習慣, 慣用法, 習慣法\\n[經] 使用情況, 使用用途, 慣例",
+      "phonetic": "'ju:sidʒ",
+      "part_of_speech": "",
+      "definition": "n. the customary manner in which a language (or a form of a language) is spoken or written"
+    },
+    "uses": {
+      "translation": "abbr. 美國就業局（United States Employment Service）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n the act of using\\nn what something is used for\\nn a particular service\\nn (economics) the utilization of economic goods to satisfy needs or in manufacturing\\nn (psychology) an automatic pa"
+    },
+    "variety": {
+      "translation": "n. 多樣, 種類, 變種, 雜耍\\n[化] 變種",
+      "phonetic": "vә'raiәti",
+      "part_of_speech": "",
+      "definition": "n. (biology) a taxonomic category consisting of members of a species that differ from others of the same species in minor but heritable characteristics\\nn. a difference that is usually pleas"
+    },
+    "vary": {
+      "translation": "vt. 改變, 使多樣化\\nvi. 變化, 有不同, 違反",
+      "phonetic": "'vєәri",
+      "part_of_speech": "",
+      "definition": "v. be subject to change in accordance with a variable\\nv. make something more diverse and varied"
+    },
+    "varying": {
+      "translation": "[計] 改變",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "s. marked by diversity or difference"
+    },
+    "verge": {
+      "translation": "n. 邊緣, 邊界, 起始點\\nvi. 處在邊緣, 接近, 下沉, 趨向",
+      "phonetic": "vә:dʒ",
+      "part_of_speech": "",
+      "definition": "n. the limit beyond which something happens or changes\\nn. a grass border along a road\\nv. border on; come close to"
+    },
+    "verified": {
+      "translation": "a. 已查清的, 已證實的",
+      "phonetic": "'verifaid",
+      "part_of_speech": "",
+      "definition": "s. proved to be true"
+    },
+    "video": {
+      "translation": "n. 影像, 電視\\na. 圖像的, 電視的",
+      "phonetic": "'vidiәu",
+      "part_of_speech": "",
+      "definition": "n. the visible part of a television transmission\\nn. (computer science) the appearance of text and graphics on a video display"
+    },
+    "warrant": {
+      "translation": "n. 授權, 正當理由, 根據, 證明, 批准, 憑證, 令狀, 委任狀\\nvt. 授權給, 保證, 擔保, 批准, 使有正當理由",
+      "phonetic": "'wɒ:rәnt",
+      "part_of_speech": "",
+      "definition": "n. a writ from a court commanding police to perform specified acts\\nn. a type of security issued by a corporation (usually together with a bond or preferred stock) that gives the holder the"
+    },
+    "was": {
+      "translation": "be的過去式",
+      "phonetic": "wɒz",
+      "part_of_speech": "",
+      "definition": "n a state in northwestern United States on the Pacific\\nv have the quality of being; (copula, used with an adjective or a predicate noun)\\nv be identical to; be someone or something\\nv occup"
+    },
+    "way": {
+      "translation": "n. 路, 路線, 路途, 方法, 道路, 情形, 規模, 習慣, 行業, 方面\\nadv. 遠遠地, 非常",
+      "phonetic": "wei",
+      "part_of_speech": "",
+      "definition": "n. the condition of things generally\\nn. a course of conduct\\nn. any artifact consisting of a road or path affording passage from one place to another\\nn. a journey or passage"
+    },
+    "weapon": {
+      "translation": "n. 武器, 兵器\\nvt. 武裝",
+      "phonetic": "'wepәn",
+      "part_of_speech": "",
+      "definition": "n. any instrument or instrumentality used in fighting or hunting\\nn. a means of persuading or arguing"
+    },
+    "weapons": {
+      "translation": "n. 武裝切換；鬥爭工具；武器（weapon的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "n any instrument or instrumentality used in fighting or hunting\\nn a means of persuading or arguing"
+    },
+    "where": {
+      "translation": "adv. 在哪裏\\npron. 哪裏\\nn. 地點",
+      "phonetic": "hwєә",
+      "part_of_speech": "",
+      "definition": "pron. & conj. Whether.\\nadv. At or in what place; hence, in what situation, position,\\n or circumstances; -- used interrogatively.\\nadv. At or in which place; at the place in which; hence, i"
+    },
+    "white": {
+      "translation": "n. 白色, 潔白, 眼白, 白種人, 蛋白\\na. 白色的, 純潔的, 白種的, 蒼白的, 空白的, 幸運的",
+      "phonetic": "hwait",
+      "part_of_speech": "",
+      "definition": "n. a member of the Caucasoid race\\nn. the quality or state of the achromatic color of greatest lightness (bearing the least resemblance to black)\\nn. United States jurist appointed chief jus"
+    },
+    "with": {
+      "translation": "prep. 和...在一起, 以, 由於",
+      "phonetic": "wið",
+      "part_of_speech": "",
+      "definition": "n. See Withe.\\nprep. With denotes or expresses some situation or relation of\\n nearness, proximity, association, connection, or the like.\\nprep. To denote a close or direct relation of oppos"
+    },
+    "won": {
+      "translation": "win的過去式和過去分詞",
+      "phonetic": "wʌn",
+      "part_of_speech": "",
+      "definition": "a. not subject to defeat"
+    },
+    "writ": {
+      "translation": "n. 令狀, 文書, 文件, 書面命令\\n[經] 法院命令",
+      "phonetic": "rit",
+      "part_of_speech": "",
+      "definition": "n. (law) a legal document issued by a court or judicial officer"
+    },
+    "write": {
+      "translation": "vt. 書寫, 著述, 寫, 寫滿, 寫信給\\nvi. 寫, 寫字, 寫信, 寫作, 作曲\\n[計] 書寫器",
+      "phonetic": "rait",
+      "part_of_speech": "",
+      "definition": "v. produce a literary work\\nv. communicate or express by writing\\nv. communicate (with) in writing\\nv. communicate by letter"
+    },
+    "writing": {
+      "translation": "n. 書寫, 著作, 筆跡, 作品\\n[醫] 書寫",
+      "phonetic": "'raitiŋ",
+      "part_of_speech": "",
+      "definition": "n. the act of creating written works\\nn. the work of a writer; anything expressed in letters of the alphabet (especially when considered from the point of view of style and effect)\\nn. (usua"
+    },
+    "year": {
+      "translation": "n. 年, 年度, 年齡\\n[經] 年度",
+      "phonetic": "jiә",
+      "part_of_speech": "",
+      "definition": "n. a period of time containing 365 (or 366) days\\nn. a period of time occupying a regular part of a calendar year that is used for some particular activity\\nn. the period of time that it tak"
+    },
+    "you": {
+      "translation": "pron. 你, 你們",
+      "phonetic": "ju:",
+      "part_of_speech": "",
+      "definition": "dat. & obj. The pronoun of the second person, in the nominative,\\n dative, and objective case, indicating the person or persons addressed.\\n See the Note under Ye."
+    },
+    "your": {
+      "translation": "pron. 你的, 你們的",
+      "phonetic": "juә",
+      "part_of_speech": "",
+      "definition": "pron. & a. The form of the possessive case of the personal\\n pronoun you."
     }
   },
-  "advanced_vocabulary": [
-    "scrutiny",
-    "equitable",
-    "ambiguous",
-    "disproportionate",
-    "substantiated",
-    "reliability",
-    "infrastructure",
-    "deployment"
-  ],
   "questions": [
-    "Why does the article distinguish a benchmark from real-world reliability?",
-    "What possible trade-offs arise when AI computing becomes cheaper?"
+    "According to [S1], what is being reported about infrastructure, and which key detail still needs independent confirmation?",
+    "Choose two sources from today's briefing. How do their available evidence and potential consequences differ? Cite both source IDs and explain your reasoning."
+  ],
+  "advanced_vocabulary": [
+    "infrastructure",
+    "transparency",
+    "limitations",
+    "constraints",
+    "evidence",
+    "consequences",
+    "robust",
+    "accommodate"
   ]
 }
