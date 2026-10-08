@@ -372,7 +372,7 @@ def recent_report_stories(today: str, days: int = 2) -> list[dict]:
 def essay_fallback(stories: list[dict]) -> list[str]:
     """Truth-preserving fallback. Does NOT claim to be a 5-minute DSE essay."""
     paragraphs = [
-        "Today's briefing is presented as a source-based news digest because the local writing model was unavailable. "
+        "Today's briefing is presented as a source-based news digest because the automated English draft did not pass editorial checks. "
         "The reporting below preserves the publishers' attribution and distinguishes their descriptions from independently verified findings."
     ]
     for source in stories:
