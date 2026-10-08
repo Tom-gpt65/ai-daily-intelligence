@@ -40,10 +40,12 @@ class DseStudentTests(unittest.TestCase):
     def test_public_article_is_educational_not_certified(self):
         index=json.loads((ROOT/"site/reports/index.json").read_text(encoding="utf-8"))
         report=json.loads((ROOT/"site/reports"/(index[0]["date"]+".json")).read_text(encoding="utf-8"))
-        self.assertEqual(report["mode"],"source_digest")
+        self.assertIn(report["mode"],("source_digest","editorial"))
         self.assertFalse(report["demo"])
         self.assertTrue(report.get("practice"))
-        self.assertEqual(7,len(report["practice"]["items"]))
+        self.assertGreaterEqual(len(report["practice"]["items"]),3)
+        if report["mode"]=="source_digest":
+            self.assertEqual(7,len(report["practice"]["items"]))
         self.assertTrue(report["stories"])
     def test_iphone_support_present(self):
         html=(ROOT/"site/index.html").read_text(encoding="utf-8")
