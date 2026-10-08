@@ -1,0 +1,125 @@
+name: AI Daily Intelligence — free daily briefing
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+      timezone: 'Asia/Hong_Kong'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ai-daily-deployment
+  cancel-in-progress: false
+
+jobs:
+  daily:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install free dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Run pre-publication checks
+        run: |
+          python -m unittest discover -s tests -v
+          node --check site/app.js
+          node --check site/sw.js
+          python scripts/validate_site.py
+
+      - name: Collect recent RSS headlines
+        id: preflight
+        shell: bash
+        run: |
+          python scripts/build.py --prefetch
+          if test -s .cache/candidates.json; then
+            echo "news=true" >> "$GITHUB_OUTPUT"
+            python -c "import json; d=json.load(open('.cache/candidates.json',encoding='utf-8')); print('enough=' + ('true' if len(d.get('stories',[])) >= 3 else 'false'))" >> "$GITHUB_OUTPUT"
+          else
+            echo "news=false" >> "$GITHUB_OUTPUT"
+            echo "enough=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Cache optional offline dictionary
+        if: steps.preflight.outputs.news == 'true'
+        uses: actions/cache@v4
+        with:
+          path: .cache/ecdict.csv
+          key: ecdict-2026-v1
+
+      - name: Download optional dictionary
+        if: steps.preflight.outputs.news == 'true'
+        run: |
+          mkdir -p .cache
+          if ! test -s .cache/ecdict.csv; then
+            curl --fail --location --retry 2 --max-time 180 \
+              https://raw.githubusercontent.com/skywind3000/ECDICT/master/ecdict.csv \
+              -o .cache/ecdict.csv || echo "Dictionary unavailable: using built-in vocabulary"
+          fi
+
+      - name: Install free local model when relevant
+        if: steps.preflight.outputs.enough == 'true'
+        id: ollama
+        continue-on-error: true
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          (ollama serve > /tmp/ollama.log 2>&1 &)
+          for n in $(seq 1 30); do
+            curl -fsS http://localhost:11434/api/tags >/dev/null && break
+            sleep 2
+          done
+          timeout 480 ollama pull phi3:mini
+
+      - name: Generate daily briefing
+        if: steps.preflight.outputs.news == 'true'
+        env:
+          OLLAMA_ENABLED: ${{ steps.ollama.outcome == 'success' && '1' || '0' }}
+          OLLAMA_MODEL: phi3:mini
+          TRANSLATE_ENABLED: '0'
+        run: python scripts/build.py --use-prefetch
+
+      - name: Summarise run status
+        if: always()
+        run: |
+          if test -s site/system-status.json; then
+            python -c "import json; print('### Daily report status'); print(json.dumps(json.load(open('site/system-status.json')), indent=2, ensure_ascii=False))" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit published reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/reports site/system-status.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update AI briefing $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Configure Pages deployment
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+      - name: Deploy website
+        id: publish
+        uses: actions/deploy-pages@v4
