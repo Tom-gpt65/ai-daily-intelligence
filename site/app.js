@@ -381,22 +381,54 @@
       const small=document.createElement('small');small.textContent=r.dictionary?.[word]?.translation || '點擊查字';
       chip.append(label,small);chip.addEventListener('click',()=>showLookup(word,chip));spotlight.appendChild(chip);
     });
-    const questions = $('question-list'); questions.replaceChildren();
-    (r.questions || []).forEach((q, index) => {
-      const div=document.createElement('div'); div.className='question-item';
-      const num=document.createElement('span');num.className='question-number';num.textContent=`0${index+1}`;
+    const questions=$('question-list');questions.replaceChildren();
+    const practice=r.practice&&Array.isArray(r.practice.items)?r.practice:null;
+    const entries=practice?practice.items:(r.questions||[]).map((text,i)=>({id:'legacy-'+i,type:'short',skill:'Independent reflection',marks:0,stem:text,guidance:['Refer back to the cited sources. No automatic marking is available.']}));
+    $('practice-meta').textContent=practice?
+      practice.label+' · '+entries.length+' 題 · '+entries.reduce((sum,item)=>sum+(item.marks||0),0)+' 分。選擇題即時評分；短答只顯示評分指引。':
+      '舊版閱讀練習：請按原始來源核對；非官方評分。';
+    entries.forEach((item,index)=>{
+      const section=document.createElement('section');section.className='question-item';
+      const num=document.createElement('span');num.className='question-number';num.textContent=String(index+1).padStart(2,'0');
       const body=document.createElement('div');body.className='question-content';
-      const label=document.createElement('label');label.className='question-label';label.textContent=q;
-      const answer=document.createElement('textarea');answer.className='question-answer';answer.rows=3;
-      answer.placeholder='用英文記下你的答案（不會自動評分）';
-      answer.setAttribute('aria-label',`Question ${index+1} answer`);
-      const id=`${r.date}-${index}`;answer.value=writtenAnswers[id] || '';
-      answer.addEventListener('input',()=>{
-        if(answer.value.trim()) writtenAnswers[id]=answer.value.slice(0,2000);
-        else delete writtenAnswers[id];
-        safeStorage.set(ANSWERS_KEY,writtenAnswers);
-      });
-      body.append(label,answer);div.append(num,body);questions.appendChild(div);
+      const skill=document.createElement('span');skill.className='question-skill';
+      skill.textContent=(item.skill||'Reading comprehension')+' · '+(item.marks||0)+' marks · '+(item.type==='mc'?'Multiple choice':'Written response');
+      const label=document.createElement('strong');label.className='question-label';label.textContent=item.stem||String(item);
+      body.append(skill,label);
+      const key=r.date+'-v6-'+(item.id||index);
+      if(item.type==='mc'&&Array.isArray(item.options)&&Number.isInteger(item.answer)){
+        const field=document.createElement('div');field.className='question-options';field.setAttribute('role','radiogroup');field.setAttribute('aria-label',item.stem);
+        const feedback=document.createElement('div');feedback.className='question-feedback';feedback.hidden=true;feedback.setAttribute('role','status');
+        const inputs=[];
+        item.options.forEach((option,i)=>{
+          const choice=document.createElement('label');choice.className='question-choice';
+          const radio=document.createElement('input');radio.type='radio';radio.name='dse-'+r.date+'-'+item.id;radio.value=String(i);
+          radio.checked=quizSelections[key]===i;
+          radio.addEventListener('change',()=>{quizSelections[key]=i;safeStorage.set('ai-daily-quiz-v6',quizSelections);feedback.hidden=true;});
+          choice.append(radio,document.createTextNode(String.fromCharCode(65+i)+'. '+option));field.append(choice);inputs.push(radio);
+        });
+        const button=document.createElement('button');button.type='button';button.className='question-action';button.textContent='提交選擇題';
+        button.addEventListener('click',()=>{
+          const selected=inputs.findIndex(input=>input.checked);
+          feedback.hidden=false;
+          if(selected<0){feedback.textContent='請先選擇一個答案。';feedback.classList.add('is-wrong');return;}
+          const correct=selected===item.answer;
+          feedback.classList.toggle('is-wrong',!correct);
+          feedback.textContent=(correct?'✓ 正確（1 分）':'答案需要修正（0 分）')+'。正確答案：'+String.fromCharCode(65+item.answer)+'。'+(item.explanation||'')+' 證據：'+(item.evidence||'參閱文章');
+        });
+        body.append(field,button,feedback);
+      }else{
+        const answer=document.createElement('textarea');answer.className='question-answer';answer.rows=item.type==='extended'?5:3;
+        answer.placeholder=item.type==='extended'?'以英文寫約 60–90 字（不會自動評分）':'以英文作答（不會自動評分）';
+        answer.setAttribute('aria-label','Question '+(index+1)+' answer');
+        answer.value=writtenAnswers[key]||'';
+        answer.addEventListener('input',()=>{if(answer.value.trim())writtenAnswers[key]=answer.value.slice(0,2500);else delete writtenAnswers[key];safeStorage.set(ANSWERS_KEY,writtenAnswers);});
+        const feedback=document.createElement('div');feedback.className='question-feedback';feedback.hidden=true;
+        const button=document.createElement('button');button.type='button';button.className='question-action';button.textContent='查看評分指引及原文證據';
+        button.addEventListener('click',()=>{feedback.hidden=!feedback.hidden;feedback.textContent=(item.guidance||[]).join(' ')+' 證據定位：'+(item.evidence||'請回查文章');button.setAttribute('aria-expanded',String(!feedback.hidden));});
+        body.append(answer,button,feedback);
+      }
+      section.append(num,body);questions.append(section);
     });
   }
   function placePopover(target) {
