@@ -22,6 +22,7 @@ from zoneinfo import ZoneInfo
 from learning_editorial import is_promotional
 from dse_editorial import compose_briefing
 from dse_assessment_v7 import make_exam
+from source_context import enrich as enrich_source_metadata
 
 from email.utils import parsedate_to_datetime
 from urllib.request import Request, urlopen
@@ -381,7 +382,7 @@ def model_request(prompt: str, timeout=300) -> str:
     model = os.environ.get("OLLAMA_MODEL", "phi3:mini")
     payload = json.dumps({
         "model": model, "prompt": prompt, "stream": False,
-        "options": {"temperature": 0.1, "num_predict": 1450, "num_ctx": 4096}
+        "options": {"temperature": 0.1, "num_predict": 1600, "num_ctx": 4096}
     }).encode("utf-8")
     request = Request(base + "/api/generate", data=payload,
                       headers={"Content-Type": "application/json"}, method="POST")
@@ -702,6 +703,8 @@ def main():
         health = {}
         stories = collect(now, recent=recent_report_stories(now.astimezone(TZ).date().isoformat()), diagnostics=health)
         if stories:
+            if os.environ.get("ENRICH_ENABLED", "0") == "1":
+                health.update(enrich_source_metadata(stories))
             atomic_json(cache, {"at": now.isoformat(), "stories": stories, "diagnostics": health})
             put_status("new_stories_found", now, source_count=len(stories), **health)
             print(f"[preflight] {len(stories)} fresh, relevant stories")
