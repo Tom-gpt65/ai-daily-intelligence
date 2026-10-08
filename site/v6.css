@@ -1,0 +1,47 @@
+/* V6: responsive refinements prompted by actual iPhone screen recording. */
+html,body{max-width:100%;overflow-x:clip}
+.layout,.main,.page,.briefing-card,.card-header,.reader-toolbar,.reader,.reader p,.essay-paragraph,.translation-paragraph,.question-item,.question-content{min-width:0;max-width:100%}
+.reader,.reader p,.translation-paragraph{overflow-wrap:anywhere;word-break:normal;hyphens:auto}
+.reader .word{display:inline;white-space:normal;overflow-wrap:anywhere;word-break:break-word;hyphens:auto;max-width:100%;border-radius:2px}
+.reader .source-ref{white-space:nowrap}
+.dse-practice-label{font-size:12px;line-height:1.7;color:var(--muted);margin:8px 0 20px}
+.question-item{align-items:stretch}
+.question-options{display:grid;gap:8px;margin-top:13px}
+.question-choice{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font:13px/1.55 system-ui,sans-serif}
+.question-choice:has(input:checked){border-color:var(--accent);background:var(--accent-low)}
+.question-choice input{margin:4px 0 0;flex:none;accent-color:var(--accent)}
+.question-skill,.question-evidence{display:block;color:var(--muted);font:11px/1.7 system-ui,sans-serif;margin-top:6px}
+.question-action{display:inline-flex;margin-top:11px;padding:9px 13px;border:1px solid var(--accent);border-radius:8px;background:transparent;color:var(--accent);font:600 12px/1.4 system-ui,sans-serif}
+.question-feedback{display:block;font:12px/1.7 system-ui,sans-serif;margin-top:10px;border-left:3px solid var(--accent);padding:10px 12px;background:var(--surface2)}
+.question-feedback.is-wrong{border-color:#e4aa8e}.question-feedback[hidden]{display:none}
+.translation-policy{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.7}
+.reader-tools-more{display:none}
+.reader .translation-paragraph{color:var(--text);background:var(--surface2);font-family:system-ui,'PingFang TC',sans-serif;font-size:14px;line-height:1.85;margin:0 0 24px!important;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;white-space:pre-wrap}
+@media(max-width:650px){
+.layout,.main,.page{width:100%;max-width:100%;min-width:0}
+.page{padding-left:13px;padding-right:13px}
+.briefing-card{border-radius:12px}
+.card-header{padding:22px 16px;gap:7px}
+.card-header h2{font-size:clamp(23px,7vw,30px);overflow-wrap:anywhere}
+.card-header p{overflow-wrap:anywhere}
+.edition-symbol{display:none}
+.reader{padding:17px 15px 5px;font-size:16.5px;line-height:1.78;letter-spacing:0}
+.reader.font-large{font-size:18px;line-height:1.77}
+.reader.font-xlarge{font-size:20px;line-height:1.73}
+.reader p{margin-bottom:23px;max-width:100%;min-width:0}
+.reader .word{line-height:inherit;overflow-wrap:anywhere}
+.reader-toolbar{display:flex;flex-direction:column;align-items:stretch;padding:10px 12px;gap:7px}
+.reader-toolbar .helper{font-size:10.5px;line-height:1.5}
+.toolbar-right{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;width:100%}
+.toolbar-right button{font-size:11px;min-width:0;max-width:100%;min-height:42px;padding:8px 7px;line-height:1.5;overflow-wrap:anywhere}
+.toolbar-right #translate-toggle{grid-column:1/-1;border-color:var(--accent);color:var(--accent)}
+.toolbar-right #tools-toggle{display:block;grid-column:1/-1;background:var(--surface2)}
+body:not(.tools-expanded) .toolbar-right :is(#reading-speed,#resume-reading,#focus-toggle,#export-report,#print-report){display:none!important}
+.dictionary-popover{position:fixed!important;top:auto!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;max-width:100%!important;max-height:min(62dvh,530px)!important;overflow-y:auto!important;border-radius:19px 19px 0 0;padding:20px 18px max(22px,env(safe-area-inset-bottom))!important;overscroll-behavior:contain;box-shadow:0 -12px 55px #000a;z-index:110}
+.popover-close{top:13px;right:15px;min-width:38px;min-height:38px}
+.lookup-definition,.lookup-context{overflow-wrap:anywhere}
+.question-content{min-width:0}.question-item{padding:16px 0}
+.question-choice{font-size:12px}.question-answer{font-size:16px}
+.intro h1{overflow-wrap:anywhere}
+}
+@media(max-width:360px){.page{padding-inline:10px}.reader{padding-inline:12px;font-size:16px}.reader.font-xlarge{font-size:19px}.overview-stat strong{font-size:17px}}
