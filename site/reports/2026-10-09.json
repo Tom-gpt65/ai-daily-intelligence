@@ -1,29 +1,28 @@
 {
   "schema": 4,
   "date": "2026-10-09",
-  "updated_at": "2026-10-09T06:38:58.813356+08:00",
-  "headline": "AI developments: today's essential context",
-  "subtitle": "Global artificial intelligence — evidence, innovation and implications",
+  "updated_at": "2026-10-08T23:30:27.074Z",
+  "headline": "The AI evidence gap: security, robotics and trust",
+  "subtitle": "Original analytical reading exercise based on attributed RSS headlines; source summaries are not independently verified.",
   "mode": "source_digest",
-  "editorial_notice": "Extractive source digest; full-article content not verified.",
+  "editorial_notice": "Source-linked, educational reading exercise; RSS headlines and short descriptions have not been independently fact-checked.",
   "demo": false,
-  "word_count": 493,
+  "word_count": 605,
   "essay": [
-    "Today's briefing is presented as a source-based news digest because the local writing model was unavailable. The reporting below preserves the publishers' attribution and distinguishes their descriptions from independently verified findings.",
-    "According to The Verge AI, a recent report titled “Anthropic launches free AI security scans for open-source projects” [S1] covers the following: Anthropic's offering to help open-source projects track down security vulnerabilities with a new service called OSS Scanner. It says open-source projects that opt-in will get \"thorough, periodic security scans by our strongest models at no cost.\" That could mean open-source projects get alerted about possible security issues sooner, but the trade-off is that OSS Scanner's […] Read the linked original before drawing conclusions about significance or outcomes.",
-    "According to TechCrunch AI, a recent report titled “Hear from Ambrosia Energy and Bloom Energy execs on where the AI infrastructure boom is creating opportunity at TechCrunch Disrupt 2026” [S2] covers the following: Ambrosia Energy CEO Ben Longmier and Bloom Energy SVP Bill Thayer join the Smart Systems Stage at TechCrunch Disrupt. Register now to save up to $100. Grab a second of the same pass to save 50%. Read the linked original before drawing conclusions about significance or outcomes.",
-    "According to MIT Technology Review, a recent report titled “AI breakthroughs in robotics won’t change your life any time soon” [S3] covers the following: The story is a collaboration between MIT Technology Review and Aventine, a non-profit research foundation that creates and supports content about how technology and science are changing the way we live. A robot shaped like a human—white with a black head and torso—has been popping up on video feeds. Perhaps you’ve seen it dance or… Read the linked original before drawing conclusions about significance or outcomes.",
-    "According to TechCrunch AI, a recent report titled “Anthropic changes usage policy to ban model abuse and election interference” [S4] covers the following: Anthropic's updated usage policy explicitly prohibits users from repeatedly abusing Claude in extreme cases, though ordinary frustration and criticism are still allowed. The new rules also address election interference, deceptive campaigns, weapons software, and surveillance. Read the linked original before drawing conclusions about significance or outcomes.",
-    "According to arXiv AI, a recent report titled “AdaGuard: Enhancing Safety and Policy Compliance with Reasoning-Enabled LLM-As-A-Judge Guardrails” [S5] covers the following: arXiv:2610.08923v1 Announce Type: new Abstract: Enterprise generative AI applications require robust safety mechanisms that can accommodate diverse risk postures, evolving policies, and varying latency constraints. Current guardrail solutions often suffer from rigidity, relying on fixed policy sets and offering limited transparency or reasoning flexibility. We present Adaguard, an adaptive LLM-as-a-Judge framework designed to address these challenges through dynamic policy enforcement and adaptive reasoning-budget Read the linked original before drawing conclusions about significance or outcomes.",
-    "Taken together, these reports illustrate the variety of developments currently being discussed in artificial intelligence. A headline should not be mistaken for independent evidence: implementation details, limitations and broader consequences warrant further examination."
+    "The latest wave of artificial-intelligence reporting poses a deceptively difficult question: how much can readers infer from an announcement before examining the evidence behind it? For a technology whose ambitions extend from research laboratories to ordinary workplaces, the distinction matters. A headline may identify an important development, yet the consequences it appears to promise remain provisional until their scope, limitations and practical relevance have been established. Today's selection is therefore best read not as a catalogue of breakthroughs but as an invitation to examine how technological claims acquire credibility.",
+    "One strand of this debate emerges from The Verge AI's report, ‘Anthropic launches free AI security scans for open-source projects’ [S1]. Its short description mentions Anthropic's offering to help open-source projects track down security vulnerabilities with a new service called OSS Scanner. It. This is an attributed account, not an independently verified account of results. Without the original evidence, any conclusion must remain qualified.",
+    "A rather different concern surfaces in MIT Technology Review's report, ‘AI breakthroughs in robotics won’t change your life any time soon’ [S2]. Its short description mentions The story is a collaboration between MIT Technology Review and Aventine, a non-profit research foundation that creates and. This is an attributed account, not an independently verified account of results. Its wider consequences cannot be established from an abbreviated extract.",
+    "The contrast becomes more apparent in TechCrunch AI's report, ‘Anthropic changes usage policy to ban model abuse and election interference’ [S3]. Its short description mentions Anthropic's updated usage policy explicitly prohibits users from repeatedly abusing Claude in extreme cases, though ordinary frustration and. This is an attributed account, not an independently verified account of results. Its importance does not establish the consequences suggested by its headline.",
+    "Another dimension is raised by arXiv AI's report, ‘AdaGuard: Enhancing Safety and Policy Compliance with Reasoning-Enabled LLM-As-A-Judge Guardrails’ [S4]. Its short description mentions arXiv:2610.08923v1 Announce Type: new Abstract: Enterprise generative AI applications require robust safety mechanisms that can accommodate diverse risk. This is an attributed account, not an independently verified account of results. An unresolved question deserves investigation rather than an immediate verdict.",
+    "Seen side by side, these accounts resist a single, uncomplicated verdict. Some titles emphasise possibility; others draw attention to constraints, institutional choices or unresolved risks. Although such distinctions can sharpen a reader's sense of what is at stake, they cannot substitute for checking how claims were obtained. A commercial announcement, for example, may establish what an organisation says it intends to offer without showing how reliably the product works in different settings. Equally, a research abstract may describe a promising method without demonstrating that its findings will generalise beyond the conditions in which it was evaluated.",
+    "A cautious stance is not the same as blanket scepticism. The former asks what would count as convincing evidence; the latter risks rejecting evidence before considering it. Readers should therefore distinguish a source's stated claim, the supporting information actually supplied, and any wider interpretation they themselves add. Where the description is abbreviated, the appropriate response is to acknowledge uncertainty rather than conceal it behind impressive terminology. This method of reading also helps reveal the writer's tone: measured and inquisitive rather than triumphalist or dismissive.",
+    "Ultimately, understanding AI news requires more than recognising prominent companies or technical terms. The most defensible judgement is often provisional: it identifies what can presently be said, specifies what cannot, and explains which further facts might alter the conclusion. Consulting the linked originals matters precisely because the short extracts used here cannot settle those questions. A reader who can distinguish evidence from implication has gained something more enduring than another list of headlines: a way to evaluate tomorrow's news as well."
   ],
   "translations": [],
   "reading_metrics": {
-    "word_count": 481,
-    "estimated_minutes": 4.2,
-    "average_sentence_words": 22.9,
-    "long_word_share": 20.2,
-    "note": "閱讀量及詞長屬描述性統計，不能換算成 HKDSE 等級。"
+    "word_count": 605,
+    "estimated_minutes": 5.3,
+    "note": "描述性閱讀統計，不是DSE成績等級"
   },
   "processing": {
     "source_count": 5,
@@ -36,7 +35,7 @@
     "translation_seconds": 0,
     "dictionary_seconds": 2.455
   },
-  "quality_note": "來源資訊或模型品質不足，只顯示保守摘要，不代表完整五分鐘英文文章。",
+  "quality_note": "此為按現有RSS新聞來源編寫的英語閱讀教材，不是已核實的完整新聞。題目參照HKEAA Paper 1 B2技能設計，但非官方試題。",
   "stories": [
     {
       "id": "S1",
@@ -59,25 +58,6 @@
     },
     {
       "id": "S2",
-      "publisher": "TechCrunch AI",
-      "title": "Hear from Ambrosia Energy and Bloom Energy execs on where the AI infrastructure boom is creating opportunity at TechCrunch Disrupt 2026",
-      "excerpt": "Ambrosia Energy CEO Ben Longmier and Bloom Energy SVP Bill Thayer join the Smart Systems Stage at TechCrunch Disrupt. Register now to save up to $100. Grab a second of the same pass to save 50%.",
-      "url": "https://techcrunch.com/2026/10/08/hear-from-ambrosia-energy-and-bloom-energy-execs-on-where-the-ai-infrastructure-boom-is-creating-opportunity-at-disrupt-2026/",
-      "published": "2026-10-08T15:00:00+00:00",
-      "topic": "Infrastructure",
-      "source_type": "媒體報道／RSS 公告",
-      "coverage": [
-        {
-          "publisher": "TechCrunch AI",
-          "url": "https://techcrunch.com/2026/10/08/hear-from-ambrosia-energy-and-bloom-energy-execs-on-where-the-ai-infrastructure-boom-is-creating-opportunity-at-disrupt-2026/",
-          "title": "Hear from Ambrosia Energy and Bloom Energy execs on where the AI infrastructure boom is creating opportunity at TechCrunch Disrupt 2026",
-          "published": "2026-10-08T15:00:00+00:00"
-        }
-      ],
-      "coverage_count": 1
-    },
-    {
-      "id": "S3",
       "publisher": "MIT Technology Review",
       "title": "AI breakthroughs in robotics won’t change your life any time soon",
       "excerpt": "The story is a collaboration between MIT Technology Review and Aventine, a non-profit research foundation that creates and supports content about how technology and science are changing the way we live. A robot shaped like a human—white with a black head and torso—has been popping up on video feeds. Perhaps you’ve seen it dance or…",
@@ -96,7 +76,7 @@
       "coverage_count": 1
     },
     {
-      "id": "S4",
+      "id": "S3",
       "publisher": "TechCrunch AI",
       "title": "Anthropic changes usage policy to ban model abuse and election interference",
       "excerpt": "Anthropic's updated usage policy explicitly prohibits users from repeatedly abusing Claude in extreme cases, though ordinary frustration and criticism are still allowed. The new rules also address election interference, deceptive campaigns, weapons software, and surveillance.",
@@ -115,7 +95,7 @@
       "coverage_count": 1
     },
     {
-      "id": "S5",
+      "id": "S4",
       "publisher": "arXiv AI",
       "title": "AdaGuard: Enhancing Safety and Policy Compliance with Reasoning-Enabled LLM-As-A-Judge Guardrails",
       "excerpt": "arXiv:2610.08923v1 Announce Type: new Abstract: Enterprise generative AI applications require robust safety mechanisms that can accommodate diverse risk postures, evolving policies, and varying latency constraints. Current guardrail solutions often suffer from rigidity, relying on fixed policy sets and offering limited transparency or reasoning flexibility. We present Adaguard, an adaptive LLM-as-a-Judge framework designed to address these challenges through dynamic policy enforcement and adaptive reasoning-budget",
@@ -2090,6 +2070,48 @@
       "phonetic": "juә",
       "part_of_speech": "",
       "definition": "pron. & a. The form of the possessive case of the personal\\n pronoun you."
+    },
+    "provisional": {
+      "translation": "暫時性的；尚待進一步證實的",
+      "definition": "Context-dependent meaning; refer to sentence usage.",
+      "part_of_speech": "",
+      "phonetic": ""
+    },
+    "credibility": {
+      "translation": "可信度",
+      "definition": "Context-dependent meaning; refer to sentence usage.",
+      "part_of_speech": "",
+      "phonetic": ""
+    },
+    "scepticism": {
+      "translation": "懷疑態度",
+      "definition": "Context-dependent meaning; refer to sentence usage.",
+      "part_of_speech": "",
+      "phonetic": ""
+    },
+    "inquisitive": {
+      "translation": "好奇而善於探究的",
+      "definition": "Context-dependent meaning; refer to sentence usage.",
+      "part_of_speech": "",
+      "phonetic": ""
+    },
+    "qualified": {
+      "translation": "有所保留的；有限度的",
+      "definition": "Context-dependent meaning; refer to sentence usage.",
+      "part_of_speech": "",
+      "phonetic": ""
+    },
+    "implication": {
+      "translation": "含意；潛在影響",
+      "definition": "Context-dependent meaning; refer to sentence usage.",
+      "part_of_speech": "",
+      "phonetic": ""
+    },
+    "inference": {
+      "translation": "推論",
+      "definition": "Context-dependent meaning; refer to sentence usage.",
+      "part_of_speech": "",
+      "phonetic": ""
     }
   },
   "questions": [
@@ -2105,5 +2127,113 @@
     "consequences",
     "robust",
     "accommodate"
-  ]
+  ],
+  "practice": {
+    "label": "HKDSE Paper 1 Part B2-style practice",
+    "official": false,
+    "instructions": "Independent exercises inspired by HKEAA assessment skills, not official exam questions.",
+    "items": [
+      {
+        "id": "Q1",
+        "type": "mc",
+        "skill": "Main idea / writer’s purpose",
+        "marks": 1,
+        "stem": "Which statement best conveys the central argument of the passage?",
+        "options": [
+          "All technological announcements should be rejected.",
+          "A headline alone cannot establish the full significance of a development.",
+          "Only academic research can provide reliable information.",
+          "Newspapers and technology companies have identical purposes."
+        ],
+        "answer": 1,
+        "explanation": "The opening and conclusion distinguish announcements from independently supported conclusions.",
+        "evidence": "Opening and final paragraphs"
+      },
+      {
+        "id": "Q2",
+        "type": "mc",
+        "skill": "Vocabulary in context",
+        "marks": 1,
+        "stem": "In the final paragraph, 'provisional' is closest in meaning to ...",
+        "options": [
+          "officially approved",
+          "temporary and open to revision",
+          "completely unsupported",
+          "unlikely to be challenged"
+        ],
+        "answer": 1,
+        "explanation": "A provisional judgement can change when further evidence emerges.",
+        "evidence": "Final paragraph"
+      },
+      {
+        "id": "Q3",
+        "type": "mc",
+        "skill": "Inference",
+        "marks": 1,
+        "stem": "What can reasonably be inferred from the comparison between a commercial announcement and a research abstract?",
+        "options": [
+          "Both automatically prove their claims.",
+          "An intention is identical to demonstrated effectiveness.",
+          "Different sources require different forms of supporting evidence.",
+          "Research abstracts should never be consulted."
+        ],
+        "answer": 2,
+        "explanation": "The examples highlight distinct gaps in the available evidence.",
+        "evidence": "Comparative analysis paragraph"
+      },
+      {
+        "id": "Q4",
+        "type": "mc",
+        "skill": "Tone and attitude",
+        "marks": 1,
+        "stem": "How would you best describe the writer’s attitude towards the reports?",
+        "options": [
+          "Unreservedly enthusiastic",
+          "Cautious and analytical",
+          "Hostile and accusatory",
+          "Humorous and dismissive"
+        ],
+        "answer": 1,
+        "explanation": "Language including qualified, uncertain and measured expresses caution.",
+        "evidence": "Final two paragraphs"
+      },
+      {
+        "id": "Q5",
+        "type": "short",
+        "skill": "Short response / evidence",
+        "marks": 2,
+        "stem": "Identify TWO reasons why a reader should avoid treating an RSS summary as conclusive evidence. Answer in your own words.",
+        "guidance": [
+          "1 mark for each distinct valid reason supported by the passage.",
+          "Examples: missing methods, shortened context, uncertain outcomes, no independent testing."
+        ],
+        "evidence": "Opening and analytical paragraphs"
+      },
+      {
+        "id": "Q6",
+        "type": "short",
+        "skill": "Writer's technique",
+        "marks": 2,
+        "stem": "Explain how the writer uses contrast to develop the argument. Refer to ONE relevant comparison.",
+        "guidance": [
+          "1 mark: identify a contrast such as announcement versus proven outcome.",
+          "1 mark: explain its relevance to careful interpretation."
+        ],
+        "evidence": "Comparative paragraph"
+      },
+      {
+        "id": "Q7",
+        "type": "extended",
+        "skill": "Cross-source synthesis (B2-style)",
+        "marks": 4,
+        "stem": "Compare the information in [S1] and [S2]. What can be inferred, and what cannot be concluded without further verification? (60–90 words.)",
+        "guidance": [
+          "2 marks: accurately explain the focus of the two sources.",
+          "1 mark: coherent comparison using both source references.",
+          "1 mark: identify a meaningful uncertainty without inventing findings."
+        ],
+        "evidence": "First two attributed story paragraphs and the linked original reporting"
+      }
+    ]
+  }
 }
