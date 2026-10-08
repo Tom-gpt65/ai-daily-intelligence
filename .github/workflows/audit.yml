@@ -1,0 +1,36 @@
+name: Independent daily publication audit
+
+on:
+  schedule:
+    - cron: '17 9 * * *'
+      timezone: 'Asia/Hong_Kong'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  public-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify actual public webpage and scheduled publication
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -o pipefail
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            python scripts/audit_publication.py 2>&1 | tee /tmp/ai-audit.log
+          else
+            python scripts/audit_publication.py --skip-schedule 2>&1 | tee /tmp/ai-audit.log
+          fi
+      - name: Append check to GitHub Actions summary
+        if: always()
+        run: cat /tmp/ai-audit.log >> "$GITHUB_STEP_SUMMARY" || true
