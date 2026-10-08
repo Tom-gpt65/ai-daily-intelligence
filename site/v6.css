@@ -71,3 +71,10 @@ body:not(.tools-expanded) .toolbar-right :is(#reading-speed,#resume-reading,#foc
 @media (prefers-reduced-motion:reduce){
   .evidence-focus{transition:none}
 }
+
+.schedule-live{display:flex;align-items:center;gap:9px;flex-wrap:wrap;border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:0 0 14px;font:12px/1.65 system-ui,sans-serif;color:var(--muted);overflow-wrap:anywhere}
+.schedule-live a{color:var(--accent);white-space:nowrap;text-decoration:underline;text-underline-offset:2px}
+.schedule-live button{margin-left:auto;background:none;border:1px solid var(--border);color:var(--text);border-radius:8px;min-width:32px;min-height:32px;font-size:19px;cursor:pointer}
+.schedule-live.schedule-failed{border-color:#b9806a;background:rgba(190,89,59,.06)}
+.schedule-live.schedule-success{border-color:rgba(120,180,120,.6);background:rgba(120,180,120,.04)}
+@media(max-width:430px){.schedule-live{gap:7px;padding:9px 11px}.schedule-live #schedule-text{flex-basis:100%}}
