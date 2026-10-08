@@ -55,6 +55,7 @@ jobs:
           python scripts/validate_site.py
 
       - name: Collect recent RSS headlines
+        if: github.event_name != 'push'
         id: preflight
         shell: bash
         run: |
@@ -113,6 +114,7 @@ jobs:
           fi
 
       - name: Commit published reports
+        if: github.event_name != 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
