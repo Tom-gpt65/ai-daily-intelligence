@@ -117,13 +117,40 @@ jobs:
 
       - name: Commit published reports
         if: github.event_name != 'push'
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/reports site/system-status.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Update AI briefing $(date -u +%Y-%m-%d)"
-            git push
+          # A new code commit may land during the multi-minute free-model run.
+          # Preserve generated site DATA, refresh main, and commit only reports.
+          work="$(mktemp -d)"
+          cp -a site/reports "$work/reports"
+          cp site/system-status.json "$work/system-status.json"
+          published=false
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p site/reports
+            cp -a "$work/reports/." site/reports/
+            cp "$work/system-status.json" site/system-status.json
+            git add site/reports site/system-status.json
+            if git diff --cached --quiet; then
+              echo "Reports already up to date."
+              published=true
+              break
+            fi
+            git commit -m "Daily AI briefing $(date -u +%Y-%m-%d) (attempt $attempt)"
+            if git push origin HEAD:main; then
+              published=true
+              break
+            fi
+            echo "Branch changed during publish; refreshing before retry $attempt"
+            sleep "$attempt"
+          done
+          if [ "$published" != true ]; then
+            echo "::error::Report commit failed after four safe branch refreshes"
+            exit 1
           fi
 
       - name: Configure Pages deployment
