@@ -2129,111 +2129,129 @@
     "accommodate"
   ],
   "practice": {
-    "label": "HKDSE Paper 1 Part B2-style practice",
+    "label": "HKDSE Paper 1 Part B2-inspired daily reading practice",
     "official": false,
-    "instructions": "Independent exercises inspired by HKEAA assessment skills, not official exam questions.",
+    "basis": "HKEAA 2026 English Language Assessment Framework",
+    "instructions": "Original questions; MC answers reflect this text. Short responses require human judgement.",
     "items": [
       {
         "id": "Q1",
         "type": "mc",
-        "skill": "Main idea / writer’s purpose",
+        "skill": "Main idea and argument",
         "marks": 1,
-        "stem": "Which statement best conveys the central argument of the passage?",
+        "stem": "Which statement best captures the writer's central argument?",
         "options": [
-          "All technological announcements should be rejected.",
-          "A headline alone cannot establish the full significance of a development.",
-          "Only academic research can provide reliable information.",
-          "Newspapers and technology companies have identical purposes."
+          "AI innovations should be withheld until researchers can eliminate every foreseeable risk.",
+          "Technological news is mainly valuable as a record of which companies announce products.",
+          "The significance of an AI announcement should be evaluated through the evidence available and what remains uncertain.",
+          "Research papers automatically offer more reliable predictions than company announcements."
         ],
-        "answer": 1,
-        "explanation": "The opening and conclusion distinguish announcements from independently supported conclusions.",
-        "evidence": "Opening and final paragraphs"
+        "answer": 2,
+        "explanation": "The opening frames the relationship between announced developments and the evidence required to assess their implications.",
+        "paragraph": 1,
+        "evidence": "Paragraph 1",
+        "evidence_quote": "A headline may identify an important development, yet the consequences it appears to promise remain provisional until their scope, limitations and practical relevance have been established."
       },
       {
         "id": "Q2",
         "type": "mc",
         "skill": "Vocabulary in context",
         "marks": 1,
-        "stem": "In the final paragraph, 'provisional' is closest in meaning to ...",
+        "stem": "In the final paragraph, what does 'provisional' most nearly mean?",
         "options": [
-          "officially approved",
-          "temporary and open to revision",
-          "completely unsupported",
-          "unlikely to be challenged"
+          "Open to revision in light of new evidence.",
+          "Formally approved by an authority.",
+          "Valid only when commercial interests agree.",
+          "Too vague to be considered at all."
         ],
-        "answer": 1,
-        "explanation": "A provisional judgement can change when further evidence emerges.",
-        "evidence": "Final paragraph"
+        "answer": 0,
+        "explanation": "The sentence immediately explains that a defensible judgement must specify what may alter it.",
+        "paragraph": 8,
+        "evidence": "Paragraph 8",
+        "evidence_quote": "The most defensible judgement is often provisional: it identifies what can presently be said, specifies what cannot, and explains which further facts might alter the conclusion."
       },
       {
         "id": "Q3",
         "type": "mc",
-        "skill": "Inference",
+        "skill": "Inference and writer's attitude",
         "marks": 1,
-        "stem": "What can reasonably be inferred from the comparison between a commercial announcement and a research abstract?",
+        "stem": "What can be inferred from the writer's distinction between caution and blanket scepticism?",
         "options": [
-          "Both automatically prove their claims.",
-          "An intention is identical to demonstrated effectiveness.",
-          "Different sources require different forms of supporting evidence.",
-          "Research abstracts should never be consulted."
+          "All AI reports should be treated as false until proven otherwise.",
+          "Commercial AI announcements are unsuitable for any form of critical discussion.",
+          "Caution is useful only when a writer supplies numerical research findings.",
+          "A responsible reader may acknowledge potential benefits while demanding proportionate supporting evidence."
         ],
-        "answer": 2,
-        "explanation": "The examples highlight distinct gaps in the available evidence.",
-        "evidence": "Comparative analysis paragraph"
+        "answer": 3,
+        "explanation": "The writer explicitly distinguishes examining evidence from dismissing an idea without considering evidence.",
+        "paragraph": 7,
+        "evidence": "Paragraph 7",
+        "evidence_quote": "A cautious stance is not the same as blanket scepticism. The former asks what would count as convincing evidence; the latter risks rejecting evidence before considering it."
       },
       {
         "id": "Q4",
         "type": "mc",
-        "skill": "Tone and attitude",
+        "skill": "Reference and cohesion",
         "marks": 1,
-        "stem": "How would you best describe the writer’s attitude towards the reports?",
+        "stem": "What does 'The former' in Paragraph 7 refer to?",
         "options": [
-          "Unreservedly enthusiastic",
-          "Cautious and analytical",
-          "Hostile and accusatory",
-          "Humorous and dismissive"
+          "The assumption that every technological claim is true.",
+          "The cautious stance mentioned in the preceding sentence.",
+          "The decision to reject evidence in advance.",
+          "The desire to replace research with promotional claims."
         ],
         "answer": 1,
-        "explanation": "Language including qualified, uncertain and measured expresses caution.",
-        "evidence": "Final two paragraphs"
+        "explanation": "'The former' refers to the first of the two contrasted positions, a cautious stance.",
+        "paragraph": 7,
+        "evidence": "Paragraph 7",
+        "evidence_quote": "A cautious stance is not the same as blanket scepticism. The former asks what would count as convincing evidence; the latter risks rejecting evidence before considering it."
       },
       {
         "id": "Q5",
         "type": "short",
-        "skill": "Short response / evidence",
+        "skill": "Language feature and contrast",
         "marks": 2,
-        "stem": "Identify TWO reasons why a reader should avoid treating an RSS summary as conclusive evidence. Answer in your own words.",
+        "stem": "Explain how the writer's use of 'Although' in Paragraph 3 affects the argument about robotics. Refer to the contrast it establishes.",
         "guidance": [
-          "1 mark for each distinct valid reason supported by the passage.",
-          "Examples: missing methods, shortened context, uncertain outcomes, no independent testing."
+          "1 mark: identify the contrast between impressive demonstrations and reliable wider deployment.",
+          "1 mark: explain why this weakens any claim that demonstrations alone prove near-term social transformation."
         ],
-        "evidence": "Opening and analytical paragraphs"
+        "paragraph": 3,
+        "evidence": "Paragraph 3",
+        "evidence_quote": "Although striking demonstrations can make progress seem immediate, the distinction between performance in controlled settings and dependable use beyond them deserves scrutiny."
       },
       {
         "id": "Q6",
         "type": "short",
-        "skill": "Writer's technique",
+        "skill": "Inference and evidence evaluation",
         "marks": 2,
-        "stem": "Explain how the writer uses contrast to develop the argument. Refer to ONE relevant comparison.",
+        "stem": "Why is it inappropriate to regard the AdaGuard preprint as proof of a working safety solution? Give TWO points based on Paragraph 5.",
         "guidance": [
-          "1 mark: identify a contrast such as announcement versus proven outcome.",
-          "1 mark: explain its relevance to careful interpretation."
+          "1 mark: distinguish a proposal or preprint abstract from independently validated performance.",
+          "1 mark: refer to the need for comparative testing, transparency or evidence about failures."
         ],
-        "evidence": "Comparative paragraph"
+        "paragraph": 5,
+        "evidence": "Paragraph 5",
+        "evidence_quote": "Even so, a proposal described in a preprint should not be equated with independently demonstrated effectiveness."
       },
       {
         "id": "Q7",
         "type": "extended",
-        "skill": "Cross-source synthesis (B2-style)",
+        "skill": "Cross-source synthesis / evaluation",
         "marks": 4,
-        "stem": "Compare the information in [S1] and [S2]. What can be inferred, and what cannot be concluded without further verification? (60–90 words.)",
+        "stem": "Compare the different approaches to AI safety described in [S1] and [S4]. How does the writer show that both require further evidence? Answer in approximately 60–90 words.",
         "guidance": [
-          "2 marks: accurately explain the focus of the two sources.",
-          "1 mark: coherent comparison using both source references.",
-          "1 mark: identify a meaningful uncertainty without inventing findings."
+          "1 mark: accurately identify the purpose of OSS Scanner [S1].",
+          "1 mark: identify AdaGuard's proposed policy-assessment approach [S4].",
+          "1 mark: compare practical detection and proposed policy application, without overstating performance.",
+          "1 mark: explain an evidential gap for both with a coherent supported conclusion."
         ],
-        "evidence": "First two attributed story paragraphs and the linked original reporting"
+        "paragraph": 2,
+        "evidence": "Paragraphs 2 and 5; source links [S1] and [S4]",
+        "evidence_quote": "The summary identifies a service called OSS Scanner, whose stated purpose is to help detect vulnerabilities. / a proposed system that uses reasoning-enabled model assessment to apply policies."
       }
     ]
-  }
+  },
+  "study_version": 7,
+  "practice_updated_at": "2026-10-08T23:54:22.397Z"
 }
