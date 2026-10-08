@@ -25,10 +25,14 @@ class DeploymentTests(unittest.TestCase):
         self.assertIsInstance(reports, list)
         for item in reports:
             self.assertTrue((SITE / "reports" / (item["date"] + ".json")).is_file())
-    def test_sample_clearly_marked(self):
+    def test_report_mode_is_accurately_labelled(self):
         item = json.loads((SITE / "reports" / "2026-10-09.json").read_text(encoding="utf-8"))
-        self.assertEqual(item["mode"], "demo")
-        self.assertTrue(item["demo"])
+        self.assertIn(item["mode"], ("demo", "source_digest", "model"))
+        if item["mode"] == "demo":
+            self.assertTrue(item.get("demo"))
+        else:
+            self.assertFalse(item.get("demo", False))
+            self.assertTrue(item.get("sources"))
     def test_pwa_manifest(self):
         manifest = json.loads((SITE / "manifest.webmanifest").read_text(encoding="utf-8"))
         self.assertEqual(manifest["display"], "standalone")
