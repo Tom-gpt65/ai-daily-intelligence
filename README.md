@@ -66,3 +66,14 @@ python tests/browser_smoke_optional.py
 ```
 
 測試以離線模擬資料為主，不會發送任何付費 AI API 請求，也**不能證明**外部 RSS 或正式 Ollama 工作流每天可靠。更多舊版操作細節見 [`README_V4_ARCHIVE.md`](README_V4_ARCHIVE.md)。
+
+## 每日公開發布與準時性驗證（2026-10）
+
+- **08:00 香港時間**：`daily.yml` 預定觸發 RSS 新聞收集及免費本地模型報告生成。GitHub Actions 可能延遲或略過排程，不能保證整點交付。
+- **09:17 香港時間**：`audit.yml` 從公開 GitHub Pages 獨立檢查當日文章及來源，並核對是否有當日 `schedule` 觸發且成功的正式生成流程。
+- 驗證結果分開顯示 **最新文章可用性** 與 **品質警告**（來源摘要、少於 550 字）；流程成功不等於新聞獲完整事實核查。
+- 日期過期、缺乏來源、示範文章被當作正式新聞、或沒有成功的定時生成流程，驗證會顯示紅色失敗，而不是冒稱每日有新報告。
+- [查看每日獨立驗證](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml)；[查看每日生成紀錄](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml)。
+- 當 RSS 沒有足夠可用新聞時，保留舊報告並明確標示，不製造新日期、無來源消息或假新聞。
+- 英文報告編寫目標改為 **550–650 字**；免費模型被拒絕時加入明確標示的批判閱讀練習，不把練習題當成已核實新聞。
+- 程式更新造成的 `push` 工作只測試與發布網站，不再每次重新下載大型開源模型；定時及手動工作仍會生成新文章。
