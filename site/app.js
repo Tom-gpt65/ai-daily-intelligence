@@ -136,6 +136,47 @@
       updateSavedCount();refreshDashboard();renderWords();readingStatus();toast('學習進度已合併還原。');
     }catch{toast('備份檔案無效，沒有修改現有紀錄。');}
   }
+  async function renderScheduleHealth(){
+    const label=$('schedule-text'),link=$('schedule-run-link'),bar=$('schedule-live');
+    if(!label||!link||!bar)return;
+    bar.classList.remove('schedule-failed','schedule-success');
+    const api='https://api.github.com/repos/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml/runs?event=schedule&per_page=8';
+    try{
+      const response=await fetch(api,{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
+      if(!response.ok)throw new Error('GitHub API '+response.status);
+      const data=await response.json();
+      const runs=Array.isArray(data.workflow_runs)?data.workflow_runs:[];
+      const today=hkDate();
+      const found=runs.find(run=>{
+        const d=Date.parse(run.created_at||'');
+        if(!Number.isFinite(d))return false;
+        const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(d));
+        const v=key=>parts.find(p=>p.type===key)?.value||'';
+        return v('year')+'-'+v('month')+'-'+v('day')===today;
+      });
+      const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',hour:'2-digit',hour12:false}).format(new Date()));
+      const minute=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',minute:'2-digit'}).format(new Date()));
+      if(found){
+        link.href=found.html_url||link.href;
+        if(found.status!=='completed'){
+          label.textContent='今日定時新聞工作仍在執行；文章可能尚未更新。';
+        }else if(found.conclusion==='success'){
+          if(state.report?.date===today){label.textContent='✓ 今日排程已成功完成，當日文章可閱讀。';bar.classList.add('schedule-success');}
+          else label.textContent='今日排程成功，但目前讀取的是舊版文章，請更新頁面。';
+        }else{
+          label.textContent='⚠ 今日定時新聞工作失敗（'+String(found.conclusion||'未知')+'）；可能仍顯示上一版文章。';
+          bar.classList.add('schedule-failed');
+        }
+      }else if(hour>8||(hour===8&&minute>=5)){
+        label.textContent='⚠ 尚未找到今日成功啟動的 07:40 排程；GitHub 可能延遲或略過執行。';
+        bar.classList.add('schedule-failed');
+      }else{
+        label.textContent='預定每日 07:40 香港時間生成，08:00 目標可閱讀；尚未確認今日排程。';
+      }
+    }catch{
+      label.textContent='暫時無法查核 GitHub 定時排程；請開啟執行紀錄核對。';
+    }
+  }
   async function renderPipelineStatus(){
     try{
       const response=await fetch('./system-status.json',{cache:'no-store'});
@@ -768,12 +809,14 @@
     showConnectivity();
     $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
     updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();
+    $('refresh-schedule').addEventListener('click',renderScheduleHealth);
     if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
     try{
       const response=await fetch('./reports/index.json',{cache:'no-store'});if(!response.ok)throw new Error('No report index');
       state.index=await response.json();if(!Array.isArray(state.index)||state.index.length>400||!state.index.every(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date||'')))throw new Error('Invalid index');
       if(!state.index.length)throw new Error('Empty index');
       await loadReport(state.index[0].date);
+      renderScheduleHealth();
     }catch{
       showConnectivity(true);
       $('status-banner').textContent='無法取得最新報告';$('report-headline').textContent='報告正在準備中';
