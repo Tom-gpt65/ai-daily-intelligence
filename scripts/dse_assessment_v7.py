@@ -98,6 +98,7 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
                      "cautious", "qualified", "limitations", "scepticism")
     tone_idx = next((paragraph_at(essay, term) for term in tone_keywords if paragraph_at(essay, term) is not None), None)
     if tone_idx is not None:
+        tone_word = next((term for term in tone_keywords if re.search(r"\b"+term+r"\b", essay[tone_idx], re.I)), "")
         items.append(item_mc("Q3", "Writer's tone / attitude",
             f"What attitude is best supported by the writer's language in {cite_location(tone_idx).lower()}?",
             ["Measured and questioning, with qualifications rather than outright dismissal.",
@@ -106,7 +107,7 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
              "Personally hostile towards the individuals mentioned in the article."], 0,
             "The hedging or contrast signals a qualified judgement, not certainty.",
             cite_location(tone_idx), tone_idx, date,
-            quote_sentence(essay, tone_idx, next((x for x in tone_keywords if re.search(r"\b"+x+r"\b",essay[tone_idx],re.I)), "")))
+            quote_sentence(essay, tone_idx, tone_word)))
 
     if len(source_matches) >= 3:
         chosen_idx = int(hashlib.sha256(date.encode()).hexdigest()[:6],16) % len(source_matches)
