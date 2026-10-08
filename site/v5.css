@@ -6,3 +6,5 @@
 .source-alternates a{color:var(--accent);text-underline-offset:3px}
 #reading-speed{font-variant-numeric:tabular-nums;white-space:normal}
 @media(max-width:650px){#reading-speed{min-height:42px}.story-evidence{font-size:11px}}
+
+.audit-link{display:inline-flex;margin:0 0 15px;color:var(--accent);font-size:12px;line-height:1.6;text-underline-offset:3px}.audit-link:hover{text-decoration-thickness:2px}
