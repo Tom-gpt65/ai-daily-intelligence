@@ -1,0 +1,45 @@
+name: iPhone browser regression — Chromium and WebKit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/browser-v7.yml'
+      - 'tests/browser_regression_v7.js'
+      - 'site/app.js'
+      - 'site/v6.css'
+      - 'site/index.html'
+      - 'site/reports/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  iphone:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test dependency and engines
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium webkit
+      - name: Serve the static reading site
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory site > /tmp/reading-server.log 2>&1 &
+          echo $! > /tmp/reading-server.pid
+          for n in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8765/ > /dev/null && break
+            sleep 1
+          done
+      - name: Exercise 320px–430px iPhone-sized screens
+        run: node tests/browser_regression_v7.js
+      - name: Browser smoke summary
+        if: always()
+        run: |
+          echo "Mobile browser smoke: simulated iPhone widths in Chromium and WebKit." >> "$GITHUB_STEP_SUMMARY"
+          echo "Translation responses are mocked; this does not guarantee live provider capacity." >> "$GITHUB_STEP_SUMMARY"
