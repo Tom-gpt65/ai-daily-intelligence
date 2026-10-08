@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="./v3.css">
   <link rel="stylesheet" href="./v4.css">
   <link rel="stylesheet" href="./v5.css">
+  <link rel="stylesheet" href="./v6.css">
 </head>
 <body>
   <a class="skip-link" href="#reader">跳到英文閱讀文章</a>
@@ -64,8 +65,8 @@
         <section class="briefing-card" aria-label="AI briefing">
           <div class="card-header"><div><div class="section-overline">DAILY EDITION</div><h2 id="report-headline">正在載入每日簡報</h2><p id="report-subtitle">新聞來源會列於文章下方。</p></div><div class="edition-symbol">AI<span>↗</span></div></div>
           <div class="reading-bar"><span class="bar-track"><span id="progress-bar" class="bar-fill"></span></span><span id="progress-percent" aria-live="off">0%</span></div>
-          <div class="reader-toolbar"><span class="helper"><span class="mini-spark">✧</span> 點擊任何英文生字即可查詢中文意思</span><div class="toolbar-right"><button class="small-button" type="button" id="reading-speed" title="調整估算閱讀速度；不會影響文章難度">閱讀速度：115 字／分鐘</button><button class="small-button" type="button" id="resume-reading">接續閱讀</button><button class="small-button" type="button" id="focus-toggle" aria-pressed="false">專注閱讀</button><button class="small-button" type="button" id="translate-toggle">顯示中文譯文</button><button class="small-button" type="button" id="font-button" aria-label="調整英文字體大小（三級循環）">A<span class="font-bigger">A</span></button><button class="small-button" type="button" id="export-report">匯出文章</button><button class="small-button" type="button" id="print-report">列印</button></div></div>
-          <div id="reader" class="reader" lang="en" tabindex="-1"></div>
+          <div class="reader-toolbar"><span class="helper"><span class="mini-spark">✧</span> 點擊任何英文生字即可查詢中文意思</span><div class="toolbar-right"><button class="small-button reader-tools-more" type="button" id="tools-toggle" aria-expanded="false">更多閱讀工具 ▾</button><button class="small-button" type="button" id="reading-speed" title="調整估算閱讀速度；不會影響文章難度">閱讀速度：115 字／分鐘</button><button class="small-button" type="button" id="resume-reading">接續閱讀</button><button class="small-button" type="button" id="focus-toggle" aria-pressed="false">專注閱讀</button><button class="small-button" type="button" id="translate-toggle">顯示中文譯文</button><button class="small-button" type="button" id="font-button" aria-label="調整英文字體大小（三級循環）">A<span class="font-bigger">A</span></button><button class="small-button" type="button" id="export-report">匯出文章</button><button class="small-button" type="button" id="print-report">列印</button></div></div>
+          <p id="translation-policy" class="translation-policy">全文翻譯需要網絡。使用前須同意把公開英文文章傳送至免費第三方翻譯服務；翻譯可能不準確。單字詞典仍可離線使用。</p><div id="reader" class="reader" lang="en" tabindex="-1"></div>
           <div class="reading-quality" id="reading-quality"></div>
           <div class="reading-end"><span>✦</span> END OF BRIEFING <span id="reading-state" class="reading-state"></span><button type="button" id="mark-read" class="small-button read-button">標記為已讀</button></div>
         </section>
@@ -75,7 +76,7 @@
         </section>
         <section class="lower-grid">
           <div class="panel"><div class="panel-top"><span class="section-overline">SOURCES & VERIFICATION</span><span class="panel-icon">↗</span></div><h3>Source desk</h3><p class="panel-copy">閱讀原始資料，區分媒體報道、機構聲明與推測。</p><div id="source-list" class="source-list"></div></div>
-          <div class="panel"><div class="panel-top"><span class="section-overline">ENGLISH DEVELOPMENT</span><span class="panel-icon">◇</span></div><h3>Think beyond the text</h3><p class="panel-copy">選答以下推論題，練習 DSE 所需的批判分析能力。</p><div id="question-list" class="question-list"></div></div>
+          <div class="panel"><div class="panel-top"><span class="section-overline">ENGLISH DEVELOPMENT</span><span class="panel-icon">◇</span></div><h3>Think beyond the text</h3><p class="panel-copy">參照 HKEAA Paper 1 Part B2 閱讀技能：選擇、推論、語境詞義、作者態度、短答及跨來源整合。本練習並非官方試卷。</p><div id="practice-meta" class="dse-practice-label"></div><div id="question-list" class="question-list"></div></div>
         </section>
         <div class="footer-note" id="legal-note">所有報告均由公開資料整理。自動改寫可能出錯，重要事實應以原始來源為準。練習文章不代表真實新聞。</div>
       </div>
