@@ -1,4 +1,4 @@
-"""Independent verification of the public AI Daily website and its 08:00 schedule."""
+"""Independent verification of the public AI Daily website and its 07:40 schedule."""
 from __future__ import annotations
 import argparse
 import json
@@ -81,7 +81,7 @@ def request_json(url: str, token: str = "") -> object:
 
 def run() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--skip-schedule", action="store_true", help="Check public website without requiring the 8 AM scheduled run (for manual/push verification)")
+    parser.add_argument("--skip-schedule", action="store_true", help="Check public website without requiring the 07:40 scheduled run (for manual/push verification)")
     parser.add_argument("--date", default=datetime.now(HK).date().isoformat())
     parser.add_argument("--site", default=BASE)
     args = parser.parse_args()
@@ -99,14 +99,14 @@ def run() -> int:
         try:
             runs = request_json(url, os.environ.get("GITHUB_TOKEN", ""))
             if not recent_successful_schedule(runs, args.date):
-                errors.append("No successful 08:00-scheduled daily.yml run recorded for today's Hong Kong date")
+                errors.append("No successful 07:40-scheduled daily.yml run recorded for today's Hong Kong date")
         except Exception as exc:
             errors.append(f"Unable to confirm daily scheduled workflow: {exc}")
     print("### Daily publication audit (Hong Kong)")
     print("- Expected date:", args.date)
     print("- Public website:", base)
     print("- Published on today's date:", "PASS" if not errors else "NOT VERIFIED")
-    print("- 08:00 schedule confirmation:", "not checked for manual audit" if args.skip_schedule else "checked")
+    print("- 07:40 schedule confirmation:", "not checked for manual audit" if args.skip_schedule else "checked")
     for warning in warnings:
         print("- QUALITY WARNING:", warning)
     for error in errors:
