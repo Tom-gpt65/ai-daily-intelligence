@@ -92,6 +92,13 @@ python tests/browser_smoke_optional.py
 
 [自動生成紀錄](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml) | [每日獨立核對](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml) | [缺稿補救紀錄](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/recovery.yml)
 
+## V1 閱讀舒適配色（Paper Calm / Soft Graphite）
+
+- **Paper Calm（日間暖紙白）預設**，主文章背景 `#FFFDF8`、正文 `#292C29`，減低彩色裝飾對長文閱讀的干擾。
+- **Soft Graphite（夜間柔和石墨灰）可選**；如果使用者以往手動選擇夜間模式，會保留原有偏好。
+- 依照 [V1 閱讀配色規格](docs/READING_THEME_V1.md) 及 Node／Chromium／WebKit 測試，檢驗正文及連結對比、表單辨識、鍵盤焦點、響應式排版、列印模式，以及原有詞庫不受影響。
+- 改動只涉及色彩／主題 UI、靜態檔案快取；**不重設本機資料、Supabase 帳戶或雲端事件**，正式版本仍是 V1。
+
 ## 長篇英文閱讀標準（2026-10-09）
 
 - **不可低於 1,000 個英文單字**；目標約 **1,100–1,350 字**，結構檢查容許上限約 1,550 字。報告的詞數由實際英文正文計算，不包含網站導覽文字或題目。
