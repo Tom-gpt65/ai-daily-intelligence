@@ -59,6 +59,12 @@ const {chromium,webkit}=require('playwright');
      assert.match(await page.locator('#report-metadata').innerText(),/8 October 2026/,'Historical reading did not open');
      assert.ok(await page.locator('#freshness-note').isHidden(),'Historical reading should not claim the latest edition is missing');
      assert.match(await page.locator('#schedule-text').innerText(),/歷史文章/,'Historical reading must not be labelled as a failed daily schedule');
+     // A Safari bfcache return checks freshness without redirecting a reader
+     // away from an intentionally opened historical edition.
+     await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
+     await page.waitForTimeout(350);
+     assert.match(await page.locator('#report-metadata').innerText(),/8 October 2026/,
+       'A background daily refresh must not interrupt historical reading');
      assert.ok(await page.locator('#reader .essay-paragraph').count()>=10,'Historical passage paragraphs missing');
      assert.ok(await page.locator('#question-list').count()===1,'Historical practice panel missing');
      const evidence=page.locator('#reader .word').filter({hasText:/^evidence$/i}).first();
