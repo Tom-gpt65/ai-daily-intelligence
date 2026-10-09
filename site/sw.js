@@ -1,5 +1,5 @@
 /* Same-origin cache only. Network-first news never silently masquerades as fresh. */
-const VERSION='ai-daily-v12-reader-reset';
+const VERSION='ai-daily-v13-compact-status';
 const SHELL=['./','./index.html','./style.css','./v3.css','./v4.css','./v5.css','./v6.css','./v11.css','./v12.css','./app.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 const PAGE_CACHE=VERSION+'-shell',DATA_CACHE=VERSION+'-reports';
 self.addEventListener('install',event=>{

@@ -187,41 +187,41 @@
     // succeeded. A successful workflow_dispatch is separate evidence, not a
     // retroactive success for the 07:40 schedule.
     if(schedule?.status==='completed'&&schedule.conclusion==='success'&&ready){
-      label.textContent='✓ 今日報告已更新（資料時間 '+stamp+'）；07:40 定時工作成功。';
+      label.textContent='✓ 今日文章已更新 · '+stamp+'（原定排程正常）';
       bar.classList.add('schedule-success');
       link.href=schedule.html_url||link.href;
     }else if(completedRecovery&&ready){
       const previous=schedule?.status==='completed'&&schedule.conclusion!=='success'?
-        '07:40 定時工作未成功；':schedule?'07:40 定時工作結果仍待核實；':'未核實 07:40 定時工作；';
-      label.textContent='✓ 額外觸發生成已成功，今日文章已補救更新（資料時間 '+stamp+'）。'+previous+'08:00 目標未達成。';
+        '原定排程失敗':schedule?'原定排程待核實':'原定排程未確認';
+      label.textContent='✓ 今日文章已更新 · '+stamp+'（補救成功；'+previous+'）';
       bar.classList.add('schedule-recovered');
       link.href=completedRecovery.html_url||link.href;
     }else if(schedule?.status==='completed'&&schedule.conclusion!=='success'){
       label.textContent=ready?
-        'ⓘ 今日文章已有新版本（資料時間 '+stamp+'），但未能確認是哪次執行發布；07:40 原定工作失敗。':
-        '⚠ 07:40 定時工作未成功，目前尚未確認今日文章已更新。';
+        'ⓘ 今日文章已更新 · '+stamp+'（原定排程失敗）':
+        '⚠ 今日文章尚未確認更新（原定排程失敗）';
       bar.classList.add(ready?'schedule-recovered':'schedule-failed');
       link.href=schedule.html_url||link.href;
     }else if(schedule?.status==='completed'&&schedule.conclusion==='success'){
-      label.textContent='⚠ 07:40 定時工作完成，但公開文章未能核實為今早的新版本。';
+      label.textContent='⚠ 原定排程完成，但今日新文章尚未核實';
       bar.classList.add('schedule-failed');
       link.href=schedule.html_url||link.href;
     }else if(schedule&&schedule.status!=='completed'){
-      label.textContent=ready?'今日文章已更新（'+stamp+'）；07:40 定時工作仍在執行。':'07:40 定時新聞工作仍在執行。';
+      label.textContent=ready?'今日文章已更新 · '+stamp+'（排程仍在執行）':'正在生成今日文章';
       link.href=schedule.html_url||link.href;
     }else if(activeRecovery){
-      label.textContent=ready?'今日文章已更新（'+stamp+'）；另一次新聞生成仍在執行。':'正在進行額外新聞生成，當日文章尚未確認更新。';
+      label.textContent=ready?'今日文章已更新 · '+stamp+'（補救仍在執行）':'正在補救生成今日文章';
       link.href=activeRecovery.html_url||link.href;
     }else if(ready){
-      label.textContent='ⓘ 今日報告已更新（資料時間 '+stamp+'），原定排程結果暫時無法查核。';
+      label.textContent='ⓘ 今日文章已更新 · '+stamp+'（排程狀態待核實）';
       bar.classList.add('schedule-recovered');
     }else if(scheduled===null&&dispatched===null){
-      label.textContent='暫時無法查核 GitHub 工作紀錄，請直接查看執行頁面；文章日期請另外核對。';
+      label.textContent='排程狀態暫時無法查核，請查看工作紀錄';
     }else if(late){
-      label.textContent='⚠ 08:05 後仍未確認今早文章已更新；可能是排程延遲或執行失敗。';
+      label.textContent='⚠ 今日文章尚未更新，請稍後再試';
       bar.classList.add('schedule-failed');
     }else{
-      label.textContent='預定 07:40 生成、08:00 目標可讀；目前仍未確認今日執行結果。';
+      label.textContent='今日文章排程尚待確認';
     }
     // One unavailable endpoint cannot establish that a particular run failed.
     if(scheduled===null||dispatched===null){
@@ -604,15 +604,18 @@
   }
   function renderFreshness() {
     const r=state.report, el=$('freshness-note');
-    if(!r) return;
+    if(!r)return;
     let message='';
-    if(r.mode==='demo') message='目前正在顯示虛構示範文章，並非最新 AI 新聞。正式部署並成功完成首次更新後才會顯示真實報告。';
-    else if(daysOld(r.date)>0) message=`此為 ${formatDate(r.date)} 的舊報告，距今已 ${daysOld(r.date)} 日。最新排程可能尚未完成、來源暫無足夠新消息或更新失敗；請查看 GitHub Actions。`;
-    else if(daysOld(r.date)<0) message='報告日期晚於目前香港日期，請檢查資料或裝置時間。';
-    else if(r.mode==='source_digest') message=(Number(r.word_count)>=1000?
-      '今日提供 1,000 字以上的來源式英文深度分析；免費模型改寫未達品質門檻。新聞摘要未經完整事實核查，本練習不是官方 DSE 試題。':
-      '當前文章短於每日 1,000 字標準；免費模型改寫未達品質門檻，應查看發布驗證。原始 RSS 資料未經獨立核實。');
-    else message='本篇由免費本地 AI 模型根據 RSS 摘要改寫，並非由記者獨立核實的報道；重要細節請查閱原始來源。';
+    if(r.mode==='demo')
+      message='目前為示範文章，並非當日新聞。';
+    else if(daysOld(r.date)>0)
+      message=`此為 ${formatDate(r.date)} 的舊文章；今日報告尚未確認發布。請查看工作紀錄。`;
+    else if(daysOld(r.date)<0)
+      message='文章日期晚於香港今日日期，請檢查資料。';
+    else if(Number(r.word_count)<1000)
+      message='⚠ 本篇低於 1,000 字閱讀標準，請查看發布驗證。';
+    // The source type and unverified-news disclaimer remain on the article
+    // and source desk; do not repeat an intrusive banner on a valid day.
     el.textContent=message;
     el.classList.toggle('hidden',!message);
   }

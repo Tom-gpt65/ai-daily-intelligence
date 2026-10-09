@@ -25,3 +25,13 @@
  .reader-nav-select{font-size:14px}
 }
 @media print{.reading-reset-banner,.site-version{display:none!important}}
+
+/* v13: reduce repetitive dashboard chrome without hiding genuine stale-edition warnings */
+.intro h1{margin-bottom:12px}
+.operational-details{margin:24px 0 12px!important;opacity:.88}
+.operational-details .audit-link{display:inline-block;margin:0 14px 12px;font-size:12px;line-height:1.5}
+.schedule-live{line-height:1.5}
+@media(max-width:650px){
+ .intro h1{margin-bottom:9px}
+ .operational-details{margin-top:18px!important}
+}

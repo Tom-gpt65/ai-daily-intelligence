@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="./v5.css">
   <link rel="stylesheet" href="./v6.css">
   <link rel="stylesheet" href="./v11.css?v=11">
-  <link rel="stylesheet" href="./v12.css?v=12">
+  <link rel="stylesheet" href="./v12.css?v=13">
 </head>
 <body>
   <a class="skip-link" href="#reader">跳到英文閱讀文章</a>
@@ -41,20 +41,18 @@
     <main class="main">
       <header class="topbar">
         <div class="breadcrumbs"><span>LEARNING DASHBOARD</span><span class="slash">/</span><span id="crumb">DAILY BRIEFING</span></div>
-        <div class="top-actions"><span id="today-label" class="date-label"></span><button type="button" id="reload-latest" class="small-button refresh-content" aria-label="檢查網站新版本及重新載入今日文章" title="重新取得最新網站及文章">↻ 更新內容</button><span id="site-version" class="site-version" aria-label="網站版本">v12</span><button type="button" id="theme-button" class="icon-button" aria-label="切換深淺色">☼</button></div>
+        <div class="top-actions"><span id="today-label" class="date-label"></span><button type="button" id="reload-latest" class="small-button refresh-content" aria-label="檢查網站新版本及重新載入今日文章" title="重新取得最新網站及文章">↻ 更新內容</button><span id="site-version" class="site-version" aria-label="網站版本">v13</span><button type="button" id="theme-button" class="icon-button" aria-label="切換深淺色">☼</button></div>
       </header>
       <div class="page" id="view-today">
         <div id="connection-alert" class="connection-alert hidden" role="status"></div>
         <section class="intro">
           <div class="eyebrow"><span class="star">✦</span> KNOW MORE. READ BETTER.</div>
           <h1>Your deeper<br><em>AI perspective.</em></h1>
-          <p>每日 1,000 字以上深入閱讀全球 AI 發展，以跨來源分析、推論與語篇結構訓練 HKDSE Paper 1 Part B2 閱讀能力。</p>
+          
         </section>
         <a class="jump-to-reader" href="#reader">直接閱讀今日英文文章 <span aria-hidden="true">↓</span></a>
         <div class="status-row"><span id="status-banner" class="status-pill">載入中…</span><div id="report-metadata" class="report-metadata"></div></div>
-        <a class="audit-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml" target="_blank" rel="noopener noreferrer">↗ 查看每日發布驗證（香港時間 08:05、09:17 及 13:17 預定檢查）</a>
         <div class="schedule-live" id="schedule-live" role="status"><span id="schedule-text">正在查核今日文章及排程…</span><a id="schedule-run-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml" target="_blank" rel="noopener noreferrer">工作紀錄</a><button type="button" id="refresh-schedule" aria-label="重新核對最新文章與定時狀態">↻</button></div>
-        <details class="technical-status" id="technical-status"><summary>更新技術詳情（RSS、模型、執行時間）</summary><div id="pipeline-alert" class="pipeline-alert hidden" role="status"></div></details>
         <div id="freshness-note" class="freshness-note hidden" role="status"></div>
         <section class="edition-overview" aria-label="本日閱讀概況">
           <div class="overview-stat"><span class="overview-label">閱讀長度</span><strong id="overview-minutes">載入中…</strong><small id="overview-words">1,000 字以上 · 按閱讀速度估算</small></div>
@@ -83,6 +81,7 @@
           <div class="panel"><div class="panel-top"><span class="section-overline">SOURCES & VERIFICATION</span><span class="panel-icon">↗</span></div><h3>Source desk</h3><p class="panel-copy">閱讀原始資料，區分媒體報道、機構聲明與推測。</p><div id="source-list" class="source-list"></div></div>
           <div class="panel"><div class="panel-top"><span class="section-overline">ENGLISH DEVELOPMENT</span><span class="panel-icon">◇</span></div><h3>Think beyond the text</h3><p class="panel-copy">參照 HKEAA Paper 1 Part B2 閱讀技能：選擇、推論、語境詞義、作者態度、短答及跨來源整合。本練習並非官方試卷。</p><div id="practice-meta" class="dse-practice-label"></div><div id="question-list" class="question-list"></div></div>
         </section>
+        <details class="technical-status operational-details" id="technical-status"><summary>系統更新與驗證詳情</summary><div id="pipeline-alert" class="pipeline-alert hidden" role="status"></div><a class="audit-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml" target="_blank" rel="noopener noreferrer">↗ 查看每日發布驗證（香港時間 08:05、09:17 及 13:17 預定檢查）</a></details>
         <div class="footer-note" id="legal-note">所有報告均由公開資料整理。自動改寫可能出錯，重要事實應以原始來源為準。練習文章不代表真實新聞。</div>
       </div>
       <div class="page alternate hidden" id="view-archive"><div class="eyebrow">YOUR READING HISTORY</div><h1 class="secondary-title">Past <em>editions.</em></h1><p class="alternate-subtitle">選取過往報告，回顧 AI 發展脈絡。</p><div class="archive-tools"><input type="search" id="archive-search" placeholder="搜尋標題或日期…" aria-label="搜尋歷史報告"><select id="archive-mode" aria-label="報告類型"><option value="all">全部類型</option><option value="editorial">AI 英文改寫</option><option value="source_digest">來源摘要</option><option value="demo">示範文章</option></select></div><div id="archive-list" class="archive-list"></div></div>
@@ -102,6 +101,6 @@
     <button type="button" id="save-word" class="save-button">＋ 儲存生字</button><button type="button" id="lookup-online" class="small-button online-lookup hidden">查詢線上免費詞典（只傳送此單字）</button>
   </div>
   <div id="toast" class="toast hidden" role="status"></div>
-  <script src="./app.js?v=12" defer></script>
+  <script src="./app.js?v=13" defer></script>
 </body>
 </html>

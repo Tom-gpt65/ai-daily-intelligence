@@ -13,7 +13,11 @@ const {chromium,webkit}=require('playwright');
      page.on('pageerror',e=>errors.push(e.message));
      await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
-     assert.equal(await page.locator('#site-version').innerText(),'v12');
+     assert.equal(await page.locator('#site-version').innerText(),'v13');
+     assert.equal(await page.locator('.intro p').count(),0,'Unnecessary intro copy still displayed');
+     assert.equal(await page.locator('#freshness-note').isVisible(),false,'Repeated quality banner should be hidden for a valid current report');
+     const detailPlace=await page.evaluate(()=>document.querySelector('#technical-status').compareDocumentPosition(document.querySelector('#question-list')) & Node.DOCUMENT_POSITION_PRECEDING);
+     assert.ok(detailPlace,'Technical details must follow reading content');
      const measures=await page.evaluate(()=>{
        const p=document.querySelector('#reader .essay-paragraph');
        const rect=p.getBoundingClientRect();
@@ -36,5 +40,5 @@ const {chromium,webkit}=require('playwright');
    }
   }finally{await browser.close();}
  }
- console.log('RESULT:',count,'/ 6 v12 browser layout cases passed');
+ console.log('RESULT:',count,'/ 6 v13 browser layout cases passed');
 })().catch(e=>{console.error(e);process.exit(1)});
