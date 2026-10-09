@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="./v6.css">
   <link rel="stylesheet" href="./v11.css?v=1">
   <link rel="stylesheet" href="./v12.css?v=1">
-  <link rel="stylesheet" href="./v1.css?v=1&fix=reader-type">
+  <link rel="stylesheet" href="./v1.css?v=1&feature=cloud">
 </head>
 <body>
   <a class="skip-link" href="#reader">跳到英文閱讀文章</a>
@@ -85,7 +85,26 @@
         <div class="footer-note" id="legal-note">新聞分析取材自公開資訊，可能包含未經獨立核實的內容；延伸閱讀則為原創教材，並非當日新聞。請核對原始來源。</div>
       </div>
       <div class="page alternate hidden" id="view-archive"><div class="eyebrow">YOUR READING HISTORY</div><h1 class="secondary-title">Past <em>editions.</em></h1><p class="alternate-subtitle">選取過往報告，回顧 AI 發展脈絡。</p><div class="archive-tools"><input type="search" id="archive-search" placeholder="搜尋標題或日期…" aria-label="搜尋歷史報告"><select id="archive-mode" aria-label="報告類型"><option value="all">全部類型</option><option value="editorial">AI 英文改寫</option><option value="source_digest">來源摘要</option><option value="reading_feature">AI 延伸閱讀</option><option value="demo">示範文章</option></select></div><div id="archive-list" class="archive-list"></div></div>
-      <div class="page alternate hidden" id="view-words"><div class="eyebrow">YOUR PERSONAL LEXICON</div><h1 class="secondary-title">Vocabulary <em>bank.</em></h1><p class="alternate-subtitle">在文章中點擊單字並儲存；資料只保存在你目前使用的瀏覽器。</p><div class="word-tools"><input id="word-search" type="search" placeholder="搜尋已儲存的生字…" aria-label="搜尋生字"><button type="button" id="start-review" class="small-button review-cta">開始生字複習 <span id="review-count"></span></button><button type="button" id="export-vocab" class="small-button">匯出生字庫</button><button type="button" id="import-vocab" class="small-button">匯入生字庫</button><button type="button" id="export-all" class="small-button">備份全部學習進度</button><button type="button" id="import-all" class="small-button">還原學習進度</button><input id="import-all-file" type="file" accept=".json,application/json" class="hidden" aria-label="選擇學習進度備份"><input id="import-file" type="file" accept=".json,application/json" class="hidden" aria-label="選擇生字備份"></div><p class="small-explanation">備份檔案以 JSON 格式儲存，不會上傳至任何伺服器。此網站無法跨裝置自動同步。</p><section id="review-panel" class="review-panel hidden" aria-label="間隔複習卡片"><div class="section-overline">SPACED VOCABULARY REVIEW</div><div id="review-position" class="review-position"></div><h2 id="review-front" class="review-front"></h2><p id="review-back" class="review-back hidden"></p><div class="review-actions"><button type="button" id="review-show" class="small-button">顯示中文意思</button><button type="button" id="review-again" class="small-button hidden">忘記了</button><button type="button" id="review-hard" class="small-button hidden">有點難</button><button type="button" id="review-remember" class="small-button hidden">記得</button><button type="button" id="review-easy" class="small-button hidden">非常熟悉</button><button type="button" id="review-stop" class="small-button">結束複習</button></div><p class="review-disclaimer">此為輕量化間隔複習：記得的單字會延後出現；忘記的單字翌日再練習。進度只保存在此瀏覽器。</p></section><div id="word-list" class="word-list"></div></div>
+      <div class="page alternate hidden" id="view-words"><div class="eyebrow">YOUR PERSONAL LEXICON</div><h1 class="secondary-title">Vocabulary <em>bank.</em></h1><p class="alternate-subtitle">儲存生字、複習並選擇是否使用跨裝置雲端同步。離線時仍可使用。</p><div class="word-tools"><input id="word-search" type="search" placeholder="搜尋已儲存的生字…" aria-label="搜尋生字"><button type="button" id="start-review" class="small-button review-cta">開始生字複習 <span id="review-count"></span></button><button type="button" id="export-vocab" class="small-button">匯出生字庫</button><button type="button" id="import-vocab" class="small-button">匯入生字庫</button><button type="button" id="export-all" class="small-button">備份全部學習進度</button><button type="button" id="import-all" class="small-button">還原學習進度</button><input id="import-all-file" type="file" accept=".json,application/json" class="hidden" aria-label="選擇學習進度備份"><input id="import-file" type="file" accept=".json,application/json" class="hidden" aria-label="選擇生字備份"></div><p class="small-explanation">JSON 匯出及備份檔案只會下載到你的裝置，不會因備份操作上傳。只有登入並啟用雲端同步時，生字與複習資料才會傳送至你的私人帳戶。</p>
+      <section class="cloud-sync-panel" id="cloud-sync-panel" aria-label="跨裝置生字同步">
+        <div class="cloud-sync-head"><h2>跨裝置同步</h2><span id="sync-indicator" class="cloud-sync-indicator">本機模式</span></div>
+        <p id="sync-status" class="cloud-sync-status" role="status" aria-live="polite">正在檢查雲端同步設定…</p>
+        <div id="sync-unavailable" class="cloud-sync-unavailable hidden">雲端服務尚未設定，生字仍會安全保存在此裝置。啟用方法請參閱 <a href="https://github.com/Tom-gpt65/ai-daily-intelligence/blob/main/docs/CLOUD_SYNC_SETUP.md" target="_blank" rel="noopener noreferrer">雲端設定說明</a>。</div>
+        <form id="sync-login" class="cloud-sync-actions hidden">
+          <label for="sync-email">登入電郵</label>
+          <input id="sync-email" type="email" autocomplete="email" inputmode="email" required placeholder="name@example.com">
+          <button class="small-button" type="submit" id="sync-email-submit">寄送安全登入連結</button>
+        </form>
+        <div id="sync-account" class="cloud-sync-actions hidden">
+          <p id="sync-account-email" class="cloud-sync-account"></p>
+          <div class="cloud-sync-buttons">
+            <button type="button" id="sync-now" class="small-button">立即同步</button>
+            <button type="button" id="sync-import-local" class="small-button">將原有本機生字加入雲端</button>
+            <button type="button" id="sync-logout" class="small-button">登出雲端</button>
+          </div>
+          <p class="cloud-sync-warning">只有按下「將原有本機生字加入雲端」，才會上傳登入前的本機生字。刪除詞語會同步至其他已登入裝置；離線時將排隊等待連線。</p>
+        </div>
+      </section><section id="review-panel" class="review-panel hidden" aria-label="間隔複習卡片"><div class="section-overline">SPACED VOCABULARY REVIEW</div><div id="review-position" class="review-position"></div><h2 id="review-front" class="review-front"></h2><p id="review-back" class="review-back hidden"></p><div class="review-actions"><button type="button" id="review-show" class="small-button">顯示中文意思</button><button type="button" id="review-again" class="small-button hidden">忘記了</button><button type="button" id="review-hard" class="small-button hidden">有點難</button><button type="button" id="review-remember" class="small-button hidden">記得</button><button type="button" id="review-easy" class="small-button hidden">非常熟悉</button><button type="button" id="review-stop" class="small-button">結束複習</button></div><p class="review-disclaimer">此為輕量化間隔複習：記得的單字會延後出現；忘記的單字翌日再練習。進度只保存在此瀏覽器。</p></section><div id="word-list" class="word-list"></div></div>
     </main>
   </div>
   <div id="dictionary-popover" class="dictionary-popover hidden" role="region" aria-label="英文生字解釋">
@@ -101,6 +120,7 @@
     <button type="button" id="save-word" class="save-button">＋ 儲存生字</button><button type="button" id="lookup-online" class="small-button online-lookup hidden">查詢線上免費詞典（只傳送此單字）</button>
   </div>
   <div id="toast" class="toast hidden" role="status"></div>
-  <script src="./app.js?v=1&fix=reader-type" defer></script>
+  <script src="./cloud-sync.js?v=1&feature=cloud" defer></script>
+  <script src="./app.js?v=1&feature=cloud" defer></script>
 </body>
 </html>
