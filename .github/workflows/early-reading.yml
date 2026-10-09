@@ -5,6 +5,10 @@ on:
     - cron: '5 7 * * *'
       timezone: 'Asia/Hong_Kong'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/early-reading.yml'
 
 permissions:
   contents: write
