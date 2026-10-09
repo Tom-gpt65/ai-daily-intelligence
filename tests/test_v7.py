@@ -40,6 +40,15 @@ class DSEV7Tests(unittest.TestCase):
                 self.assertTrue(item["explanation"])
             else:
                 self.assertTrue(item["guidance"])
+    def test_cross_source_questions_use_todays_specific_news_titles(self):
+        book=make_exam(self.essay,self.stories,"2026-10-09")
+        comparison=book["items"][3]
+        extended=book["items"][-1]
+        self.assertIn(self.stories[0]["title"],comparison["stem"])
+        self.assertIn(self.stories[1]["title"],comparison["stem"])
+        self.assertIn("80–120 words",extended["stem"])
+        self.assertFalse(book["official"])
+
     def test_daily_shuffle_prevents_fixed_answer_key(self):
         keys=[make_exam(self.essay,self.stories,f"2026-10-{day:02d}")["items"][0]["answer"] for day in range(9,20)]
         self.assertGreater(len(set(keys)),1)
