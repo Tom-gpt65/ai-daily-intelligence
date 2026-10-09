@@ -43,6 +43,11 @@
     $('sync-indicator').textContent=signedIn?'已連接帳戶':available?'未登入':'本機模式';
   }
   function cloudStatus(message){$('sync-status').textContent=message;}
+  function cloudEmailFeedback(message){
+    const feedback=$('sync-email-feedback');
+    feedback.textContent=message;
+    feedback.classList.toggle('hidden',!message);
+  }
   function syncWordsToLocal(){
     safeStorage.set(SAVED_KEY,saved);
     const user=safeStorage.get(ACTIVE_CLOUD_USER,null);
@@ -1181,14 +1186,34 @@
       saved[key]={translation:entry.translation||'',phonetic:entry.phonetic||'',savedAt:new Date().toISOString()};
       persistWord(key);$('save-word').textContent='✓ 已儲存';toast(cloudSync?.active?'生字已保存，稍後同步至其他裝置。':'生字已儲存在此瀏覽器。');
     });
+    $('sync-email').addEventListener('invalid',()=>{
+      cloudEmailFeedback('請先輸入有效的電郵地址，然後按「寄送安全登入連結」。');
+    });
+    $('sync-email').addEventListener('input',()=>cloudEmailFeedback(''));
     $('sync-login').addEventListener('submit',async event=>{
       event.preventDefault();
-      if(!cloudSync?.config)return;
       const button=$('sync-email-submit');
+      if(button.disabled)return;
+      if(!cloudSync?.config){
+        cloudEmailFeedback('雲端服務仍在初始化，請稍後重新整理網站再試。');
+        return;
+      }
+      const label=button.textContent;
       button.disabled=true;
-      try{await cloudSync.sendEmail($('sync-email').value.trim());}
-      catch(err){cloudStatus('未能寄送登入電郵：'+err.message);}
-      finally{button.disabled=false;}
+      button.textContent='正在聯絡 Supabase…';
+      cloudEmailFeedback('正在寄送登入請求，請稍候（最多約 20 秒）。');
+      cloudStatus('正在聯絡 Supabase 寄送登入請求…');
+      try{
+        await cloudSync.sendEmail($('sync-email').value.trim());
+        cloudEmailFeedback('登入請求已被接受。請檢查收件匣及垃圾郵件，並在同一裝置開啟登入連結。');
+      }catch(err){
+        const message=String(err?.message||err).slice(0,240);
+        cloudEmailFeedback('登入請求失敗：'+message);
+        cloudStatus('未能寄送登入電郵：'+message);
+      }finally{
+        button.disabled=false;
+        button.textContent=label;
+      }
     });
     $('sync-now').addEventListener('click',()=>cloudSync?.sync().catch(()=>{}));
     $('sync-import-local').addEventListener('click',mergeDeviceWords);
