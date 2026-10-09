@@ -121,11 +121,23 @@ async function exercise(browserType,engine,width){
       const response=await fetch(url+'uncached-network-probe',{cache:'no-store'});
       return response.status;
     },BASE),'The origin must really be unreachable during the offline test');
-    // A normal same-origin navigation (not DevTools Page.reload) must be served
-    // by Service Worker CacheStorage even when the origin has been shut down.
-    await page.goto(BASE+'index.html?offline-navigation=1',{
-      waitUntil:'domcontentloaded',timeout:25000
+    // Prove a real browser fetch still works from the SW cache while the
+    // origin is unreachable; do not mistake a CacheStorage entry for a fetch.
+    const offlineFetch=await page.evaluate(async()=>{
+      try{
+        const res=await fetch('./index.html',{cache:'no-store'});
+        const html=await res.text();
+        return {ok:res.ok,hasApp:html.includes('AI Daily Intelligence')};
+      }catch(error){return {ok:false,error:String(error)};}
     });
+    assert.ok(offlineFetch.ok&&offlineFetch.hasApp,
+      engine+' SW could not serve cached HTML with origin unreachable: '+JSON.stringify(offlineFetch));
+    // Initiate navigation inside the webpage rather than via DevTools
+    // Page.navigate/reload, which can bypass the worker in headless tests.
+    await Promise.all([
+      page.waitForNavigation({waitUntil:'domcontentloaded',timeout:25000}),
+      page.evaluate(url=>location.assign(url),BASE+'index.html?offline-navigation=1')
+    ]);
     await page.locator('#reader .essay-paragraph .word').first().waitFor({
       state:'visible',timeout:25000
     });
