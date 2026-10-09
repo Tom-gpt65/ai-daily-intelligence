@@ -18,6 +18,18 @@ GENERIC=(
     "independently verified",
 )
 
+MACHINE_ARTIFACTS=(
+    re.compile(r"arxiv:\S+\s+announce type:",re.I),
+    re.compile(r"(?i)(?:<\|im_start\|>|<\|im_end\|>|\[INST\]|\[/INST\])"),
+    re.compile(r"(?i)\b(?:as an ai language model|lorem ipsum)\b"),
+    re.compile(r"(?m)^\s*(?:SYSTEM PROMPT:|ASSISTANT RESPONSE:|TODO:)\s*"),
+    re.compile("\uFFFD"),
+)
+
+def contains_machine_artifacts(text: str) -> bool:
+    """Reject obvious RSS metadata, prompt wrappers and broken characters."""
+    return any(pattern.search(text) for pattern in MACHINE_ARTIFACTS)
+
 def repeated_paragraph_similarity(paragraphs: list[str]) -> float:
     """Highest pairwise four-word shingle overlap, ignoring source-ID labels.
 
@@ -64,8 +76,10 @@ def inspect(paragraphs: list[str], sources: list[dict]) -> dict:
         "generic_caution_phrases":generic_hits,
         "long_sentence_count":long_sentences,
         "maximum_repeated_paragraph_similarity":repeated_similarity,
+        "machine_text_artifacts":contains_machine_artifacts(text),
     }
     issues=[]
+    if contains_machine_artifacts(text): issues.append("machine_text_artifact")
     if not 1000<=count<=1550: issues.append("article_length_outside_training_target")
     if len(paragraphs)<5: issues.append("insufficient_paragraph_structure")
     if len(ids&cited)<min(3,len(ids)): issues.append("insufficient_explicit_source_attribution")

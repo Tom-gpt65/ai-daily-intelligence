@@ -2,7 +2,7 @@
 import pathlib,sys,unittest
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from editorial_quality import inspect,repeated_paragraph_similarity
+from editorial_quality import inspect,repeated_paragraph_similarity,contains_machine_artifacts
 
 
 class EditorialQualityTests(unittest.TestCase):
@@ -53,6 +53,16 @@ class EditorialQualityTests(unittest.TestCase):
         a="Research methods can be evaluated against established comparison criteria. "*13
         b="Investment decisions signal expectations without determining future commercial performance. "*13
         self.assertLess(repeated_paragraph_similarity([a,b]),0.68)
+    def test_prompt_and_feed_artifacts_never_become_reading_text(self):
+        for fragment in ("arXiv:2610.1234v1 Announce Type: new Abstract: text",
+                         "As an AI language model, I cannot",
+                         "A broken replacement character \uFFFD appears"):
+            with self.subTest(fragment=fragment):
+                self.assertTrue(contains_machine_artifacts(fragment))
+                report=self.paras.copy()
+                report[0]+=fragment
+                self.assertIn("machine_text_artifact",inspect(report,self.sources)["issues"])
+        self.assertFalse(contains_machine_artifacts("A carefully attributed arXiv paper can still be discussed in normal prose."))
     def test_diagnostics_not_hkeaa_level_claim(self):
         result=inspect(self.paras,self.sources)
         self.assertIn("not independent fact-checking",result["notice"])

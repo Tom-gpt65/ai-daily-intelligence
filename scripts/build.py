@@ -687,7 +687,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     # If the LLM repeats prose or drops sources, try the explicitly labelled
     # evidence-limited educational fallback. Never publish it as model-written.
     critical = {"article_length_outside_training_target", "near_duplicate_paragraph_padding",
-                "insufficient_explicit_source_attribution", "insufficient_event_specific_paragraphs"}
+                "insufficient_explicit_source_attribution", "insufficient_event_specific_paragraphs",
+                "machine_text_artifact"}
     quality = inspect_editorial_quality(essay, sources)
     if good and critical.intersection(quality["issues"]):
         print("[quality warning] Model draft failed structural evidence gate: "

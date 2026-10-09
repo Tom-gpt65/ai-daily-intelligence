@@ -3,6 +3,7 @@ import json
 import re
 from pathlib import Path
 from edition_guarantee import complete
+from editorial_quality import contains_machine_artifacts
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
@@ -50,7 +51,10 @@ def validate() -> list[str]:
             if not isinstance(paragraphs,list) or not 5<=len(paragraphs)<=15 or not all(isinstance(p,str) for p in paragraphs):
                 errors.append('Missing/invalid reading paragraphs: '+date)
                 continue
-            words=len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b",' '.join(paragraphs)))
+            body=' '.join(paragraphs)
+            if contains_machine_artifacts(body):
+                errors.append('Machine prompt or raw RSS metadata leaked into published text: '+date)
+            words=len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b",body))
             if not 1000<=words<=1550:
                 errors.append('Edition fails 1,000–1,550-English-word reading standard: '+date)
             if article.get('word_count')!=words:
