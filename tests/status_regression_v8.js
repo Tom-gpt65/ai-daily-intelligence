@@ -58,6 +58,34 @@ async function scenario(engine,browser,scenarioName,scheduledRuns,manualRuns,rep
  }finally{await instance.close();}
 }
 
+
+async function historicalRace(engine,browser){
+ const instance=await browser.launch({headless:true});
+ try{
+  const context=await instance.newContext({viewport:{width:1024,height:768}});
+  const page=await context.newPage(),errors=[];
+  page.on('pageerror',err=>errors.push(err.message));
+  await page.route(url=>url.href.includes('/actions/workflows/daily.yml/runs?'),async route=>{
+    await new Promise(resolve=>setTimeout(resolve,1200));
+    await route.fulfill({status:200,contentType:'application/json',
+      headers:{'access-control-allow-origin':'*'},
+      body:JSON.stringify({workflow_runs:[scheduled]})});
+  });
+  const requested=page.waitForRequest(request=>request.url().includes('/actions/workflows/daily.yml/runs?'),{timeout:15000});
+  await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
+  await requested;
+  await page.locator('[data-view="archive"]').click();
+  const historical=page.locator('#archive-list .archive-card').filter({hasText:'8 October 2026'});
+  await historical.click();
+  await page.waitForFunction(()=>document.querySelector('#report-metadata')?.textContent.includes('8 October 2026'),null,{timeout:12000});
+  await page.waitForTimeout(1500);
+  assert.match(await page.locator('#schedule-text').innerText(),/歷史文章/,
+    engine+' delayed scheduled failure overwrote an intentionally opened historical article');
+  assert.deepEqual(errors,[],engine+' delayed status page errors');
+  console.log('PASS',engine,'delayed GitHub schedule reply does not overwrite historical reading');
+ }finally{await instance.close();}
+}
+
 (async()=>{
  for(const {engine,browser} of [{engine:'chromium',browser:chromium},{engine:'webkit',browser:webkit}]){
   await scenario(engine,browser,'scheduled failed + recovery succeeds',[scheduled],[recovered],
@@ -66,6 +94,7 @@ async function scenario(engine,browser,scenarioName,scheduledRuns,manualRuns,rep
     '07:35:00','schedule-failed','尚未確認更新','71001');
   await scenario(engine,browser,'scheduled succeeds',[succeeded],[],
     '07:58:00','schedule-success','原定排程正常','71003');
+  await historicalRace(engine,browser);
  }
- console.log('RESULT: 6 / 6 schedule and tablet-view regression cases passed');
+ console.log('RESULT: 6 schedule/tablet cases and 2 delayed historical status cases passed');
 })().catch(err=>{console.error(err);process.exit(1);});
