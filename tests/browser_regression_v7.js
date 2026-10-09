@@ -53,7 +53,47 @@ const {chromium,webkit}=require('playwright');
      passed++;
     } finally{await context.close();}
    }
+  // Recovery scenario: first chunk succeeds; the next request exhausts
+  // its retry budget. The second attempt must reuse the already translated
+  // chunk rather than spend the anonymous API allowance again.
+  const recoverContext=await instance.newContext({
+    viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2
+  });
+  try{
+    const recoverPage=await recoverContext.newPage();
+    recoverPage.on('dialog',dialog=>dialog.accept());
+    let requests=0;
+    await recoverPage.route('https://api.mymemory.translated.net/**',async route=>{
+      requests++;
+      if(requests===2||requests===3){
+        await route.fulfill({status:503,contentType:'application/json',
+          headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({responseStatus:503})});
+      }else{
+        await route.fulfill({status:200,contentType:'application/json',
+          headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({responseStatus:200,responseData:{translatedText:'已翻譯的部分會儲存供下次接續。'}})});
+      }
+    });
+    await recoverPage.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded',timeout:20000});
+    await recoverPage.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
+    await recoverPage.locator('.paragraph-translate').first().click();
+    await recoverPage.waitForFunction(()=>document.querySelector('#toast')?.textContent.includes('翻譯未完成'),null,{timeout:15000});
+    assert.equal(requests,3,engine+': 1 good + 2 failed request attempts expected');
+    const saved=await recoverPage.evaluate(()=>{
+      const key=Object.keys(localStorage).find(k=>k.includes('-chunks-0'));
+      return key?JSON.parse(localStorage.getItem(key)):null;
+    });
+    assert.ok(saved,engine+': missing successful chunk cache');
+    assert.ok(saved.chunks.length>=2,engine+': paragraph expected to require multiple chunks');
+    assert.equal(saved.results.filter(Boolean).length,1,engine+': cached first good chunk missing');
+    await recoverPage.locator('.paragraph-translate').first().click();
+    await recoverPage.locator('#reader .translation-paragraph').first().waitFor({state:'visible',timeout:20000});
+    assert.equal(requests,3+saved.chunks.length-1,engine+': retried an already-translated chunk');
+    console.log('PASS',engine,'interrupted paragraph resumed from',saved.results.filter(Boolean).length,'cached chunk');
+    passed++;
+  }finally{await recoverContext.close();}
   }finally{await instance.close();}
  }
- console.log('RESULT:',passed,'/ 8 iPhone-sized browser scenarios passed');
+ console.log('RESULT:',passed,'/ 10 iPhone-sized browser scenarios passed');
 })().catch(error=>{console.error(error);process.exit(1);});
