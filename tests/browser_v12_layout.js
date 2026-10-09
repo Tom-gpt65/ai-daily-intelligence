@@ -63,7 +63,32 @@ const {chromium,webkit}=require('playwright');
      await evidence.click();
      assert.ok((await page.locator('#lookup-translation').innerText()).length>1,'Archived word meaning missing');
      assert.ok(await page.locator('#lookup-online').isHidden(),'Archive words must be available offline');
+     // Test real user state changes: saving a word, answering a multiple-choice
+     // question, writing a short response, and surviving a full reload.
+     await page.locator('#save-word').click();
      await page.locator('#pop-close').click();
+     const itemCount=await page.locator('#question-list .question-item').count();
+     assert.equal(itemCount,7,'Historical edition must render seven exercises');
+     await page.locator('#question-list .question-item').first().locator('input[type="radio"]').first().check();
+     await page.locator('#question-list .question-item').first().getByRole('button',{name:'提交選擇題'}).click();
+     await page.locator('#question-list .question-answer').first().fill('The author contrasts confidence with verifiable evidence.');
+     let persisted=await page.evaluate(()=>({
+       word:JSON.parse(localStorage.getItem('ai-daily-saved-v2')||'{}').evidence,
+       quiz:JSON.parse(localStorage.getItem('ai-daily-quiz-v6')||'{}')['2026-10-08-v7-Q1'],
+       writing:JSON.parse(localStorage.getItem('ai-daily-answers-v1')||'{}')['2026-10-08-v7-Q4']
+     }));
+     assert.ok(persisted.word?.translation,'Saved vocabulary meaning was not persisted');
+     assert.equal(persisted.quiz?.selected,0,'Multiple-choice answer was not persisted');
+     assert.match(persisted.writing||'',/contrasts confidence/,'Written answer was not persisted');
+     await page.reload({waitUntil:'domcontentloaded'});
+     await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
+     persisted=await page.evaluate(()=>({
+       word:JSON.parse(localStorage.getItem('ai-daily-saved-v2')||'{}').evidence,
+       quiz:JSON.parse(localStorage.getItem('ai-daily-quiz-v6')||'{}')['2026-10-08-v7-Q1'],
+       writing:JSON.parse(localStorage.getItem('ai-daily-answers-v1')||'{}')['2026-10-08-v7-Q4']
+     }));
+     assert.ok(persisted.word?.translation && persisted.quiz && persisted.writing,
+       'A reload must not erase saved words or practice answers');
      assert.equal(await page.locator('#site-version').innerText(),'v15','Routine archive testing must not upgrade site version');
      assert.deepEqual(errors,[],name+' '+width+' script errors');
      console.log('PASS',name,width,'reader reflow, picker and reset');
