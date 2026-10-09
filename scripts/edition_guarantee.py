@@ -10,7 +10,7 @@ import re
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-TOKENS=re.compile(r"[A-Za-z]+(?:['’\-][A-Za-z]+)*")
+TOKENS=re.compile(r"\b[A-Za-z]+(?:['’\-][A-Za-z]+)*\b")
 CJK=re.compile(r"[\u3400-\u9fff]")
 
 def article_words(paragraphs):
