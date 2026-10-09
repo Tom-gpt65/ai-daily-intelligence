@@ -7,6 +7,7 @@ on:
       - 'site/cloud-sync.js'
       - 'tests/browser_cloud_sync.js'
       - 'tests/browser_cloud_email.js'
+      - 'tests/browser_cloud_password.js'
       - 'site/app.js'
       - '.github/workflows/browser-v7.yml'
   push:
@@ -18,6 +19,7 @@ on:
       - 'tests/browser_layout_v11.js'
       - 'tests/browser_v12_layout.js'
       - 'tests/browser_cloud_sync.js'
+      - 'tests/browser_cloud_password.js'
       - 'site/app.js'
       - 'site/cloud-sync.js'
       - 'site/cloud-config.json'
@@ -75,6 +77,8 @@ jobs:
         run: node tests/browser_cloud_sync.js
       - name: Verify iPad and Chromium Magic Link feedback without sending real email
         run: node tests/browser_cloud_email.js
+      - name: Verify password login and cross-device sync without SMTP in Chromium/WebKit
+        run: node tests/browser_cloud_password.js
       - name: Browser smoke summary
         if: always()
         run: |
