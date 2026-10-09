@@ -75,6 +75,20 @@ def compose_briefing(stories):
             "or practical constraints could change its meaning. Such scrutiny makes a daily news briefing a lesson "
             "in informed judgement rather than a rehearsal of publicity."
         )
+    # The source count can vary from three to five; a fixed set of concluding
+    # reflections previously produced ~700 words for five stories. Prefer
+    # removing a complete optional analytical paragraph over truncating
+    # sentences or dropping source-specific reporting.
+    while word_count(" ".join(paragraphs)) > 650 and len(paragraphs) > 6:
+        removed=False
+        for idx in range(len(paragraphs)-2,len(entries),-1):
+            candidate=paragraphs[:idx]+paragraphs[idx+1:]
+            if 550 <= word_count(" ".join(candidate)) <= 650:
+                paragraphs=candidate
+                removed=True
+                break
+        if not removed:
+            break
     return paragraphs
 
 def make_practice(stories,mode="source_digest"):
