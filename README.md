@@ -141,7 +141,7 @@ python tests/browser_smoke_optional.py
 
 ## V1 跨裝置生字同步（須啟用 Supabase）
 
-V1 已加入可選擇的電郵登入、私人生字事件同步及離線佇列。**Supabase 專案的公開配置現已加入 `site/cloud-config.json`，但尚未完成真實電郵登入及兩裝置驗收，不能宣稱整項跨裝置功能已完成正式驗證。** 使用雲端前請先匯出本機生字 JSON 備份；原有本機生字須由使用者主動選擇匯入。
+V1 已加入可選擇的電郵登入（Magic Link 或管理員建立的電郵＋密碼帳戶）、私人生字事件同步及離線佇列。**Supabase 專案的公開配置現已加入 `site/cloud-config.json`，但尚未完成真實電郵登入及兩裝置驗收，不能宣稱整項跨裝置功能已完成正式驗證。** 使用雲端前請先匯出本機生字 JSON 備份；原有本機生字須由使用者主動選擇匯入。
 
 詳細啟用步驟與 Row Level Security：[`docs/CLOUD_SYNC_SETUP.md`](docs/CLOUD_SYNC_SETUP.md)，建表 SQL：[`docs/SUPABASE_VOCABULARY.sql`](docs/SUPABASE_VOCABULARY.sql)。
 
