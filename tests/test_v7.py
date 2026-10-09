@@ -44,8 +44,13 @@ class DSEV7Tests(unittest.TestCase):
         book=make_exam(self.essay,self.stories,"2026-10-09")
         comparison=book["items"][3]
         extended=book["items"][-1]
-        self.assertIn(self.stories[0]["title"],comparison["stem"])
-        self.assertIn(self.stories[1]["title"],comparison["stem"])
+        import re
+        cited_ids=set(re.findall(r"\[(S\d+)\]",comparison["stem"]))
+        self.assertEqual(len(cited_ids),2)
+        source_by_id={source["id"]:source for source in self.stories}
+        for source_id in cited_ids:
+            self.assertIn(source_by_id[source_id]["title"],comparison["stem"])
+        self.assertNotEqual(*sorted(cited_ids))
         self.assertIn("80–120 words",extended["stem"])
         self.assertFalse(book["official"])
 
