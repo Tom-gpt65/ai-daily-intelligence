@@ -25,8 +25,11 @@ class FirstReleaseTests(unittest.TestCase):
         self.assertIn("./cloud-sync.js?v=1",html)
         self.assertIn("'./cloud-sync.js'",worker)
         settings=__import__("json").loads((SITE/"cloud-config.json").read_text(encoding="utf-8"))
-        self.assertEqual(settings["supabase_url"],"")  # No fictitious enabled service
-        self.assertEqual(settings["anon_key"],"")
+        self.assertIsInstance(settings["supabase_url"],str)
+        self.assertIsInstance(settings["anon_key"],str)
+        self.assertEqual(bool(settings["supabase_url"]),bool(settings["anon_key"]))
+        self.assertNotIn("sb_secret_",settings["anon_key"])
+        self.assertNotIn("service_role",settings["anon_key"])
     def test_learning_records_stay_backward_compatible(self):
         app=(SITE/"app.js").read_text(encoding="utf-8")
         for key in ("ai-daily-saved-v2","ai-daily-quiz-v6",

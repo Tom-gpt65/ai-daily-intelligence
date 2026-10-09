@@ -71,8 +71,19 @@
       if(!value||typeof value!=='object')return false;
       try{
         const u=new URL(value.supabase_url);
-        return u.protocol==='https:'&&/^[a-z0-9-]+\.supabase\.co$/.test(u.hostname)
-          &&typeof value.anon_key==='string'&&value.anon_key.length>20;
+        if(u.protocol!=='https:'||!/^[a-z0-9-]+\.supabase\.co$/.test(u.hostname))return false;
+        const key=value.anon_key;
+        if(typeof key!=='string'||key.length<21||/sb_secret_|service_role/i.test(key))return false;
+        // Legacy anon JWTs are public, but a service_role JWT grants privileged
+        // access. Never accept one in the world-readable Pages configuration.
+        if(key.split('.').length===3){
+          try{
+            const part=key.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+            const claims=JSON.parse(atob(part));
+            return claims.role==='anon';
+          }catch{return false;}
+        }
+        return /^sb_publishable_/.test(key);
       }catch{return false;}
     }
     async init(){

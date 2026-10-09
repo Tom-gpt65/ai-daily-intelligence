@@ -1,6 +1,13 @@
 'use strict';
 const assert=require('node:assert/strict');
-const {cleanWord,cleanPayload,replay,combineWithPending}=require('../site/cloud-sync.js');
+const {Client,cleanWord,cleanPayload,replay,combineWithPending}=require('../site/cloud-sync.js');
+const settingsCheck=new Client({});
+assert.equal(settingsCheck.configValid({
+  supabase_url:'https://example.supabase.co',
+  anon_key:'sb_secret_'.padEnd(40,'x')}),false,'Privileged keys must be rejected');
+assert.equal(settingsCheck.configValid({
+  supabase_url:'https://example.supabase.co',
+  anon_key:'sb_publishable_'.padEnd(35,'x')}),true);
 assert.equal(cleanWord('concerns'),'concerns');
 for(const word of ['','a'.repeat(47),'../../../x','A','__proto__'])
   assert.equal(cleanWord(word),null,'Reject invalid word '+word);
