@@ -90,7 +90,8 @@ def publish(max_attempts=5):
                 "headline":chosen.get("headline",""),
                 "mode":chosen.get("mode","source_digest"),
                 "word_count":chosen.get("word_count",0),
-                "stories":len(chosen.get("stories",[]))
+                "stories":len(chosen.get("stories",[])),
+                "updated_at":chosen.get("updated_at","")
             }
             combined=merge_index(combined,[chosen_row])
             (REPORTS/"index.json").write_text(json.dumps(combined,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")

@@ -25,6 +25,15 @@ class DeploymentTests(unittest.TestCase):
         self.assertIsInstance(reports, list)
         for item in reports:
             self.assertTrue((SITE / "reports" / (item["date"] + ".json")).is_file())
+    def test_index_tracks_article_revision(self):
+        entries=json.loads((SITE / "reports" / "index.json").read_text(encoding="utf-8"))
+        self.assertTrue(entries)
+        latest=entries[0]
+        report=json.loads((SITE / "reports" / (latest["date"] + ".json")).read_text(encoding="utf-8"))
+        self.assertTrue(latest.get("updated_at"))
+        self.assertEqual(latest["updated_at"],report.get("updated_at"))
+        javascript=(SITE / "app.js").read_text(encoding="utf-8")
+        self.assertIn("Boolean(top.updated_at)",javascript)
     def test_report_mode_is_accurately_labelled(self):
         item = json.loads((SITE / "reports" / "2026-10-09.json").read_text(encoding="utf-8"))
         self.assertIn(item["mode"], ("demo", "source_digest", "model"))

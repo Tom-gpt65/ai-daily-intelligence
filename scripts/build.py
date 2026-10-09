@@ -602,7 +602,8 @@ def put_report(report: dict):
         existing = []
     existing = [x for x in existing if x.get("date") != report["date"] and x.get("mode") != "demo"]
     new_index = [{"date": report["date"], "headline": report["headline"], "mode": report["mode"],
-                  "word_count": report["word_count"], "stories": len(report["stories"])}] + existing
+                  "word_count": report["word_count"], "stories": len(report["stories"]),
+                  "updated_at": report.get("updated_at", "")}] + existing
     new_index.sort(key=lambda x: x["date"], reverse=True)
     atomic_json(index_path, new_index[:365])
     print(f"[success] {target} | {report['word_count']} words | {report['mode']}")

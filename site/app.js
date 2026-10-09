@@ -945,7 +945,8 @@
       const changed=next!==state.report?.date ||
         Number(top.word_count||0)!==Number(state.report?.word_count||0) ||
         String(top.headline||'')!==String(state.report?.headline||'') ||
-        Number(top.stories||0)!==Number(state.report?.stories?.length||0);
+        Number(top.stories||0)!==Number(state.report?.stories?.length||0) ||
+        (Boolean(top.updated_at) && String(top.updated_at)!==String(state.report?.updated_at||''));
       state.index=idx;
       if(changed||force)await loadReport(next);
       if(!changed&&!force)renderFreshness();
