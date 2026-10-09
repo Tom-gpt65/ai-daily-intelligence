@@ -23,12 +23,14 @@ def build_reading(date,now=None):
     topics=list(bank["topics"])
     if len(topics)<12:raise ValueError("Reading reserve is incomplete")
     ordinal=datetime.fromisoformat(date).date().toordinal()
-    # Omit two distinct topics; a rotating selection provides more than one
-    # dated lesson. Never represent this evergreen material as breaking news.
-    omitted_a=ordinal%len(topics)
-    omitted_b=(ordinal//len(topics)+1)%len(topics)
-    if omitted_b==omitted_a:omitted_b=(omitted_a+5)%len(topics)
-    chosen=[topic for i,topic in enumerate(topics) if i not in {omitted_a,omitted_b}]
+    # Select ten original sections from a broad educational library.
+    # The arithmetic is deterministic for each date: no paid model, no RSS,
+    # and no randomness that could change an already assigned daily lesson.
+    # With 24 topics, adjacent days draw non-overlapping topic groups.
+    selected=sorted({(ordinal*7+i*5)%len(topics) for i in range(10)})
+    if len(selected)!=10:
+        raise ValueError("The reserve reading library must support ten unique sections")
+    chosen=[topics[i] for i in selected]
     essay=[bank["intro"],*chosen,bank["conclusion"]]
     metrics=reading_metrics(essay)
     if not 1000<=metrics["word_count"]<=1550:
@@ -44,7 +46,10 @@ def build_reading(date,now=None):
         "Learning with technology", "Reliable systems",
         "Transparency and trust", "Public perspectives"
     ]
-    featured=headings[(ordinal+3)%len(headings)]
+    labels=bank.get("titles",headings)
+    if not isinstance(labels,list) or len(labels)!=len(topics):
+        raise ValueError("Reading topic headings and paragraphs are inconsistent")
+    featured=labels[selected[(ordinal//3)%len(selected)]]
     report={
         "schema":4,"date":date,
         "updated_at":now.astimezone(HK).isoformat(),
