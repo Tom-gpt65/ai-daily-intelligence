@@ -21,6 +21,7 @@ async function check(engine,browser,width){
   const largeFont=await fontSize();
   const fontDebug=await page.evaluate(()=>({
     readerClass:document.querySelector('#reader').className,
+    readerInline:document.querySelector('#reader').getAttribute('style'),
     readerSize:getComputedStyle(document.querySelector('#reader')).fontSize,
     paragraphSize:getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize,
     button:document.querySelector('#font-button').textContent,
