@@ -624,9 +624,23 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         print("[no new long-form] Fewer than three reliable story anchors; retaining previous edition.", file=sys.stderr)
         return False
     essay = essay or essay_fallback(sources)
-    if reading_metrics(essay)["word_count"] < 1000:
-        put_status("insufficient_evidence", now, source_count=len(sources), evidence_word_count=total_evidence_words, **diagnostics)
-        print("[quality failure] Refusing to publish a sub-1,000-word edition.", file=sys.stderr)
+    # Hard editorial failures cannot be disguised by a successful LLM request.
+    # If the LLM repeats prose or drops sources, try the explicitly labelled
+    # evidence-limited educational fallback. Never publish it as model-written.
+    critical = {"article_length_outside_training_target", "near_duplicate_paragraph_padding",
+                "insufficient_explicit_source_attribution", "insufficient_event_specific_paragraphs"}
+    quality = inspect_editorial_quality(essay, sources)
+    if good and critical.intersection(quality["issues"]):
+        print("[quality warning] Model draft failed structural evidence gate: "
+              + ", ".join(quality["issues"]) + "; using labelled fallback", file=sys.stderr)
+        good = False
+        essay = essay_fallback(sources)
+        quality = inspect_editorial_quality(essay, sources)
+    if critical.intersection(quality["issues"]):
+        put_status("editorial_quality_rejected", now, source_count=len(sources),
+                   quality_issues=quality["issues"], **diagnostics)
+        print("[quality failure] Refusing new article with unsupported length, "
+              "missing source citations or recycled paragraphs.", file=sys.stderr)
         return False
     # Full-article translation is OFF by default to avoid a second lengthy
     # CPU-only LLM invocation; tap-to-translate dictionary stays available.
@@ -663,7 +677,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         "questions": make_questions(sources),
         "practice": make_exam(essay, sources, date),
     }
-    report["editorial_quality"] = inspect_editorial_quality(essay, sources)
+    report["editorial_quality"] = quality
     if not report["editorial_quality"]["training_structure_pass"]:
         report["quality_note"] += " 檢測到閱讀訓練品質警告；詳情見下方品質提示。"
     report["advanced_vocabulary"] = choose_vocab(report["dictionary"])
