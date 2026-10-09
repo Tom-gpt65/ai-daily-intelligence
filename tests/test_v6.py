@@ -19,7 +19,12 @@ class DseStudentTests(unittest.TestCase):
         self.assertFalse(any(p.startswith("According to") for p in paragraphs))
         count=dse_editorial.word_count(" ".join(paragraphs))
         self.assertGreaterEqual(count,550)
-        self.assertLessEqual(count,680)
+        self.assertLessEqual(count,650)
+    def test_five_sources_remain_cited_after_compaction(self):
+        paragraphs=dse_editorial.compose_briefing(self.sources)
+        self.assertLessEqual(dse_editorial.word_count(" ".join(paragraphs)),650)
+        for story in self.sources:
+            self.assertIn("["+story["id"]+"]"," ".join(paragraphs))
     def test_three_source_mode_still_has_substantive_paper(self):
         text=" ".join(dse_editorial.compose_briefing(self.sources[:3]))
         self.assertGreaterEqual(dse_editorial.word_count(text),550)
