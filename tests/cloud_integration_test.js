@@ -7,8 +7,8 @@ global.localStorage=(()=>{
     setItem:(key,value)=>values.set(key,String(value)),
     removeItem:key=>values.delete(key)};
 })();
-global.navigator={onLine:true};
-global.crypto=require('node:crypto').webcrypto;
+Object.defineProperty(globalThis,'navigator',{value:{onLine:true},configurable:true});
+Object.defineProperty(globalThis,'crypto',{value:require('node:crypto').webcrypto,configurable:true});
 const user='11111111-1111-4111-a111-111111111111';
 let events=[],uploaded=0,rendered={},state='';
 const next=()=>new Date(Date.parse('2026-10-09T00:00:00Z')+(++uploaded)*1000).toISOString();
