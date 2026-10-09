@@ -243,6 +243,10 @@
       } else if(info.state==='insufficient_evidence'){
         el.textContent='⚠ 本日可核實來源不足，或新稿未達 1,000 個英文單字的最低篇幅；沒有冒充合格長篇，網站暫時保留上一份文章。';
         el.classList.remove('hidden');el.classList.remove('pipeline-success');
+      } else if(info.state==='editorial_quality_rejected'){
+        const issues=Array.isArray(info.quality_issues)?info.quality_issues.join('、'):'品質未達標';
+        el.textContent='⚠ 本日新稿未通過內容品質檢查（重複段落、篇幅或來源證據可能不足），已保留上一份報告。診斷：'+issues;
+        el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='published'){
         el.textContent='資料處理最近一次完成：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。此為生成流程時間，不代表網站在該刻已公開發布。';
         el.classList.remove('hidden');el.classList.add('pipeline-success');
