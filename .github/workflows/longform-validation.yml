@@ -1,6 +1,13 @@
 name: Validate long-form reading without Pages deployment
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/cloud-sync.js'
+      - 'docs/SUPABASE_VOCABULARY.sql'
+      - 'tests/**'
+      - '.github/workflows/longform-validation.yml'
   push:
     branches: [main]
     paths:
