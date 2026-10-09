@@ -28,7 +28,7 @@ class DseStudentTests(unittest.TestCase):
     def test_three_source_mode_still_has_substantive_paper(self):
         text=" ".join(dse_editorial.compose_briefing(self.sources[:3]))
         self.assertGreaterEqual(dse_editorial.word_count(text),1000)
-        self.assertIn("provisional",text)
+        self.assertIn("evidence",text)
     def test_dse_mc_answer_keys_and_written_marking(self):
         booklet=dse_editorial.make_practice(self.sources)
         self.assertFalse(booklet["official"])
