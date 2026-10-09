@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import tempfile
 import time
+from datetime import datetime,timezone
 
 ROOT=Path(__file__).resolve().parents[1]
 REPORTS=ROOT/"site"/"reports"
@@ -33,6 +34,20 @@ def merge_index(remote, local):
         if isinstance(row,dict) and isinstance(row.get("date"),str):
             combined[row["date"]]=copy.deepcopy(row)
     return sorted(combined.values(),key=lambda row:row["date"],reverse=True)[:100]
+
+def utc_instant(value):
+    """Normalise mixed Z/+08:00 timestamps; do not compare them as strings."""
+    try:
+        stamp=datetime.fromisoformat(str(value).replace("Z","+00:00"))
+        return stamp.astimezone(timezone.utc) if stamp.tzinfo is not None else None
+    except (TypeError,ValueError):
+        return None
+
+def incoming_is_newer(existing, incoming):
+    previous=utc_instant(existing.get("updated_at"))
+    proposed=utc_instant(incoming.get("updated_at"))
+    if previous is None:return proposed is not None
+    return proposed is not None and proposed>=previous
 
 def git(*args):
     return subprocess.run(["git",*args],cwd=ROOT,check=True,
@@ -59,11 +74,15 @@ def publish(max_attempts=5):
             # last completed generation wins if it has a newer update timestamp.
             incoming=read_json(backup/"reports"/f"{current_date}.json",{})
             existing=read_json(REPORTS/f"{current_date}.json",{})
-            if str(existing.get("updated_at",""))>str(incoming.get("updated_at","")):
+            if existing and not incoming_is_newer(existing,incoming):
                 chosen=existing
+                preserve_remote_status=True
             else:
+                if not incoming.get("essay") or not incoming.get("stories"):
+                    raise RuntimeError("Generated edition lacks content or cited sources; refusing publication")
                 shutil.copy2(backup/"reports"/f"{current_date}.json",REPORTS/f"{current_date}.json")
                 chosen=incoming
+                preserve_remote_status=False
             combined=merge_index(remote,local)
             combined=[row for row in combined if row["date"]!=current_date]
             chosen_row={
@@ -75,7 +94,7 @@ def publish(max_attempts=5):
             }
             combined=merge_index(combined,[chosen_row])
             (REPORTS/"index.json").write_text(json.dumps(combined,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-            if status_backup:
+            if status_backup and not preserve_remote_status:
                 STATUS.write_bytes(status_backup)
             git("add","site/reports","site/system-status.json")
             if not git("diff","--cached","--name-only").stdout.strip():
