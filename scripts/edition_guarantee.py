@@ -33,7 +33,7 @@ def fill_dictionary(paragraphs, existing, translator=None):
     """Fill exact clickable word forms; no English-only or empty placeholders."""
     words=article_words(paragraphs)
     output=dict(existing) if isinstance(existing,dict) else {}
-    glossaries=(load_glossary("reading-glossary.json"),load_glossary("offline-glossary.json"))
+    glossaries=(load_glossary("news-glossary.json"),load_glossary("reading-glossary.json"),load_glossary("offline-glossary.json"))
     for word in words:
         if actual_meaning(output.get(word)):
             continue
