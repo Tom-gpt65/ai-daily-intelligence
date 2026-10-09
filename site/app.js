@@ -240,6 +240,9 @@
         el.classList.remove('hidden');
       } else if(info.state==='new_stories_found'){
         el.textContent='資料更新正在進行或未完成；這並不代表報告已成功發布。';el.classList.remove('hidden');
+      } else if(info.state==='insufficient_evidence'){
+        el.textContent='⚠ 本日可核實來源不足，或新稿未達 1,000 個英文單字的最低篇幅；沒有冒充合格長篇，網站暫時保留上一份文章。';
+        el.classList.remove('hidden');el.classList.remove('pipeline-success');
       } else if(info.state==='published'){
         el.textContent='資料處理最近一次完成：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。此為生成流程時間，不代表網站在該刻已公開發布。';
         el.classList.remove('hidden');el.classList.add('pipeline-success');
