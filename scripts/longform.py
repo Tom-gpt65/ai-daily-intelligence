@@ -17,17 +17,29 @@ def word_count(text: str) -> int:
     return len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b",text))
 
 def category(story: dict) -> str:
-    text=" ".join(str(story.get(k,"")) for k in ("title","topic")).lower()
-    if any(t in text for t in ("funding","raises","investment","billion","million","acquisition")):
+    """Use whole-word matches on the headline; feed topics are only fallback."""
+    title=str(story.get("title","")).lower()
+    topic=str(story.get("topic","")).lower()
+    def matches(pattern,value=title):
+        return bool(re.search(pattern,value,re.I))
+    if matches(r"\b(funding|investment|acquisition|financing|billion|million)\b"):
         return "investment"
-    if any(t in text for t in ("policy","regulat","ban","rule","safety","abusive","oversight","law","governance")):
+    if matches(r"\b(security|cybersecurity|vulnerabilities|scanner|scans|open-source)\b"):
+        return "security"
+    if matches(r"\b(robot|robots|robotics|robotic)\b"):
+        return "robotics"
+    if matches(r"\b(policy|policies|regulation|rules|governance|interference)\b"):
         return "governance"
-    if any(t in text for t in ("benchmark","evaluation","preprint","framework","arxiv","research","study","agent")):
-        return "research"
-    if any(t in text for t in ("chip","computer","device","laptop","pc","hardware","infrastructure")):
-        return "hardware"
-    if any(t in text for t in ("virus","gene","bio","life form","protein","medical")):
+    if matches(r"\b(biology|biological|genes|gene|protein|medical|biomedicine)\b"):
         return "bioscience"
+    if matches(r"\b(chip|chips|device|devices|laptop|hardware|processor|gpu)\b"):
+        return "hardware"
+    if matches(r"\b(benchmark|evaluation|framework|research|study|peer review|refusal)\b"):
+        return "research"
+    if matches(r"\b(research|science)\b",topic):
+        return "research"
+    if matches(r"\b(policy|governance)\b",topic):
+        return "governance"
     return "technology"
 
 LENSES={
@@ -72,7 +84,9 @@ LENSES={
     "For a meaningful assessment, readers should ask whose problem is being solved, whether the stated benefit can be measured and what limitations an independent evaluator might find. "
     "Those questions are not evidence that the development is ineffective; rather, they distinguish informed curiosity from automatic endorsement. "
     "Strong reading requires an awareness that the most confident description may not be the most informative one."
- )
+ ),
+ "security": ("Software security is the subject of this report, not biological research. Scanning software may identify possible weaknesses in open-source code, but detection and successful repair are different outcomes. A careful reader would ask which projects can access the service, how results are checked and whether independent evidence supports its effectiveness. An announced service may be useful without proving that every detected problem is serious or that every maintainer has the resources to fix it. The distinction between offering a tool and demonstrating improved security is therefore central to evaluating the headline. Relevant evidence would concern detection quality, practical use and limitations of the service, rather than experiments from unrelated fields."),
+ "robotics": ("Robotics research offers an example of the distance between laboratory performance and everyday use. A robot may perform a difficult task in a controlled test without being practical in a workplace or home. Repeated reliability, safety around people, cost and maintenance all influence that transition. To evaluate a headline about robotics, readers should distinguish progress in one capability from evidence about widespread adoption. A useful report would specify the task, the testing conditions and what is known about deployment. That comparison recognises genuine improvements while avoiding an unsupported prediction that laboratory advances will immediately change daily life. The central question is what evidence connects the demonstration to routine use.")
 }
 
 
@@ -187,7 +201,7 @@ def compose_briefing(stories: list[dict]) -> list[str]:
             +FACT_NOTE[i]+(sourced_detail(story) or attributed_excerpt(story,i))+analytical_lens
         )
     first,second=entries[0],entries[1]
-    areas={"investment":"commercial financing","research":"scientific evaluation",
+    areas={"investment":"commercial financing","security":"software security","robotics":"practical robotics","research":"scientific evaluation",
            "hardware":"computing devices","governance":"policy and accountability",
            "bioscience":"biological research","technology":"technological development"}
     for idx,tmpl in enumerate(CROSS):
