@@ -326,40 +326,72 @@
       }
     }
   }
-  function renderReaderNavigator() {
+  function scrollToReadingTarget(element){
+    if(!element)return;
+    // Safari's translucent top chrome can obscure scrollIntoView(start).
+    // Keep a visible margin rather than placing the target at viewport y=0.
+    const offset=Math.max(110,Math.min(165,window.innerHeight*0.15));
+    const absolute=window.scrollY+element.getBoundingClientRect().top-offset;
+    window.scrollTo({top:Math.max(0,absolute),
+      behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  }
+  function renderReaderNavigator(){
     const nav=$('reader-navigator'),r=state.report;
     if(!nav)return;
     nav.replaceChildren();
     if(!r||!Array.isArray(r.essay)||r.essay.length<3){nav.classList.add('hidden');return;}
     nav.classList.remove('hidden');
-    const label=document.createElement('span');label.className='reader-nav-title';
-    label.textContent='文章導航';nav.appendChild(label);
-    const destinations=[{index:0,label:'¶1 引言'}];
+    const label=document.createElement('label');label.className='reader-nav-title';
+    label.setAttribute('for','reader-nav-select');label.textContent='跳至文章章節';
+    nav.appendChild(label);
+    const dropdown=document.createElement('select');
+    dropdown.id='reader-nav-select';dropdown.className='reader-nav-select';
+    dropdown.setAttribute('aria-label','選擇文章段落');
+    const firstOfStory=new Map();
     for(const story of r.stories||[]){
       const index=r.essay.findIndex(p=>p.includes('['+story.id+']'));
-      if(index>=0&&!destinations.some(item=>item.index===index)){
-        destinations.push({index,label:'¶'+(index+1)+' '+story.id+' · '+(story.topic||'新聞')});
-      }
+      if(index>=0&&!firstOfStory.has(index))firstOfStory.set(index,story);
     }
     const last=r.essay.length-1;
-    if(!destinations.some(item=>item.index===last)){
-      destinations.push({index:last,label:'¶'+(last+1)+' 結論'});
+    const choices=r.essay.map((_,index)=>{
+      const story=firstOfStory.get(index);
+      const title=index===0?'引言：文章主旨':
+        index===last?'結論：整體評估':
+        story?'新聞分析：'+String(story.title||story.topic||story.id).slice(0,43):
+        '深入分析與比較';
+      return {index,title,label:'第 '+(index+1)+' 段 · '+title};
+    });
+    for(const choice of choices){
+      const option=document.createElement('option');
+      option.value=String(choice.index);option.textContent=choice.label;
+      dropdown.appendChild(option);
     }
-    for(const destination of destinations){
+    dropdown.addEventListener('change',()=>{
+      const index=Number(dropdown.value);
+      if(Number.isInteger(index)&&index>=0&&index<r.essay.length){
+        scrollToReadingTarget($('reading-paragraph-'+index));
+      }
+    });
+    nav.appendChild(dropdown);
+    const chips=[choices[0]];
+    for(const choice of choices){
+      if(firstOfStory.has(choice.index)&&choice.index!==0)chips.push(choice);
+    }
+    if(last!==0&&!chips.some(item=>item.index===last))chips.push(choices[last]);
+    for(const choice of chips){
       const button=document.createElement('button');
       button.type='button';button.className='reader-nav-link';
-      button.textContent=destination.label;
-      button.setAttribute('aria-label','跳往第 '+(destination.index+1)+' 段');
+      button.textContent=choice.index===0?'引言':choice.index===last?'結論':
+        '新聞 '+(chips.indexOf(choice))+' · '+choice.title.replace('新聞分析：','').slice(0,23);
+      button.setAttribute('aria-label',choice.label);
       button.addEventListener('click',()=>{
-        const paragraph=$('reading-paragraph-'+destination.index);
-        if(paragraph)paragraph.scrollIntoView({
-          behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
-          block:'start'
-        });
+        dropdown.value=String(choice.index);
+        scrollToReadingTarget($('reading-paragraph-'+choice.index));
       });
       nav.appendChild(button);
     }
   }
+
   function renderReader() {
     const root = $('reader'); root.replaceChildren();
     const r = state.report; if (!r) { root.textContent = '暫時未有報告。'; return; }
