@@ -136,45 +136,96 @@
       updateSavedCount();refreshDashboard();renderWords();readingStatus();toast('學習進度已合併還原。');
     }catch{toast('備份檔案無效，沒有修改現有紀錄。');}
   }
+  function hkDayFor(timestamp){
+    const time=Date.parse(timestamp||'');
+    if(!Number.isFinite(time))return '';
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(time));
+    const find=key=>parts.find(p=>p.type===key)?.value||'';
+    return find('year')+'-'+find('month')+'-'+find('day');
+  }
+  function hkClockFor(timestamp){
+    const time=Date.parse(timestamp||'');
+    return Number.isFinite(time)?new Intl.DateTimeFormat('zh-HK',{timeZone:'Asia/Hong_Kong',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(time)):'時間未明';
+  }
+  function reportMorningReady(today){
+    const r=state.report;
+    if(!r||r.date!==today||r.mode==='demo')return false;
+    const time=Date.parse(r.updated_at||'');
+    if(!Number.isFinite(time)||hkDayFor(r.updated_at)!==today)return false;
+    const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date(time));
+    const get=k=>Number(parts.find(p=>p.type===k)?.value||-1);
+    return get('hour')*60+get('minute')>=460;
+  }
+  async function fetchDailyRuns(event){
+    const url='https://api.github.com/repos/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml/runs?event='+event+'&per_page=25';
+    const response=await fetch(url,{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
+    if(!response.ok)throw new Error('GitHub API '+response.status);
+    const json=await response.json();
+    if(!Array.isArray(json.workflow_runs))throw new Error('Invalid GitHub response');
+    return json.workflow_runs;
+  }
   async function renderScheduleHealth(){
     const label=$('schedule-text'),link=$('schedule-run-link'),bar=$('schedule-live');
     if(!label||!link||!bar)return;
-    bar.classList.remove('schedule-failed','schedule-success');
-    const api='https://api.github.com/repos/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml/runs?event=schedule&per_page=8';
-    try{
-      const response=await fetch(api,{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
-      if(!response.ok)throw new Error('GitHub API '+response.status);
-      const data=await response.json();
-      const runs=Array.isArray(data.workflow_runs)?data.workflow_runs:[];
-      const today=hkDate();
-      const found=runs.find(run=>{
-        const d=Date.parse(run.created_at||'');
-        if(!Number.isFinite(d))return false;
-        const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(d));
-        const v=key=>parts.find(p=>p.type===key)?.value||'';
-        return v('year')+'-'+v('month')+'-'+v('day')===today;
-      });
-      const hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',hour:'2-digit',hour12:false}).format(new Date()));
-      const minute=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',minute:'2-digit'}).format(new Date()));
-      if(found){
-        link.href=found.html_url||link.href;
-        if(found.status!=='completed'){
-          label.textContent='今日定時新聞工作仍在執行；文章可能尚未更新。';
-        }else if(found.conclusion==='success'){
-          if(state.report?.date===today){label.textContent='✓ 今日排程已成功完成，當日文章可閱讀。';bar.classList.add('schedule-success');}
-          else label.textContent='今日排程成功，但目前讀取的是舊版文章，請更新頁面。';
-        }else{
-          label.textContent='⚠ 今日定時新聞工作失敗（'+String(found.conclusion||'未知')+'）；可能仍顯示上一版文章。';
-          bar.classList.add('schedule-failed');
-        }
-      }else if(hour>8||(hour===8&&minute>=5)){
-        label.textContent='⚠ 尚未找到今日成功啟動的 07:40 排程；GitHub 可能延遲或略過執行。';
-        bar.classList.add('schedule-failed');
-      }else{
-        label.textContent='預定每日 07:40 香港時間生成，08:00 目標可閱讀；尚未確認今日排程。';
-      }
-    }catch{
-      label.textContent='暫時無法查核 GitHub 定時排程；請開啟執行紀錄核對。';
+    bar.classList.remove('schedule-failed','schedule-success','schedule-recovered');
+    label.textContent='正在核對今日定時及補救更新…';
+    const today=hkDate();
+    const checked=await Promise.allSettled([fetchDailyRuns('schedule'),fetchDailyRuns('workflow_dispatch')]);
+    const [scheduled,dispatched]=checked.map(outcome=>outcome.status==='fulfilled'?
+      outcome.value.filter(run=>hkDayFor(run.created_at)===today):null);
+    const schedule=scheduled?.[0]||null;
+    const completedRecovery=dispatched?.find(run=>run.status==='completed'&&run.conclusion==='success')||null;
+    const activeRecovery=dispatched?.find(run=>run.status!=='completed')||null;
+    const ready=reportMorningReady(today);
+    const stamp=ready?hkClockFor(state.report.updated_at):'';
+    const now=new Date();
+    const hours=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(now);
+    const hh=Number(hours.find(x=>x.type==='hour')?.value||0);
+    const mm=Number(hours.find(x=>x.type==='minute')?.value||0);
+    const late=hh*60+mm>=485;
+    // GitHub event=schedule only answers whether the originally scheduled run
+    // succeeded. A successful workflow_dispatch is separate evidence, not a
+    // retroactive success for the 07:40 schedule.
+    if(schedule?.status==='completed'&&schedule.conclusion==='success'&&ready){
+      label.textContent='✓ 07:40 定時工作成功；今日文章已更新（'+stamp+'）。';
+      bar.classList.add('schedule-success');
+      link.href=schedule.html_url||link.href;
+    }else if(completedRecovery&&ready){
+      const previous=schedule?.status==='completed'&&schedule.conclusion!=='success'?
+        '07:40 定時工作未成功；':schedule?'07:40 定時工作結果仍待核實；':'未核實 07:40 定時工作；';
+      label.textContent='ⓘ '+previous+'額外觸發生成已成功，今日文章已更新（'+stamp+'）。準時發布尚未達標。';
+      bar.classList.add('schedule-recovered');
+      link.href=completedRecovery.html_url||link.href;
+    }else if(schedule?.status==='completed'&&schedule.conclusion!=='success'){
+      label.textContent=ready?
+        '⚠ 07:40 定時工作未成功；今日文章已更新（'+stamp+'），但未能確認是哪次執行發布。':
+        '⚠ 07:40 定時工作未成功，目前尚未確認今日文章已更新。';
+      bar.classList.add(ready?'schedule-recovered':'schedule-failed');
+      link.href=schedule.html_url||link.href;
+    }else if(schedule?.status==='completed'&&schedule.conclusion==='success'){
+      label.textContent='⚠ 07:40 定時工作完成，但公開文章未能核實為今早的新版本。';
+      bar.classList.add('schedule-failed');
+      link.href=schedule.html_url||link.href;
+    }else if(schedule&&schedule.status!=='completed'){
+      label.textContent=ready?'今日文章已更新（'+stamp+'）；07:40 定時工作仍在執行。':'07:40 定時新聞工作仍在執行。';
+      link.href=schedule.html_url||link.href;
+    }else if(activeRecovery){
+      label.textContent=ready?'今日文章已更新（'+stamp+'）；另一次新聞生成仍在執行。':'正在進行額外新聞生成，當日文章尚未確認更新。';
+      link.href=activeRecovery.html_url||link.href;
+    }else if(ready){
+      label.textContent='ⓘ 今日文章已更新（'+stamp+'），但暫時無法核實原定排程是否成功。';
+      bar.classList.add('schedule-recovered');
+    }else if(scheduled===null&&dispatched===null){
+      label.textContent='暫時無法查核 GitHub 工作紀錄，請直接查看執行頁面；文章日期請另外核對。';
+    }else if(late){
+      label.textContent='⚠ 08:05 後仍未確認今早文章已更新；可能是排程延遲或執行失敗。';
+      bar.classList.add('schedule-failed');
+    }else{
+      label.textContent='預定 07:40 生成、08:00 目標可讀；目前仍未確認今日執行結果。';
+    }
+    // One unavailable endpoint cannot establish that a particular run failed.
+    if(scheduled===null||dispatched===null){
+      label.textContent+='（部分 GitHub 紀錄暫時無法查核）';
     }
   }
   async function renderPipelineStatus(){
@@ -454,7 +505,7 @@
   }
   function setModeBanner(mode) {
     const el = $('status-banner'); el.classList.toggle('demo', mode === 'demo');
-    el.textContent = ({demo:'⚠ 示範教材 · 非即時新聞', editorial:'✦ 已整理當日新聞 · AI 英文改寫', source_digest:'ⓘ 來源摘要模式 · 模型未能完成改寫'})[mode] || '已發布報告';
+    el.textContent = ({demo:'⚠ 示範教材 · 非即時新聞', editorial:'✦ 已整理當日新聞 · AI 英文改寫', source_digest:'ⓘ 來源式英文練習 · 模型改寫未通過審核'})[mode] || '已發布報告';
   }
   function hkDate() {
     const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
@@ -480,7 +531,9 @@
     if(r.mode==='demo') message='目前正在顯示虛構示範文章，並非最新 AI 新聞。正式部署並成功完成首次更新後才會顯示真實報告。';
     else if(daysOld(r.date)>0) message=`此為 ${formatDate(r.date)} 的舊報告，距今已 ${daysOld(r.date)} 日。最新排程可能尚未完成、來源暫無足夠新消息或更新失敗；請查看 GitHub Actions。`;
     else if(daysOld(r.date)<0) message='報告日期晚於目前香港日期，請檢查資料或裝置時間。';
-    else if(r.mode==='source_digest') message='目前只有來源摘要，不是完整的五分鐘 DSE 英文報告。原始 RSS 內容未經獨立核實。';
+    else if(r.mode==='source_digest') message=(Number(r.word_count)>=550?
+      '今日已提供約五分鐘的來源式英文分析練習；免費模型改寫未達品質門檻。RSS 資料未經完整事實核查，本練習不是官方 DSE 試題。':
+      '目前只有篇幅較短的來源摘要；免費模型改寫未達品質門檻。原始 RSS 資料未經獨立核實。');
     else message='本篇由免費本地 AI 模型根據 RSS 摘要改寫，並非由記者獨立核實的報道；重要細節請查閱原始來源。';
     el.textContent=message;
     el.classList.toggle('hidden',!message);
