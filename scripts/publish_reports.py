@@ -13,6 +13,9 @@ import subprocess
 import tempfile
 import time
 from datetime import datetime,timezone
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from edition_guarantee import complete
 
 ROOT=Path(__file__).resolve().parents[1]
 REPORTS=ROOT/"site"/"reports"
@@ -78,8 +81,12 @@ def publish(max_attempts=5):
                 chosen=existing
                 preserve_remote_status=True
             else:
-                if not incoming.get("essay") or not incoming.get("stories"):
-                    raise RuntimeError("Generated edition lacks content or cited sources; refusing publication")
+                if not incoming.get("essay"):
+                    raise RuntimeError("Generated edition has no English passage")
+                if incoming.get("mode") != "reading_feature" and not incoming.get("stories"):
+                    raise RuntimeError("Current-news report has no cited sources")
+                if not complete(incoming):
+                    raise RuntimeError("Generated passage has words without offline Chinese meanings")
                 shutil.copy2(backup/"reports"/f"{current_date}.json",REPORTS/f"{current_date}.json")
                 chosen=incoming
                 preserve_remote_status=False

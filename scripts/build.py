@@ -24,6 +24,7 @@ from dse_editorial import compose_briefing
 from dse_assessment_v7 import make_exam
 from editorial_quality import inspect as inspect_editorial_quality
 from source_context import enrich as enrich_source_metadata
+from edition_guarantee import fill_dictionary,complete
 
 from email.utils import parsedate_to_datetime
 from urllib.request import Request, urlopen
@@ -709,7 +710,19 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     metrics = reading_metrics(essay)
     dictionary_started = time.perf_counter()
     vocabulary = make_vocabulary(alltext, dict_path)
+    # The browser renders EVERY English token as a clickable word. The release
+    # must therefore include a real offline Chinese meaning for every surface
+    # form, not merely a partially populated list of advanced vocabulary.
+    vocabulary, missing = fill_dictionary(
+        essay, vocabulary,
+        translator=model_request if os.environ.get("OLLAMA_ENABLED", "1") == "1" else None)
     dictionary_seconds = round(time.perf_counter() - dictionary_started, 3)
+    if missing:
+        put_status("incomplete_dictionary", now, source_count=len(sources),
+                   missing_count=len(missing), missing_examples=missing[:16], **diagnostics)
+        print("[offline dictionary] Refusing incomplete current-news article: "
+              + ", ".join(missing[:16]) + ". Educational fallback will be used.",file=sys.stderr)
+        return False
     report = {
         "schema": 4,
         "date": date,
@@ -739,6 +752,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     if not report["editorial_quality"]["training_structure_pass"]:
         report["quality_note"] += " 檢測到閱讀訓練品質警告；詳情見下方品質提示。"
     report["advanced_vocabulary"] = choose_vocab(report["dictionary"])
+    if not complete(report):
+        raise RuntimeError("Full offline dictionary gate failed unexpectedly")
     put_report(report)
     put_status("published", now, latest_date=date, mode=report["mode"], source_count=len(sources),
                model_seconds=model_seconds, translation_seconds=translation_seconds,

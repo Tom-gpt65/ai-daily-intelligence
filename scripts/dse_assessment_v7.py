@@ -167,7 +167,8 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
       "Q1": ("Main theme / purpose", "Explain the writer's main purpose in TWO points, using wording from the opening or conclusion."),
       "Q2": ("Vocabulary and inference", "Choose an advanced expression in the text and explain its contextual meaning and the writer's intended effect."),
       "Q3": ("Attitude and tone", "Identify the writer's attitude, quoting TWO words or phrases to support your interpretation."),
-      "Q4": ("Source comparison", "Identify the specific source cited in a paragraph of your choice, and explain what the passage does and does not establish about it.")
+      "Q4": ("Source comparison", "Identify the specific source cited in a paragraph of your choice, and explain what the passage does and does not establish about it.") if stories else
+            ("Argument comparison", "Compare TWO different kinds of evidence discussed in the reading. Explain one important limitation of each.")
     }
     for ident in ("Q1","Q2","Q3","Q4"):
         if ident not in slots:

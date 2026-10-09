@@ -129,6 +129,13 @@ jobs:
           print("generated="+str(generated).lower())
           PY
 
+      - name: Guarantee today's reading passage, even if RSS or the model fails
+        if: github.event_name != 'push'
+        id: passage
+        run: |
+          python scripts/reading_backup.py --if-missing
+          echo "generated=true" >> "$GITHUB_OUTPUT"
+
       - name: Summarise run status
         if: always()
         run: |
@@ -137,7 +144,7 @@ jobs:
           fi
 
       - name: Commit published reports without racing repository edits
-        if: github.event_name != 'push' && steps.build.outputs.generated == 'true'
+        if: github.event_name != 'push' && steps.passage.outputs.generated == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
