@@ -9,6 +9,8 @@
 })(typeof window!=='undefined'?window:null,function(){
   'use strict';
   const SESSION='ai-daily-cloud-session-v1';
+  const CONFIG_CACHE='ai-daily-cloud-public-config-v1';
+  const USER_CACHE='ai-daily-cloud-verified-user-v1';
   const WORD=/^[a-z][a-z'-]{0,45}$/;
   const EVENT_LIMIT=50000;
   function cleanWord(word){return typeof word==='string'&&WORD.test(word)?word:null;}
@@ -79,6 +81,11 @@
         const response=await fetch('./cloud-config.json',{cache:'no-store'});
         if(response.ok)config=await response.json();
       }catch{/* Reading is still usable offline without cloud settings. */}
+      if(this.configValid(config)){
+        try{localStorage.setItem(CONFIG_CACHE,JSON.stringify(config));}catch{/* restricted storage */}
+      }else{
+        try{config=JSON.parse(localStorage.getItem(CONFIG_CACHE)||'null');}catch{config=null;}
+      }
       if(!this.configValid(config)){
         this.setStatus('尚未啟用雲端同步；本機生字與備份功能維持正常。');
         this.options.onAvailable?.(false);
@@ -105,22 +112,33 @@
         catch{this.session=null;}
       }
       if(this.session){
+        let cached;
+        try{cached=JSON.parse(localStorage.getItem(USER_CACHE)||'null');}
+        catch{cached=null;}
         try{
+          if(!navigator.onLine)throw new Error('目前離線');
           await this.ensureToken();
           const profile=await this.request('GET','/auth/v1/user');
           if(!/^[0-9a-f-]{36}$/i.test(profile.id||''))throw new Error('登入帳戶無效');
           this.user={id:profile.id,email:profile.email||''};
+          localStorage.setItem(USER_CACHE,JSON.stringify(this.user));
           this.pending=this.getPending();
           this.options.onSignedIn?.(this.user);
           this.setStatus('已登入，正在同步生字…');
-          if(navigator.onLine)await this.sync();
-          else this.setStatus('目前離線；已保留此裝置的待同步生字。');
+          await this.sync();
         }catch(err){
           if(/401|403|登入已失效/.test(statusError(err))){
             this.session=null;this.user=null;localStorage.removeItem(SESSION);
+            localStorage.removeItem(USER_CACHE);
             this.options.onSignedOut?.();
-          }
-          this.setStatus('同步暫時無法連線：'+statusError(err));
+            this.setStatus('登入已失效，請重新寄送登入連結。');
+          }else if(cached&&/^[0-9a-f-]{36}$/i.test(cached.id||'')&&this.session){
+            // Previously verified account can continue saving offline.
+            // Cloud RLS validates credentials before any future upload.
+            this.user=cached;this.pending=this.getPending();
+            this.options.onSignedIn?.(this.user);
+            this.setStatus('離線或伺服器暫時無法連線；此裝置變更會保留並等待同步。');
+          }else this.setStatus('暫時無法確認登入：'+statusError(err));
         }
       }else this.setStatus('尚未登入；輸入電郵即可在各裝置同步生字。');
       return true;
@@ -231,6 +249,7 @@
       }
       this.session=null;this.user=null;this.pending=[];
       localStorage.removeItem(SESSION);
+      localStorage.removeItem(USER_CACHE);
       this.options.onSignedOut?.();
       this.setStatus('已登出雲端帳戶；原有本機生字仍保留。');
     }
