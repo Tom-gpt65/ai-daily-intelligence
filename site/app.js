@@ -630,7 +630,7 @@
     $('overview-vocab').textContent=(r.advanced_vocabulary||[]).length+' 個';
     $('reading-quality').textContent=r.quality_note||'資料可能有誤；請核實來源。';
     renderStoryCards(r);refreshDashboard();renderResume();
-    setModeBanner(r.mode); renderFreshness(); renderReader(); renderReaderNavigator(); readingStatus();
+    setModeBanner(r.mode); renderFreshness(); renderReader(); renderReaderNavigator(); readingStatus(); updateZoomNotice();
     syncTranslationButton();
     const sources = $('source-list'); sources.replaceChildren();
     if (!(r.stories || []).length) { const note = document.createElement('div'); note.className='empty-state'; note.textContent='此為離線示範教材，不包含實際新聞來源。'; sources.appendChild(note); }
@@ -893,6 +893,12 @@
     const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
     a.href=url;a.download=`ai-daily-${r.date}.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);
   }
+  function updateZoomNotice(){
+    const notice=$('zoom-notice');
+    if(!notice)return;
+    const zoomed=Number(window.visualViewport?.scale||1)>1.07;
+    notice.classList.toggle('hidden',!zoomed||notice.dataset.dismissed==='yes');
+  }
   function resetReadingLayout(){
     // Reset presentation, never remove vocabulary, answers or progress.
     state.fontScale=0;safeStorage.set('ai-daily-font-scale',0);
@@ -901,15 +907,20 @@
     $('focus-toggle').textContent='專注閱讀';
     $('tools-toggle').setAttribute('aria-expanded','false');
     $('tools-toggle').textContent='更多閱讀工具 ▾';
-    closePopover(false);renderReader();scrollToReadingTarget($('reader'));
+    closePopover(false);renderReader();renderReaderNavigator();updateZoomNotice();scrollToReadingTarget($('reader'));
     toast(Number(window.visualViewport?.scale||1)>1.07?
       '字體及版面已重設。Safari 頁面仍被手勢放大，請用雙指縮小至正常比例。':
       '字體及版面已重設；生字、答案和閱讀進度均已保留。');
   }
   async function reloadLatestWebsite(){
     const button=$('reload-latest');button.disabled=true;button.textContent='更新中…';
-    try{const registration=await navigator.serviceWorker?.getRegistration();if(registration)await registration.update();}
-    catch{/* The forced navigation below can still check the server. */}
+    try{
+      const registration=await navigator.serviceWorker?.getRegistration();
+      if(registration){
+        await registration.update();
+        if(registration.waiting) registration.waiting.postMessage({type:'SKIP_WAITING'});
+      }
+    }catch{/* A fresh navigation is still attempted. */}
     const url=new URL(location.href);
     url.searchParams.set('fresh',Date.now().toString(36));
     location.assign(url.toString());
@@ -951,6 +962,9 @@
     $('translate-toggle').addEventListener('click',toggleWholeTranslation);
     $('reset-reading').addEventListener('click',resetReadingLayout);
     $('reload-latest').addEventListener('click',reloadLatestWebsite);
+    $('zoom-dismiss')?.addEventListener('click',()=>{const el=$('zoom-notice');el.dataset.dismissed='yes';el.classList.add('hidden');});
+    window.visualViewport?.addEventListener('resize',updateZoomNotice,{passive:true});
+    window.addEventListener('orientationchange',()=>setTimeout(updateZoomNotice,250),{passive:true});
     document.querySelectorAll('.jump-to-reader,.skip-link').forEach(link=>link.addEventListener('click',event=>{
       event.preventDefault();
       if(state.view!=='today')setView('today');
