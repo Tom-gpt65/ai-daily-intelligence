@@ -30,7 +30,9 @@ const {chromium,webkit}=require('playwright');
      assert.ok(await navigation.count()>=3,engine+'/'+width+': long-form paragraph navigation missing');
      assert.equal(await page.locator('#reading-paragraph-0').getAttribute('data-paragraph'),'1',
        engine+'/'+width+': paragraph numbering missing');
-     await navigation.nth(1).click();
+     const sectionPicker=page.locator('#reader-nav-select');
+     if(await sectionPicker.isVisible())await sectionPicker.selectOption('1');
+     else await navigation.nth(1).click();
      await page.waitForFunction(()=>{
        const target=document.querySelector('#reading-paragraph-1');
        if(!target)return false;
