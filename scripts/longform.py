@@ -165,8 +165,7 @@ def attributed_excerpt(story: dict, variant: int = 0) -> str:
         "The available source summary specifically says ",
         "One detail in the RSS extract is ",
     )
-    return (openers[variant%len(openers)]+"“"+quoted+incomplete+
-            "”. This remains an attributed excerpt, not independent corroboration. ")
+    return openers[variant%len(openers)]+"“"+quoted+incomplete+"”. "
 
 def compose_briefing(stories: list[dict]) -> list[str]:
     entries=[s for s in stories if s.get("id") and s.get("title")][:5]
