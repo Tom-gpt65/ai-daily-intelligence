@@ -241,7 +241,7 @@
       } else if(info.state==='new_stories_found'){
         el.textContent='資料更新正在進行或未完成；這並不代表報告已成功發布。';el.classList.remove('hidden');
       } else if(info.state==='published'){
-        el.textContent='資料流程最近一次成功發表：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。';
+        el.textContent='資料處理最近一次完成：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。此為生成流程時間，不代表網站在該刻已公開發布。';
         el.classList.remove('hidden');el.classList.add('pipeline-success');
       }
       if(!el.classList.contains('hidden')) {
