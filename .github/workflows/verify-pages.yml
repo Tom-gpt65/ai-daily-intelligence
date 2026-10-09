@@ -69,8 +69,10 @@ jobs:
           assert index and index[0].get('date'), 'Missing latest article'
           date=index[0]['date']
           report=load(base+'reports/'+date+'.json')
-          assert not report.get('demo'), 'Latest report is a demo, not current news'
-          assert len(report.get('stories',[]))>=3,'Source links missing'
+          assert not report.get('demo'), 'Latest report must not be a fictional demo'
+          assert report.get('mode') in ('editorial','source_digest','reading_feature'),'Unknown report mode'
+          if report['mode'] != 'reading_feature':
+              assert len(report.get('stories',[]))>=3,'Current-news source links missing'
           assert len(report.get('essay',[]))>=5,'Reading text incomplete'
           assert 1000<=report.get('word_count',0)<=1550,'English practice must contain 1000–1550 English words'
           questions=report.get('practice',{}).get('items',[])
@@ -86,7 +88,8 @@ jobs:
           assert not missing,'Every word must have offline Chinese meaning: '+str(missing[:10])
           if report.get('mode')=='reading_feature':
               assert not report.get('stories'),'Educational backup cannot masquerade as news'
-              assert 'not today' in report.get('subtitle','').lower(),"Educational reading must show it is not today's news"
+              assert ('not today' in report.get('subtitle','').lower() or
+                      'not a historical news' in report.get('subtitle','').lower()),"Educational reading must be labelled not current news"
           print('Offline dictionary covered:',len(tokens),'unique clickable word forms')
           print('Published edition:',date)
           print('Words:',report['word_count'],'DSE-style questions:',len(questions))

@@ -11,6 +11,10 @@ on:
       - 'site/app.js'
       - 'site/index.html'
   workflow_dispatch:
+  # Independent non-deploying health check: 15:05 Hong Kong time every day.
+  schedule:
+    - cron: '5 15 * * *'
+      timezone: 'Asia/Hong_Kong'
 
 permissions:
   contents: read
@@ -33,14 +37,25 @@ jobs:
           node --check site/app.js
           node --check site/sw.js
           python - <<'PY'
-          import json,re
+          import json,re,sys
           from pathlib import Path
+          sys.path.insert(0,'scripts')
+          from edition_guarantee import complete
           root=Path('site/reports')
           index=json.loads((root/'index.json').read_text(encoding='utf-8'))
-          article=json.loads((root/(index[0]['date']+'.json')).read_text(encoding='utf-8'))
-          words=len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b"," ".join(article['essay'])))
-          assert words>=1000,(words,'Below new minimum')
-          assert article['word_count']==index[0]['word_count']==words
-          assert len(article['stories'])>=3
-          print('LATEST LONG-FORM VERIFIED',index[0]['date'],'words=',words,'sources=',len(article['stories']))
+          assert isinstance(index,list) and index,'No archived reading entries'
+          assert [r['date'] for r in index]==sorted([r['date'] for r in index],reverse=True)
+          for row in index:
+              article=json.loads((root/(row['date']+'.json')).read_text(encoding='utf-8'))
+              words=len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b"," ".join(article['essay'])))
+              assert 1000<=words<=1550,(row['date'],words,'Reading length')
+              assert article['word_count']==row['word_count']==words
+              assert complete(article),(row['date'],'Offline dictionary incomplete')
+              assert len(article.get('practice',{}).get('items',[]))>=7,(row['date'],'Missing reading questions')
+              if article['mode']=='reading_feature':
+                  assert not article['stories'],(row['date'],'Backup presented as news')
+              else:
+                  assert article['mode'] in ('editorial','source_digest')
+                  assert len(article['stories'])>=3,(row['date'],'News needs three sources')
+              print('ARCHIVE EDITION VERIFIED',row['date'],'words=',words,'mode=',article['mode'])
           PY

@@ -18,11 +18,19 @@ class ArchiveBackfillTests(unittest.TestCase):
         self.today = json.loads((folder / "2026-10-09.json").read_text(encoding="utf-8"))
 
     def test_backfill_is_archived_without_replacing_todays_article(self):
-        self.assertEqual([row["date"] for row in self.index[:2]], ["2026-10-09", "2026-10-08"])
+        dates=[row["date"] for row in self.index]
+        self.assertEqual(dates,sorted(dates,reverse=True))
+        self.assertEqual(len(dates),len(set(dates)))
+        self.assertIn("2026-10-08",dates)
+        self.assertIn("2026-10-09",dates)
         self.assertEqual(self.today["date"], "2026-10-09")
-        self.assertEqual(self.index[0]["headline"], self.today["headline"])
-        self.assertEqual(self.index[0]["word_count"], self.today["word_count"])
-        self.assertEqual(self.index[0]["updated_at"], self.today["updated_at"])
+        by_date={row["date"]:row for row in self.index}
+        october_ninth=by_date["2026-10-09"]
+        self.assertEqual(october_ninth["headline"], self.today["headline"])
+        self.assertEqual(october_ninth["word_count"], self.today["word_count"])
+        self.assertEqual(october_ninth["updated_at"], self.today["updated_at"])
+        # Tomorrow and all subsequent days must not break the daily generation.
+        self.assertGreaterEqual(self.index[0]["date"],"2026-10-09")
 
     def test_backfill_is_clearly_educational_and_not_false_historical_news(self):
         self.assertEqual(self.archive["date"], "2026-10-08")

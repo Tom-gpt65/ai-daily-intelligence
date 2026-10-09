@@ -35,13 +35,19 @@ class DeploymentTests(unittest.TestCase):
         javascript=(SITE / "app.js").read_text(encoding="utf-8")
         self.assertIn("Boolean(top.updated_at)",javascript)
     def test_report_mode_is_accurately_labelled(self):
-        item = json.loads((SITE / "reports" / "2026-10-09.json").read_text(encoding="utf-8"))
-        self.assertIn(item["mode"], ("demo", "source_digest", "model"))
-        if item["mode"] == "demo":
-            self.assertTrue(item.get("demo"))
-        else:
-            self.assertFalse(item.get("demo", False))
-            self.assertTrue(item.get("stories"))
+        entries=json.loads((SITE / "reports" / "index.json").read_text(encoding="utf-8"))
+        self.assertTrue(entries)
+        for row in entries:
+            with self.subTest(date=row["date"]):
+                article=json.loads((SITE / "reports" / (row["date"] + ".json")).read_text(encoding="utf-8"))
+                self.assertIn(article["mode"], ("editorial","source_digest","reading_feature"))
+                self.assertFalse(article.get("demo",False))
+                self.assertEqual(article["mode"],row["mode"])
+                if article["mode"]=="reading_feature":
+                    self.assertEqual(article["stories"],[])
+                    self.assertIn("not",article["subtitle"].lower())
+                else:
+                    self.assertGreaterEqual(len(article["stories"]),3)
     def test_pwa_manifest(self):
         manifest = json.loads((SITE / "manifest.webmanifest").read_text(encoding="utf-8"))
         self.assertEqual(manifest["display"], "standalone")
