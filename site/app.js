@@ -326,6 +326,40 @@
       }
     }
   }
+  function renderReaderNavigator() {
+    const nav=$('reader-navigator'),r=state.report;
+    if(!nav)return;
+    nav.replaceChildren();
+    if(!r||!Array.isArray(r.essay)||r.essay.length<3){nav.classList.add('hidden');return;}
+    nav.classList.remove('hidden');
+    const label=document.createElement('span');label.className='reader-nav-title';
+    label.textContent='文章導航';nav.appendChild(label);
+    const destinations=[{index:0,label:'¶1 引言'}];
+    for(const story of r.stories||[]){
+      const index=r.essay.findIndex(p=>p.includes('['+story.id+']'));
+      if(index>=0&&!destinations.some(item=>item.index===index)){
+        destinations.push({index,label:'¶'+(index+1)+' '+story.id+' · '+(story.topic||'新聞')});
+      }
+    }
+    const last=r.essay.length-1;
+    if(!destinations.some(item=>item.index===last)){
+      destinations.push({index:last,label:'¶'+(last+1)+' 結論'});
+    }
+    for(const destination of destinations){
+      const button=document.createElement('button');
+      button.type='button';button.className='reader-nav-link';
+      button.textContent=destination.label;
+      button.setAttribute('aria-label','跳往第 '+(destination.index+1)+' 段');
+      button.addEventListener('click',()=>{
+        const paragraph=$('reading-paragraph-'+destination.index);
+        if(paragraph)paragraph.scrollIntoView({
+          behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
+          block:'start'
+        });
+      });
+      nav.appendChild(button);
+    }
+  }
   function renderReader() {
     const root = $('reader'); root.replaceChildren();
     const r = state.report; if (!r) { root.textContent = '暫時未有報告。'; return; }
@@ -333,6 +367,7 @@
     r.essay.forEach((p, idx) => {
       const paragraph=paragraphNodes(p, idx);
       paragraph.id='reading-paragraph-'+idx;
+      paragraph.dataset.paragraph=String(idx+1);
       root.appendChild(paragraph);
       const actions=document.createElement('div');actions.className='paragraph-tools';
       const button=document.createElement('button');button.type='button';button.className='paragraph-translate';
@@ -563,7 +598,7 @@
     $('overview-vocab').textContent=(r.advanced_vocabulary||[]).length+' 個';
     $('reading-quality').textContent=r.quality_note||'資料可能有誤；請核實來源。';
     renderStoryCards(r);refreshDashboard();renderResume();
-    setModeBanner(r.mode); renderFreshness(); renderReader(); readingStatus();
+    setModeBanner(r.mode); renderFreshness(); renderReader(); renderReaderNavigator(); readingStatus();
     syncTranslationButton();
     const sources = $('source-list'); sources.replaceChildren();
     if (!(r.stories || []).length) { const note = document.createElement('div'); note.className='empty-state'; note.textContent='此為離線示範教材，不包含實際新聞來源。'; sources.appendChild(note); }
