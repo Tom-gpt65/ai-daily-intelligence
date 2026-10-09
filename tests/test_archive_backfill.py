@@ -61,9 +61,9 @@ class ArchiveBackfillTests(unittest.TestCase):
     def test_routine_news_validation_does_not_change_site_version(self):
         html = (ROOT / "site" / "index.html").read_text(encoding="utf-8")
         sw = (ROOT / "site" / "sw.js").read_text(encoding="utf-8")
-        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">v16', html)
-        self.assertIn('app.js?v=16', html)
-        self.assertIn('ai-daily-v16-editorial-typography', sw)
+        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">V1', html)
+        self.assertIn('app.js?v=1', html)
+        self.assertIn('ai-daily-V1-first-complete-release', sw)
 
 if __name__ == "__main__":
     unittest.main()

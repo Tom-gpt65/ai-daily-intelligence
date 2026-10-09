@@ -13,7 +13,7 @@ const {chromium,webkit}=require('playwright');
      page.on('pageerror',e=>errors.push(e.message));
      await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
-     assert.equal(await page.locator('#site-version').innerText(),'v16');
+     assert.equal(await page.locator('#site-version').innerText(),'V1');
      assert.equal(await page.locator('.intro p').count(),0,'Unnecessary intro copy still displayed');
      const warning=await page.locator('#freshness-note').innerText();
      if(await page.locator('#freshness-note').isVisible())assert.match(warning,/舊文章|示範文章|1,000 字|晚於/,'Visible warning must explain a genuine issue');
@@ -49,7 +49,7 @@ const {chromium,webkit}=require('playwright');
      assert.doesNotMatch(inflectedMeaning,/未收錄|待查|無法取得|請查詢/,'Inflection should not be an untranslated placeholder');
      assert.ok(await page.locator('#lookup-online').isHidden(),'Offline meaning must not request a third-party translation');
      await page.locator('#pop-close').click();
-     // Archive regression: missing 8 October entry must open inside v16
+     // Archive regression: missing 8 October entry must open inside V1
      // without overwriting the current dated news report.
      await page.locator('[data-view="archive"]').click();
      const history=page.locator('#archive-list .archive-card').filter({hasText:'8 October 2026'});
@@ -97,7 +97,7 @@ const {chromium,webkit}=require('playwright');
      }));
      assert.ok(persisted.word?.translation && persisted.quiz && persisted.writing,
        'A reload must not erase saved words or practice answers');
-     assert.equal(await page.locator('#site-version').innerText(),'v16','Routine archive testing must not upgrade site version');
+     assert.equal(await page.locator('#site-version').innerText(),'V1','Routine archive testing must not upgrade site version');
      const ui=await page.evaluate(()=>{
        const reader=document.querySelector('#reader');
        return {font:getComputedStyle(reader).fontFamily,
@@ -113,5 +113,5 @@ const {chromium,webkit}=require('playwright');
    }
   }finally{await browser.close();}
  }
- console.log('RESULT:',count,'/ 6 v16 browser layout cases passed');
+ console.log('RESULT:',count,'/ 6 V1 browser layout cases passed');
 })().catch(e=>{console.error(e);process.exit(1)});

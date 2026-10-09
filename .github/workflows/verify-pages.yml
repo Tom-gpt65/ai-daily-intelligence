@@ -40,7 +40,7 @@ jobs:
         run: |
           set -Eeuo pipefail
           base="https://tom-gpt65.github.io/ai-daily-intelligence/"
-          for path in "" "index.html" "app.js" "offline-glossary.json" "reading-glossary.json" "news-glossary.json" "style.css" "v6.css" "v11.css" "v12.css" "v16.css" "sw.js" "reports/index.json"; do
+          for path in "" "index.html" "app.js" "offline-glossary.json" "reading-glossary.json" "news-glossary.json" "style.css" "v6.css" "v11.css" "v12.css" "v1.css" "sw.js" "reports/index.json"; do
             url="${base}${path}"
             status=$(curl --location --silent --show-error --retry 5 --retry-delay 6 --retry-connrefused --max-time 30 --output /tmp/ai-response --write-out "%{http_code}" "$url")
             echo "Public URL check: ${url} => HTTP ${status}"
@@ -102,11 +102,11 @@ jobs:
           assert 'refreshLatestReport' in javascript,'Cross-day revalidation logic not deployed'
           with urllib.request.urlopen(base+'index.html',timeout=20) as response:
               markup=response.read().decode('utf-8')
-          assert './v16.css?v=16' in markup,'Newest responsive stylesheet missing from HTML'
-          assert './app.js?v=16' in markup,'Version-busted reader code missing from HTML'
+          assert './v1.css?v=1' in markup,'Newest responsive stylesheet missing from HTML'
+          assert './app.js?v=1' in markup,'Version-busted reader code missing from HTML'
           with urllib.request.urlopen(base+'sw.js',timeout=20) as response:
               worker=response.read().decode('utf-8')
-          assert 'ai-daily-v16-editorial-typography' in worker,'Updated iPhone cache version missing'
+          assert 'ai-daily-V1-first-complete-release' in worker,'Updated iPhone cache version missing'
           assert "fetch(event.request,{cache:'no-cache'})" in worker,'Reader shell not network-first'
-          print('V16 content, offline dictionary and responsive reading VERIFIED')
+          print('V1 content, offline dictionary and responsive reading VERIFIED')
           PY
