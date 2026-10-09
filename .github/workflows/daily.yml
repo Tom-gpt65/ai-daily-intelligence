@@ -64,7 +64,15 @@ jobs:
           python scripts/build.py --prefetch
           if test -s .cache/candidates.json; then
             echo "news=true" >> "$GITHUB_OUTPUT"
-            python -c "import json; d=json.load(open('.cache/candidates.json',encoding='utf-8')); print('enough=' + ('true' if len(d.get('stories',[])) >= 3 else 'false'))" >> "$GITHUB_OUTPUT"
+            python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json,sys
+          sys.path.insert(0,'scripts')
+          from build import source_evidence_metrics
+          with open('.cache/candidates.json',encoding='utf-8') as stream:
+              data=json.load(stream)
+          evidence=source_evidence_metrics(data.get('stories',[]))
+          print('enough='+str(evidence['sufficient']).lower())
+          PY
           else
             echo "news=false" >> "$GITHUB_OUTPUT"
             echo "enough=false" >> "$GITHUB_OUTPUT"
