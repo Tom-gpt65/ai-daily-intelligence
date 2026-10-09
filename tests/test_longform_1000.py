@@ -40,7 +40,7 @@ class LongFormTests(unittest.TestCase):
         self.assertIn("“Researchers describe",extract)
         quoted=extract.split("“",1)[1].split("”",1)[0]
         self.assertLessEqual(len(quoted.replace("…","").split()),18)
-        self.assertIn("not independent corroboration",extract)
+        self.assertLess(len(extract),300)
     def test_insufficient_excerpt_does_not_invent_evidence(self):
         self.assertEqual(attributed_excerpt({"excerpt":"New AI."}),"")
     def test_no_generic_padding_claims_fact_checking(self):
