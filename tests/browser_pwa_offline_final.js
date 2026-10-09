@@ -12,7 +12,7 @@ const ROOT=path.resolve(__dirname,'../site');
 function staticServer(){
   return http.createServer((request,response)=>{
     const pathname=new URL(request.url,'http://localhost').pathname;
-    const target=path.resolve(ROOT,'.'+decodeURIComponent(pathname==='/'=>'/index.html':pathname));
+    const target=path.resolve(ROOT,'.'+decodeURIComponent(pathname==='/'?'/index.html':pathname));
     if(!target.startsWith(ROOT+path.sep)){response.writeHead(403).end();return;}
     const ext=path.extname(target);
     const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript',
