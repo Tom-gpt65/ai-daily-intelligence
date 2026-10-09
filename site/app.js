@@ -187,18 +187,18 @@
     // succeeded. A successful workflow_dispatch is separate evidence, not a
     // retroactive success for the 07:40 schedule.
     if(schedule?.status==='completed'&&schedule.conclusion==='success'&&ready){
-      label.textContent='✓ 07:40 定時工作成功；今日文章已更新（'+stamp+'）。';
+      label.textContent='✓ 今日報告已更新（資料時間 '+stamp+'）；07:40 定時工作成功。';
       bar.classList.add('schedule-success');
       link.href=schedule.html_url||link.href;
     }else if(completedRecovery&&ready){
       const previous=schedule?.status==='completed'&&schedule.conclusion!=='success'?
         '07:40 定時工作未成功；':schedule?'07:40 定時工作結果仍待核實；':'未核實 07:40 定時工作；';
-      label.textContent='ⓘ '+previous+'額外觸發生成已成功，今日文章已更新（'+stamp+'）。準時發布尚未達標。';
+      label.textContent='✓ 額外觸發生成已成功，今日文章已補救更新（資料時間 '+stamp+'）。'+previous+'08:00 目標未達成。';
       bar.classList.add('schedule-recovered');
       link.href=completedRecovery.html_url||link.href;
     }else if(schedule?.status==='completed'&&schedule.conclusion!=='success'){
       label.textContent=ready?
-        '⚠ 07:40 定時工作未成功；今日文章已更新（'+stamp+'），但未能確認是哪次執行發布。':
+        'ⓘ 今日文章已有新版本（資料時間 '+stamp+'），但未能確認是哪次執行發布；07:40 原定工作失敗。':
         '⚠ 07:40 定時工作未成功，目前尚未確認今日文章已更新。';
       bar.classList.add(ready?'schedule-recovered':'schedule-failed');
       link.href=schedule.html_url||link.href;
@@ -213,7 +213,7 @@
       label.textContent=ready?'今日文章已更新（'+stamp+'）；另一次新聞生成仍在執行。':'正在進行額外新聞生成，當日文章尚未確認更新。';
       link.href=activeRecovery.html_url||link.href;
     }else if(ready){
-      label.textContent='ⓘ 今日文章已更新（'+stamp+'），但暫時無法核實原定排程是否成功。';
+      label.textContent='ⓘ 今日報告已更新（資料時間 '+stamp+'），原定排程結果暫時無法查核。';
       bar.classList.add('schedule-recovered');
     }else if(scheduled===null&&dispatched===null){
       label.textContent='暫時無法查核 GitHub 工作紀錄，請直接查看執行頁面；文章日期請另外核對。';
