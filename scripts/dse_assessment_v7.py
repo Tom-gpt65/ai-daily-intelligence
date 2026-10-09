@@ -109,20 +109,26 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
             cite_location(tone_idx), tone_idx, date,
             quote_sentence(essay, tone_idx, tone_word)))
 
-    if len(source_matches) >= 3:
-        chosen_idx = int(hashlib.sha256(date.encode()).hexdigest()[:6],16) % len(source_matches)
-        story, p = source_matches[chosen_idx]
-        other = [(s, i) for s, i in source_matches if s["id"] != story["id"]]
-        alternatives = [f"An account concerning: {s['title'][:96]}" for s, _ in other[:3]]
-        while len(alternatives) < 3:
-            alternatives.append(["A general claim unsupported by any cited report",
-                                 "A claim about an unrelated industry",
-                                 "A conclusion presented without a source"][len(alternatives)])
-        items.append(item_mc("Q4", "Locating and selecting information",
-            f"Which report is identified by the source reference in {cite_location(p).lower()}?",
-            [f"An account concerning: {story['title'][:96]}", *alternatives], 0,
-            "The source reference identifies the cited report; the article does not thereby verify all its claims.",
-            cite_location(p), p, date, quote_sentence(essay,p)))
+    if len(source_matches) >= 2:
+        # A literal source-title lookup is an elementary scanning task. B2-style
+        # practice should instead test synthesis; written interpretation cannot
+        # be reliably auto-marked without a calibrated human rubric.
+        (first, a), (second, b) = source_matches[:2]
+        items.append({
+            "id": "Q4", "type": "short", "skill": "Cross-source synthesis / relevance",
+            "marks": 2,
+            "stem": (
+                f"Compare the purposes of [{first['id']}] and [{second['id']}] in the article. "
+                "Explain why the author juxtaposes these examples rather than treating them as interchangeable."
+            ),
+            "guidance": [
+                "Identify a relevant and accurate distinction between the cited accounts (1 mark).",
+                "Explain how that distinction advances the writer's overall argument (1 mark)."
+            ],
+            "evidence": f"{cite_location(a)} and {cite_location(b)}",
+            "paragraph": a + 1,
+            "evidence_quote": quote_sentence(essay,a)[:150] + " / " + quote_sentence(essay,b)[:150]
+        })
 
     # Replace ungrounded machine-scored items with marked-by-reader tasks.
     slots = {q["id"]: q for q in items}
