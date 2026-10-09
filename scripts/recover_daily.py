@@ -23,6 +23,8 @@ def should_dispatch(latest_date,runs,updated_at=None):
     if latest_date==TODAY and updated_at:
         try:
             update=datetime.fromisoformat(str(updated_at).replace("Z","+00:00"))
+            if update.tzinfo is None:
+                raise ValueError("Missing timezone in article update timestamp")
             local=update.astimezone(ZoneInfo("Asia/Hong_Kong"))
             freshly_updated=(local.date().isoformat()==TODAY and
                              (local.hour,local.minute)>=(7,40))
