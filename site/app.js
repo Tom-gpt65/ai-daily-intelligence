@@ -395,8 +395,11 @@
     if(!report)return;
     const partial=translationProgress(report).filter(Boolean).length;
     button.disabled=false;
-    button.textContent=translationBusy?'停止翻譯（已完成 '+partial+'/'+report.essay.length+' 段）':
-       state.showTranslation?'隱藏繁體中文譯文':'翻譯全文（免費・需連線）';
+    const total=report.essay.length;
+    button.textContent=translationBusy?'停止翻譯（已完成 '+partial+'/'+total+' 段）':
+       state.showTranslation&&partial===total?'隱藏繁體中文譯文':
+       partial>0?'繼續翻譯全文（已完成 '+partial+'/'+total+' 段）':
+       state.showTranslation?'重試全文翻譯（免費・需連線）':'翻譯全文（免費・需連線）';
     button.title='可先譯單一段落；全部翻譯會分段保存，失敗後可再嘗試。';
   }
   async function translateOneParagraph(index){
@@ -423,8 +426,10 @@
   async function toggleWholeTranslation(){
     const report=state.report;if(!report)return;
     if(translationBusy){translationCancel=true;toast('已要求停止翻譯；完成當前請求後會保留已譯段落。');return;}
-    if(state.showTranslation){state.showTranslation=false;renderReader();syncTranslationButton();return;}
     let partial=translationProgress(report);
+    if(state.showTranslation&&partial.every(Boolean)){
+      state.showTranslation=false;renderReader();syncTranslationButton();return;
+    }
     if(partial.every(Boolean)){
       state.showTranslation=true;renderReader();syncTranslationButton();return;
     }
