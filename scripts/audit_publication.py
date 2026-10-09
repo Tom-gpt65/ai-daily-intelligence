@@ -4,6 +4,8 @@ import argparse
 import json
 import os
 import time
+import re
+from urllib.parse import urlsplit
 from datetime import datetime
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -30,6 +32,39 @@ def assess_public(index: object, report: object, expected: str) -> tuple[list[st
         errors.append("Public article has no readable paragraphs")
     if not isinstance(report.get("stories"), list) or not report["stories"]:
         errors.append("Public article has no traceable news sources")
+    if isinstance(report.get("essay"),list):
+        body=" ".join(p for p in report["essay"] if isinstance(p,str))
+        words=len(re.findall(r"\\b[A-Za-z]+(?:['’-][A-Za-z]+)*\\b",body))
+        if isinstance(report.get("word_count"),int) and abs(report["word_count"]-words)>2:
+            errors.append("Published word count does not match the actual English article")
+    else:
+        body=""
+    if isinstance(report.get("stories"),list) and report["stories"]:
+        source_ids={str(item.get("id","")) for item in report["stories"] if isinstance(item,dict)}
+        for item in report["stories"]:
+            if not isinstance(item,dict) or not item.get("title"):
+                errors.append("A reported AI story lacks a source title")
+                continue
+            u=urlsplit(str(item.get("url","")))
+            if u.scheme not in {"http","https"} or not u.hostname:
+                errors.append("A story source URL is missing or invalid")
+        if all(source_ids) and body:
+            cited=set(re.findall(r"\\[(S\\d+)\\]",body))
+            if cited-source_ids:
+                errors.append("Article refers to a source ID absent from its sources list")
+            if source_ids-cited:
+                errors.append("Not every news source is cited in the English article")
+    practice=report.get("practice")
+    if isinstance(practice,dict) and isinstance(practice.get("items"),list):
+        if practice.get("official") is True:
+            errors.append("Custom exercises are incorrectly presented as official HKEAA questions")
+        for q in practice["items"]:
+            if not isinstance(q,dict) or not q.get("stem") or not q.get("evidence"):
+                errors.append("A DSE exercise is missing its question text or evidence location")
+                break
+            if q.get("type")=="mc" and not (isinstance(q.get("answer"),int) and isinstance(q.get("options"),list) and 0<=q["answer"]<len(q["options"])):
+                errors.append("A multiple-choice exercise has an invalid answer key")
+                break
     try:
         updated = datetime.fromisoformat(report.get("updated_at", ""))
         if updated.tzinfo is None or updated.astimezone(HK).date().isoformat() != expected:
