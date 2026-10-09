@@ -1,0 +1,34 @@
+name: V1 final autopilot — public PWA and cloud safety
+
+on:
+  schedule:
+    # After the 07:05 reserve, 07:40 news, 08:20–12:25 recoveries
+    # and 13:17 publication audit; runs daily in Hong Kong time.
+    - cron: '35 14 * * *'
+      timezone: 'Asia/Hong_Kong'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-pwa-safety:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check public PWA, today's reading, Auth health and RLS isolation
+        run: python scripts/v1_final_health.py
+      - name: Provide non-destructive recovery guidance on failure
+        if: failure()
+        run: |
+          {
+            echo '### V1 health check failed'
+            echo '- Follow the read-only troubleshooting steps in docs/V1_FINAL_AUTOPILOT.md.'
+            echo '- Check the morning audit and recovery workflow runs.'
+            echo '- Do not delete Supabase users, overwrite the database, or clear iOS app storage.'
+            echo '- The scheduled check does not contain any user passwords or private learning backups.'
+          } >> "$GITHUB_STEP_SUMMARY"
