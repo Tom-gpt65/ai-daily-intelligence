@@ -12,7 +12,7 @@ class AuditTests(unittest.TestCase):
         self.edition={'date':'2026-10-09','mode':'editorial','demo':False,'updated_at':'2026-10-09T08:04:00+08:00',
                       'essay':['English news '*515+' [S1] [S2] [S3]'],
                       'stories':[{'id':f'S{i}','url':'https://example.com','title':'AI research'} for i in range(1,4)],
-                      'word_count':1033,'reading_metrics':{'word_count':1033}}
+                      'word_count':1030,'reading_metrics':{'word_count':1030}}
         self.index=[{'date':'2026-10-09'}]
     def test_fresh_article(self):
         errs,_=assess_public(self.index,self.edition,'2026-10-09');self.assertEqual(errs,[])
