@@ -47,6 +47,22 @@ const {chromium,webkit}=require('playwright');
      assert.match(await page.locator('#lookup-translation').innerText(),/關乎/,'Common inflected word lacks offline meaning');
      assert.ok(await page.locator('#lookup-online').isHidden(),'Offline meaning must not request a third-party translation');
      await page.locator('#pop-close').click();
+     // Archive regression: missing 8 October entry must open inside v15
+     // without overwriting the current dated news report.
+     await page.locator('[data-view="archive"]').click();
+     const history=page.locator('#archive-list .archive-card').filter({hasText:'8 October 2026'});
+     await history.waitFor({state:'visible',timeout:8000});
+     await history.click();
+     await page.waitForFunction(()=>document.querySelector('#report-headline')?.textContent?.startsWith('AI literacy:'),null,{timeout:12000});
+     assert.match(await page.locator('#report-metadata').innerText(),/8 October 2026/,'Historical reading did not open');
+     assert.ok(await page.locator('#reader .essay-paragraph').count()>=10,'Historical passage paragraphs missing');
+     assert.ok(await page.locator('#question-list').count()===1,'Historical practice panel missing');
+     const evidence=page.locator('#reader .word').filter({hasText:/^evidence$/i}).first();
+     await evidence.click();
+     assert.ok((await page.locator('#lookup-translation').innerText()).length>1,'Archived word meaning missing');
+     assert.ok(await page.locator('#lookup-online').isHidden(),'Archive words must be available offline');
+     await page.locator('#pop-close').click();
+     assert.equal(await page.locator('#site-version').innerText(),'v15','Routine archive testing must not upgrade site version');
      assert.deepEqual(errors,[],name+' '+width+' script errors');
      console.log('PASS',name,width,'reader reflow, picker and reset');
      count++;
