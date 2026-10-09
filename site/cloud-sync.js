@@ -130,6 +130,8 @@
       if(!this.config)throw new Error('未設定雲端服務');
       const headers={'apikey':this.config.key,'Content-Type':'application/json'};
       if(this.session?.access_token)headers.Authorization='Bearer '+this.session.access_token;
+      if(method==='POST'&&path.startsWith('/rest/v1/vocabulary_events'))
+        headers.Prefer='resolution=ignore-duplicates,return=minimal';
       const response=await fetch(this.config.url+path,{method,headers,
         ...(body===undefined?{}:{body:JSON.stringify(body)}),
         cache:'no-store'});

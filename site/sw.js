@@ -1,6 +1,6 @@
 /* Same-origin cache only. Network-first news never silently masquerades as fresh. */
-const VERSION='ai-daily-V1-reader-type-maintenance';
-const SHELL=['./','./index.html','./style.css','./v3.css','./v4.css','./v5.css','./v6.css','./v11.css','./v12.css','./v1.css','./app.js','./offline-glossary.json','./reading-glossary.json','./news-glossary.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
+const VERSION='ai-daily-V1-vocabulary-cloud-option';
+const SHELL=['./','./index.html','./style.css','./v3.css','./v4.css','./v5.css','./v6.css','./v11.css','./v12.css','./v1.css','./cloud-sync.js','./app.js','./offline-glossary.json','./reading-glossary.json','./news-glossary.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 const PAGE_CACHE=VERSION+'-shell',DATA_CACHE=VERSION+'-reports';
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{

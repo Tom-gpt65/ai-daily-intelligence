@@ -83,3 +83,21 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
  .edition-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
  .edition-overview .overview-stat:last-child{grid-column:1 / -1}
 }
+
+/* V1 optional cloud vocabulary: compact, keyboard-accessible account controls. */
+.cloud-sync-panel{margin:18px 0 20px;padding:18px;border:1px solid var(--border,#293750);border-radius:14px;background:rgba(118,150,191,.06)}
+.cloud-sync-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.cloud-sync-head h2{margin:0;font-size:18px;letter-spacing:-.02em}
+.cloud-sync-indicator{border:1px solid var(--border,#293750);border-radius:999px;padding:5px 10px;color:var(--muted,#a4b0c4);font-size:12px}
+.cloud-sync-indicator.connected{border-color:var(--accent,#c6f17e);color:var(--accent,#c6f17e)}
+.cloud-sync-status{color:var(--muted,#a4b0c4);font-size:13px;line-height:1.7;margin:12px 0}
+.cloud-sync-unavailable,.cloud-sync-warning{font-size:12px;line-height:1.75;color:var(--muted,#a4b0c4)}
+.cloud-sync-unavailable a{color:var(--accent,#c6f17e);text-decoration:underline}
+.cloud-sync-actions{margin-top:12px;display:grid;gap:10px}
+.cloud-sync-actions label{font-size:13px;font-weight:650}
+.cloud-sync-actions input{width:100%;min-width:0;max-width:430px;padding:12px;color:inherit;border:1px solid var(--border,#293750);border-radius:8px;background:var(--panel,#121f35);font-size:16px}
+.cloud-sync-actions button{min-height:44px}
+.cloud-sync-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.cloud-sync-account{overflow-wrap:anywhere;font-size:14px}
+.cloud-sync-actions input:focus-visible,.cloud-sync-actions button:focus-visible{outline:2px solid var(--accent,#c6f17e);outline-offset:2px}
+@media(max-width:520px){.cloud-sync-panel{padding:14px}.cloud-sync-buttons>*{flex:1 1 100%}}
