@@ -189,6 +189,10 @@
     const label=$('schedule-text'),link=$('schedule-run-link'),bar=$('schedule-live');
     if(!label||!link||!bar)return;
     bar.classList.remove('schedule-failed','schedule-success','schedule-recovered');
+    if(state.report?.date && state.index?.[0]?.date && state.report.date!==state.index[0].date){
+      label.textContent='目前正在閱讀歷史文章';
+      return;
+    }
     label.textContent='正在核對今日定時及補救更新…';
     const today=hkDate();
     const checked=await Promise.allSettled([fetchDailyRuns('schedule'),fetchDailyRuns('workflow_dispatch')]);
@@ -643,8 +647,8 @@
     let message='';
     if(r.mode==='demo')
       message='目前為示範文章，並非當日新聞。';
-    else if(daysOld(r.date)>0)
-      message=`此為 ${formatDate(r.date)} 的舊文章；今日報告尚未確認發布。請查看工作紀錄。`;
+    else if(daysOld(r.date)>0 && r.date===state.index?.[0]?.date)
+      message=`最新一期仍是 ${formatDate(r.date)}；今日文章尚未更新。`;
     else if(daysOld(r.date)<0)
       message='文章日期晚於香港今日日期，請檢查資料。';
     else if(r.mode==='reading_feature')
@@ -913,6 +917,9 @@
       const r=await response.json();if(!isValidReport(r,date))throw new Error('invalid report');
       if(serial!==requestSerial)return;
       state.report=r;state.showTranslation=false;renderReport();setView('today');
+      if(state.index?.[0]?.date && state.index[0].date!==r.date){
+        renderScheduleHealth();
+      }
     }catch{if(serial===requestSerial)toast('載入報告失敗，請檢查網絡或離線快取。');}
   }
   function isValidReport(r, date){
@@ -982,14 +989,17 @@
       if(!Array.isArray(idx)||!idx.length||!/^\d{4}-\d{2}-\d{2}$/.test(idx[0].date||''))throw Error('日期索引無效');
       const next=idx[0].date;
       const top=idx[0];
+      const isHistorical=Boolean(state.report?.date && state.index?.[0]?.date &&
+        state.report.date!==state.index[0].date);
       const changed=next!==state.report?.date ||
         Number(top.word_count||0)!==Number(state.report?.word_count||0) ||
         String(top.headline||'')!==String(state.report?.headline||'') ||
         Number(top.stories||0)!==Number(state.report?.stories?.length||0) ||
         (Boolean(top.updated_at) && String(top.updated_at)!==String(state.report?.updated_at||''));
       state.index=idx;
-      if(changed||force)await loadReport(next);
-      if(!changed&&!force)renderFreshness();
+      const shouldOpenLatest=!quiet || (state.view==='today'&&!isHistorical);
+      if((changed||force)&&shouldOpenLatest)await loadReport(next);
+      if(!shouldOpenLatest || (!changed&&!force))renderFreshness();
       $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
       await Promise.allSettled([renderPipelineStatus(),renderScheduleHealth()]);
       if(!quiet)toast(changed?'新一期文章已載入，學習紀錄保留。':'已重新核對今日報告與排程。');
@@ -1007,7 +1017,12 @@
     refreshLatestReport({quiet:true});
   }
   function initEvents(){
-    document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+    document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
+      if(b.dataset.view==='today' && state.index?.[0]?.date &&
+         state.report?.date!==state.index[0].date){
+        loadReport(state.index[0].date);
+      }else setView(b.dataset.view);
+    }));
     $('reader').addEventListener('click',e=>{const t=e.target.closest('button.word');if(t)showLookup(t.textContent,t);});
     $('translate-toggle').addEventListener('click',toggleWholeTranslation);
     $('reset-reading').addEventListener('click',resetReadingLayout);
