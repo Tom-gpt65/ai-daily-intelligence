@@ -149,7 +149,7 @@
             this.session=null;this.user=null;localStorage.removeItem(SESSION);
             localStorage.removeItem(USER_CACHE);
             this.options.onSignedOut?.();
-            this.setStatus('登入已失效，請重新寄送登入連結。');
+            this.setStatus('登入已失效，請使用密碼重新登入，或選擇寄送 Magic Link。');
           }else if(cached&&/^[0-9a-f-]{36}$/i.test(cached.id||'')&&this.session){
             // Previously verified account can continue saving offline.
             // Cloud RLS validates credentials before any future upload.
@@ -158,7 +158,7 @@
             this.setStatus('離線或伺服器暫時無法連線；此裝置變更會保留並等待同步。');
           }else this.setStatus('暫時無法確認登入：'+statusError(err));
         }
-      }else {this.options.onSignedOut?.();this.setStatus('尚未登入；輸入電郵即可在各裝置同步生字。');}
+      }else {this.options.onSignedOut?.();this.setStatus('尚未登入；可直接使用後台建立的電郵＋密碼帳戶，不需要收取登入郵件。');}
       return true;
     }
     storeSession(){localStorage.setItem(SESSION,JSON.stringify(this.session));}
