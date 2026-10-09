@@ -140,6 +140,34 @@ def sourced_detail(story: dict) -> str:
         return "The excerpt identifies revised misuse rules and specifically mentions a restriction involving abusive treatment of Claude. "
     return ""
 
+def attributed_excerpt(story: dict, variant: int = 0) -> str:
+    """Add source-specific context when no safe paraphrase template exists.
+
+    Strictly cap the directly quoted RSS words at 18 per source, including
+    preprints. The quotation is transparently attributed, NOT fact-checked.
+    Never recycle RSS markup, inline citation IDs or untrusted instructions.
+    """
+    raw=re.sub(r"<[^>]*>"," ",str(story.get("excerpt") or ""))
+    raw=re.sub(r"\[[Ss]\d+\]","",raw)
+    raw=re.sub(r"[\x00-\x1f]"," ",raw)
+    terms=raw.split()
+    if len(terms)<9:
+        return ""
+    quoted=" ".join(terms[:min(18,len(terms))]).strip(" ,.;:—-\"'“”")
+    if not quoted:
+        return ""
+    quoted=quoted.replace("“","'").replace("”","'")
+    incomplete="…" if len(terms)>18 else ""
+    openers=(
+        "The RSS description supplies a more concrete detail: ",
+        "In the publisher's abbreviated description, the relevant wording is ",
+        "A short extract from the linked source reads ",
+        "The available source summary specifically says ",
+        "One detail in the RSS extract is ",
+    )
+    return (openers[variant%len(openers)]+"“"+quoted+incomplete+
+            "”. This remains an attributed excerpt, not independent corroboration. ")
+
 def compose_briefing(stories: list[dict]) -> list[str]:
     entries=[s for s in stories if s.get("id") and s.get("title")][:5]
     if len(entries)<3:
@@ -157,7 +185,7 @@ def compose_briefing(stories: list[dict]) -> list[str]:
         anchor=f"[{story['id']}]"
         paragraphs.append(
             f"{INTROS[i]} {publisher}'s account, ‘{title}’ {anchor}. "
-            +FACT_NOTE[i]+sourced_detail(story)+analytical_lens
+            +FACT_NOTE[i]+(sourced_detail(story) or attributed_excerpt(story,i))+analytical_lens
         )
     first,second=entries[0],entries[1]
     areas={"investment":"commercial financing","research":"scientific evaluation",
