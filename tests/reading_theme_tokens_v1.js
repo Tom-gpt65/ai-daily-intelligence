@@ -10,7 +10,7 @@ function tokens(selector){
   const block=css.match(new RegExp(escaped+'\\s*\\{([^}]+)\\}'));
   assert.ok(block,'Missing palette '+selector);
   const result=Object.create(null);
-  for(const [,name,value] of block[1].matchAll(/--([a-z-]+):\s*(#[a-f0-9]{6})\s*;/gi))
+  for(const [,name,value] of block[1].matchAll(/--([a-z0-9-]+):\s*(#[a-f0-9]{6})\s*;/gi))
     result[name]=value.toUpperCase();
   return result;
 }
