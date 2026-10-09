@@ -339,6 +339,28 @@
     }
     return result;
   }
+  function translatedChunkKey(report,index){
+    return translationCacheKey(report)+'-chunks-'+index;
+  }
+  async function resumeTranslationChunks(report,index){
+    // Cache is keyed by the complete article hash AND exact chunk text; a
+    // re-edited passage cannot accidentally reuse a previous translation.
+    const chunks=translationPieces(report.essay[index]);
+    const key=translatedChunkKey(report,index);
+    const record=safeStorage.get(key,{});
+    const matches=Array.isArray(record.chunks)&&record.chunks.length===chunks.length&&
+      record.chunks.every((chunk,i)=>chunk===chunks[i]);
+    const results=matches&&Array.isArray(record.results)?record.results.slice(0,chunks.length):[];
+    for(let i=0;i<chunks.length;i++){
+      if(translationCancel)return null;
+      if(typeof results[i]==='string'&&/[\u3400-\u9fff]/.test(results[i]))continue;
+      const translated=await publicTranslationSegment(chunks[i]);
+      results[i]=translated;
+      // Save *every* successful request, not just each complete paragraph.
+      safeStorage.set(key,{chunks,results});
+    }
+    return results.join(' ');
+  }
   async function publicTranslationSegment(text){
     const url='https://api.mymemory.translated.net/get?langpair=en%7Czh-TW&q='+encodeURIComponent(text);
     for(let attempt=0;attempt<2;attempt++){
@@ -388,13 +410,9 @@
     if(!agreeToTranslation())return;
     translationBusy=true;translationCancel=false;syncTranslationButton();
     try{
-      const parts=[];
-      for(const segment of translationPieces(report.essay[index])){
-        if(translationCancel)break;
-        parts.push(await publicTranslationSegment(segment));
-      }
-      if(!translationCancel&&parts.length===translationPieces(report.essay[index]).length){
-        partial[index]=parts.join(' ');
+      const translated=await resumeTranslationChunks(report,index);
+      if(!translationCancel&&translated){
+        partial[index]=translated;
         storeTranslationProgress(report,partial);
         paragraphOpen.add(index);
       }
@@ -417,14 +435,9 @@
       for(let i=0;i<report.essay.length;i++){
         if(translationCancel)break;
         if(partial[i])continue;
-        const pieces=translationPieces(report.essay[i]);
-        const translated=[];
-        for(const piece of pieces){
-          if(translationCancel)break;
-          translated.push(await publicTranslationSegment(piece));
-        }
-        if(translationCancel)break;
-        partial[i]=translated.join(' ');
+        const translated=await resumeTranslationChunks(report,i);
+        if(translationCancel||!translated)break;
+        partial[i]=translated;
         storeTranslationProgress(report,partial);
         paragraphOpen.add(i);
         syncTranslationButton();
