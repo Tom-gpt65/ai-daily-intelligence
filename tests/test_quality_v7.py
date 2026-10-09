@@ -49,8 +49,10 @@ class QualityV7Tests(unittest.TestCase):
         self.assertGreaterEqual(len(begins),2)
     def test_daily_report_publish_survives_branch_updates(self):
         workflow=(ROOT/".github/workflows/daily.yml").read_text(encoding="utf-8")
-        self.assertIn("git fetch origin main",workflow)
-        self.assertIn("git reset --hard origin/main",workflow)
-        self.assertIn("for attempt in 1 2 3 4",workflow)
+        self.assertIn("python scripts/publish_reports.py",workflow)
+        publisher=(ROOT/"scripts/publish_reports.py").read_text(encoding="utf-8")
+        self.assertIn('git("fetch","origin","main")',publisher)
+        self.assertIn('git("reset","--hard","origin/main")',publisher)
+        self.assertIn("for attempt in range(1,max_attempts+1)",publisher)
 
 if __name__=="__main__":unittest.main()
