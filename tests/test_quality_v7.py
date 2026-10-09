@@ -37,14 +37,14 @@ class QualityV7Tests(unittest.TestCase):
                   "topic":"Research"}for i in range(1,4)]
         text=compose_briefing(sources)
         result=" ".join(text)
-        self.assertGreaterEqual(word_count(result),550)
+        self.assertGreaterEqual(word_count(result),1000)
         for item in sources:
             self.assertIn("["+item["id"]+"]",result)
         self.assertLessEqual(sum(p.startswith("According to") for p in text),1)
     def test_daily_fallback_not_always_identical(self):
         begins=set()
         for n in range(12):
-            src=[{"id":"S1","publisher":"Journal","title":"Research findings about "+str(n),"excerpt":"Analysis is ongoing."}]
+            src=[{"id":f"S{i}","publisher":"Journal","title":"Research findings about "+str(n)+" report "+str(i),"excerpt":"Analysis is ongoing."} for i in range(1,4)]
             begins.add(compose_briefing(src)[0])
         self.assertGreaterEqual(len(begins),2)
     def test_daily_report_publish_survives_branch_updates(self):
