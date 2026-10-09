@@ -23,7 +23,8 @@ permissions:
 
 concurrency:
   group: ai-daily-${{ github.event_name == 'push' && 'code' || 'news' }}
-  cancel-in-progress: false
+  # Discard superseded code-only deploys, but never cancel daily news generation.
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 
 jobs:
   daily:
