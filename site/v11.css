@@ -1,0 +1,108 @@
+/* V11: evidence-based reading layout, legible line lengths and recoverable controls.
+   Loaded last; older modules remain for compatibility and print. */
+:root{scroll-padding-top:calc(82px + env(safe-area-inset-top,0px))}
+html{scroll-behavior:smooth;overflow-x:clip}
+body,.layout,.main,.page,.briefing-card{min-width:0}
+.main{max-width:100%;overflow-x:clip}
+.page{max-width:min(100%,1160px)}
+.topbar{min-width:0;gap:10px}
+.top-actions{display:flex;align-items:center;gap:10px;min-width:0}
+.top-actions .refresh-content{white-space:nowrap;font:600 12px/1.3 system-ui,sans-serif;min-height:38px;padding:8px 13px;border:1px solid var(--border);border-radius:9px;background:var(--surface2);color:var(--text)}
+.top-actions .refresh-content:hover{border-color:var(--accent);color:var(--accent)}
+.intro{padding-top:18px}
+.intro h1{max-width:100%;font-size:clamp(37px,5vw,70px);line-height:1.09;letter-spacing:-1.5px;overflow-wrap:break-word}
+.jump-to-reader{scroll-margin-top:100px}
+.status-row{margin-top:22px}
+.technical-status{max-width:100%;margin:5px 0 18px;border:1px solid var(--border);border-radius:10px;background:var(--surface);font-size:12px;color:var(--muted)}
+.technical-status summary{cursor:pointer;min-height:36px;padding:10px 14px;line-height:1.5;list-style-position:inside}
+.technical-status summary:hover{color:var(--accent)}
+.technical-status .pipeline-alert{margin:0 12px 12px;font-size:11px;line-height:1.7}
+.technical-status .pipeline-alert.hidden{display:none!important}
+.schedule-live{margin-top:4px;margin-bottom:8px;max-width:100%;min-width:0}
+.schedule-live #schedule-text{min-width:0;overflow-wrap:break-word}
+.briefing-card{scroll-margin-top:clamp(90px,15vh,160px);max-width:100%;overflow:clip}
+.card-header{min-width:0;overflow-wrap:anywhere}
+.card-header>div:first-child{min-width:0;max-width:100%}
+.card-header h2{max-width:min(100%,24ch);font-size:clamp(28px,3.9vw,43px);line-height:1.15;overflow-wrap:anywhere}
+.card-header p{max-width:67ch;overflow-wrap:anywhere}
+.reading-bar{max-width:100%}
+.reader-toolbar{width:100%;max-width:100%;min-width:0;align-items:center;flex-wrap:wrap;gap:11px}
+.reader-toolbar .helper{min-width:0;max-width:100%;flex:1 1 230px;line-height:1.6}
+.reader-toolbar .toolbar-right{min-width:0;max-width:100%;display:flex;flex:1 1 510px;flex-wrap:wrap;gap:7px;justify-content:flex-end}
+.toolbar-right .small-button{max-width:100%;min-height:39px;white-space:normal;text-align:center;font-size:12px;padding:8px 10px}
+.toolbar-right #translate-toggle{color:var(--accent);border-color:var(--accent)}
+.toolbar-right .reset-reading{border-color:var(--muted);background:var(--surface2)}
+.reader{width:100%;min-width:0;max-width:100%;margin:0 auto;padding:28px clamp(16px,3.8vw,50px) 12px;font-size:18px;line-height:1.88;letter-spacing:.08px}
+.reader .essay-paragraph{display:block;width:min(100%,68ch);max-width:68ch;min-width:0;margin:0 auto 24px;scroll-margin-top:clamp(108px,14vh,170px);text-align:left;overflow-wrap:break-word;word-break:normal;hyphens:auto;white-space:normal}
+.reader .essay-paragraph .word{max-width:100%;min-width:0;white-space:normal;overflow-wrap:anywhere;word-break:normal;hyphens:auto}
+.reader .essay-paragraph::before{font-size:10px;margin-inline-end:10px}
+.reader.font-large .essay-paragraph,.reader.font-xlarge .essay-paragraph{max-width:62ch}
+.reader .translation-paragraph{width:min(100%,68ch);max-width:68ch;min-width:0;margin-inline:auto!important;overflow-wrap:break-word}
+.paragraph-tools{width:min(100%,68ch);max-width:68ch;margin-inline:auto!important}
+#reader{scroll-margin-top:clamp(120px,15vh,175px)}
+.reader-navigator{display:flex;align-items:center;gap:8px;flex-wrap:wrap;overflow:visible;padding:12px clamp(16px,3vw,38px);border-bottom:1px solid var(--border);background:var(--surface2)}
+.reader-nav-title{font:600 12px/1.5 system-ui,sans-serif;flex:0 0 auto;white-space:normal}
+.reader-nav-link{white-space:normal;text-align:left;min-width:0;max-width:100%;line-height:1.4}
+.reader-nav-select{display:none;min-width:0;width:min(100%,460px);min-height:44px;font:500 13px/1.5 system-ui,sans-serif;border:1px solid var(--border);border-radius:9px;color:var(--text);background:var(--surface);padding:9px 36px 9px 12px}
+.translation-policy{max-width:70ch;margin:12px auto 0;padding:0 14px;line-height:1.7}
+.reading-quality{max-width:70ch}
+#reset-reading:focus-visible,#reload-latest:focus-visible,.reader-nav-select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* At the iPad widths shown by Safari, collapsed controls and a select are
+   materially more readable than one wide horizontal row of paragraph chips. */
+@media(max-width:1180px){
+ .page{padding:clamp(22px,3.5vw,42px) clamp(18px,3.6vw,44px) 70px}
+ .intro{padding-top:8px}
+ .intro h1{font-size:clamp(33px,5.6vw,62px)}
+ .reader-toolbar{flex-direction:column;align-items:stretch}
+ .reader-toolbar .toolbar-right{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;flex:0 1 auto;align-items:stretch;justify-content:stretch}
+ .toolbar-right .small-button{min-width:0;white-space:normal}
+ .toolbar-right #translate-toggle{grid-column:span 2}
+ .toolbar-right #tools-toggle{display:block}
+ body:not(.tools-expanded) .toolbar-right :is(#reading-speed,#resume-reading,#focus-toggle,#export-report,#print-report){display:none!important}
+ .reader-navigator{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px}
+ .reader-navigator .reader-nav-link{display:none!important}
+ .reader-nav-select{display:block}
+ .reader .essay-paragraph,.reader .translation-paragraph,.paragraph-tools{max-width:65ch}
+}
+@media(max-width:650px){
+ :root{scroll-padding-top:80px}
+ .main,.page,.briefing-card{width:100%;min-width:0;max-width:100%}
+ .page{padding:21px 12px calc(90px + env(safe-area-inset-bottom,0px))}
+ .topbar{padding:0 12px;gap:7px}
+ .breadcrumbs .slash{display:none}
+ .breadcrumbs{white-space:normal;line-height:1.3}
+ .top-actions{gap:6px}
+ .top-actions .refresh-content{font-size:10px;padding:8px;min-height:36px}
+ .intro{padding-top:5px}
+ .intro h1{font-size:clamp(30px,8vw,46px);line-height:1.12}
+ .status-row{margin-top:16px}
+ .card-header{padding:20px 16px 18px}
+ .card-header h2{max-width:100%;font-size:clamp(26px,7.2vw,35px);overflow-wrap:anywhere}
+ .reader-toolbar{padding:11px 12px;gap:9px}
+ .reader-toolbar .helper{flex:none;font-size:11px}
+ .reader-toolbar .toolbar-right{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .toolbar-right #translate-toggle{grid-column:span 2}
+ .toolbar-right #tools-toggle{grid-column:span 1}
+ .toolbar-right .small-button{min-height:44px;font-size:11px}
+ .reader-navigator{grid-template-columns:1fr;gap:7px;padding:12px}
+ .reader-nav-title{font-size:11px}
+ .reader-nav-select{width:100%;font-size:14px}
+ .reader{padding:18px 15px 5px;font-size:17px;line-height:1.78}
+ .reader.font-large{font-size:19px;line-height:1.77}
+ .reader.font-xlarge{font-size:21px;line-height:1.73}
+ .reader .essay-paragraph,.reader .translation-paragraph,.paragraph-tools{width:100%;max-width:100%;margin-bottom:21px}
+ .reader .essay-paragraph{scroll-margin-top:115px}
+ .technical-status summary{font-size:11px}
+ .schedule-live{font-size:11px}
+}
+@media(max-width:375px){
+ .page{padding-left:9px;padding-right:9px}
+ .reader{padding-inline:11px}
+ .reader.font-xlarge{font-size:20px}
+ .topbar .refresh-content{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}}
+@media print{
+ .technical-status,.reader-navigator,.top-actions .refresh-content,.reset-reading{display:none!important}
+ .reader,.reader .essay-paragraph{width:auto!important;max-width:none!important;overflow:visible!important}
+}
