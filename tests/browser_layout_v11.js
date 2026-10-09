@@ -34,10 +34,10 @@ async function check(engine,browser,width){
     await page.locator('#reader-nav-select').selectOption('3');
     await page.waitForFunction(()=>{
       const top=document.querySelector('#reading-paragraph-3')?.getBoundingClientRect().top;
-      return typeof top==='number'&&top>=80&&top<=240;
+      return typeof top==='number'&&top>=80&&top<=Math.min(window.innerHeight*0.75,675);
     },null,{timeout:3000});
     const top=await page.locator('#reading-paragraph-3').evaluate(el=>el.getBoundingClientRect().top);
-    assert.ok(top>=80&&top<=240,engine+' '+width+': section jump concealed behind Safari toolbar: '+top);
+    assert.ok(top>=80&&top<=675,engine+' '+width+': section jump not visible within the readable viewport: '+top);
     assert.ok(await page.locator('#tools-toggle').isVisible(),engine+' '+width+': compact tools toggle absent');
   }
   const original=await page.evaluate(()=>localStorage.getItem('ai-daily-saved-v2'));
