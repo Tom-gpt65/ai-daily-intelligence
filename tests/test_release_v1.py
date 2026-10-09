@@ -36,7 +36,7 @@ class FirstReleaseTests(unittest.TestCase):
         self.assertIn('batch_order smallint not null default 0',sql)
         self.assertIn('revoke all on public.vocabulary_events from public, anon, authenticated',sql)
         self.assertIn('grant insert (event_id, user_id, word, payload, deleted, batch_order)',sql)
-        self.assertIn('created_at,batch_order.asc',module)
+        self.assertIn('created_at.asc,batch_order.asc',module)
     def test_learning_records_stay_backward_compatible(self):
         app=(SITE/"app.js").read_text(encoding="utf-8")
         for key in ("ai-daily-saved-v2","ai-daily-quiz-v6",
