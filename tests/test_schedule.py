@@ -16,7 +16,8 @@ class ScheduleTests(unittest.TestCase):
         text = (ROOT / ".github/workflows/audit.yml").read_text(encoding="utf-8")
         self.assertIn("cron: '5 8 * * *'", text)
         self.assertIn("cron: '17 9 * * *'", text)
-        self.assertEqual(text.count("timezone: 'Asia/Hong_Kong'"), 2)
+        self.assertIn("cron: '17 13 * * *'", text)
+        self.assertEqual(text.count("timezone: 'Asia/Hong_Kong'"), 3)
 
     def test_free_automated_generation_is_preserved(self):
         text = (ROOT / ".github/workflows/daily.yml").read_text(encoding="utf-8")
@@ -29,7 +30,7 @@ class ScheduleTests(unittest.TestCase):
         text = (ROOT / "site/index.html").read_text(encoding="utf-8")
         self.assertIn("07:40 開始更新", text)
         self.assertIn("08:00 目標可讀", text)
-        self.assertIn("08:05 及 09:17", text)
+        self.assertIn("08:05、09:17 及 13:17", text)
 
 
 if __name__ == "__main__":

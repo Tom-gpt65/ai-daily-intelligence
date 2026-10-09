@@ -115,6 +115,22 @@ def recent_successful_schedule(runs: object, expected: str) -> bool:
             continue
     return False
 
+def recent_successful_recovery(runs: object, expected: str) -> bool:
+    """Separate confirmed dispatch runs from successful scheduled executions."""
+    if not isinstance(runs, dict):
+        return False
+    for run in runs.get("workflow_runs", []):
+        if run.get("event") != "workflow_dispatch" or run.get("conclusion") != "success":
+            continue
+        try:
+            started = datetime.fromisoformat(run["created_at"].replace("Z", "+00:00"))
+            if started.astimezone(HK).date().isoformat() == expected:
+                return True
+        except (KeyError, TypeError, ValueError):
+            continue
+    return False
+
+
 def request_json(url: str, token: str = "") -> object:
     headers = {"Accept": "application/vnd.github+json", "User-Agent": "AI-Daily-Independent-Audit"}
     if token:
@@ -150,14 +166,19 @@ def run() -> int:
         public_errors.append(str(exc))
     schedule_errors = []
     scheduled_ok = None
+    recovered_ok = None
     if not args.skip_schedule:
         repo = os.environ.get("GITHUB_REPOSITORY", "Tom-gpt65/ai-daily-intelligence")
-        url = "https://api.github.com/repos/" + repo + "/actions/workflows/daily.yml/runs?event=schedule&per_page=50"
+        url = "https://api.github.com/repos/" + repo + "/actions/workflows/daily.yml/runs?per_page=100"
         try:
             runs = request_json(url, os.environ.get("GITHUB_TOKEN", ""))
             scheduled_ok = recent_successful_schedule(runs,args.date)
+            recovered_ok = recent_successful_recovery(runs,args.date)
             if not scheduled_ok:
-                schedule_errors.append("No successful 07:40 scheduled daily.yml run on this Hong Kong date")
+                if recovered_ok and refresh_ok and not public_errors:
+                    warnings.append("The scheduled 07:40 run failed or was missing; verified public article was recovered by a successful dispatch")
+                else:
+                    schedule_errors.append("Neither a successful scheduled run nor a verified recovery was found on this Hong Kong date")
         except Exception as exc:
             schedule_errors.append(f"Unable to confirm scheduled workflow: {exc}")
         if not refresh_ok:
@@ -169,13 +190,14 @@ def run() -> int:
     print("- Public report content/date:", "PASS" if not public_errors else "FAIL")
     print("- Article timestamp after 07:40:", "PASS" if refresh_ok else "FAIL", "-",refresh_note)
     print("- 07:40 scheduled job:", "NOT CHECKED (manual audit)" if scheduled_ok is None else ("PASS" if scheduled_ok else "FAIL"))
+    print("- Recovery/manual daily job:", "NOT CHECKED (manual audit)" if recovered_ok is None else ("SUCCESSFUL RUN FOUND" if recovered_ok else "NONE CONFIRMED"))
     print("- Website accessible at exactly 08:00: NOT PROVEN by report timestamps; 08:05/09:17 observations are separate")
     for warning in warnings:
         print("- QUALITY WARNING:",warning)
     for error in errors:
         print("- ERROR:",error)
     if not errors:
-        print("- RESULT: PASS (public freshness and scheduler verified; factual or HKEAA-level accuracy NOT certified)")
+        print("- RESULT: PASS (public freshness and either scheduled run or recovery verified; factual or HKEAA-level accuracy NOT certified)")
         return 0
     print("- RESULT: FAIL (see separate content and scheduler findings above)")
     return 1

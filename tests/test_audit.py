@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from audit_publication import assess_public,recent_successful_schedule,morning_refresh_status
+from audit_publication import assess_public,recent_successful_schedule,recent_successful_recovery,morning_refresh_status
 from learning_editorial import deepen_digest,is_promotional,_word_count
 
 class AuditTests(unittest.TestCase):
@@ -72,6 +72,18 @@ class AuditTests(unittest.TestCase):
     def test_wrong_event_not_schedule(self):
         runs={'workflow_runs':[{'event':'push','conclusion':'success','created_at':'2026-10-09T00:05:00Z'}]}
         self.assertFalse(recent_successful_schedule(runs,'2026-10-09'))
+    def test_successful_recovery_is_not_scheduled_success(self):
+        runs={'workflow_runs':[{'event':'workflow_dispatch','conclusion':'success',
+                                 'created_at':'2026-10-09T00:36:00Z'}]}
+        self.assertTrue(recent_successful_recovery(runs,'2026-10-09'))
+        self.assertFalse(recent_successful_schedule(runs,'2026-10-09'))
+        self.assertFalse(recent_successful_recovery(runs,'2026-10-10'))
+    def test_failed_dispatch_or_push_cannot_count_as_recovery(self):
+        runs={'workflow_runs':[{'event':'workflow_dispatch','conclusion':'failure',
+                                 'created_at':'2026-10-09T00:36:00Z'},
+                                {'event':'push','conclusion':'success',
+                                 'created_at':'2026-10-09T00:37:00Z'}]}
+        self.assertFalse(recent_successful_recovery(runs,'2026-10-09'))
     def test_promotional_source_excluded(self):
         self.assertTrue(is_promotional('Hear from AI execs at TechCrunch Disrupt','Register now to save up to $100'))
         self.assertFalse(is_promotional('Research report on data centres','AI energy usage study presents new findings'))
