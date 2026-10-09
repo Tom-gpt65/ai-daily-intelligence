@@ -48,6 +48,24 @@ def assess_public(index: object, report: object, expected: str) -> tuple[list[st
         warnings.append("Fewer than three sourced AI developments today")
     return errors, warnings
 
+def morning_refresh_status(report: object, expected: str) -> tuple[bool, str]:
+    """Check publication metadata, not claim an exact public deployment time."""
+    if not isinstance(report,dict) or report.get("date")!=expected:
+        return False,"No report dated today was available"
+    stamp=report.get("updated_at")
+    try:
+        updated=datetime.fromisoformat(str(stamp).replace("Z","+00:00"))
+        if updated.tzinfo is None:
+            return False,"Report update time has no timezone"
+        hk=updated.astimezone(HK)
+        if hk.date().isoformat()!=expected:
+            return False,"Report update timestamp does not match Hong Kong day"
+        if (hk.hour,hk.minute)<(7,40):
+            return False,"Report was last updated before the 07:40 morning generation window"
+        return True,"Report metadata confirms a refresh at or after 07:40 HK; exact website availability time is not proven"
+    except (TypeError,ValueError):
+        return False,"Report has no valid update timestamp"
+
 def recent_successful_schedule(runs: object, expected: str) -> bool:
     if not isinstance(runs, dict):
         return False
@@ -86,35 +104,45 @@ def run() -> int:
     parser.add_argument("--site", default=BASE)
     args = parser.parse_args()
     base = args.site.rstrip("/") + "/"
-    errors, warnings = [], []
+    public_errors, warnings = [], []
+    refresh_ok, refresh_note = False, "Article could not be loaded"
     try:
         index = request_json(base + "reports/index.json")
         report = request_json(base + "reports/" + args.date + ".json")
-        errors, warnings = assess_public(index, report, args.date)
+        public_errors, warnings = assess_public(index, report, args.date)
+        refresh_ok, refresh_note = morning_refresh_status(report,args.date)
     except Exception as exc:
-        errors.append(str(exc))
+        public_errors.append(str(exc))
+    schedule_errors = []
+    scheduled_ok = None
     if not args.skip_schedule:
         repo = os.environ.get("GITHUB_REPOSITORY", "Tom-gpt65/ai-daily-intelligence")
         url = "https://api.github.com/repos/" + repo + "/actions/workflows/daily.yml/runs?event=schedule&per_page=50"
         try:
             runs = request_json(url, os.environ.get("GITHUB_TOKEN", ""))
-            if not recent_successful_schedule(runs, args.date):
-                errors.append("No successful 07:40-scheduled daily.yml run recorded for today's Hong Kong date")
+            scheduled_ok = recent_successful_schedule(runs,args.date)
+            if not scheduled_ok:
+                schedule_errors.append("No successful 07:40 scheduled daily.yml run on this Hong Kong date")
         except Exception as exc:
-            errors.append(f"Unable to confirm daily scheduled workflow: {exc}")
-    print("### Daily publication audit (Hong Kong)")
-    print("- Expected date:", args.date)
-    print("- Public website:", base)
-    print("- Published on today's date:", "PASS" if not errors else "NOT VERIFIED")
-    print("- 07:40 schedule confirmation:", "not checked for manual audit" if args.skip_schedule else "checked")
+            schedule_errors.append(f"Unable to confirm scheduled workflow: {exc}")
+        if not refresh_ok:
+            public_errors.append("Morning freshness check failed: "+refresh_note)
+    errors = public_errors + schedule_errors
+    print("### Independent daily publication audit (Hong Kong)")
+    print("- Expected date:",args.date)
+    print("- Public website:",base)
+    print("- Public report content/date:", "PASS" if not public_errors else "FAIL")
+    print("- Article timestamp after 07:40:", "PASS" if refresh_ok else "FAIL", "-",refresh_note)
+    print("- 07:40 scheduled job:", "NOT CHECKED (manual audit)" if scheduled_ok is None else ("PASS" if scheduled_ok else "FAIL"))
+    print("- Website accessible at exactly 08:00: NOT PROVEN by report timestamps; 08:05/09:17 observations are separate")
     for warning in warnings:
-        print("- QUALITY WARNING:", warning)
+        print("- QUALITY WARNING:",warning)
     for error in errors:
-        print("- ERROR:", error)
+        print("- ERROR:",error)
     if not errors:
-        print("- RESULT: PASS (availability verified; editorial accuracy is not guaranteed)")
+        print("- RESULT: PASS (public freshness and scheduler verified; factual or HKEAA-level accuracy NOT certified)")
         return 0
-    print("- RESULT: FAIL: inspect publication workflow and data sources")
+    print("- RESULT: FAIL (see separate content and scheduler findings above)")
     return 1
 
 if __name__ == "__main__":
