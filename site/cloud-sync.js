@@ -199,7 +199,7 @@
     }
     async signInWithPassword(email,password){
       if(!this.config)throw new Error('雲端同步尚未啟用');
-      if(typeof email!=='string'||!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)||email.length>254)
+      if(typeof email!=='string'||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)
         throw new Error('請輸入有效的電郵地址');
       if(typeof password!=='string'||password.length<8||password.length>256)
         throw new Error('請輸入至少 8 字元的帳戶密碼');
