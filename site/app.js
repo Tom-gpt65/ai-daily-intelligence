@@ -893,6 +893,27 @@
     const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
     a.href=url;a.download=`ai-daily-${r.date}.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);
   }
+  function resetReadingLayout(){
+    // Reset presentation, never remove vocabulary, answers or progress.
+    state.fontScale=0;safeStorage.set('ai-daily-font-scale',0);
+    focusMode=false;document.body.classList.remove('focus-mode','tools-expanded');
+    $('focus-toggle').setAttribute('aria-pressed','false');
+    $('focus-toggle').textContent='專注閱讀';
+    $('tools-toggle').setAttribute('aria-expanded','false');
+    $('tools-toggle').textContent='更多閱讀工具 ▾';
+    closePopover(false);renderReader();scrollToReadingTarget($('reader'));
+    toast(Number(window.visualViewport?.scale||1)>1.07?
+      '字體及版面已重設。Safari 頁面仍被手勢放大，請用雙指縮小至正常比例。':
+      '字體及版面已重設；生字、答案和閱讀進度均已保留。');
+  }
+  async function reloadLatestWebsite(){
+    const button=$('reload-latest');button.disabled=true;button.textContent='更新中…';
+    try{const registration=await navigator.serviceWorker?.getRegistration();if(registration)await registration.update();}
+    catch{/* The forced navigation below can still check the server. */}
+    const url=new URL(location.href);
+    url.searchParams.set('fresh',Date.now().toString(36));
+    location.assign(url.toString());
+  }
   function initEvents(){
     document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
     $('reader').addEventListener('click',e=>{const t=e.target.closest('button.word');if(t)showLookup(t.textContent,t);});
