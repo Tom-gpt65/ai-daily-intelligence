@@ -1,29 +1,29 @@
 {
   "schema": 4,
   "date": "2026-10-09",
-  "updated_at": "2026-10-09T12:26:27.236534+08:00",
+  "updated_at": "2026-10-09T05:32:38.816Z",
   "headline": "AI developments: today's essential context",
   "subtitle": "Global artificial intelligence — evidence, innovation and implications",
   "mode": "source_digest",
-  "editorial_notice": "Original educational analysis of sourced RSS summaries; full articles not independently checked.",
+  "editorial_notice": "Editorial correction: the software-security source is no longer analysed as biological research; the robotics report has a corresponding robotics analysis.",
   "demo": false,
-  "word_count": 1380,
+  "word_count": 1373,
   "essay": [
     "Behind every confident technology headline lies an evidential question. What has actually happened, who is making the claim and which important details remain unreported? These questions become harder when the subject shifts rapidly between commercial investment, research, products and institutional governance. This reading exercise approaches the day's reporting as a set of contrasting texts rather than a sequence of victories. Its argument is deliberately qualified: important developments deserve attention, but their significance must be established through careful interpretation rather than the force of a headline alone.",
-    "One perspective arises from The Verge AI's account, ‘Anthropic launches free AI security scans for open-source projects’ [S1]. The available RSS extract adds a short description, but not the complete article; the account below accordingly treats the publisher's wording as a reported claim rather than an independently established result. The RSS description supplies a more concrete detail: “Anthropic's offering to help open-source projects track down security vulnerabilities with a new service called OSS Scanner. It…”. Accounts connecting AI with the life sciences require unusually careful distinctions. Designing a hypothetical biological sequence, testing a computational proposal and demonstrating a functioning organism are not equivalent achievements. Without verifiable experimental details, moving casually between those categories would create a sensational conclusion that the available report might not justify. The ethical dimension, moreover, cannot be reduced to excitement or alarm: beneficial research, security precautions and responsible oversight must be examined as separate questions. This paragraph is an invitation to distinguish levels of evidence, not an assertion that any particular experiment succeeded. A reader should return to the source before repeating claims about physical or biological results.",
+    "One perspective arises from The Verge AI's account, ‘Anthropic launches free AI security scans for open-source projects’ [S1]. The available RSS extract adds a short description, but not the complete article; the account below accordingly treats the publisher's wording as a reported claim rather than an independently established result. The RSS description supplies a more concrete detail: “Anthropic's offering to help open-source projects track down security vulnerabilities with a new service called OSS Scanner. It…”. Software security is the subject of this announcement, not biological research. A service may help projects identify weaknesses in their code, but offering a tool does not prove that every project will be safer. The quality of detection, the practical value of the results and the ability of users to act on them must be considered separately. Readers should ask how different problems are identified, which tasks the service supports and whether independent evidence about its performance is available. This approach keeps the discussion connected to the reported service, while avoiding assumptions about outcomes that have not been shown.",
     "The commercial and institutional landscape also appears in arXiv AI's account, ‘How Narrative Wrapping Affects LLM Refusal: A Cross-Language Benchmark and Defense’ [S2]. The abbreviated description supplies only a limited view of the event, making it especially important to distinguish the content attributed to the source from assumptions introduced by the reader. In the publisher's abbreviated description, the relevant wording is “arXiv:2610.11005v1 Announce Type: new Abstract: Safety-aligned language models often refuse a harmful request stated directly but answer the…”. Research language has a particular authority, although a named framework is not the same thing as a result validated under every plausible condition. A benchmark can make comparisons more systematic by specifying tasks and measurements; equally, the choice of tasks may privilege some capabilities while overlooking others. What would count as a convincing comparison: repeated results, independent replication, realistic operating conditions or an examination of failures? The answer depends on the claim being made. Readers must therefore separate the approach described in a paper from evidence that the approach consistently works outside the circumstances reported. If the source is a preprint, the distinction between dissemination and peer review is especially worth preserving.",
     "A contrasting dimension becomes visible in TechCrunch AI's account, ‘Anthropic changes usage policy to ban model abuse and election interference’ [S3]. Although the headline establishes the subject of the report, the excerpt does not provide an independent audit of its effects; the following questions should therefore be read as critical analysis rather than additional reporting. A short extract from the linked source reads “Anthropic's updated usage policy explicitly prohibits users from repeatedly abusing Claude in extreme cases, though ordinary frustration and…”. Rules governing AI systems illustrate the distance between institutional intentions and actual consequences. A policy can signal what a provider wishes to discourage, yet the text alone cannot show how consistently an organisation will interpret disputes, detect violations or handle exceptions. Nor does an announced restriction, by itself, resolve the ethical disagreement about what ought to be restricted in the first place. A fair analysis would consider enforcement, transparency and accountability, including whether people affected by a decision can challenge it. Instead of assuming that stronger wording guarantees safer outcomes, the reader should identify which decisions are explicit and which operational details remain unavailable.",
-    "A separate question is raised by MIT Technology Review's account, ‘AI breakthroughs in robotics won’t change your life any time soon’ [S4]. The feed gives a starting point for evaluating the claim, not an exhaustive record of the underlying evidence. This distinction matters where the apparent implications exceed the material actually available. The available source summary specifically says “The story is a collaboration between MIT Technology Review and Aventine, a non-profit research foundation that creates and…”. A further question concerns how a claim would appear to an observer with different priorities. One stakeholder might value speed, another reproducibility, and a third the ability to challenge a decision. These perspectives need not conflict, but they should not be compressed into a single undifferentiated assessment either. Readers should trace the precise wording of this report, identify whose perspective it privileges and ask whether a competing interpretation could also fit the limited evidence. That exercise exposes the assumptions connecting a reported development to a broader claim, and it makes the argument more than a rehearsal of institutional publicity.",
+    "A separate question is raised by MIT Technology Review's account, ‘AI breakthroughs in robotics won’t change your life any time soon’ [S4]. The feed gives a starting point for evaluating the claim, not an exhaustive record of the underlying evidence. This distinction matters where the apparent implications exceed the material actually available. The available source summary specifically says “The story is a collaboration between MIT Technology Review and Aventine, a non-profit research foundation that creates and…”. Research in robotics invites a distinction between a successful demonstration and a useful result in everyday life. A new system may work well during a controlled test but face different conditions in practice. Reliability, safety, cost and the needs of users are relevant to that transition. A careful reader should ask what was measured, how often the result can be repeated and which limitations remain before the system can be used more widely. These questions do not dismiss the reported progress. Rather, they explain why the effect of a development on daily life cannot be inferred from a promising headline alone.",
     "Finally, another part of the debate is illustrated by arXiv AI's account, ‘Beyond Imitation: A Framework and Benchmark for LLM-Assisted Peer Review’ [S5]. Only an abbreviated source description is present here. The wider consequences discussed below are questions for further investigation, not facts established by this edition. One detail in the RSS extract is “arXiv:2610.11087v1 Announce Type: new Abstract: The rapid growth of scientific publishing has strained peer review, particularly in machine…”. The method by which evidence is communicated is almost as important as the evidence itself. A brief source extract is necessarily selective: it may illuminate the purpose of an initiative while omitting measurements, limitations or the people who would experience the consequences. It would be unreasonable to infer dishonesty merely from that absence; equally, it would be careless to treat what has not been described as if it were already proved. The useful analytical move is to state a testable question, explain which information could answer it and avoid allowing a confident headline to do the work of an argument.",
-    "These differences also expose a problem of comparability. The first account, [S1], concerns biological research, whereas [S2] turns to scientific evaluation. A headline about one kind of development cannot be assessed using precisely the same measure as a headline about another. An investment may invite questions about incentives and commercial performance; a proposed research framework invites scrutiny of methods and reproducibility. That contrast does not automatically favour either source. Instead, it shows why readers should specify what they are trying to evaluate before judging the strength of an account. Otherwise, attractive terminology risks taking the place of a defensible comparison.",
+    "These differences also expose a problem of comparability. The first account, [S1], concerns software security, whereas [S2] turns to scientific evaluation. A headline about one kind of development cannot be assessed using precisely the same measure as a headline about another. A security service invites questions about detection and practical use; a research framework invites scrutiny of methods and reproducibility. That contrast does not automatically favour either source. Instead, it shows why readers should specify what they are trying to evaluate before judging the strength of an account. Otherwise, attractive terminology risks taking the place of a defensible comparison.",
     "A further difficulty concerns the relationship between audience and purpose. Material intended to announce a development, discuss an experiment or explain a rule may select different details, not necessarily because its authors are dishonest, but because each text has a different communicative task. The reader's responsibility is to notice that selection. Which voices are represented? What relevant evidence is absent? Could a stakeholder with different interests interpret the same announcement differently? These questions encourage scepticism without cynicism: the absence of detail is a reason to consult additional sources, not permission to invent whichever explanation seems most persuasive.",
     "Language itself can change the impression created by evidence. Expressions such as 'may', 'could' and 'appears to' preserve uncertainty; definitive verbs, by contrast, can imply that a disputed conclusion has already been settled. Conditional constructions are useful precisely because they make a hypothesis distinguishable from an observed result. A reader preparing for an advanced examination should also consider how concession works: acknowledging a genuine possibility before introducing a qualification often strengthens an argument by addressing an anticipated objection. The rhetorical effect is analytical rather than evasive, provided that caution is tied to a specific limitation in the evidence.",
     "Ultimately, the value of a daily AI briefing lies not in the number of confident claims it repeats, but in the quality of the questions it enables readers to ask. A useful judgement identifies a stated development, names the evidence on which it rests and clarifies the uncertainties that could alter its significance. Consulting the linked original reports is indispensable because an RSS summary cannot establish everything about a story. The intellectual habit worth cultivating is neither automatic enthusiasm nor reflexive suspicion, but proportionate confidence: say what the source supports, explain why it matters, and remain prepared to revise the conclusion."
   ],
   "translations": [],
   "reading_metrics": {
-    "word_count": 1380,
-    "estimated_minutes": 12.0,
+    "word_count": 1373,
+    "estimated_minutes": 12,
     "average_sentence_words": 18.9,
     "long_word_share": 22.7,
     "note": "閱讀量及詞長屬描述性統計，不能換算成 HKDSE 等級。"
@@ -39,7 +39,7 @@
     "translation_seconds": 0,
     "dictionary_seconds": 27.813
   },
-  "quality_note": "新聞線索來自RSS，並未獲獨立事實核查；英文論證及DSE式題目屬原創練習，不能視為原始報道。",
+  "quality_note": "已修正來源與文章分析主題不一致的問題。內容取材自公開 RSS 摘要，事實須以原始來源核實。",
   "stories": [
     {
       "id": "S1",
@@ -4994,6 +4994,240 @@
     },
     "won’t": {
       "translation": "不会",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "software": {
+      "translation": "軟件",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "weaknesses": {
+      "translation": "弱點；漏洞",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "code": {
+      "translation": "程式碼",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "tool": {
+      "translation": "工具",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "detection": {
+      "translation": "偵測；檢測",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "practical": {
+      "translation": "實際的；實用的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "act": {
+      "translation": "採取行動；行為",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "them": {
+      "translation": "他們；它們",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "considered": {
+      "translation": "已考慮的；被考慮的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "separately": {
+      "translation": "分別地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "problems": {
+      "translation": "問題",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "identified": {
+      "translation": "已識別的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "keeps": {
+      "translation": "保持；維持",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "discussion": {
+      "translation": "討論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "connected": {
+      "translation": "相關聯的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "avoiding": {
+      "translation": "避免",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "have": {
+      "translation": "有；已經",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "shown": {
+      "translation": "顯示；證明",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "successful": {
+      "translation": "成功的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "demonstration": {
+      "translation": "示範；演示",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "everyday": {
+      "translation": "日常的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "well": {
+      "translation": "良好地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "during": {
+      "translation": "在……期間",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "controlled": {
+      "translation": "受控制的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "face": {
+      "translation": "面對",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "practice": {
+      "translation": "實踐；練習",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reliability": {
+      "translation": "可靠性",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "safety": {
+      "translation": "安全",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "cost": {
+      "translation": "成本；費用",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "needs": {
+      "translation": "需求；需要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "transition": {
+      "translation": "過渡；轉變",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "was": {
+      "translation": "是（過去式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "measured": {
+      "translation": "已測量的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "used": {
+      "translation": "被使用的；已使用的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "widely": {
+      "translation": "廣泛地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "dismiss": {
+      "translation": "否定；駁回",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "progress": {
+      "translation": "進展；進步",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "inferred": {
+      "translation": "推斷出的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "promising": {
+      "translation": "有前景的",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
