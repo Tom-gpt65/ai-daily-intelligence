@@ -2,7 +2,7 @@
 import pathlib,sys,unittest
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from longform import compose_briefing,word_count,sourced_detail
+from longform import compose_briefing,word_count,sourced_detail,attributed_excerpt
 
 def story(i,kind):
     title={'investment':'AI funding round announced',
@@ -31,6 +31,23 @@ class LongFormTests(unittest.TestCase):
         source_paragraphs=essay[1:6]
         self.assertEqual(len(set(source_paragraphs)),5)
         self.assertGreaterEqual(word_count(' '.join(essay)),1000)
+    def test_source_specific_rss_quotation_is_attributed_and_bounded(self):
+        source={"excerpt":"Researchers describe the unusual data constraints involved in environmental AI "
+                          "evaluation and explain how the fixed testing interface can support "
+                          "comparisons between agents before they are deployed widely."}
+        extract=attributed_excerpt(source,2)
+        self.assertIn("RSS",extract.lower() if False else extract)
+        self.assertIn("“Researchers describe",extract)
+        quoted=extract.split("“",1)[1].split("”",1)[0]
+        self.assertLessEqual(len(quoted.replace("…","").split()),18)
+        self.assertIn("not independent corroboration",extract)
+    def test_insufficient_excerpt_does_not_invent_evidence(self):
+        self.assertEqual(attributed_excerpt({"excerpt":"New AI."}),"")
+    def test_no_generic_padding_claims_fact_checking(self):
+        sample=[story(i,"research") for i in range(1,6)]
+        result=" ".join(compose_briefing(sample))
+        self.assertNotIn("independently verified",result)
+        self.assertIn("attributed",result)
     def test_specific_rss_fact_hook_requires_matching_source_text(self):
         a={'excerpt':'Boyu Capital and IDG Capital led the funding round.'}
         self.assertIn('Boyu Capital',sourced_detail(a))
