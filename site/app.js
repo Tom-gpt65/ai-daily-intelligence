@@ -29,6 +29,103 @@
   let quizSelections=safeStorage.get('ai-daily-quiz-v6',{});
   let toastTimeout;
   function toast(message) { const el = $('toast'); el.textContent = message; el.classList.remove('hidden'); clearTimeout(toastTimeout); toastTimeout = setTimeout(() => el.classList.add('hidden'), 2800); }
+  // Account data is separate from legacy localStorage words. The device words
+  // are never uploaded until the user explicitly chooses to import them.
+  const DEVICE_WORDS_KEY='ai-daily-device-words-v1';
+  const ACTIVE_CLOUD_USER='ai-daily-cloud-active-user-v1';
+  const CLOUD_CACHE_PREFIX='ai-daily-cloud-cache-v1-';
+  let cloudSync=null;
+  function cloudVisible(available,signedIn){
+    $('sync-unavailable').classList.toggle('hidden',available);
+    $('sync-login').classList.toggle('hidden',!available||signedIn);
+    $('sync-account').classList.toggle('hidden',!available||!signedIn);
+    $('sync-indicator').classList.toggle('connected',signedIn);
+    $('sync-indicator').textContent=signedIn?'已連接帳戶':available?'未登入':'本機模式';
+  }
+  function cloudStatus(message){$('sync-status').textContent=message;}
+  function syncWordsToLocal(){
+    safeStorage.set(SAVED_KEY,saved);
+    const user=safeStorage.get(ACTIVE_CLOUD_USER,null);
+    if(user)safeStorage.set(CLOUD_CACHE_PREFIX+user,saved);
+    updateSavedCount();
+    if(state.view==='words')renderWords();
+  }
+  function cloudSignedIn(user){
+    const previous=safeStorage.get(ACTIVE_CLOUD_USER,null);
+    if(previous!==user.id){
+      // Save the user's original device-only vocabulary before switching
+      // into a private per-account cache. Never mix two accounts' records.
+      if(!previous)safeStorage.set(DEVICE_WORDS_KEY,saved);
+      saved=safeStorage.get(CLOUD_CACHE_PREFIX+user.id,{});
+      safeStorage.set(ACTIVE_CLOUD_USER,user.id);
+      syncWordsToLocal();
+    }
+    $('sync-account-email').textContent='登入帳戶：'+user.email;
+    cloudVisible(true,true);
+    const device=safeStorage.get(DEVICE_WORDS_KEY,{});
+    $('sync-import-local').classList.toggle('hidden',Object.keys(device).length===0);
+  }
+  function cloudSignedOut(){
+    const previous=safeStorage.get(ACTIVE_CLOUD_USER,null);
+    if(previous){
+      safeStorage.set(CLOUD_CACHE_PREFIX+previous,saved);
+      saved=safeStorage.get(DEVICE_WORDS_KEY,{});
+      try{localStorage.removeItem(ACTIVE_CLOUD_USER);}catch{/* restricted storage */}
+      syncWordsToLocal();
+    }
+    cloudVisible(Boolean(cloudSync?.config),false);
+  }
+  function persistWord(key,deleted=false){
+    syncWordsToLocal();
+    if(cloudSync?.active){
+      try{cloudSync.record(key,deleted?{}:saved[key],deleted);}
+      catch(err){cloudStatus('本機已保存，但同步排隊失敗：'+err.message);}
+    }
+  }
+  function persistImportedWords(words){
+    syncWordsToLocal();
+    if(cloudSync?.active){
+      for(const key of Object.keys(words)){
+        try{cloudSync.record(key,saved[key],false);}
+        catch(err){cloudStatus('部分生字尚未排入同步：'+err.message);break;}
+      }
+    }
+  }
+  async function mergeDeviceWords(){
+    if(!cloudSync?.active){toast('請先登入雲端帳戶。');return;}
+    if(!navigator.onLine){toast('請先連線，再安全合併原有本機生字。');return;}
+    try{
+      await cloudSync.sync();
+      const originals=safeStorage.get(DEVICE_WORDS_KEY,{});
+      let count=0;
+      for(const [word,value] of Object.entries(originals).slice(0,5000)){
+        const key=window.AIDailyCloud.cleanWord(word);
+        const clean=window.AIDailyCloud.cleanPayload(value);
+        if(!key||!clean||Object.prototype.hasOwnProperty.call(saved,key))continue;
+        saved[key]=clean;persistWord(key);count++;
+      }
+      await cloudSync.sync();
+      toast('已將 '+count+' 個原有本機生字加入雲端；重複詞語保留雲端版本。');
+      // Device original is deliberately retained until the user has made
+      // a separate JSON backup; no destructive migration.
+    }catch(err){cloudStatus('合併尚未完成，本機生字仍保留。'+err.message);}
+  }
+  function initCloudSync(){
+    if(!window.AIDailyCloud){
+      cloudStatus('同步模組未能載入；本機生字仍可使用。');return;
+    }
+    cloudSync=new window.AIDailyCloud.Client({
+      onAvailable:available=>cloudVisible(available,false),
+      onSignedIn:cloudSignedIn,
+      onSignedOut:cloudSignedOut,
+      onWords:words=>{
+        if(!cloudSync.active)return;
+        saved={...words};syncWordsToLocal();
+      },
+      onStatus:cloudStatus
+    });
+    cloudSync.init().catch(err=>cloudStatus('無法初始化雲端同步：'+err.message));
+  }
   function formatDate(d) { if (!/^\d{4}-\d{2}-\d{2}$/.test(d || '')) return d || ''; return new Date(d + 'T12:00:00+08:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Hong_Kong' }); }
   const wordKey = w => String(w || '').toLowerCase().replace(/[^a-z'-]/g, '').replace(/'s$/, '');
   const has = (obj, key) => Object.prototype.hasOwnProperty.call(obj || {}, key);
@@ -1100,7 +1197,7 @@
     applyFontScale();
     showConnectivity();
     $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
-    updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();
+    updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();initCloudSync();
     await preloadOfflineGlossary();
     $('refresh-schedule').addEventListener('click',()=>refreshLatestReport({force:true}));
     if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
