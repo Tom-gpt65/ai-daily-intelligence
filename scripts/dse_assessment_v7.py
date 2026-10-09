@@ -59,6 +59,26 @@ def source_label(story: dict) -> str:
     title=re.sub(r"\s+"," ",str(story.get("title","")).strip())
     return (title[:77]+"…") if len(title)>80 else title
 
+def choose_synthesis_pair(source_matches, used_ids=()):
+    """Prefer uncovered source IDs and distinct topical perspectives.
+
+    Use the actual cited paragraph index, rather than extrapolating a
+    publisher's category to facts that are absent from its short RSS excerpt.
+    """
+    from itertools import combinations
+    if len(source_matches)<2:
+        return None
+    seen=set(used_ids)
+    pairs=list(combinations(source_matches,2))
+    def score(pair):
+        first,second=pair
+        a,b=first[0],second[0]
+        novelty=sum(x.get("id") not in seen for x in (a,b))
+        different=str(a.get("topic","")).lower()!=str(b.get("topic","")).lower()
+        distance=abs(first[1]-second[1])
+        return (novelty,int(different),distance)
+    return max(pairs,key=score)
+
 def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
     """Return 7 source/paragraph-linked daily questions when possible.
 
@@ -122,7 +142,7 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
         # A literal source-title lookup is an elementary scanning task. B2-style
         # practice should instead test synthesis; written interpretation cannot
         # be reliably auto-marked without a calibrated human rubric.
-        (first, a), (second, b) = source_matches[:2]
+        (first, a), (second, b) = choose_synthesis_pair(source_matches)
         items.append({
             "id": "Q4", "type": "short", "skill": "Cross-source synthesis / relevance",
             "marks": 2,
@@ -174,7 +194,9 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
         "evidence":cite_location(ref_index),"paragraph":ref_index+1,
         "evidence_quote":quote_sentence(essay,ref_index)})
     if len(source_matches)>=2:
-        s1,p1=source_matches[0];s2,p2=source_matches[1]
+        earlier=next((x for x in items if x["id"]=="Q4"),None)
+        previously_used=set(re.findall(r"\[(S\d+)\]",earlier["stem"])) if earlier else set()
+        (s1,p1),(s2,p2)=choose_synthesis_pair(source_matches,previously_used)
         stem=(f"Using [{s1['id']}] ({source_label(s1)}) and [{s2['id']}] "
               f"({source_label(s2)}), assess what each source establishes and "
               "what further evidence would be necessary. How does this distinction "
