@@ -28,8 +28,8 @@ class ScheduleTests(unittest.TestCase):
 
     def test_website_shows_distinction_between_start_and_target(self):
         text = (ROOT / "site/index.html").read_text(encoding="utf-8")
-        self.assertIn("07:40 開始更新", text)
-        self.assertIn("08:00 目標可讀", text)
+        self.assertIn("07:05 閱讀備援", text)
+        self.assertIn("07:40 新聞更新", text)
         self.assertIn("08:05、09:17 及 13:17", text)
 
 
