@@ -22,7 +22,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: ai-daily-deployment
+  group: ai-daily-${{ github.event_name == 'push' && 'code' || 'news' }}
   cancel-in-progress: false
 
 jobs:
@@ -102,11 +102,23 @@ jobs:
 
       - name: Generate daily briefing
         if: steps.preflight.outputs.news == 'true'
+        id: build
         env:
           OLLAMA_ENABLED: ${{ steps.ollama.outcome == 'success' && '1' || '0' }}
           OLLAMA_MODEL: phi3:mini
           TRANSLATE_ENABLED: '0'
-        run: python scripts/build.py --use-prefetch
+        run: |
+          python scripts/build.py --use-prefetch
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          from pathlib import Path
+          status=json.loads(Path("site/system-status.json").read_text(encoding="utf-8"))
+          today=datetime.now(ZoneInfo("Asia/Hong_Kong")).date().isoformat()
+          generated=(status.get("state")=="published" and status.get("latest_date")==today)
+          print("generated="+str(generated).lower())
+          PY
 
       - name: Summarise run status
         if: always()
@@ -116,7 +128,7 @@ jobs:
           fi
 
       - name: Commit published reports without racing repository edits
-        if: github.event_name != 'push'
+        if: github.event_name != 'push' && steps.build.outputs.generated == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
