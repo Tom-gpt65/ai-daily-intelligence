@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from audit_publication import assess_public,recent_successful_schedule
+from audit_publication import assess_public,recent_successful_schedule,morning_refresh_status
 from learning_editorial import deepen_digest,is_promotional,_word_count
 
 class AuditTests(unittest.TestCase):
@@ -23,6 +23,23 @@ class AuditTests(unittest.TestCase):
     def test_missing_sources_fails(self):
         self.edition['stories']=[]
         self.assertTrue(assess_public(self.index,self.edition,'2026-10-09')[0])
+    def test_article_modified_before_morning_generation_is_not_fresh(self):
+        report=dict(self.edition,updated_at="2026-10-09T07:39:59+08:00")
+        good,note=morning_refresh_status(report,"2026-10-09")
+        self.assertFalse(good)
+        self.assertIn("07:40",note)
+    def test_article_refreshed_after_0740_passes(self):
+        good,note=morning_refresh_status(self.edition,"2026-10-09")
+        self.assertTrue(good)
+        self.assertIn("not proven",note)
+    def test_bad_timezone_does_not_claim_freshness(self):
+        report=dict(self.edition,updated_at="2026-10-09T09:30:00")
+        self.assertFalse(morning_refresh_status(report,"2026-10-09")[0])
+    def test_utc_at_morning_hk_correctly_converts(self):
+        report=dict(self.edition,updated_at="2026-10-08T23:40:00Z")
+        self.assertTrue(morning_refresh_status(report,"2026-10-09")[0])
+    def test_date_without_report_will_not_pass(self):
+        self.assertFalse(morning_refresh_status({},"2026-10-09")[0])
     def test_short_fallback_flagged(self):
         self.edition['mode']='source_digest';self.edition['reading_metrics']={'word_count':493}
         errs,warn=assess_public(self.index,self.edition,'2026-10-09')
