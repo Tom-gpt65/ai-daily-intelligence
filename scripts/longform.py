@@ -123,7 +123,7 @@ FACT_NOTE=(
 )
 
 CROSS=[
- "These differences also expose a problem of comparability. The first account, [{first}], concerns {area_first}, whereas [{second}] turns to {area_second}. A headline about one kind of development cannot be assessed using precisely the same measure as a headline about another. An investment may invite questions about incentives and commercial performance; a proposed research framework invites scrutiny of methods and reproducibility. That contrast does not automatically favour either source. Instead, it shows why readers should specify what they are trying to evaluate before judging the strength of an account. Otherwise, attractive terminology risks taking the place of a defensible comparison.",
+ "The first report, [{first}], concerns {area_first}, whereas [{second}] examines {area_second}. These reports need different standards of evidence. A software service can be judged by the quality and practical value of its results; a research framework needs clear methods and reproducible evaluation. Neither kind of announcement automatically demonstrates widespread success. Readers should identify the actual claim in each report, ask which supporting facts are available and distinguish measured outcomes from expectations. A useful comparison is therefore not a contest between exciting headlines. It explains why the evidence required for one development may not answer the questions raised by another.",
  "A further difficulty concerns the relationship between audience and purpose. Material intended to announce a development, discuss an experiment or explain a rule may select different details, not necessarily because its authors are dishonest, but because each text has a different communicative task. The reader's responsibility is to notice that selection. Which voices are represented? What relevant evidence is absent? Could a stakeholder with different interests interpret the same announcement differently? These questions encourage scepticism without cynicism: the absence of detail is a reason to consult additional sources, not permission to invent whichever explanation seems most persuasive.",
  "Language itself can change the impression created by evidence. Expressions such as 'may', 'could' and 'appears to' preserve uncertainty; definitive verbs, by contrast, can imply that a disputed conclusion has already been settled. Conditional constructions are useful precisely because they make a hypothesis distinguishable from an observed result. A reader preparing for an advanced examination should also consider how concession works: acknowledging a genuine possibility before introducing a qualification often strengthens an argument by addressing an anticipated objection. The rhetorical effect is analytical rather than evasive, provided that caution is tied to a specific limitation in the evidence."
 ]
@@ -162,6 +162,8 @@ def attributed_excerpt(story: dict, variant: int = 0) -> str:
     Never recycle RSS markup, inline citation IDs or untrusted instructions.
     """
     raw=re.sub(r"<[^>]*>"," ",str(story.get("excerpt") or ""))
+    # Remove machine-readable feed catalogue prefixes before quoting the prose.
+    raw=re.sub(r"^\s*arxiv:\S+\s+announce type:\s*\w+\s+abstract:\s*","",raw,flags=re.I)
     raw=re.sub(r"\[[Ss]\d+\]","",raw)
     raw=re.sub(r"[\x00-\x1f]"," ",raw)
     terms=raw.split()
