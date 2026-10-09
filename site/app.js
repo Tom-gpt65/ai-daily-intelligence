@@ -864,7 +864,7 @@
     const serial=++requestSerial;
     if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return;
     try{
-      const response=await fetch(`./reports/${date}.json`,{cache:'no-store'});
+      const response=await fetch(`./reports/${date}.json?rev=${Date.now()}`,{cache:'no-store'});
       if(!response.ok) throw new Error('missing report');
       const r=await response.json();if(!isValidReport(r,date))throw new Error('invalid report');
       if(serial!==requestSerial)return;
@@ -936,7 +936,12 @@
       if(!res.ok)throw Error('HTTP '+res.status);
       const idx=await res.json();
       if(!Array.isArray(idx)||!idx.length||!/^\d{4}-\d{2}-\d{2}$/.test(idx[0].date||''))throw Error('日期索引無效');
-      const next=idx[0].date,changed=next!==state.report?.date;
+      const next=idx[0].date;
+      const top=idx[0];
+      const changed=next!==state.report?.date ||
+        Number(top.word_count||0)!==Number(state.report?.word_count||0) ||
+        String(top.headline||'')!==String(state.report?.headline||'') ||
+        Number(top.stories||0)!==Number(state.report?.stories?.length||0);
       state.index=idx;
       if(changed||force)await loadReport(next);
       if(!changed&&!force)renderFreshness();
