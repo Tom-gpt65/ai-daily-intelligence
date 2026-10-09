@@ -149,7 +149,7 @@
             this.session=null;this.user=null;localStorage.removeItem(SESSION);
             localStorage.removeItem(USER_CACHE);
             this.options.onSignedOut?.();
-            this.setStatus('登入已失效，請重新寄送登入連結。');
+            this.setStatus('登入已失效，請使用密碼重新登入，或選擇寄送 Magic Link。');
           }else if(cached&&/^[0-9a-f-]{36}$/i.test(cached.id||'')&&this.session){
             // Previously verified account can continue saving offline.
             // Cloud RLS validates credentials before any future upload.
@@ -158,7 +158,7 @@
             this.setStatus('離線或伺服器暫時無法連線；此裝置變更會保留並等待同步。');
           }else this.setStatus('暫時無法確認登入：'+statusError(err));
         }
-      }else {this.options.onSignedOut?.();this.setStatus('尚未登入；輸入電郵即可在各裝置同步生字。');}
+      }else {this.options.onSignedOut?.();this.setStatus('尚未登入；可直接使用後台建立的電郵＋密碼帳戶，不需要收取登入郵件。');}
       return true;
     }
     storeSession(){localStorage.setItem(SESSION,JSON.stringify(this.session));}
@@ -196,6 +196,71 @@
     async ensureToken(){
       if(!this.session)throw new Error('尚未登入');
       if(this.session.expires_at<Date.now()+90000)await this.refresh();
+    }
+    async signInWithPassword(email,password){
+      if(!this.config)throw new Error('雲端同步尚未啟用');
+      if(typeof email!=='string'||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)
+        throw new Error('請輸入有效的電郵地址');
+      if(typeof password!=='string'||password.length<8||password.length>256)
+        throw new Error('請輸入至少 8 字元的帳戶密碼');
+      if(!navigator.onLine)throw new Error('目前離線，首次登入需要網絡');
+      // Password goes only to Supabase Auth via HTTPS. Never cache or log it.
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(),20000);
+      let response,profile;
+      try{
+        response=await fetch(this.config.url+'/auth/v1/token?grant_type=password',{
+          method:'POST',headers:{apikey:this.config.key,'Content-Type':'application/json'},
+          body:JSON.stringify({email,password}),cache:'no-store',signal:controller.signal
+        });
+        if(!response.ok){
+          const error=await response.json().catch(()=>({}));
+          const message=String(error.msg||error.message||error.error_description||'');
+          if(response.status===429)throw new Error('登入嘗試過於頻繁，請稍後再試。');
+          if(/not.confirmed|email.not.confirmed/i.test(message))
+            throw new Error('此帳戶尚未確認。請在 Supabase Users 後台建立或確認帳戶。');
+          if(response.status===400||response.status===401||response.status===422)
+            throw new Error('電郵或密碼不正確，或帳戶尚未建立。請在 Supabase Authentication → Users 核對。');
+          throw new Error('Supabase 登入失敗（HTTP '+response.status+'）');
+        }
+        const tokens=await response.json();
+        if(typeof tokens.access_token!=='string'||!tokens.access_token||
+           typeof tokens.refresh_token!=='string'||!tokens.refresh_token)
+          throw new Error('Supabase 未返回有效的登入憑證');
+        // A successful password check is not enough to switch device vocabulary:
+        // first verify the exact identity attached to the returned access token.
+        const who=await fetch(this.config.url+'/auth/v1/user',{
+          method:'GET',headers:{apikey:this.config.key,
+            Authorization:'Bearer '+tokens.access_token},
+          cache:'no-store',signal:controller.signal
+        });
+        if(!who.ok)throw new Error('登入後無法核實帳戶身分（HTTP '+who.status+'）');
+        profile=await who.json();
+        if(!/^[0-9a-f-]{36}$/i.test(profile?.id||'')||typeof profile.email!=='string')
+          throw new Error('Supabase 返回的使用者資料無效');
+        const nextSession={
+          access_token:tokens.access_token,
+          refresh_token:tokens.refresh_token,
+          expires_at:Date.now()+Number(tokens.expires_in||3600)*1000
+        };
+        // Do not switch to an unverified user or lose another account's queue.
+        this.session=nextSession;
+        this.user={id:profile.id,email:profile.email};
+        this.storeSession();
+        localStorage.setItem(USER_CACHE,JSON.stringify(this.user));
+        this.pending=this.getPending();
+        this.options.onSignedIn?.(this.user);
+        this.setStatus('已使用密碼登入，正在同步生字…');
+        // A temporary sync error must not discard the verified login.
+        try{await this.sync();}catch{/* sync() already reports an error */}
+        return this.user;
+      }catch(error){
+        if(error?.name==='AbortError')
+          throw new Error('登入連線逾時（20 秒），請檢查網絡後再試。');
+        if(error instanceof TypeError)
+          throw new Error('無法連接 Supabase 登入服務，請檢查網絡。');
+        throw error;
+      }finally{clearTimeout(timeout);}
     }
     async sendEmail(email){
       if(!this.config)throw new Error('雲端同步尚未啟用');

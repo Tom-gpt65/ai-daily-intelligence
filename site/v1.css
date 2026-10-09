@@ -93,6 +93,10 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .cloud-sync-status{color:var(--muted,#a4b0c4);font-size:13px;line-height:1.7;margin:12px 0}
 .cloud-sync-unavailable,.cloud-sync-warning{font-size:12px;line-height:1.75;color:var(--muted,#a4b0c4)}
 .cloud-sync-unavailable a{color:var(--accent,#c6f17e);text-decoration:underline}
+.cloud-sync-help{font-size:13px;line-height:1.7;color:var(--muted,#a4b0c4);margin:12px 0 8px}
+#sync-password-panel{padding:12px 0;border-bottom:1px solid var(--border,#293750)}
+#sync-password-submit{border-color:var(--accent,#c6f17e)}
+.cloud-sync-actions input[type="password"]{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.03em}
 .cloud-sync-actions{margin-top:12px;display:grid;gap:10px}
 .cloud-sync-actions label{font-size:13px;font-weight:650}
 .cloud-sync-actions input{width:100%;min-width:0;max-width:430px;padding:12px;color:inherit;border:1px solid var(--border,#293750);border-radius:8px;background:var(--panel,#121f35);font-size:16px}

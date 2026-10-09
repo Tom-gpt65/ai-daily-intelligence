@@ -38,6 +38,8 @@
   function cloudVisible(available,signedIn){
     $('sync-unavailable').classList.toggle('hidden',available);
     $('sync-login').classList.toggle('hidden',!available||signedIn);
+    $('sync-password-panel').classList.toggle('hidden',!available||signedIn);
+    $('sync-email-alternative').classList.toggle('hidden',!available||signedIn);
     $('sync-account').classList.toggle('hidden',!available||!signedIn);
     $('sync-indicator').classList.toggle('connected',signedIn);
     $('sync-indicator').textContent=signedIn?'已連接帳戶':available?'未登入':'本機模式';
@@ -45,6 +47,11 @@
   function cloudStatus(message){$('sync-status').textContent=message;}
   function cloudEmailFeedback(message){
     const feedback=$('sync-email-feedback');
+    feedback.textContent=message;
+    feedback.classList.toggle('hidden',!message);
+  }
+  function cloudPasswordFeedback(message){
+    const feedback=$('sync-password-feedback');
     feedback.textContent=message;
     feedback.classList.toggle('hidden',!message);
   }
@@ -1198,6 +1205,43 @@
       const entry=localMeaning(key)||state.dictCache.get(key)||{};
       saved[key]={translation:entry.translation||'',phonetic:entry.phonetic||'',savedAt:new Date().toISOString()};
       persistWord(key);$('save-word').textContent='✓ 已儲存';toast(cloudSync?.active?'生字已保存，稍後同步至其他裝置。':'生字已儲存在此瀏覽器。');
+    });
+    $('sync-password-email').addEventListener('invalid',()=>{
+      cloudPasswordFeedback('請輸入正確的登入電郵。');
+    });
+    $('sync-password').addEventListener('invalid',()=>{
+      cloudPasswordFeedback('請輸入至少 8 字元的帳戶密碼。');
+    });
+    $('sync-password-email').addEventListener('input',()=>cloudPasswordFeedback(''));
+    $('sync-password').addEventListener('input',()=>cloudPasswordFeedback(''));
+    $('sync-password-login').addEventListener('submit',async event=>{
+      event.preventDefault();
+      const button=$('sync-password-submit');
+      if(button.disabled)return;
+      if(!cloudSync?.config){
+        cloudPasswordFeedback('雲端服務仍在初始化，請稍後重新整理頁面再試。');
+        return;
+      }
+      const label=button.textContent;
+      const email=$('sync-password-email').value.trim();
+      const password=$('sync-password').value;
+      button.disabled=true;
+      button.textContent='正在安全登入…';
+      cloudPasswordFeedback('正在核對 Supabase 帳戶，請稍候（最多約 20 秒）。');
+      cloudStatus('正在透過 Supabase 驗證帳戶…');
+      try{
+        await cloudSync.signInWithPassword(email,password);
+        cloudPasswordFeedback('帳戶驗證成功。');
+      }catch(error){
+        const message=String(error?.message||error).slice(0,240);
+        cloudPasswordFeedback('密碼登入失敗：'+message);
+        cloudStatus('密碼登入失敗：'+message);
+      }finally{
+        // Do not retain the supplied password in the browser input.
+        $('sync-password').value='';
+        button.disabled=false;
+        button.textContent=label;
+      }
     });
     $('sync-email').addEventListener('invalid',()=>{
       cloudEmailFeedback('請先輸入有效的電郵地址，然後按「寄送安全登入連結」。');

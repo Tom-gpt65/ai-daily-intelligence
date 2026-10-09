@@ -40,11 +40,13 @@ jobs:
                   status,js=get(base+'cloud-sync.js')
                   assert status==200 and 'created_at.asc,batch_order.asc,event_id.asc' in js,'Live cloud script is outdated'
                   assert '連線等待超過 20 秒' in js,'Live cloud email timeout feedback not deployed'
+                  assert 'async signInWithPassword(email,password)' in js,'Live mail-free password login missing'
                   status,app=get(base+'app.js')
                   assert status==200 and '正在聯絡 Supabase…' in app,'Live email submit progress code missing'
                   status,html=get(base+'index.html')
                   assert status==200 and 'id="sync-email-feedback"' in html,'Live email feedback element missing'
-                  print('LIVE V1 CLOUD CONFIG AND MAGIC LINK FEEDBACK VERIFIED')
+                  assert 'id="sync-password-login"' in html and 'id="sync-password"' in html,'Live password UI missing'
+                  print('LIVE V1 CLOUD CONFIG AND EMAIL/PASSWORD AUTH UI VERIFIED')
                   break
               except (OSError,ValueError,AssertionError) as error:
                   if attempt==11: raise

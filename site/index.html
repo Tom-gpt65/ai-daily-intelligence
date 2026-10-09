@@ -90,6 +90,18 @@
         <div class="cloud-sync-head"><h2>跨裝置同步</h2><span id="sync-indicator" class="cloud-sync-indicator">本機模式</span></div>
         <p id="sync-status" class="cloud-sync-status" role="status" aria-live="polite">正在檢查雲端同步設定…</p>
         <div id="sync-unavailable" class="cloud-sync-unavailable hidden">雲端服務尚未設定，生字仍會安全保存在此裝置。啟用方法請參閱 <a href="https://github.com/Tom-gpt65/ai-daily-intelligence/blob/main/docs/CLOUD_SYNC_SETUP.md" target="_blank" rel="noopener noreferrer">雲端設定說明</a>。</div>
+        <div id="sync-password-panel" class="hidden">
+          <p class="cloud-sync-help">推薦：電郵＋密碼登入，不需要收取郵件，亦不受 Magic Link 郵件額度限制。首次使用請先到 Supabase → Authentication → Users → Add user → Create new user，為自己建立已確認的私人帳戶（不要選擇 Send invitation）。</p>
+          <form id="sync-password-login" class="cloud-sync-actions">
+            <label for="sync-password-email">帳戶電郵</label>
+            <input id="sync-password-email" type="email" autocomplete="username" inputmode="email" required placeholder="name@example.com">
+            <label for="sync-password">帳戶密碼</label>
+            <input id="sync-password" type="password" autocomplete="current-password" minlength="8" maxlength="256" required placeholder="在 Supabase Users 建立的密碼">
+            <button class="small-button" type="submit" id="sync-password-submit">使用密碼登入（毋須收電郵）</button>
+            <p id="sync-password-feedback" class="cloud-sync-feedback hidden" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+        <p id="sync-email-alternative" class="cloud-sync-help hidden">其他登入方式：Magic Link（需要寄送電郵，可能受到 Supabase 免費郵件限額限制）。</p>
         <form id="sync-login" class="cloud-sync-actions hidden">
           <label for="sync-email">登入電郵</label>
           <input id="sync-email" type="email" autocomplete="email" inputmode="email" required placeholder="name@example.com">
@@ -121,7 +133,7 @@
     <button type="button" id="save-word" class="save-button">＋ 儲存生字</button><button type="button" id="lookup-online" class="small-button online-lookup hidden">查詢線上免費詞典（只傳送此單字）</button>
   </div>
   <div id="toast" class="toast hidden" role="status"></div>
-  <script src="./cloud-sync.js?v=1&feature=cloud" defer></script>
-  <script src="./app.js?v=1&feature=cloud" defer></script>
+  <script src="./cloud-sync.js?v=1&feature=password-login" defer></script>
+  <script src="./app.js?v=1&feature=password-login" defer></script>
 </body>
 </html>
