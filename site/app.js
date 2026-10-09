@@ -431,6 +431,13 @@
     const root=$('reader'),button=$('font-button'),scale=state.fontScale;
     root.classList.toggle('font-large',scale>=1);
     root.classList.toggle('font-xlarge',scale>=2);
+    // Set the actual text size: layered legacy CSS has competing #reader
+    // selectors, so a class alone may change without affecting computed pixels.
+    const compact=window.matchMedia('(max-width:650px)').matches;
+    const sizes=compact?[17.5,21.5,25]:[18,22,26];
+    const lineHeights=compact?[1.82,1.79,1.74]:[1.91,1.85,1.8];
+    root.style.setProperty('font-size',sizes[scale]+'px','important');
+    root.style.setProperty('line-height',String(lineHeights[scale]),'important');
     const label=['標準','放大','特大'][scale];
     button.querySelector('.font-size-state').textContent=label;
     button.setAttribute('aria-label','調整英文字體大小；目前為'+label);
@@ -1030,7 +1037,8 @@
     $('reload-latest').addEventListener('click',reloadLatestWebsite);
     $('zoom-dismiss')?.addEventListener('click',()=>{const el=$('zoom-notice');el.dataset.dismissed='yes';el.classList.add('hidden');});
     window.visualViewport?.addEventListener('resize',updateZoomNotice,{passive:true});
-    window.addEventListener('orientationchange',()=>setTimeout(updateZoomNotice,250),{passive:true});
+    window.addEventListener('orientationchange',()=>setTimeout(()=>{updateZoomNotice();applyFontScale();},250),{passive:true});
+    window.addEventListener('resize',applyFontScale,{passive:true});
     document.querySelectorAll('.jump-to-reader,.skip-link').forEach(link=>link.addEventListener('click',event=>{
       event.preventDefault();
       if(state.view!=='today')setView('today');
