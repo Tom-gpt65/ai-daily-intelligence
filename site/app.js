@@ -349,12 +349,16 @@
   }
   function scrollToReadingTarget(element){
     if(!element)return;
-    // Safari's translucent top chrome can obscure scrollIntoView(start).
-    // Keep a visible margin rather than placing the target at viewport y=0.
+    // CSS scroll-behavior:smooth can still animate a behaviour:'auto' call,
+    // and native iPad/Safari selectors may subsequently restore the menu's
+    // scroll position. Scroll synchronously; the selector schedules a second
+    // adjustment after it settles.
     const offset=Math.max(110,Math.min(165,window.innerHeight*0.15));
     const absolute=window.scrollY+element.getBoundingClientRect().top-offset;
-    window.scrollTo({top:Math.max(0,absolute),
-      behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    const html=document.documentElement,original=html.style.scrollBehavior;
+    html.style.scrollBehavior='auto';
+    try{window.scrollTo(0,Math.max(0,absolute));}
+    finally{html.style.scrollBehavior=original;}
   }
   function renderReaderNavigator(){
     const nav=$('reader-navigator'),r=state.report;
