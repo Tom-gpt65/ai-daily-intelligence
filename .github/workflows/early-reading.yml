@@ -1,0 +1,53 @@
+name: Early daily English reading safety net
+
+on:
+  schedule:
+    - cron: '5 7 * * *'
+      timezone: 'Asia/Hong_Kong'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ai-daily-news
+  cancel-in-progress: false
+
+jobs:
+  ready-by-morning:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - name: Install free dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Test reserve and website contract
+        run: |
+          python -m unittest discover -s tests -v
+          python scripts/validate_site.py
+          node --check site/app.js
+      - name: Ensure dated offline-complete educational passage
+        run: python scripts/reading_backup.py --if-missing
+      - name: Conflict-safe publish without deleting previous reading history
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python scripts/publish_reports.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+      - name: Deploy site
+        id: deploy
+        uses: actions/deploy-pages@v4
