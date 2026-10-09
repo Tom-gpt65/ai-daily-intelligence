@@ -39,7 +39,7 @@ def inspect(paragraphs: list[str], sources: list[dict]) -> dict:
         "long_sentence_count":long_sentences,
     }
     issues=[]
-    if not 550<=count<=650: issues.append("article_length_outside_training_target")
+    if not 1000<=count<=1550: issues.append("article_length_outside_training_target")
     if len(paragraphs)<5: issues.append("insufficient_paragraph_structure")
     if len(ids&cited)<min(3,len(ids)): issues.append("insufficient_explicit_source_attribution")
     if len(ids)>=3 and source_paragraphs<3: issues.append("insufficient_event_specific_paragraphs")
