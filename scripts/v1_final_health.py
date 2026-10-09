@@ -105,7 +105,7 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
                 warnings.extend(article_warnings)
                 if not article_errors:
                     checks.append("Fresh, complete and accurately labelled HKDSE-style reading")
-    except (UnicodeError, ValueError, TypeError, KeyError) as err:
+    except (UnicodeError, ValueError, TypeError, KeyError, AttributeError) as err:
         errors.append("Public PWA or article JSON failed validation: " + type(err).__name__)
 
     config_raw = snapshot.get("config")
@@ -118,7 +118,7 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
             not str(config.get("anon_key","")).startswith("sb_publishable_")):
             raise ValueError("Public configuration differs from repository or contains an invalid key")
         checks.append("Public Supabase configuration matches repository")
-    except (ValueError, TypeError, KeyError, OSError):
+    except (ValueError, TypeError, KeyError, AttributeError, OSError):
         errors.append("Public Supabase configuration invalid or inconsistent")
 
     auth = snapshot.get("auth")
@@ -178,7 +178,7 @@ def check_once(expected: str) -> tuple[list[str], list[str], list[str]]:
             url + "/rest/v1/vocabulary_events?select=event_id&limit=1",
             {"apikey": key},
         )
-    except (ValueError, TypeError, OSError, URLError):
+    except (ValueError, TypeError, AttributeError, OSError, URLError):
         # evaluate() reports cloud failures without accidentally logging keys.
         pass
     return evaluate(snapshot, expected)
