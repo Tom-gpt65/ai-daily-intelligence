@@ -30,6 +30,13 @@ class FirstReleaseTests(unittest.TestCase):
         self.assertEqual(bool(settings["supabase_url"]),bool(settings["anon_key"]))
         self.assertNotIn("sb_secret_",settings["anon_key"])
         self.assertNotIn("service_role",settings["anon_key"])
+    def test_server_controls_event_timestamps_and_order(self):
+        sql=(ROOT/'docs'/'SUPABASE_VOCABULARY.sql').read_text(encoding='utf-8')
+        module=(SITE/'cloud-sync.js').read_text(encoding='utf-8')
+        self.assertIn('batch_order smallint not null default 0',sql)
+        self.assertIn('revoke all on public.vocabulary_events from public, anon, authenticated',sql)
+        self.assertIn('grant insert (event_id, user_id, word, payload, deleted, batch_order)',sql)
+        self.assertIn('created_at,batch_order.asc',module)
     def test_learning_records_stay_backward_compatible(self):
         app=(SITE/"app.js").read_text(encoding="utf-8")
         for key in ("ai-daily-saved-v2","ai-daily-quiz-v6",
