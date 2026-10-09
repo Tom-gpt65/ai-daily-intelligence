@@ -531,9 +531,9 @@
     if(r.mode==='demo') message='目前正在顯示虛構示範文章，並非最新 AI 新聞。正式部署並成功完成首次更新後才會顯示真實報告。';
     else if(daysOld(r.date)>0) message=`此為 ${formatDate(r.date)} 的舊報告，距今已 ${daysOld(r.date)} 日。最新排程可能尚未完成、來源暫無足夠新消息或更新失敗；請查看 GitHub Actions。`;
     else if(daysOld(r.date)<0) message='報告日期晚於目前香港日期，請檢查資料或裝置時間。';
-    else if(r.mode==='source_digest') message=(Number(r.word_count)>=550?
-      '今日已提供約五分鐘的來源式英文分析練習；免費模型改寫未達品質門檻。RSS 資料未經完整事實核查，本練習不是官方 DSE 試題。':
-      '目前只有篇幅較短的來源摘要；免費模型改寫未達品質門檻。原始 RSS 資料未經獨立核實。');
+    else if(r.mode==='source_digest') message=(Number(r.word_count)>=1000?
+      '今日提供 1,000 字以上的來源式英文深度分析；免費模型改寫未達品質門檻。新聞摘要未經完整事實核查，本練習不是官方 DSE 試題。':
+      '當前文章短於每日 1,000 字標準；免費模型改寫未達品質門檻，應查看發布驗證。原始 RSS 資料未經獨立核實。');
     else message='本篇由免費本地 AI 模型根據 RSS 摘要改寫，並非由記者獨立核實的報道；重要細節請查閱原始來源。';
     el.textContent=message;
     el.classList.toggle('hidden',!message);
@@ -551,7 +551,7 @@
     $('report-subtitle').textContent = r.subtitle || '';
     $('report-metadata').textContent = `${formatDate(r.date)} · ${r.word_count || 0} words · ${(r.stories || []).length} sources`;
     renderReadingEstimate();
-    $('overview-words').textContent=`${r.word_count||0} English words${r.mode==='source_digest'?' · 精簡來源摘要':''}`;
+    $('overview-words').textContent=`${r.word_count||0} English words${r.mode==='source_digest'?' · 來源式英文深度分析':''}`;
     $('overview-stories').textContent=(r.stories||[]).length+' 則';
     $('overview-vocab').textContent=(r.advanced_vocabulary||[]).length+' 個';
     $('reading-quality').textContent=r.quality_note||'資料可能有誤；請核實來源。';
