@@ -2,7 +2,7 @@
 import pathlib,sys,unittest
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from editorial_quality import inspect
+from editorial_quality import inspect,repeated_paragraph_similarity
 
 
 class EditorialQualityTests(unittest.TestCase):
@@ -38,6 +38,21 @@ class EditorialQualityTests(unittest.TestCase):
         result=inspect(paras,self.sources)
         self.assertIn("insufficient_explicit_source_attribution",result["issues"])
         self.assertFalse(result["training_structure_pass"])
+    def test_detects_copy_paste_padding_despite_different_citation_ids(self):
+        core=("A technical announcement can describe an ambition without demonstrating the practical "
+              "outcome. Readers should examine the evidence, consider alternative interpretations, "
+              "distinguish speculation from empirical testing and identify unresolved limitations. ")*3
+        first=core+" [S1]"
+        second=core+" [S2]"
+        self.assertGreaterEqual(repeated_paragraph_similarity([first,second]),0.68)
+        article=[first,second,core+" [S3]",core,core,core]
+        result=inspect(article,self.sources)
+        self.assertIn("near_duplicate_paragraph_padding",result["issues"])
+        self.assertFalse(result["training_structure_pass"])
+    def test_distinct_source_paragraphs_do_not_false_positive(self):
+        a="Research methods can be evaluated against established comparison criteria. "*13
+        b="Investment decisions signal expectations without determining future commercial performance. "*13
+        self.assertLess(repeated_paragraph_similarity([a,b]),0.68)
     def test_diagnostics_not_hkeaa_level_claim(self):
         result=inspect(self.paras,self.sources)
         self.assertIn("not independent fact-checking",result["notice"])
