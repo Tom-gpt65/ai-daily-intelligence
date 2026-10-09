@@ -54,6 +54,11 @@ def item_mc(ident: str, skill: str, stem: str, answers: list[str], correct: int,
             "options": options, "answer": answer, "explanation": why,
             "evidence": evidence, "paragraph": paragraph + 1, "evidence_quote": quote}
 
+def source_label(story: dict) -> str:
+    """Keep specific daily story titles in tasks without a huge MCQ stem."""
+    title=re.sub(r"\s+"," ",str(story.get("title","")).strip())
+    return (title[:77]+"…") if len(title)>80 else title
+
 def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
     """Return 7 source/paragraph-linked daily questions when possible.
 
@@ -84,8 +89,12 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
           "A careful reading distinguishes reported claims from conclusions that are independently supported.",
           cite_location(marker), marker, date, quote_sentence(essay, marker, "evidence")))
 
-    chosen = next(((term, meta, paragraph_at(essay, term)) for term, meta in VOCAB.items()
-                   if paragraph_at(essay, term) is not None), None)
+    available = [(term,meta,paragraph_at(essay,term)) for term,meta in VOCAB.items()
+                 if paragraph_at(essay,term) is not None]
+    # Rotate the contextual target only among words demonstrably in this
+    # particular passage; a different date should not freeze the same item.
+    offset=int(hashlib.sha256((date+full[:200]).encode("utf-8")).hexdigest()[:8],16)
+    chosen = available[offset%len(available)] if available else None
     if chosen:
         term, (meaning, distractors), idx = chosen
         items.append(item_mc("Q2", "Vocabulary in context",
@@ -118,8 +127,10 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
             "id": "Q4", "type": "short", "skill": "Cross-source synthesis / relevance",
             "marks": 2,
             "stem": (
-                f"Compare the purposes of [{first['id']}] and [{second['id']}] in the article. "
-                "Explain why the author juxtaposes these examples rather than treating them as interchangeable."
+                f"The writer discusses [{first['id']}] ({source_label(first)}) and "
+                f"[{second['id']}] ({source_label(second)}). "
+                "Compare the DIFFERENT kinds of evidence they provide. Explain why "
+                "the writer places these examples side by side rather than treating them as interchangeable."
             ),
             "guidance": [
                 "Identify a relevant and accurate distinction between the cited accounts (1 mark).",
@@ -164,8 +175,10 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
         "evidence_quote":quote_sentence(essay,ref_index)})
     if len(source_matches)>=2:
         s1,p1=source_matches[0];s2,p2=source_matches[1]
-        stem=(f"Compare the significance and evidential limitations of [{s1['id']}] and [{s2['id']}]. "
-              "Explain how the writer links them to the wider argument. (60–90 words)")
+        stem=(f"Using [{s1['id']}] ({source_label(s1)}) and [{s2['id']}] "
+              f"({source_label(s2)}), assess what each source establishes and "
+              "what further evidence would be necessary. How does this distinction "
+              "advance the writer's overall argument? (80–120 words)")
         evidence=f"{cite_location(p1)} and {cite_location(p2)}"
         sample=quote_sentence(essay,p1)+" / "+quote_sentence(essay,p2)
     else:
