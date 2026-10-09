@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="./v6.css">
   <link rel="stylesheet" href="./v11.css?v=11">
   <link rel="stylesheet" href="./v12.css?v=15">
+  <link rel="stylesheet" href="./v16.css?v=16">
 </head>
 <body>
   <a class="skip-link" href="#reader">跳到英文閱讀文章</a>
@@ -35,19 +36,19 @@
       </nav>
       <div class="sidebar-bottom">
         <div class="brief-info"><span class="live-dot"></span> 香港時間 07:05 閱讀備援 · 07:40 新聞更新</div>
-        <div class="brief-sub">零付費 API · 免費來源 · 本機學習紀錄</div>
+        
       </div>
     </aside>
     <main class="main">
       <header class="topbar">
         <div class="breadcrumbs"><span>LEARNING DASHBOARD</span><span class="slash">/</span><span id="crumb">DAILY BRIEFING</span></div>
-        <div class="top-actions"><span id="today-label" class="date-label"></span><button type="button" id="reload-latest" class="small-button refresh-content" aria-label="檢查網站新版本及重新載入今日文章" title="重新取得最新網站及文章">↻ 更新內容</button><span id="site-version" class="site-version" aria-label="網站版本">v15</span><button type="button" id="theme-button" class="icon-button" aria-label="切換深淺色">☼</button></div>
+        <div class="top-actions"><span id="today-label" class="date-label"></span><button type="button" id="reload-latest" class="small-button refresh-content" aria-label="更新網站及今日文章" title="重新載入最新文章">↻ 更新</button><span id="site-version" class="site-version" aria-label="網站版本">v16</span><button type="button" id="theme-button" class="icon-button" aria-label="切換深淺色">☼</button></div>
       </header>
       <div class="page" id="view-today">
         <div id="connection-alert" class="connection-alert hidden" role="status"></div>
         <section class="intro">
-          <div class="eyebrow"><span class="star">✦</span> KNOW MORE. READ BETTER.</div>
-          <h1>Your deeper<br><em>AI perspective.</em></h1>
+          <div class="eyebrow"><span class="star">✦</span> AI NEWS & ENGLISH READING</div>
+          <h1>每日 AI<br><em>英文深度閱讀</em></h1>
           
         </section>
         <a class="jump-to-reader" href="#reader">直接閱讀今日英文文章 <span aria-hidden="true">↓</span></a>
@@ -61,7 +62,7 @@
           <div class="overview-stat"><span class="overview-label">本機學習紀錄</span><strong id="overview-read">0 篇</strong><small id="overview-due">0 個待複習</small></div>
         </section>
         <section class="story-overview" aria-label="本日新聞重點">
-          <div class="story-heading"><div><span class="section-overline">THE DAILY RADAR</span><h2>今日重點一覽</h2></div><span class="section-hint">先掌握主題，再深入閱讀</span></div>
+          <div class="story-heading"><div><span class="section-overline">THE DAILY RADAR</span><h2>今日重點一覽</h2></div></div>
           <div id="story-cards" class="story-cards"></div>
         </section>
         <section class="briefing-card" aria-label="AI briefing">
@@ -69,17 +70,17 @@
           <div class="reading-bar"><span class="bar-track"><span id="progress-bar" class="bar-fill"></span></span><span id="progress-percent" aria-live="off">0%</span></div>
           <div class="reader-toolbar"><span class="helper"><span class="mini-spark">✧</span> 點擊任何英文生字即可查詢中文意思</span><div class="toolbar-right"><button class="small-button reader-tools-more" type="button" id="tools-toggle" aria-expanded="false">更多閱讀工具 ▾</button><button class="small-button" type="button" id="reading-speed" title="調整估算閱讀速度；不會影響文章難度">閱讀速度：115 字／分鐘</button><button class="small-button" type="button" id="resume-reading">接續閱讀</button><button class="small-button" type="button" id="focus-toggle" aria-pressed="false">專注閱讀</button><button class="small-button" type="button" id="translate-toggle">顯示中文譯文</button><button class="small-button" type="button" id="font-button" aria-label="調整英文字體大小（三級循環）">A<span class="font-bigger">A</span></button><button class="small-button reset-reading" type="button" id="reset-reading" aria-label="重設閱讀版面及字體（保留生字與進度）">↺ 重設版面</button><button class="small-button" type="button" id="export-report">匯出文章</button><button class="small-button" type="button" id="print-report">列印</button></div></div>
           <nav id="reader-navigator" class="reader-navigator" aria-label="文章段落導航"></nav>
-          <p id="translation-policy" class="translation-policy">全文翻譯需要網絡。使用前須同意把公開英文文章傳送至免費第三方翻譯服務；翻譯可能不準確。單字詞典仍可離線使用。</p><div id="reader" class="reader" lang="en" tabindex="-1"></div>
-          <div class="reading-quality" id="reading-quality"></div>
+          <details class="translation-disclosure"><summary>全文翻譯及私隱說明</summary><p id="translation-policy" class="translation-policy">全文翻譯需連接第三方服務，使用前會要求同意傳送公開英文文章；譯文可能不準確。離線單字詞典不受影響。</p></details><div id="reader" class="reader" lang="en" tabindex="-1"></div>
+          <details class="quality-disclosure"><summary>本文內容與來源說明</summary><div class="reading-quality" id="reading-quality"></div></details>
           <div class="reading-end"><span>✦</span> END OF BRIEFING <span id="reading-state" class="reading-state"></span><button type="button" id="mark-read" class="small-button read-button">標記為已讀</button></div>
         </section>
         <section class="vocab-panel panel">
           <div class="panel-top"><span class="section-overline">ADVANCED VOCABULARY</span><span class="panel-icon">✧</span></div>
-          <h3>Words worth knowing.</h3><p class="panel-copy">本日高階詞彙精選；點擊生字可查看詞義、發音及儲存。</p><div id="vocab-spotlight" class="vocab-spotlight"></div>
+          <h3>重點詞彙</h3><p class="panel-copy">點擊詞語即可離線查閱字義或加入生字庫。</p><div id="vocab-spotlight" class="vocab-spotlight"></div>
         </section>
         <section class="lower-grid">
-          <div class="panel"><div class="panel-top"><span class="section-overline">SOURCES & VERIFICATION</span><span class="panel-icon">↗</span></div><h3>Source desk</h3><p class="panel-copy">閱讀原始資料，區分媒體報道、機構聲明與推測。</p><div id="source-list" class="source-list"></div></div>
-          <div class="panel"><div class="panel-top"><span class="section-overline">ENGLISH DEVELOPMENT</span><span class="panel-icon">◇</span></div><h3>Think beyond the text</h3><p class="panel-copy">參照 HKEAA Paper 1 Part B2 閱讀技能：選擇、推論、語境詞義、作者態度、短答及跨來源整合。本練習並非官方試卷。</p><div id="practice-meta" class="dse-practice-label"></div><div id="question-list" class="question-list"></div></div>
+          <div class="panel"><div class="panel-top"><span class="section-overline">SOURCES & VERIFICATION</span><span class="panel-icon">↗</span></div><h3>新聞來源</h3><p class="panel-copy">查看原始報道與資料日期。</p><div id="source-list" class="source-list"></div></div>
+          <div class="panel"><div class="panel-top"><span class="section-overline">ENGLISH DEVELOPMENT</span><span class="panel-icon">◇</span></div><h3>英文閱讀理解</h3><p class="panel-copy">練習推論、語境詞義、作者態度與跨來源比較；並非官方試題。</p><div id="practice-meta" class="dse-practice-label"></div><div id="question-list" class="question-list"></div></div>
         </section>
         <details class="technical-status operational-details" id="technical-status"><summary>系統更新與驗證詳情</summary><div id="pipeline-alert" class="pipeline-alert hidden" role="status"></div><a class="audit-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml" target="_blank" rel="noopener noreferrer">↗ 查看每日發布驗證（香港時間 08:05、09:17 及 13:17 預定檢查）</a></details>
         <div class="footer-note" id="legal-note">新聞分析取材自公開資訊，可能包含未經獨立核實的內容；延伸閱讀則為原創教材，並非當日新聞。請核對原始來源。</div>
@@ -101,6 +102,6 @@
     <button type="button" id="save-word" class="save-button">＋ 儲存生字</button><button type="button" id="lookup-online" class="small-button online-lookup hidden">查詢線上免費詞典（只傳送此單字）</button>
   </div>
   <div id="toast" class="toast hidden" role="status"></div>
-  <script src="./app.js?v=15" defer></script>
+  <script src="./app.js?v=16" defer></script>
 </body>
 </html>

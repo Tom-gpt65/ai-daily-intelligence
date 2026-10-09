@@ -618,7 +618,7 @@
   }
   function setModeBanner(mode) {
     const el = $('status-banner'); el.classList.toggle('demo', mode === 'demo');
-    el.textContent = ({demo:'⚠ 示範教材 · 非即時新聞', editorial:'✦ 已整理當日新聞 · AI 英文改寫', source_digest:'ⓘ 來源式英文練習 · 模型改寫未通過審核', reading_feature:'✦ 今日 AI 延伸閱讀 · 非即時新聞'})[mode] || '已發布報告';
+    el.textContent = ({demo:'⚠ 示範教材 · 非即時新聞', editorial:'✦ 已整理當日新聞 · AI 英文改寫', source_digest:'來源式新聞閱讀 · 按公開摘要整理', reading_feature:'AI 英文延伸閱讀 · 非即時新聞'})[mode] || '已發布報告';
   }
   function hkDate() {
     const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
@@ -648,7 +648,7 @@
     else if(daysOld(r.date)<0)
       message='文章日期晚於香港今日日期，請檢查資料。';
     else if(r.mode==='reading_feature')
-      message='今日屬原創 AI 素養延伸閱讀，並非即時新聞。';
+      message=''; // Already labelled by the article type and subtitle.
     else if(Number(r.word_count)<1000)
       message='⚠ 本篇低於 1,000 字閱讀標準，請查看發布驗證。';
     // The source type and unverified-news disclaimer remain on the article
@@ -817,7 +817,7 @@
   async function showLookup(word, target) {
     const key=wordKey(word); if (!key) return;
     state.lookup=word; state.lookupOpened=Date.now(); $('lookup-word').textContent=word; $('lookup-ipa').textContent='';
-    $('lookup-note').textContent='詞典列出常見詞義；實際意思須結合文章理解。';
+    $('lookup-note').textContent='';
     const entry=localMeaning(key) || (saved[key]?.translation ? saved[key] : null);
     $('lookup-translation').textContent=entry?.translation || '正在查詢繁體中文詞義…';
     $('lookup-ipa').textContent=entry?.phonetic || '';
