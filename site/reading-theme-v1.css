@@ -64,7 +64,7 @@ body, .main { background: var(--bg); color: var(--text); }
 }
 #reader { background: var(--reader-paper); }
 .reader .essay-paragraph::before { opacity: 1; color: var(--muted); }
-.reader .word:hover, .reader .word:focus-visible {
+#reader .word:hover, #reader .word:focus-visible {
   background: var(--accent-low);
   color: var(--accent);
   text-decoration: underline;
