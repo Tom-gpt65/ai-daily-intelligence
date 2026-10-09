@@ -13,7 +13,19 @@ class AuditTests(unittest.TestCase):
                       'essay':['English news '*515+' [S1] [S2] [S3]'],
                       'stories':[{'id':f'S{i}','url':'https://example.com','title':'AI research'} for i in range(1,4)],
                       'word_count':1030,'reading_metrics':{'word_count':1030}}
+        self.edition['dictionary']={'english':{'translation':'英文'},'news':{'translation':'新聞'}}
         self.index=[{'date':'2026-10-09'}]
+    def test_educational_backup_is_accepted_with_warning(self):
+        from reading_backup import build_reading
+        edition=build_reading("2026-10-10")
+        index=[{'date':'2026-10-10','word_count':edition['word_count'],'stories':0}]
+        errs,warnings=assess_public(index,edition,"2026-10-10")
+        self.assertEqual(errs,[])
+        self.assertTrue(any("educational" in warning.lower() for warning in warnings))
+    def test_current_news_missing_word_translation_is_rejected(self):
+        self.edition['dictionary']['english']={'translation':''}
+        errors,_=assess_public(self.index,self.edition,'2026-10-09')
+        self.assertTrue(any("offline Chinese" in e for e in errors))
     def test_fresh_article(self):
         errs,_=assess_public(self.index,self.edition,'2026-10-09');self.assertEqual(errs,[])
     def test_essay_word_count_mismatch_is_detected(self):

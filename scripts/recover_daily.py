@@ -4,6 +4,7 @@ import json,os,re,sys,time
 from datetime import datetime,timezone
 from urllib.request import Request,urlopen
 from zoneinfo import ZoneInfo
+from edition_guarantee import complete
 
 REPO=os.environ.get("GITHUB_REPOSITORY","Tom-gpt65/ai-daily-intelligence")
 TOKEN=os.environ.get("GITHUB_TOKEN","")
@@ -22,14 +23,21 @@ def edition_is_readable(index_row, report, expected=TODAY):
         return False
     if index_row.get("date") != expected or report.get("date") != expected:
         return False
-    if report.get("demo") or report.get("mode") not in {"editorial", "source_digest"}:
+    if report.get("demo") or report.get("mode") not in {"editorial", "source_digest", "reading_feature"}:
+        return False
+    if not complete(report):
         return False
     paragraphs, sources = report.get("essay"), report.get("stories")
     practice = report.get("practice")
     items = practice.get("items") if isinstance(practice, dict) else None
     if not isinstance(paragraphs, list) or len(paragraphs) < 5 or not all(isinstance(p, str) for p in paragraphs):
         return False
-    if not isinstance(sources, list) or len(sources) < 3:
+    if not isinstance(sources, list):
+        return False
+    if report.get("mode") == "reading_feature":
+        if sources:
+            return False
+    elif len(sources) < 3:
         return False
     if any(not isinstance(s, dict) or not s.get("id") or not s.get("title") or not str(s.get("url", "")).startswith(("https://", "http://")) for s in sources):
         return False

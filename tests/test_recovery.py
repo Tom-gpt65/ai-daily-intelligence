@@ -70,6 +70,13 @@ class RecoveryTests(unittest.TestCase):
         self.assertFalse(recover_daily.edition_is_readable(index,{**report,"essay":["too short"]}))
         self.assertFalse(recover_daily.edition_is_readable(index,{**report,"practice":{"items":[]}}))
         self.assertFalse(recover_daily.edition_is_readable({**index,"stories":4},report))
+    def test_educational_backup_accepted_when_entire_dictionary_exists(self):
+        from reading_backup import build_reading
+        report=build_reading(recover_daily.TODAY)
+        row={'date':report['date'],'word_count':report['word_count'],'stories':0}
+        self.assertTrue(recover_daily.edition_is_readable(row,report))
+        report['dictionary'].pop(next(iter(report['dictionary'])))
+        self.assertFalse(recover_daily.edition_is_readable(row,report))
     def test_retry_schedule_only_twice(self):
         yaml=(ROOT/".github/workflows/recovery.yml").read_text(encoding="utf-8")
         self.assertIn("cron: '20 8 * * *'",yaml)

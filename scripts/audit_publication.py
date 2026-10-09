@@ -10,6 +10,7 @@ from datetime import datetime
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
+from edition_guarantee import complete
 
 HK = ZoneInfo("Asia/Hong_Kong")
 BASE = "https://tom-gpt65.github.io/ai-daily-intelligence/"
@@ -26,12 +27,16 @@ def assess_public(index: object, report: object, expected: str) -> tuple[list[st
         errors.append("Public report date differs from today's Hong Kong date")
     if report.get("demo") or report.get("mode") == "demo":
         errors.append("Public report is a fictional sample, not real RSS reporting")
-    if report.get("mode") not in ("editorial", "source_digest"):
+    if report.get("mode") not in ("editorial", "source_digest", "reading_feature"):
         errors.append("Public report mode is unknown")
+    if not complete(report):
+        errors.append("At least one clickable English word lacks an offline Chinese meaning")
     if not isinstance(report.get("essay"), list) or not report["essay"]:
         errors.append("Public article has no readable paragraphs")
-    if not isinstance(report.get("stories"), list) or not report["stories"]:
-        errors.append("Public article has no traceable news sources")
+    if not isinstance(report.get("stories"), list):
+        errors.append("Public article has invalid source records")
+    elif report.get("mode") != "reading_feature" and not report["stories"]:
+        errors.append("Current-news article has no traceable news sources")
     if isinstance(report.get("essay"),list):
         body=" ".join(p for p in report["essay"] if isinstance(p,str))
         words=len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b",body))
@@ -78,8 +83,10 @@ def assess_public(index: object, report: object, expected: str) -> tuple[list[st
     elif count > 1550:
         warnings.append(f"Long-form article exceeds preferred 1,550-word upper bound ({count} words)")
     if report.get("mode") == "source_digest":
-        warnings.append("Fallback RSS digest published: factual context and English quality need review")
-    if isinstance(report.get("stories"), list) and len(report["stories"]) < 3:
+        warnings.append("RSS-based analysis published; editorial facts require source review")
+    if report.get("mode") == "reading_feature":
+        warnings.append("Today's passage is original educational reading, NOT contemporary AI news")
+    elif isinstance(report.get("stories"), list) and len(report["stories"]) < 3:
         warnings.append("Fewer than three sourced AI developments today")
     return errors, warnings
 
@@ -96,7 +103,9 @@ def morning_refresh_status(report: object, expected: str) -> tuple[bool, str]:
         if hk.date().isoformat()!=expected:
             return False,"Report update timestamp does not match Hong Kong day"
         if (hk.hour,hk.minute)<(7,40):
-            return False,"Report was last updated before the 07:40 morning generation window"
+            if report.get("mode")=="reading_feature":
+                return True,"Pre-scheduled educational reserve has valid morning metadata; exact public availability time is unproven"
+            return False,"Current-news report was last updated before the 07:40 morning generation window"
         return True,"Report metadata confirms a refresh at or after 07:40 HK; exact website availability time is not proven"
     except (TypeError,ValueError):
         return False,"Report has no valid update timestamp"
@@ -157,6 +166,7 @@ def run() -> int:
     base = args.site.rstrip("/") + "/"
     public_errors, warnings = [], []
     refresh_ok, refresh_note = False, "Article could not be loaded"
+    report=None
     try:
         index = request_json(base + "reports/index.json")
         report = request_json(base + "reports/" + args.date + ".json")
@@ -176,9 +186,11 @@ def run() -> int:
             recovered_ok = recent_successful_recovery(runs,args.date)
             if not scheduled_ok:
                 if recovered_ok and refresh_ok and not public_errors:
-                    warnings.append("The scheduled 07:40 run failed or was missing; verified public article was recovered by a successful dispatch")
+                    warnings.append("The original scheduled job did not succeed, but a later verified passage was published")
+                elif isinstance(report,dict) and report.get("mode")=="reading_feature" and refresh_ok and not public_errors:
+                    warnings.append("The 07:05 educational safety net provided today's passage; scheduled news status is reported separately")
                 else:
-                    schedule_errors.append("Neither a successful scheduled run nor a verified recovery was found on this Hong Kong date")
+                    schedule_errors.append("Neither a successful scheduled run nor verified published reading could be confirmed")
         except Exception as exc:
             schedule_errors.append(f"Unable to confirm scheduled workflow: {exc}")
         if not refresh_ok:
