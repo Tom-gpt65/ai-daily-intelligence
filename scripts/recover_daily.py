@@ -32,7 +32,7 @@ def should_dispatch(latest_date,runs,updated_at=None):
             pass
     if freshly_updated:
         return False,"Today's edition was refreshed after the morning generation window"
-    active=[r for r in runs if r.get("status") in {"queued","in_progress","waiting","pending","requested"}]
+    active=[r for r in runs if r.get("event") in {"schedule","workflow_dispatch"} and r.get("status") in {"queued","in_progress","waiting","pending","requested"}]
     if active:
         return False,"Another report generation is queued or running"
     # Cap recovery to two dispatches per Hong Kong day, even if earlier
