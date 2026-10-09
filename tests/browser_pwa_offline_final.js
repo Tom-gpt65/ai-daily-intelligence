@@ -116,13 +116,24 @@ async function exercise(browserType,engine,width){
     // even after its HTTP origin has stopped. This validates actual cached
     // payloads but NOT a cold-start offline navigation on iPad Safari.
     const snapshot=await page.evaluate(async()=>{
-      const html=await caches.match('./index.html');
-      const index=await caches.match('./reports/index.json');
-      const glossary=await caches.match('./offline-glossary.json');
-      if(!html||!index||!glossary)return {ok:false,missing:true};
+      async function cached(path){
+        const absolute=new URL(path,location.href).href;
+        for(const name of await caches.keys()){
+          const cache=await caches.open(name);
+          const entry=await cache.match(absolute,{ignoreSearch:true});
+          if(entry)return entry;
+        }
+        return null;
+      }
+      const html=await cached('./index.html');
+      const index=await cached('./reports/index.json');
+      const glossary=await cached('./offline-glossary.json');
+      if(!html||!index||!glossary)return {ok:false,missing:true,
+        html:Boolean(html),index:Boolean(index),glossary:Boolean(glossary),
+        cacheNames:await caches.keys()};
       const markup=await html.text(),rows=await index.json(),terms=await glossary.json();
       const today=rows[0]?.date;
-      const article=await caches.match('./reports/'+today+'.json');
+      const article=await cached('./reports/'+today+'.json');
       if(!article)return {ok:false,missingArticle:today};
       const report=await article.json();
       return {ok:markup.includes('AI Daily Intelligence'),date:today,
@@ -137,11 +148,20 @@ async function exercise(browserType,engine,width){
       return response.status;
     },BASE),'The origin must truly be unreachable');
     const unavailable=await page.evaluate(async()=>{
-      const html=await caches.match('./index.html');
-      const index=await caches.match('./reports/index.json');
+      async function cached(path){
+        const absolute=new URL(path,location.href).href;
+        for(const name of await caches.keys()){
+          const cache=await caches.open(name);
+          const entry=await cache.match(absolute,{ignoreSearch:true});
+          if(entry)return entry;
+        }
+        return null;
+      }
+      const html=await cached('./index.html');
+      const index=await cached('./reports/index.json');
       if(!html||!index)return false;
       const rows=await index.json();
-      const article=await caches.match('./reports/'+rows[0].date+'.json');
+      const article=await cached('./reports/'+rows[0].date+'.json');
       if(!article)return false;
       const obj=await article.json();
       return (await html.text()).includes('AI Daily Intelligence') &&
