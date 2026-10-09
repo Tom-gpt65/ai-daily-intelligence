@@ -1200,6 +1200,7 @@
     document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){checkDailyReset();cloudSync?.sync().catch(()=>{});}});
     window.addEventListener('offline',()=>showConnectivity());
     window.addEventListener('online',()=>{showConnectivity();cloudSync?.sync().catch(()=>{});});
+    setInterval(()=>{if(document.visibilityState==='visible'&&cloudSync?.active)cloudSync.sync().catch(()=>{});},60000);
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopover(true);if(e.key==='/'&&state.view==='words'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();$('word-search').focus();}});
     document.addEventListener('pointerdown',e=>{if(!$('dictionary-popover').contains(e.target) && !e.target.closest('.word'))closePopover();});
   }

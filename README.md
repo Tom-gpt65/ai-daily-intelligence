@@ -139,6 +139,14 @@ python tests/browser_smoke_optional.py
 - **日常新聞產生、歷史補檔、單元測試、瀏覽器回歸測試及功能驗證，不應自動提高網站版本號。** 測試只記錄測試結果；缺漏日期只新增相應日期的文章和索引。只有另行批准正式功能版本發布，才可修改前端顯示版本、JavaScript/CSS 版本查詢參數或 Service Worker 快取版本。
 - 新增 `tests/test_archive_backfill.py`，持續核對日期排序、完整正文、七道閱讀題、逐詞離線詞義、保留原本的 10 月 9 日文章及 V1 版本標示。
 
+## V1 跨裝置生字同步（須啟用 Supabase）
+
+V1 已加入可選擇的電郵登入、私人生字事件同步及離線佇列；**在 Supabase 專案尚未建立、`site/cloud-config.json` 尚未填入公開配置之前，網站只會顯示本機模式，不能宣稱已完成真正跨裝置同步。**
+
+詳細啟用步驟與 Row Level Security：[`docs/CLOUD_SYNC_SETUP.md`](docs/CLOUD_SYNC_SETUP.md)，建表 SQL：[`docs/SUPABASE_VOCABULARY.sql`](docs/SUPABASE_VOCABULARY.sql)。
+
+同步範圍只包含**生字、詞義、複習等級及下次複習日期**；閱讀位置和測驗答案仍只保存在各裝置。本機既有生字必須由使用者主動選擇加入雲端，原有 JSON 備份功能和 V1 正式版本名稱保留。
+
 ## V1：首個完整正式版本（2026-10-09）
 
 **正式版本由 V1 開始計算。** 這是獲使用者同意的大型功能版本發佈；往後逐日出稿、歷史補檔、測試及一般錯誤修正**不會自動升級 V1 版本號**。
