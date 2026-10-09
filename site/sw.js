@@ -1,6 +1,6 @@
 /* Same-origin cache only. Network-first news never silently masquerades as fresh. */
-const VERSION='ai-daily-v10-evidence-navigation';
-const SHELL=['./','./index.html','./style.css','./v3.css','./v4.css','./v5.css','./v6.css','./app.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
+const VERSION='ai-daily-v11-reading-reflow';
+const SHELL=['./','./index.html','./style.css','./v3.css','./v4.css','./v5.css','./v6.css','./v11.css','./app.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 const PAGE_CACHE=VERSION+'-shell',DATA_CACHE=VERSION+'-reports';
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
@@ -39,7 +39,7 @@ self.addEventListener('fetch',event=>{
         const res=await fetch(event.request);
         if(res.ok){await cache.put(event.request,res.clone());await prune(cache,42);}
         return res;
-      }catch{return await cache.match(event.request)||Response.error();}
+      }catch{return await cache.match(event.request,{ignoreSearch:true})||Response.error();}
     })());return;
   }
   if(event.request.mode==='navigate'){
@@ -47,7 +47,18 @@ self.addEventListener('fetch',event=>{
   }
   const shellNames=new Set(SHELL.filter(path=>path!=='./').map(path=>path.slice(2)));
   if(shellNames.has(url.pathname.split('/').pop())){
-    event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request)));
+    event.respondWith((async()=>{
+      const cache=await caches.open(PAGE_CACHE);
+      // Network first: installed iPhone PWAs must not stay on old CSS or JS
+      // after a deployment. Previously a shell-cache hit lasted indefinitely.
+      try{
+        const response=await fetch(event.request,{cache:'no-cache'});
+        if(response.ok)await cache.put(event.request,response.clone());
+        return response;
+      }catch{
+        return (await cache.match(event.request,{ignoreSearch:true}))||Response.error();
+      }
+    })());
   }
 });
 async function prune(cache,limit){const keys=await cache.keys();if(keys.length>limit)await Promise.all(keys.slice(0,keys.length-limit).map(k=>cache.delete(k)));}
