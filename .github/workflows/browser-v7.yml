@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/browser-v7.yml'
       - 'tests/browser_regression_v7.js'
+      - 'tests/status_regression_v8.js'
       - 'site/app.js'
       - 'site/v6.css'
       - 'site/index.html'
@@ -43,6 +44,8 @@ jobs:
           done
       - name: Exercise 320px–430px iPhone-sized screens
         run: node tests/browser_regression_v7.js
+      - name: Verify recovered-versus-scheduled status on iPad and desktop-width screens
+        run: node tests/status_regression_v8.js
       - name: Browser smoke summary
         if: always()
         run: |
