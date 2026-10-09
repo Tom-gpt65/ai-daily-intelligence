@@ -9,7 +9,7 @@
 3. 到 **Authentication → Providers → Email** 啟用 Email OTP／Magic Link。到 **Authentication → URL Configuration**：
    - **Site URL**：`https://tom-gpt65.github.io/ai-daily-intelligence/`
    - **Redirect URLs**：加入相同完整網址；測試本機可另外加入 `http://127.0.0.1:8765/`。
-4. Email 登入需要可送信的郵件服務；Supabase 預設郵件服務有配額及限制，大量使用應設定 SMTP。若無收到郵件，查看 Supabase Auth Logs／Email provider。
+4. Email 登入需要可送信的郵件服務。**Supabase 預設郵件服務只容許寄送給專案所屬 Organization 的團隊成員電郵**；先以建立組織時的電郵測試。預設服務現有限速（官方文件列出每小時 2 封，可能變更）。要讓非團隊成員收信，必須設定自訂 SMTP 或支援的寄信 Hook。若無收到郵件，先查看生字庫內寄送按鈕下方的回應訊息、垃圾郵件及 Supabase Auth Logs；不要短時間連續重試。
 
 ## 2. 在 GitHub Pages 發布公開配置
 
