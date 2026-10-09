@@ -949,6 +949,13 @@
     document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
     $('reader').addEventListener('click',e=>{const t=e.target.closest('button.word');if(t)showLookup(t.textContent,t);});
     $('translate-toggle').addEventListener('click',toggleWholeTranslation);
+    $('reset-reading').addEventListener('click',resetReadingLayout);
+    $('reload-latest').addEventListener('click',reloadLatestWebsite);
+    document.querySelectorAll('.jump-to-reader,.skip-link').forEach(link=>link.addEventListener('click',event=>{
+      event.preventDefault();
+      if(state.view!=='today')setView('today');
+      scrollToReadingTarget($('reader'));
+    }));
     $('tools-toggle').addEventListener('click',()=>{const expanded=document.body.classList.toggle('tools-expanded');$('tools-toggle').setAttribute('aria-expanded',String(expanded));$('tools-toggle').textContent=expanded?'收起其他閱讀工具 ▴':'更多閱讀工具 ▾';});
     $('focus-toggle').addEventListener('click',()=>{focusMode=!focusMode;document.body.classList.toggle('focus-mode',focusMode);$('focus-toggle').setAttribute('aria-pressed',String(focusMode));$('focus-toggle').textContent=focusMode?'離開專注模式':'專注閱讀';});
     $('reading-speed').addEventListener('click',()=>{const speeds=[90,115,145];state.readingWpm=speeds[(speeds.indexOf(state.readingWpm)+1)%speeds.length];safeStorage.set('ai-daily-reading-wpm',state.readingWpm);renderReadingEstimate();});
@@ -993,6 +1000,8 @@
     window.addEventListener('scroll',()=>{updateProgress(true);if(Date.now()-(state.lookupOpened||0)>350)closePopover();},{passive:true});
     window.addEventListener('resize',()=>closePopover());
     window.addEventListener('pagehide',()=>safeStorage.set(PROGRESS_KEY,progressRecords));
+    window.addEventListener('pageshow',event=>{if(event.persisted)checkDailyReset(true);});
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkDailyReset();});
     window.addEventListener('offline',()=>showConnectivity());
     window.addEventListener('online',()=>showConnectivity());
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopover(true);if(e.key==='/'&&state.view==='words'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();$('word-search').focus();}});
@@ -1006,7 +1015,7 @@
     showConnectivity();
     $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
     updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();
-    $('refresh-schedule').addEventListener('click',renderScheduleHealth);
+    $('refresh-schedule').addEventListener('click',()=>refreshLatestReport({force:true}));
     if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
     try{
       const response=await fetch('./reports/index.json',{cache:'no-store'});if(!response.ok)throw new Error('No report index');
