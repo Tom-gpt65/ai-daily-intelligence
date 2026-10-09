@@ -19,7 +19,15 @@ async function check(engine,browser,width){
   const initialFont=await fontSize();
   await page.locator('#font-button').click();
   const largeFont=await fontSize();
-  assert.ok(largeFont>=initialFont+3,engine+' '+width+': AA first tap did not enlarge actual text');
+  const fontDebug=await page.evaluate(()=>({
+    readerClass:document.querySelector('#reader').className,
+    readerSize:getComputedStyle(document.querySelector('#reader')).fontSize,
+    paragraphSize:getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize,
+    button:document.querySelector('#font-button').textContent,
+    styles:[...document.styleSheets].map(x=>x.href?.split('/').pop()).filter(Boolean)
+  }));
+  console.log('AA computed-size check',engine,width,{initialFont,largeFont,fontDebug});
+  assert.ok(largeFont>=initialFont+3,engine+' '+width+': AA first tap did not enlarge actual text: '+JSON.stringify({initialFont,largeFont,fontDebug}));
   await page.locator('#font-button').click();
   const hugeFont=await fontSize();
   assert.ok(hugeFont>largeFont+2,engine+' '+width+': AA second tap did not enlarge actual text');
