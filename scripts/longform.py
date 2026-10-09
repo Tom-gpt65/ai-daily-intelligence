@@ -75,6 +75,17 @@ LENSES={
  )
 }
 
+
+# A source list can contain several developments in the same domain. Repeating
+# the identical paragraph would produce artificial length rather than teaching
+# a reader to distinguish the evidence actually supplied by each source.
+ALTERNATE_ANGLES=[
+ "A further question concerns how a claim would appear to an observer with different priorities. One stakeholder might value speed, another reproducibility, and a third the ability to challenge a decision. These perspectives need not conflict, but they should not be compressed into a single undifferentiated assessment either. Readers should trace the precise wording of this report, identify whose perspective it privileges and ask whether a competing interpretation could also fit the limited evidence. That exercise exposes the assumptions connecting a reported development to a broader claim, and it makes the argument more than a rehearsal of institutional publicity.",
+ "The method by which evidence is communicated is almost as important as the evidence itself. A brief source extract is necessarily selective: it may illuminate the purpose of an initiative while omitting measurements, limitations or the people who would experience the consequences. It would be unreasonable to infer dishonesty merely from that absence; equally, it would be careless to treat what has not been described as if it were already proved. The useful analytical move is to state a testable question, explain which information could answer it and avoid allowing a confident headline to do the work of an argument.",
+ "The distinction between immediate significance and lasting consequence deserves separate attention. An announcement can matter today because it changes available options or public expectations, even if its future effects remain uncertain. That observation neither guarantees success nor renders the development trivial. For a more defensible judgement, a reader should ask what short-term event the publisher has actually documented and what long-term change is merely being anticipated. The two may eventually coincide, but their relationship requires explanation. Examining that relationship is a useful exercise in concession, qualification and causal reasoning.",
+ "The language used to describe responsibility can conceal differences between technical capacity, organisational incentives and human judgement. Those dimensions interact, but none can be substituted for another: a tool may function as intended without being suitable for every purpose, while an institution may articulate worthy principles without providing sufficient evidence of consistent practice. The reader should therefore locate the precise claim within its domain before drawing a wider conclusion. Where a source offers only a compressed description, curiosity is appropriate, whereas certainty about unreported outcomes is not. The central reading skill is calibrated interpretation."
+]
+
 LEADS=[
  "AI news is often written in the language of arrival: a technology has emerged, a company has advanced, or a new rule has been announced. Yet the difference between a development and an interpretation of that development is fundamental. In this edition, the cited reports concern distinct aspects of artificial intelligence, and a careful reading must resist the temptation to compress them into one uncomplicated narrative of progress. The challenge is to identify precisely what each source says before considering what, if anything, may reasonably follow from it. Such disciplined inference is central both to informed public judgement and to demanding English comprehension.",
  "Behind every confident technology headline lies an evidential question. What has actually happened, who is making the claim and which important details remain unreported? These questions become harder when the subject shifts rapidly between commercial investment, research, products and institutional governance. This reading exercise approaches the day's reporting as a set of contrasting texts rather than a sequence of victories. Its argument is deliberately qualified: important developments deserve attention, but their significance must be established through careful interpretation rather than the force of a headline alone.",
@@ -118,22 +129,39 @@ def compose_briefing(stories: list[dict]) -> list[str]:
         return []  # Do not pad two headlines into a fake long-form feature.
     digest=hashlib.sha256("|".join(str(s["title"]) for s in entries).encode("utf-8")).digest()
     paragraphs=[LEADS[digest[0]%len(LEADS)]]
+    category_occurrences={}
     for i,story in enumerate(entries):
         topic=category(story)
+        occurrence=category_occurrences.get(topic,0)
+        category_occurrences[topic]=occurrence+1
+        analytical_lens=LENSES[topic] if occurrence==0 else ALTERNATE_ANGLES[(occurrence-1+i)%len(ALTERNATE_ANGLES)]
         title=str(story["title"]).strip().replace("\n"," ")
         publisher=str(story.get("publisher") or "the linked publisher").strip()
         anchor=f"[{story['id']}]"
         paragraphs.append(
             f"{INTROS[i]} {publisher}'s account, ‘{title}’ {anchor}. "
-            +FACT_NOTE[i]+LENSES[topic]
+            +FACT_NOTE[i]+analytical_lens
         )
     first,second=entries[0],entries[1]
     areas={"investment":"commercial financing","research":"scientific evaluation",
            "hardware":"computing devices","governance":"policy and accountability",
            "bioscience":"biological research","technology":"technological development"}
-    for tmpl in CROSS:
-        paragraphs.append(tmpl.format(first=first["id"],second=second["id"],
-                                      area_first=areas[category(first)],area_second=areas[category(second)]))
+    for idx,tmpl in enumerate(CROSS):
+        if idx==0 and category(first)==category(second):
+            paragraphs.append(
+                f"The first two accounts, [{first['id']}] and [{second['id']}], both address "
+                f"{areas[category(first)]}, but that common label does not make them equivalent. "
+                "Each is a separate claim, and the details by which it might be tested need to be "
+                "identified rather than assumed. Readers should compare what each headline "
+                "specifically emphasises, which information its short extract supplies and how "
+                "any missing context could affect interpretation. An apparently shared topic "
+                "is therefore a starting point for comparison, not proof of identical methods, "
+                "achievements or consequences. The comparison becomes meaningful only when "
+                "it preserves those differences."
+            )
+        else:
+            paragraphs.append(tmpl.format(first=first["id"],second=second["id"],
+                                          area_first=areas[category(first)],area_second=areas[category(second)]))
     if len(entries)<5:
         paragraphs.append(EXTRA[0].format(first=first["id"],second=second["id"]))
     if len(entries)<4:
