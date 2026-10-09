@@ -202,15 +202,29 @@
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)
         throw new Error('請輸入有效的電郵地址');
       const target=location.origin+location.pathname;
-      const response=await fetch(this.config.url+'/auth/v1/otp?redirect_to='+encodeURIComponent(target),{
-        method:'POST',headers:{apikey:this.config.key,'Content-Type':'application/json'},
-        body:JSON.stringify({email,create_user:true}),cache:'no-store'
-      });
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(),20000);
+      let response;
+      try{
+        response=await fetch(this.config.url+'/auth/v1/otp?redirect_to='+encodeURIComponent(target),{
+          method:'POST',headers:{apikey:this.config.key,'Content-Type':'application/json'},
+          body:JSON.stringify({email,create_user:true}),cache:'no-store',signal:controller.signal
+        });
+      }catch(error){
+        if(error?.name==='AbortError')throw new Error('連線等待超過 20 秒。請檢查網絡後再試，避免短時間內重複寄送。');
+        throw new Error('無法連接 Supabase 郵件服務。請確認已連線，或稍後重試。');
+      }finally{clearTimeout(timeout);}
       if(!response.ok){
         const error=await response.json().catch(()=>({}));
-        throw new Error(error.msg||error.message||'寄送登入電郵失敗');
+        const code=String(error.error_code||error.code||'');
+        const message=String(error.msg||error.message||error.error_description||'');
+        if(code==='email_address_not_authorized'||/email address not authorized/i.test(message))
+          throw new Error('此電郵不屬於 Supabase 組織團隊。預設郵件服務只可寄給團隊成員；其他電郵須先設定自訂 SMTP。');
+        if(response.status===429||/rate.limit|too many requests/i.test(message))
+          throw new Error('已達電郵發送次數限制。請稍後再試，避免連續按下寄送。');
+        throw new Error((message||'寄送登入電郵失敗（HTTP '+response.status+'）').slice(0,180));
       }
-      this.setStatus('登入連結已寄出。請於同一裝置開啟電郵，然後返回網站。');
+      this.setStatus('登入請求已被 Supabase 接受。請檢查收件匣及垃圾郵件，並於同一裝置開啟登入連結。');
     }
     record(word,payload,deleted=false){
       if(!this.active)return false;
