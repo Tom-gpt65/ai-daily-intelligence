@@ -369,7 +369,11 @@
     dropdown.addEventListener('change',()=>{
       const index=Number(dropdown.value);
       if(Number.isInteger(index)&&index>=0&&index<r.essay.length){
-        scrollToReadingTarget($('reading-paragraph-'+index));
+        const target=$('reading-paragraph-'+index);
+        // Safari may restore the native select position after the change
+        // event. Scroll once again after the control has finished settling.
+        scrollToReadingTarget(target);
+        requestAnimationFrame(()=>setTimeout(()=>scrollToReadingTarget(target),70));
       }
     });
     nav.appendChild(dropdown);
