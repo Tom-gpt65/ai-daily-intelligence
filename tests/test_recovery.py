@@ -7,8 +7,11 @@ import recover_daily
 
 class RecoveryTests(unittest.TestCase):
     def test_fresh_report_does_not_dispatch(self):
-        decision,_=recover_daily.should_dispatch(recover_daily.TODAY,[])
+        decision,_=recover_daily.should_dispatch(recover_daily.TODAY,[],recover_daily.TODAY+"T07:50:00+08:00")
         self.assertFalse(decision)
+    def test_early_morning_report_needs_new_refresh(self):
+        decision,_=recover_daily.should_dispatch(recover_daily.TODAY,[],recover_daily.TODAY+"T06:45:00+08:00")
+        self.assertTrue(decision)
     def test_missing_report_triggers_recovery(self):
         decision,_=recover_daily.should_dispatch("2000-01-01",[])
         self.assertTrue(decision)
