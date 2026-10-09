@@ -1,33 +1,38 @@
 {
   "schema": 4,
   "date": "2026-10-09",
-  "updated_at": "2026-10-09T00:44:32.266Z",
-  "headline": "AI's next test: promises, evidence and accountability",
-  "subtitle": "Funding, agent evaluation, computing and governance — source-linked English analysis",
+  "updated_at": "2026-10-09T01:36:46.347Z",
+  "headline": "The evidence behind AI's ambitions: four very different tests",
+  "subtitle": "Funding, agent benchmarks, AI hardware and governance — an original advanced English reading feature",
   "mode": "source_digest",
-  "editorial_notice": "Original educational analysis of sourced RSS summaries; full articles not independently checked.",
+  "editorial_notice": "Source-linked analytical English exercise derived only from RSS descriptions; source details are not independently verified.",
   "demo": false,
-  "word_count": 615,
+  "word_count": 1426,
   "essay": [
-    "It is tempting to describe technological change as a procession of breakthroughs, but that narrative rarely captures the uncertainties behind a headline. A product may be announced before its limitations are understood; a policy may be published long before its enforcement can be assessed. Today's accounts show why provisional judgement is a strength rather than a weakness. The aim is not to dismiss innovation, but to distinguish statements that the available sources support from consequences that would require further inquiry.",
-    "The question of credibility is particularly clear in TechCrunch AI's report, ‘China’s Manus raises over $500M in first funding round since split with Meta’ [S1]. In the source extract, the writer notes that Boyu Capital and IDG Capital led the funding round, and existing shareholders Tencent, HSG (formerly known as Sequoia China), ZhenFund, and others also participated. Its summary supplies an initial account rather than a complete assessment; whether the anticipated benefit will prove reliable requires evidence of the conditions under which it was tested.",
-    "Elsewhere in the selection, arXiv AI's report, ‘GeoNatureAgent (GNA): A Framework and Benchmark for Pre-Production Evaluation of Tool-Using Agents on Geospatial and Environmental Tasks’ [S2]. Because the feed offers only limited context, a reader should consult the linked original before attributing specific results. Read on its own, the description leaves open questions about scale, competing interpretations and the people most affected. Those gaps should shape, rather than prematurely settle, a judgement.",
-    "A separate tension emerges from TechCrunch AI's report, ‘Microsoft releases new Nvidia-chip AI PCs with revamped Windows 11’ [S3]. A detail singled out in the brief account is Microsoft revealed the specs and price for its Surface Laptop Ultra, AI PCs that run on Nvidia chips that are designed to run AI models and agents. What makes the claim significant is not necessarily what makes it conclusive: a persuasive demonstration would need transparent methods, relevant comparisons and a discussion of failure cases.",
-    "The practical implications are less straightforward in The Verge AI's report, ‘Anthropic bans ‘abusive or cruel behavior’ toward Claude’ [S4]. Because the feed offers only limited context, a reader should consult the linked original before attributing specific results. If the proposed change were adopted more widely, its implications might extend beyond the immediate announcement. Yet that hypothetical consequence cannot be mistaken for an outcome already observed.",
-    "A further perspective can be found in MIT Technology Review's report, ‘Roundtables: A Conversation With the Creator of AI-Designed Viruses’ [S5]. The summary itself highlights Friday, October 16, 2026 Can AI design new life forms? The scope of the reported development remains important. One must distinguish what the source specifically describes from the broader ambitions that its headline may evoke.",
-    "Seen side by side, these accounts resist a single, uncomplicated verdict. Some titles emphasise possibility; others draw attention to constraints, institutional choices or unresolved risks. Although such distinctions can sharpen a reader's sense of what is at stake, they cannot substitute for checking how claims were obtained. A commercial announcement, for example, may establish what an organisation says it intends to offer without showing how reliably the product works in different settings. Equally, a research abstract may describe a promising method without demonstrating that its findings will generalise beyond the conditions in which it was evaluated.",
-    "Consequently, a responsible account of AI progress cannot be reduced to a sequence of confident headlines. The more defensible judgement is provisional: it distinguishes evidence supplied by a source from inference introduced by the reader, and it remains open to revision. Before settling on any conclusion, one should consult the linked original and ask which independent measurements, alternative perspectives or practical constraints could change its meaning. Such scrutiny makes a daily news briefing a lesson in informed judgement rather than a rehearsal of publicity."
+    "The artificial-intelligence industry is commonly presented through a series of decisive moments: investment arrives, researchers announce a new framework, manufacturers release new equipment, and developers tighten the rules governing their systems. Yet these events cannot all be judged by the same standard. A funding round concerns expectations about future value; a benchmark concerns how performance is measured; a device launch raises questions about practical utility; and a policy revision expresses an institution's choices. Although each may legitimately deserve public attention, none automatically proves that AI has become more effective, affordable or trustworthy. Four recent reports illustrate why a reader must move beyond the headline and examine the relationship between evidence, interpretation and consequence.",
+    "Consider first the commercial expectations surrounding the Chinese AI company Manus. TechCrunch reports that the company raised more than $500 million in its first funding round since its split with Meta [S1]. The accompanying summary names Boyu Capital and IDG Capital as leaders of the round and lists several existing shareholders as participants. These are specific details about a reported financial transaction, not evidence that every product or service associated with the company has achieved a corresponding technological advantage. Even where investors commit substantial resources, they are making a judgement about uncertain future returns. The significance of the announcement therefore depends partly on what the capital is expected to finance, an issue the abbreviated extract does not establish in sufficient detail.",
+    "The funding story also exposes an instructive asymmetry between the information a reader receives and the conclusions a dramatic headline may encourage. A numerical figure creates an impression of precision; nevertheless, precision about the amount of funding does not automatically produce precision about the company's prospects. What would constitute convincing evidence of durable progress: measurable improvements in a service, consistently satisfied users, or a business model able to withstand competition? These possibilities are questions rather than findings about Manus. The distinction matters because financial confidence, although undoubtedly relevant to an enterprise's options, cannot be substituted for empirical proof of an AI system's reliability. A careful commentator must therefore resist equating the scale of investment with the scale of achievement.",
+    "A rather different problem arises in research that attempts to measure agents before they are deployed. An arXiv abstract introduces GeoNatureAgent, a proposed framework and benchmark for evaluating tool-using agents in geospatial and environmental tasks [S2]. The extract describes a fixed interface involving sixteen tools, made available through a Model Context Protocol server, so that evaluations can be carried out against a common tool layer. This is a meaningful description of the proposed method, but it should not be mistaken for an independently verified claim of general superiority. Its central interest lies in the logic of evaluation: when the environment is held more constant, differences between agents may be easier to interpret.",
+    "Even a carefully designed benchmark, however, can reveal only what its tasks and measurements are capable of testing. If an agent selects an appropriate operation within a controlled suite, does that show it can respond sensibly to ambiguous instructions, unreliable data or unfamiliar demands? Not necessarily. The more relevant question is how closely the test resembles the circumstances in which a system would eventually be used. Because the cited material is an abbreviated preprint description, neither comprehensive replication nor peer-reviewed confirmation can be assumed. Nonetheless, the research account raises a valuable analytical point: rigorous measurement does not eliminate uncertainty, but it can make the sources of uncertainty easier to identify and discuss.",
+    "The shift from testing agents to selling devices changes the reader's frame of reference again. According to a TechCrunch report, Microsoft unveiled new AI-oriented PCs running on Nvidia chips alongside a revised Windows 11 offering [S3]. Its RSS description indicates that specifications and pricing were disclosed for a Surface Laptop product. Such reporting identifies the subject of a commercial release; it does not, without independent comparisons, establish that purchasers will receive better value or that every AI workload will run satisfactorily. Consumers might reasonably consider processing speed, energy consumption, software compatibility, security and price, yet the relative importance of those factors depends on how the machine is actually used.",
+    "One consequence of this distinction is that technological progress cannot be assessed from components alone. A device containing specialised chips may broaden the range of tasks that can be attempted locally; whether that possibility translates into an advantage over existing arrangements is a separate matter. Users who rely on cloud services, for instance, may value different characteristics from those who wish to process sensitive material on their own machines. These are illustrative considerations, not claims about the performance of Microsoft's new models. The language of a product announcement often emphasises what a machine is designed to do, whereas a reader deciding whether to buy one needs evidence of what it does under relevant conditions.",
+    "Questions of purpose and responsibility emerge even more directly in the account of Anthropic's revised acceptable-use rules. The Verge reports that the company's policy changes address several forms of high-risk misuse and include a prohibition on sustained abusive or cruel behaviour directed towards Claude [S4]. The extract also mentions concerns such as election interference, surveillance and sensitive applications. Unlike a benchmark or a laptop specification, a usage policy is primarily a statement about permitted and prohibited conduct. Its practical effect, however, depends on how the rule is communicated, detected and enforced. Reading the policy as though its announcement itself guaranteed compliance would therefore confuse an institution's stated intention with the outcome of its decisions.",
+    "A second layer of interpretation concerns what the wording of the rule invites the public to think. A prohibition against cruelty towards an AI system might prompt questions about human behaviour, the design of interactions or the responsibilities of service providers. It does not, merely by existing, demonstrate that the system has human-like experiences or that a philosophical dispute about consciousness has been resolved. Equally, attention to the dignity of interaction need not imply that misuse affecting real people has become less important. The more productive approach is to ask why a particular form of conduct has been singled out and which evidence would show whether the prohibition is consistently implemented.",
+    "Juxtaposing these four reports brings an underlying tension into view. Investment favours a narrative of opportunity; scientific evaluation demands a method for distinguishing performance from appearance; hardware reporting addresses the translation of technical capacity into usable products; and governance concerns the conditions under which technologies ought to be used. Although these perspectives intersect, their measures of success are not interchangeable. A financial sum is not a reliability score, a research benchmark is not a purchasing recommendation, and a policy document is not evidence of universal compliance. This contrast explains why an informed assessment of AI cannot be reduced to a single verdict about whether the industry is succeeding.",
+    "The sources also differ in their communicative purposes. A news report about funding may foreground participants and amounts, while an abstract concentrates on a proposed method; coverage of a commercial product tends to describe its features, whereas discussion of governance highlights principles and restrictions. This selection is not necessarily a defect, since each text serves a different audience and editorial function. Nevertheless, a reader who ignores purpose may mistake an omission for a contradiction or treat two fundamentally different kinds of claim as if they were competing answers to the same question. Understanding the writer's choices is therefore as important as extracting the obvious facts.",
+    "A final caution concerns the language with which uncertainty is expressed. Statements that a system 'could' improve a task or that a policy 'may' reduce misuse are hypotheses, not documented results. Conditional clauses, concessions and carefully qualified comparisons enable a writer to explore these possibilities without presenting them as established facts. Such restraint should not be confused with indifference: it is precisely because these developments may matter that careless extrapolation is undesirable. Readers aiming to interpret demanding material should ask where the passage changes from reporting to reasoning, which assumptions connect the two, and whether an alternative interpretation remains plausible.",
+    "What, then, is the most defensible conclusion? Today's reports suggest that AI is simultaneously an arena of commercial expectation, technical evaluation, consumer-facing development and contested institutional responsibility. The evidence available in these short source descriptions does not justify a sweeping judgement about the direction of the entire industry. It does, however, reveal the questions a thoughtful observer should ask next. By separating what publishers report from what commentators infer, and by identifying which further information could change an assessment, readers become better equipped to judge tomorrow's announcements without surrendering either curiosity or critical independence."
   ],
   "translations": [],
   "reading_metrics": {
-    "word_count": 615,
-    "estimated_minutes": 5.3,
-    "average_sentence_words": 19.8,
-    "long_word_share": 18.7,
-    "note": "閱讀量及詞長屬描述性統計，不能換算成 HKDSE 等級。"
+    "word_count": 1426,
+    "estimated_minutes": 12.4,
+    "average_sentence_words": 20.7,
+    "long_word_share": 23,
+    "note": "長篇閱讀量估算，不代表 HKEAA 官方難度或成績；完成題目需額外時間。"
   },
   "processing": {
-    "source_count": 5,
+    "source_count": 4,
     "attribution_only": true,
     "evidence_word_count": 298,
     "evidence_sufficient_for_draft": true,
@@ -37,7 +42,7 @@
     "translation_seconds": 0,
     "dictionary_seconds": 2.271
   },
-  "quality_note": "新聞線索來自RSS，並未獲獨立事實核查；英文論證及DSE式題目屬原創練習，不能視為原始報道。",
+  "quality_note": "已擴寫為1,000字以上原創英文分析及DSE B2式閱讀訓練。當中的推論和比較屬教育用途，來源RSS未經獨立全面核實，並非考評局官方試題。",
   "stories": [
     {
       "id": "S1",
@@ -114,33 +119,14 @@
         }
       ],
       "coverage_count": 1
-    },
-    {
-      "id": "S5",
-      "publisher": "MIT Technology Review",
-      "title": "Roundtables: A Conversation With the Creator of AI-Designed Viruses",
-      "excerpt": "Friday, October 16, 2026 Can AI design new life forms? In 2025, Stanford University PhD student Samuel King came up with a preliminary answer when he used a generative AI model to propose genetic blueprints for microscopic viruses. It isn’t yet an example of AI-generated life, but that could be next. Join senior AI reporter…",
-      "url": "https://www.technologyreview.com/2026/10/08/1146224/roundtables-a-conversation-with-the-creator-of-ai-designed-viruses/",
-      "published": "2026-10-09T00:08:24+00:00",
-      "topic": "General AI",
-      "source_type": "媒體報道／RSS 公告",
-      "coverage": [
-        {
-          "publisher": "MIT Technology Review",
-          "url": "https://www.technologyreview.com/2026/10/08/1146224/roundtables-a-conversation-with-the-creator-of-ai-designed-viruses/",
-          "title": "Roundtables: A Conversation With the Creator of AI-Designed Viruses",
-          "published": "2026-10-09T00:08:24+00:00"
-        }
-      ],
-      "coverage_count": 1
     }
   ],
   "dictionary": {
     "scrutiny": {
-      "translation": "嚴格審查",
-      "phonetic": "'skru:tini",
+      "translation": "仔細審查",
+      "phonetic": "",
       "part_of_speech": "",
-      "definition": "n. a prolonged intense look"
+      "definition": "Context-specific meaning; consider the full sentence."
     },
     "innovation": {
       "translation": "創新",
@@ -149,16 +135,16 @@
       "definition": "n a creation (a new device or process) resulting from study and experimentation\\nn the creation of something in the mind\\nn the act of starting something for the first time; introducing some"
     },
     "inference": {
-      "translation": "推論；推斷",
-      "phonetic": "'infәrәns",
+      "translation": "推論",
+      "phonetic": "",
       "part_of_speech": "",
-      "definition": "n. the reasoning involved in drawing a conclusion or making a logical judgment on the basis of circumstantial evidence and prior conclusions rather than on the basis of direct observation"
+      "definition": "Context-specific meaning; consider the full sentence."
     },
     "benchmark": {
       "translation": "基準測試",
       "phonetic": "",
       "part_of_speech": "",
-      "definition": "n. a standard by which something can be measured or judged\\nn. a surveyor's mark on a permanent object of predetermined position and elevation used as a reference point"
+      "definition": "Context-specific meaning; consider the full sentence."
     },
     "limitations": {
       "translation": "局限",
@@ -1967,10 +1953,10 @@
       "definition": "v. be shown or be found to be\\nv. establish the validity of something, as by an example, explanation or experiment\\nv. prove formally; demonstrate by a mathematical, formal proof\\nv. take a"
     },
     "provisional": {
-      "translation": "a. 暫時的, 暫定的, 臨時的\\n[醫] 臨時的",
-      "phonetic": "prә'viʒәnl",
+      "translation": "暫時的；有待確認的",
+      "phonetic": "",
       "part_of_speech": "",
-      "definition": "s under terms not final or fully worked out or agreed upon"
+      "definition": "Context-specific meaning; consider the full sentence."
     },
     "publicity": {
       "translation": "n. 名聲, 宣傳, 公開場合\\n[經] 宣傳, 廣告",
@@ -2937,6 +2923,72 @@
       "phonetic": "jet",
       "part_of_speech": "",
       "definition": "r. up to the present time\\nr. within an indefinite time or at an unspecified future time"
+    },
+    "asymmetry": {
+      "translation": "不對稱；資訊差距",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "empirical": {
+      "translation": "以實證為依據的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "reproducibility": {
+      "translation": "可重現性",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "juxtaposing": {
+      "translation": "並置；並列比較",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "extrapolation": {
+      "translation": "根據有限資料推展結論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "qualified": {
+      "translation": "有所保留的；附帶條件的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "accountability": {
+      "translation": "問責；責任承擔",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "governance": {
+      "translation": "管治；治理",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "interchangeable": {
+      "translation": "可以互換的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "contested": {
+      "translation": "存在爭議的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
+    },
+    "subordinate": {
+      "translation": "從屬的；附屬的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": "Context-specific meaning; consider the full sentence."
     }
   },
   "questions": [
@@ -2944,146 +2996,150 @@
     "Choose two sources from today's briefing. How do their available evidence and potential consequences differ? Cite both source IDs and explain your reasoning."
   ],
   "practice": {
-    "label": "HKDSE Paper 1 Part B2-inspired daily practice",
+    "label": "Independent HKDSE Paper 1 Part B2-style reading practice",
     "official": false,
-    "basis": "HKEAA 2026 English Language Assessment Framework, Reading objectives",
-    "instructions": "Original exercises. MC questions have answer keys; written responses need human judgement.",
+    "instructions": "Seven evidence-anchored questions; four automatically marked choices and three written responses with transparent marking guidance. This is not an HKEAA-issued examination.",
     "items": [
       {
         "id": "Q1",
         "type": "mc",
-        "skill": "Writer's purpose / interpretation",
+        "skill": "Main idea / purpose",
         "marks": 1,
-        "stem": "What is the most defensible reading of the writer's treatment of evidence?",
+        "paragraph": 1,
+        "stem": "Which interpretation best captures the writer's central argument?",
         "options": [
-          "Evidence must be weighed against the limits of what the report actually establishes.",
-          "The writer considers a recent announcement sufficient proof of future success.",
-          "A publisher's popularity provides a reliable substitute for evaluating claims.",
-          "The writer treats all uncertain claims as demonstrably false."
+          "Every AI announcement indicates that practical progress has already been demonstrated.",
+          "Commercial financing offers more dependable evidence than scientific research.",
+          "Different AI developments must be evaluated using evidence appropriate to their claims.",
+          "Governance questions should be considered only after technical innovation ends."
         ],
-        "answer": 0,
-        "explanation": "A careful reading distinguishes reported claims from conclusions that are independently supported.",
-        "evidence": "Paragraph 2",
-        "paragraph": 2,
-        "evidence_quote": "Its summary supplies an initial account rather than a complete assessment; whether the anticipated benefit will prove reliable requires evidence of the conditions under which it was"
+        "answer": 2,
+        "explanation": "The writer contrasts financing, evaluation, hardware and policy, arguing against treating them as interchangeable.",
+        "evidence": "Opening paragraph and paragraphs 10–13",
+        "evidence_quote": "The artificial-intelligence industry is commonly presented through a series of decisive moments: investment arrives, researchers announce a new f"
       },
       {
         "id": "Q2",
         "type": "mc",
-        "skill": "Vocabulary in context",
+        "skill": "Inference and qualification",
         "marks": 1,
-        "stem": "Which option best conveys the meaning of 'provisional' as it is used in paragraph 1?",
+        "paragraph": 3,
+        "stem": "Why does the writer call the precise investment figure potentially misleading?",
         "options": [
-          "officially authorised",
-          "already conclusive",
-          "irrelevant to the debate",
-          "subject to revision"
+          "The amount was necessarily misreported.",
+          "Precision about funding can be mistaken for proof of commercial or technical success.",
+          "The investors were not named by the source.",
+          "Research methods are identical to financial transactions."
         ],
-        "answer": 3,
-        "explanation": "Read the surrounding sentence; the word takes this sense in the present argument.",
-        "evidence": "Paragraph 1",
-        "paragraph": 1,
-        "evidence_quote": "Today's accounts show why provisional judgement is a strength rather than a weakness"
+        "answer": 1,
+        "explanation": "The writer distinguishes precision about the reported sum from uncertainty about future performance.",
+        "evidence": "Paragraph 3",
+        "evidence_quote": "The funding story also exposes an instructive asymmetry between the information a reader receives and the conclusions a dramatic headline may enc"
       },
       {
         "id": "Q3",
         "type": "mc",
-        "skill": "Writer's tone / attitude",
+        "skill": "Vocabulary in context",
         "marks": 1,
-        "stem": "What attitude is best supported by the writer's language in paragraph 7?",
+        "paragraph": 12,
+        "stem": "In paragraph 12, 'extrapolation' is closest in meaning to ...",
         "options": [
-          "Indifferent to whether supporting evidence can be obtained.",
-          "Personally hostile towards the individuals mentioned in the article.",
-          "Measured and questioning, with qualifications rather than outright dismissal.",
-          "Unreservedly celebratory about the proven success of every report."
+          "a formally validated experiment",
+          "reasoning beyond the information actually established",
+          "an unintended contradiction in grammar",
+          "the independent reproduction of a scientific study"
         ],
-        "answer": 2,
-        "explanation": "The hedging or contrast signals a qualified judgement, not certainty.",
-        "evidence": "Paragraph 7",
-        "paragraph": 7,
-        "evidence_quote": "Although such distinctions can sharpen a reader's sense of what is at stake, they cannot substitute for checking how claims were obtained"
+        "answer": 1,
+        "explanation": "The passage warns against projecting conclusions beyond the supported facts.",
+        "evidence": "Paragraph 12",
+        "evidence_quote": "A final caution concerns the language with which uncertainty is expressed. Statements that a system 'could' improve a task or that a policy 'may'"
       },
       {
         "id": "Q4",
-        "type": "short",
-        "skill": "Cross-source synthesis / relevance",
-        "marks": 2,
-        "stem": "Compare the purposes of [S1] and [S2] in the article. Explain why the author juxtaposes these examples rather than treating them as interchangeable.",
-        "guidance": [
-          "Identify a relevant and accurate distinction between the cited accounts (1 mark).",
-          "Explain how that distinction advances the writer's overall argument (1 mark)."
+        "type": "mc",
+        "skill": "Writer's attitude and tone",
+        "marks": 1,
+        "paragraph": 13,
+        "stem": "Which pair best describes the writer's attitude towards the reported developments?",
+        "options": [
+          "Uncritical and celebratory",
+          "Hostile and dismissive",
+          "Curious but analytically cautious",
+          "Detached and deliberately indifferent"
         ],
-        "evidence": "Paragraph 2 and Paragraph 3",
-        "paragraph": 2,
-        "evidence_quote": "The question of credibility is particularly clear in TechCrunch AI's report, ‘China’s Manus raises over $500M in first funding round since split with  / Elsewhere in the selection, arXiv AI's report, ‘GeoNatureAgent (GNA): A Framework and Benchmark for Pre-Production Evaluation of Tool-Using Agents on "
+        "answer": 2,
+        "explanation": "The writer welcomes relevant questions but refuses to claim more than the available sources establish.",
+        "evidence": "Opening and concluding paragraphs",
+        "evidence_quote": "What, then, is the most defensible conclusion? Today's reports suggest that AI is simultaneously an arena of commercial expectation, technical ev"
       },
       {
         "id": "Q5",
         "type": "short",
-        "skill": "Language features / contrast",
+        "skill": "Research methodology / inference",
         "marks": 2,
-        "stem": "How does the writer use contrast or qualification in paragraph 1 to shape the argument? Give ONE specific example.",
+        "paragraph": 5,
+        "stem": "Explain TWO reasons why a fixed benchmark may improve comparison without proving an agent's performance in every real-world situation.",
         "guidance": [
-          "Identify a relevant contrast or qualification in the specified paragraph (1 mark).",
-          "Explain its impact on the writer's overall argument rather than merely repeating the phrase (1 mark)."
+          "One mark for noting that standardised tasks or interfaces make comparisons more interpretable.",
+          "One mark for explaining that test coverage, ambiguity or conditions may differ from real deployment."
         ],
-        "evidence": "Paragraph 1",
-        "paragraph": 1,
-        "evidence_quote": "It is tempting to describe technological change as a procession of breakthroughs, but that narrative rarely captures the uncertainties behind a headline"
+        "evidence": "Paragraphs 4–5",
+        "evidence_quote": "Even a carefully designed benchmark, however, can reveal only what its tasks and measurements are capable of testing. If an agent selects an appr"
       },
       {
         "id": "Q6",
         "type": "short",
-        "skill": "Inference and evidence",
+        "skill": "Rhetorical contrast",
         "marks": 2,
-        "stem": "Identify ONE important conclusion that CANNOT safely be drawn from paragraph 2 and explain why.",
+        "paragraph": 10,
+        "stem": "How does the writer use the contrast between a 'financial sum' and a 'reliability score' to advance the argument?",
         "guidance": [
-          "Specify a plausible conclusion which the extract does not establish (1 mark).",
-          "Explain the missing evidence or methodological limitation (1 mark)."
+          "Identify that the two measures refer to different kinds of claim (1 mark).",
+          "Explain how the contrast challenges an oversimplified definition of AI success (1 mark)."
         ],
-        "evidence": "Paragraph 2",
-        "paragraph": 2,
-        "evidence_quote": "The question of credibility is particularly clear in TechCrunch AI's report, ‘China’s Manus raises over $500M in first funding round since split with Meta’ [S1]"
+        "evidence": "Paragraph 10",
+        "evidence_quote": "Juxtaposing these four reports brings an underlying tension into view. Investment favours a narrative of opportunity; scientific evaluation deman"
       },
       {
         "id": "Q7",
         "type": "extended",
         "skill": "Cross-text synthesis / evaluation",
-        "marks": 4,
-        "stem": "Compare the significance and evidential limitations of [S1] and [S2]. Explain how the writer links them to the wider argument. (60–90 words)",
+        "marks": 5,
+        "paragraph": 11,
+        "stem": "Compare the evidential demands made by the GeoNatureAgent research account [S2] and Anthropic's usage-policy report [S4]. How does the author distinguish technical validation from responsible governance? (100–130 words.)",
         "guidance": [
-          "Accurately interpret both passages or cited source accounts (2 marks).",
-          "Make an explicit analytical connection rather than list unrelated facts (1 mark).",
-          "Specify one justified limitation or condition affecting the conclusion (1 mark)."
+          "Accurately summarise the distinctive claims of both cited accounts (2 marks).",
+          "Explain why a benchmark and a policy require different evidence (1 mark).",
+          "Refer to an appropriate limitation of the available sources (1 mark).",
+          "Present a coherent qualified interpretation supported by the passage (1 mark)."
         ],
-        "evidence": "Paragraph 2 and Paragraph 3",
-        "paragraph": 2,
-        "evidence_quote": "The question of credibility is particularly clear in TechCrunch AI's report, ‘China’s Manus raises over $500M in first funding round since split with Meta’ [S1] / Elsewhere in the selection, arXiv AI's report, ‘GeoNatureAgent (GNA): A Framework and Benchmark for Pre-Production Evaluation of Tool-Using Agents "
+        "evidence": "Paragraphs 4–5, 8–11",
+        "evidence_quote": "The sources also differ in their communicative purposes. A news report about funding may foreground participants and amounts, while an abstract c"
       }
     ]
   },
   "editorial_quality": {
     "training_structure_pass": true,
     "diagnostics": {
-      "word_count": 615,
-      "paragraph_count": 8,
-      "cited_sources": 5,
-      "available_sources": 5,
-      "source_linked_paragraphs": 5,
-      "generic_caution_phrases": "0",
-      "long_sentence_count": 9
+      "word_count": 1426,
+      "paragraph_count": 13,
+      "cited_sources": 4,
+      "available_sources": 4,
+      "source_linked_paragraphs": 4,
+      "generic_caution_phrases": 3,
+      "long_sentence_count": 25
     },
     "issues": [],
-    "notice": "Heuristic writing checks only; not independent fact-checking or an HKEAA grade."
+    "notice": "Heuristic checks only; not independently fact checked or officially graded."
   },
   "advanced_vocabulary": [
-    "scrutiny",
-    "innovation",
-    "inference",
+    "asymmetry",
+    "empirical",
     "benchmark",
-    "limitations",
-    "implications",
-    "evaluation",
-    "constraints"
+    "reproducibility",
+    "juxtaposing",
+    "extrapolation",
+    "accountability",
+    "scrutiny"
   ]
 }
