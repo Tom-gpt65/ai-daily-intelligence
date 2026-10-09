@@ -40,7 +40,7 @@ jobs:
         run: |
           set -Eeuo pipefail
           base="https://tom-gpt65.github.io/ai-daily-intelligence/"
-          for path in "" "index.html" "app.js" "offline-glossary.json" "style.css" "v6.css" "v11.css" "v12.css" "sw.js" "reports/index.json"; do
+          for path in "" "index.html" "app.js" "offline-glossary.json" "reading-glossary.json" "news-glossary.json" "style.css" "v6.css" "v11.css" "v12.css" "sw.js" "reports/index.json"; do
             url="${base}${path}"
             status=$(curl --location --silent --show-error --retry 5 --retry-delay 6 --retry-connrefused --max-time 30 --output /tmp/ai-response --write-out "%{http_code}" "$url")
             echo "Public URL check: ${url} => HTTP ${status}"
@@ -78,6 +78,16 @@ jobs:
           assert all(isinstance(q.get('paragraph'),int) and 1<=q['paragraph']<=len(report['essay']) for q in questions),'DSE evidence paragraph pointers invalid'
           assert all(q.get('evidence_quote') for q in questions),'DSE text quotations missing'
           assert all(q.get('evidence') for q in questions),'Answer evidence pointers missing'
+          import re
+          tokens={w.lower() for p in report['essay'] for w in re.findall(r"\b[A-Za-z]+(?:['’\-][A-Za-z]+)*\b",p)}
+          glossary=report.get('dictionary',{})
+          missing=[w for w in tokens if not isinstance(glossary.get(w),dict) or
+                   not re.search(r'[\u3400-\u9fff]',str(glossary[w].get('translation','')))]
+          assert not missing,'Every word must have offline Chinese meaning: '+str(missing[:10])
+          if report.get('mode')=='reading_feature':
+              assert not report.get('stories'),'Educational backup cannot masquerade as news'
+              assert 'not today' in report.get('subtitle','').lower(),"Educational reading must show it is not today's news"
+          print('Offline dictionary covered:',len(tokens),'unique clickable word forms')
           print('Published edition:',date)
           print('Words:',report['word_count'],'DSE-style questions:',len(questions))
           print('Mode:',report['mode'],'Official HKEAA endorsement: not claimed')
@@ -89,11 +99,11 @@ jobs:
           assert 'refreshLatestReport' in javascript,'Cross-day revalidation logic not deployed'
           with urllib.request.urlopen(base+'index.html',timeout=20) as response:
               markup=response.read().decode('utf-8')
-          assert './v12.css?v=14' in markup,'Newest responsive stylesheet missing from HTML'
-          assert './app.js?v=14' in markup,'Version-busted reader code missing from HTML'
+          assert './v12.css?v=15' in markup,'Newest responsive stylesheet missing from HTML'
+          assert './app.js?v=15' in markup,'Version-busted reader code missing from HTML'
           with urllib.request.urlopen(base+'sw.js',timeout=20) as response:
               worker=response.read().decode('utf-8')
-          assert 'ai-daily-v14-offline-glossary' in worker,'Updated iPhone cache version missing'
+          assert 'ai-daily-v15-every-word-daily-reading' in worker,'Updated iPhone cache version missing'
           assert "fetch(event.request,{cache:'no-cache'})" in worker,'Reader shell not network-first'
-          print('V14 offline glossary, responsive CSS and cache freshness VERIFIED')
+          print('V15 all-word offline dictionary and daily reading reserve VERIFIED')
           PY

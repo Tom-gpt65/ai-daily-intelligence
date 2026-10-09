@@ -20,7 +20,7 @@ def validate() -> list[str]:
     missing = sorted(set(re.findall(r"\$\('([a-zA-Z][a-zA-Z0-9-]*)'\)", app)) - set(ids))
     if missing:
         errors.append("Missing JavaScript element ids: " + ", ".join(missing))
-    for src in ('index.html','app.js','style.css','v3.css','v4.css','v5.css','v6.css','v11.css','v12.css','offline-glossary.json','manifest.webmanifest'):
+    for src in ('index.html','app.js','style.css','v3.css','v4.css','v5.css','v6.css','v11.css','v12.css','offline-glossary.json','reading-glossary.json','news-glossary.json','manifest.webmanifest'):
         if src not in worker:
             errors.append(f"PWA shell missing {src}")
     manifest=json.loads((SITE/'manifest.webmanifest').read_text(encoding='utf-8'))

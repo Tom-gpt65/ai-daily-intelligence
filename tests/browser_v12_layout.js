@@ -13,7 +13,7 @@ const {chromium,webkit}=require('playwright');
      page.on('pageerror',e=>errors.push(e.message));
      await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
-     assert.equal(await page.locator('#site-version').innerText(),'v14');
+     assert.equal(await page.locator('#site-version').innerText(),'v15');
      assert.equal(await page.locator('.intro p').count(),0,'Unnecessary intro copy still displayed');
      const warning=await page.locator('#freshness-note').innerText();
      if(await page.locator('#freshness-note').isVisible())assert.match(warning,/舊文章|示範文章|1,000 字|晚於/,'Visible warning must explain a genuine issue');
