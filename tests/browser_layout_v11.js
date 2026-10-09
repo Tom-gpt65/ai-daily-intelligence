@@ -32,6 +32,10 @@ async function check(engine,browser,width){
   if(width<=1180){
     assert.ok(await page.locator('#reader-nav-select').isVisible(),engine+' '+width+': accessible chapter selector missing');
     await page.locator('#reader-nav-select').selectOption('3');
+    await page.waitForFunction(()=>{
+      const top=document.querySelector('#reading-paragraph-3')?.getBoundingClientRect().top;
+      return typeof top==='number'&&top>=80&&top<=240;
+    },null,{timeout:3000});
     const top=await page.locator('#reading-paragraph-3').evaluate(el=>el.getBoundingClientRect().top);
     assert.ok(top>=80&&top<=240,engine+' '+width+': section jump concealed behind Safari toolbar: '+top);
     assert.ok(await page.locator('#tools-toggle').isVisible(),engine+' '+width+': compact tools toggle absent');
@@ -53,7 +57,7 @@ async function check(engine,browser,width){
  const sw=fs.readFileSync(path.join(root,'site/sw.js'),'utf8');
  assert.ok(sw.includes("fetch(event.request,{cache:'no-cache'})"),'Service worker still serves stale CSS or JavaScript without first checking the network');
  assert.ok(sw.includes("cache.match(event.request,{ignoreSearch:true})"),'Offline fallback ignores version-busting query');
- assert.ok(fs.readFileSync(path.join(root,'site/index.html'),'utf8').includes('app.js?v=11'),
+ assert.ok(fs.readFileSync(path.join(root,'site/index.html'),'utf8').includes('app.js?v=12'),
    'HTML does not break old iPhone JavaScript URL');
  console.log('RESULT:',passes,'/ 10 responsive browser layouts plus PWA freshness invariants passed');
 })().catch(e=>{console.error(e);process.exit(1)});
