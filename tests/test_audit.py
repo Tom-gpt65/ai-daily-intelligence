@@ -17,7 +17,9 @@ class AuditTests(unittest.TestCase):
         self.index=[{'date':'2026-10-09'}]
     def test_educational_backup_is_accepted_with_warning(self):
         from reading_backup import build_reading
-        edition=build_reading("2026-10-10")
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        edition=build_reading("2026-10-10",datetime(2026,10,10,8,0,tzinfo=ZoneInfo("Asia/Hong_Kong")))
         index=[{'date':'2026-10-10','word_count':edition['word_count'],'stories':0}]
         errs,warnings=assess_public(index,edition,"2026-10-10")
         self.assertEqual(errs,[])
@@ -76,7 +78,7 @@ class AuditTests(unittest.TestCase):
     def test_short_fallback_flagged(self):
         self.edition['mode']='source_digest';self.edition['reading_metrics']={'word_count':493}
         errs,warn=assess_public(self.index,self.edition,'2026-10-09')
-        self.assertTrue(any('1,000' in item for item in errs));self.assertTrue(any('Fallback' in item for item in warn))
+        self.assertTrue(any('1,000' in item for item in errs));self.assertTrue(any('RSS-based' in item for item in warn))
     def test_correct_scheduled_run(self):
         runs={'workflow_runs':[{'event':'schedule','conclusion':'success','created_at':'2026-10-09T00:05:00Z'}]}
         self.assertTrue(recent_successful_schedule(runs,'2026-10-09'))
