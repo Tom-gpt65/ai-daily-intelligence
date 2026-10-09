@@ -29,11 +29,20 @@ def validate() -> list[str]:
     index=json.loads((SITE/'reports'/'index.json').read_text(encoding='utf-8'))
     if not isinstance(index,list):
         errors.append('Invalid reports/index.json')
-    for x in index:
+    for i,x in enumerate(index):
         try:
             r=json.loads((SITE/'reports'/(x['date']+'.json')).read_text(encoding='utf-8'))
             if r.get('date')!=x['date']:
                 errors.append('Report date mismatch: '+x['date'])
+            if x.get("word_count")!=r.get("word_count"):
+                errors.append('Indexed word count differs from published report: '+x['date'])
+            if i==0 and r.get("mode")!="demo":
+                body=" ".join(p for p in r.get("essay",[]) if isinstance(p,str))
+                actual=len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b",body))
+                if actual<1000:
+                    errors.append('Latest public edition fails 1,000-English-word minimum: '+x["date"])
+                if r.get("word_count")!=actual:
+                    errors.append('Latest report English word count is inaccurate: '+x["date"])
         except (OSError, KeyError, ValueError) as exc:
             errors.append('Unavailable indexed report: '+str(exc))
     return errors
