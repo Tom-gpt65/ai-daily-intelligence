@@ -9,6 +9,7 @@ import re
 PROMOTIONAL_PATTERNS = (
     re.compile(r"\b(register now|buy (?:a|your) ticket|early.bird tickets|save up to \$\d+|grab (?:a|your) (?:second )?pass|join us at .{0,35}(?:summit|conference)|sponsor(?:ed)? post)\b", re.I),
     re.compile(r"\b(?:hear from|meet) .{0,90}\b(?:at|during) (?:techcrunch )?disrupt\b", re.I),
+    re.compile(r"\b(?:roundtables?:|register for|join (?:our|senior|the) .{0,55}(?:reporter|conversation|roundtable)|tickets (?:are|available)|early-bird pricing)\b",re.I),
 )
 
 def is_promotional(title: str, excerpt: str) -> bool:
