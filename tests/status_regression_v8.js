@@ -32,11 +32,11 @@ async function scenario(engine,browser,scenarioName,scheduledRuns,manualRuns,rep
   page.on('pageerror',err=>errors.push(err.message));
   const edition={...original,date:hkToday,updated_at:new Date(hkToday+'T'+reportedTime+'+08:00').toISOString()};
   const reportIndex=[{...index[0],date:hkToday}];
-  await page.route(u=>u.includes('/reports/index.json'),route=>
+  await page.route(u=>u.href.includes('/reports/index.json'),route=>
     route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(reportIndex)}));
-  await page.route(u=>u.includes('/reports/'+hkToday+'.json'),route=>
+  await page.route(u=>u.href.includes('/reports/'+hkToday+'.json'),route=>
     route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(edition)}));
-  await page.route(u=>u.includes('/actions/workflows/daily.yml/runs?'),route=>{
+  await page.route(u=>u.href.includes('/actions/workflows/daily.yml/runs?'),route=>{
     const event=new URL(route.request().url()).searchParams.get('event');
     const workflow_runs=event==='schedule'?scheduledRuns:manualRuns;
     return route.fulfill({status:200,contentType:'application/json',
