@@ -97,7 +97,7 @@ python tests/browser_smoke_optional.py
 V1 已具備每日文章生成、教育備援、公開發布審核與缺稿補救；最新低維護封版新增：
 
 - **香港時間 14:35，每天一次獨立健康檢查**：[V1 final autopilot](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/v1-final-autopilot.yml)，驗證公開網站、當日閱讀、iOS PWA manifest、離線快取、Supabase Auth 可用性及匿名詞庫隔離。結果在 GitHub Actions 顯示通過或失敗；排程仍可能因平台原因略過。
-- **Chromium／WebKit 實際斷網測試**：不只檢查靜態 CSS，也確定 Service Worker、快取文章、離線詞義、本機生字及下載的完整學習 JSON 在模擬手機／平板環境運作。
+- **Chromium／WebKit 網站中斷測試**：核對實際 CacheStorage 的快取文章、離線詞義、現存頁面生字及不含登入憑證的完整學習 JSON，並在停止測試伺服器後重新核對快取。此測試**不等於已證明 iOS PWA 離線冷啟動成功**，仍須真機驗收。
 - **資料安全**：不在 GitHub 存放密碼、私人生字或使用者備份。閱讀位置及答題仍保存在各裝置，使用者應每月在 **我的生字庫 → 備份全部學習進度** 下載私有 JSON 檔案。
 - **明確失敗處理手冊**：[V1 終極穩定與低維護運行手冊](docs/V1_FINAL_AUTOPILOT.md)。不因這些例行維護提升 V1 版本號。
 
