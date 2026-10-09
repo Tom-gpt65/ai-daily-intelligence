@@ -7,6 +7,18 @@
     get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } },
     set(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch { toast('瀏覽器無法儲存資料。'); } }
   };
+  function applyReadingTheme(paper,savePreference=false){
+    const isPaper=Boolean(paper);
+    document.documentElement.classList.toggle('light',isPaper);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content',isPaper?'#F2EEE6':'#171C1E');
+    const control=document.getElementById('theme-button');
+    if(control){
+      control.setAttribute('aria-label',isPaper?'切換至夜間閱讀配色':'切換至日間閱讀配色');
+      control.setAttribute('aria-pressed',String(isPaper));
+      control.title=isPaper?'目前：日間紙本閱讀 · 切換至夜間':'目前：夜間柔和閱讀 · 切換至日間';
+    }
+    if(savePreference)safeStorage.set('ai-daily-light',isPaper);
+  }
   const SAVED_KEY = 'ai-daily-saved-v2'; // keep keys compatible with v2, never discard prior words
   const READ_KEY = 'ai-daily-read-v1';
   const ANSWERS_KEY = 'ai-daily-answers-v1';
@@ -1169,7 +1181,7 @@
     $('tools-toggle').addEventListener('click',()=>{const expanded=document.body.classList.toggle('tools-expanded');$('tools-toggle').setAttribute('aria-expanded',String(expanded));$('tools-toggle').textContent=expanded?'收起其他閱讀工具 ▴':'更多閱讀工具 ▾';});
     $('focus-toggle').addEventListener('click',()=>{focusMode=!focusMode;document.body.classList.toggle('focus-mode',focusMode);$('focus-toggle').setAttribute('aria-pressed',String(focusMode));$('focus-toggle').textContent=focusMode?'離開專注模式':'專注閱讀';});
     $('font-button').addEventListener('click',()=>{state.fontScale=(state.fontScale+1)%3;safeStorage.set('ai-daily-font-scale',state.fontScale);applyFontScale();});
-    $('theme-button').addEventListener('click',()=>{document.documentElement.classList.toggle('light');safeStorage.set('ai-daily-light',document.documentElement.classList.contains('light'));});
+    $('theme-button').addEventListener('click',()=>applyReadingTheme(!document.documentElement.classList.contains('light'),true));
     $('pop-close').addEventListener('click',()=>closePopover(true));
     $('resume-reading').addEventListener('click',()=>{const amount=Number(progressRecords[state.report?.date]||0);const card=document.querySelector('.briefing-card');const target=card.getBoundingClientRect().top+scrollY+(card.offsetHeight-innerHeight)*(amount/100);window.scrollTo({top:Math.max(0,target),behavior:'smooth'});});
     $('export-report').addEventListener('click',exportBriefing);
@@ -1288,7 +1300,7 @@
     document.addEventListener('pointerdown',e=>{if(!$('dictionary-popover').contains(e.target) && !e.target.closest('.word'))closePopover();});
   }
   async function init(){
-    if(safeStorage.get('ai-daily-light',false))document.documentElement.classList.add('light');
+    applyReadingTheme(safeStorage.get('ai-daily-light',true));
     state.fontScale=Math.max(0,Math.min(2,Number(safeStorage.get('ai-daily-font-scale',0))||0));
     applyFontScale();
     showConnectivity();

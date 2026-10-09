@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'site/cloud-sync.js'
+      - 'site/reading-theme-v1.css'
+      - 'tests/browser_reading_theme_v1.js'
       - 'tests/browser_cloud_sync.js'
       - 'tests/browser_cloud_email.js'
       - 'tests/browser_cloud_password.js'
@@ -24,6 +26,8 @@ on:
       - 'site/cloud-sync.js'
       - 'site/cloud-config.json'
       - 'site/v1.css'
+      - 'site/reading-theme-v1.css'
+      - 'tests/browser_reading_theme_v1.js'
       - 'site/v6.css'
       - 'site/v11.css'
       - 'site/v12.css'
@@ -79,6 +83,8 @@ jobs:
         run: node tests/browser_cloud_email.js
       - name: Verify password login and cross-device sync without SMTP in Chromium/WebKit
         run: node tests/browser_cloud_password.js
+      - name: Verify Paper Calm and Soft Graphite visual contrast and theme persistence
+        run: node tests/browser_reading_theme_v1.js
       - name: Browser smoke summary
         if: always()
         run: |

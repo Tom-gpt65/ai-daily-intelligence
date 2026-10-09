@@ -1,0 +1,182 @@
+/* AI Daily Intelligence V1 — Paper Calm / Soft Graphite.
+ * Accessibility-first reading tokens. Loaded AFTER legacy styles.
+ * The .light class chooses the default paper theme; dark remains opt-in.
+ * No external fonts, images, credentials, or data migrations.
+ */
+:root {
+  color-scheme: dark;
+  --bg: #171C1E;
+  --side: #1D2528;
+  --surface: #22292A;
+  --surface2: #2B3535;
+  --reader-paper: #22292A;
+  --border: #53615E;
+  --control-border: #82938B;
+  --nav-border: #82938B;
+  --input-border: #82938B;
+  --panel: #22292A;
+  --text: #E8E4DB;
+  --muted: #B9B8AE;
+  --accent: #B2D1B9;
+  --accent-low: #35493F;
+  --warm: #D9B69B;
+  --link: #ABD3E1;
+  --focus-ring: #B1D3E0;
+  --on-accent: #171C1E;
+  --selection-bg: #405746;
+  --success: #B2D9BF;
+  --warning: #F0C98C;
+  --danger: #F0ADA5;
+  --shadow: 0 14px 44px rgba(0, 0, 0, .17);
+}
+:root.light {
+  color-scheme: light;
+  --bg: #F2EEE6;
+  --side: #E8E1D6;
+  --surface: #FFFDF8;
+  --surface2: #F5F1E8;
+  --reader-paper: #FFFDF8;
+  --border: #D2CABD;
+  --control-border: #838E83;
+  --nav-border: #737E73;
+  --input-border: #838E83;
+  --panel: #FFFDF8;
+  --text: #292C29;
+  --muted: #5D655E;
+  --accent: #355C4E;
+  --accent-low: #E5EFE8;
+  --warm: #855B43;
+  --link: #2E5D70;
+  --focus-ring: #2B6378;
+  --on-accent: #FFFFFF;
+  --selection-bg: #D9EACB;
+  --success: #2D6A4F;
+  --warning: #855A20;
+  --danger: #A1433F;
+  --shadow: 0 14px 44px rgba(39, 36, 30, .07);
+}
+
+/* Stable, quiet reading surfaces: neutral paper for words and translation. */
+html { background: var(--bg); }
+body, .main { background: var(--bg); color: var(--text); }
+.sidebar { background: var(--side); }
+.briefing-card { background: var(--reader-paper); border-color: var(--border); box-shadow: var(--shadow); }
+#reader, #reader .essay-paragraph, #reader .word {
+  color: var(--text);
+}
+#reader { background: var(--reader-paper); }
+.reader .essay-paragraph::before { opacity: 1; color: var(--muted); }
+#reader .word:hover, #reader .word:focus-visible {
+  background: var(--accent-low);
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: .12em;
+}
+:root.light .reader .word:focus-visible { background: var(--accent-low); }
+.reader .translation-paragraph {
+  background: var(--surface2);
+  color: var(--text);
+  border-left-color: var(--accent);
+}
+.reader-toolbar, .reader-navigator { background: var(--surface2); }
+.reader .source-ref,
+.source-alternates a,
+.schedule-live a,
+.audit-link,
+.cloud-sync-unavailable a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+::selection { background: var(--selection-bg); color: var(--text); }
+
+/* Ink colours stay readable on both paper and sidebar surfaces. */
+.side-label span, .slash, .operational-details { opacity: 1; }
+.status-pill.demo { color: var(--warning); border-color: var(--control-border); }
+.connection-alert { border-left-color: var(--warning); }
+.question-feedback.is-wrong { border-left-color: var(--danger); }
+.schedule-live.schedule-failed { border-color: var(--danger); background: var(--surface2); }
+.schedule-live.schedule-success,
+.schedule-live.schedule-recovered { border-color: var(--success); background: var(--surface2); }
+.evidence-focus { background: var(--accent-low); outline-color: var(--focus-ring); }
+
+/* Controls: >= 3:1 visible boundary; readable text and non-colour status. */
+.small-button,
+.icon-button,
+.reader-nav-link,
+.reader-nav-select,
+.archive-card,
+.word-actions button,
+.word-tools input[type="search"],
+.archive-tools input,
+.archive-tools select,
+.question-answer,
+.question-choice,
+.cloud-sync-actions input {
+  border-color: var(--control-border);
+}
+.small-button, .icon-button, .reader-nav-link, .reader-nav-select {
+  background: var(--surface);
+  color: var(--text);
+}
+.small-button.review-cta { background: var(--accent-low); color: var(--accent); }
+.archive-card, .word-card, .panel, .review-panel, .story-card,
+.overview-stat, .cloud-sync-panel, .dictionary-popover {
+  background: var(--surface);
+  color: var(--text);
+}
+.cloud-sync-panel { border-color: var(--border); }
+.cloud-sync-actions input {
+  background: var(--panel);
+  color: var(--text);
+  border-color: var(--input-border);
+}
+.cloud-sync-feedback, .cloud-sync-help, .cloud-sync-status { color: var(--muted); }
+#sync-password-submit, .save-button, .edition-symbol {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+:root.light .save-button, :root.light .edition-symbol { color: var(--on-accent); }
+.skip-link { background: var(--accent); color: var(--on-accent); }
+.nav-item.selected {
+  background: var(--surface2);
+  color: var(--text);
+  border-color: var(--nav-border);
+}
+.nav-item:hover { color: var(--text); }
+.nav-item.selected .nav-icon { color: var(--accent); }
+.question-choice:has(input:checked) { background: var(--accent-low); border-color: var(--accent); }
+
+/* Never hide keyboard focus solely behind a subtle neutral border. */
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible,
+.reader .word:focus-visible, .reader-nav-select:focus-visible,
+.cloud-sync-actions input:focus-visible,
+.cloud-sync-actions button:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+:root.light #reader .word:focus-visible, :root #reader .word:focus-visible {
+  outline-color: var(--focus-ring);
+}
+
+/* Print always uses ink on white, including if user was in night mode. */
+@media print {
+  :root, :root.light {
+    color-scheme: light;
+    --bg: #FFFFFF;
+    --side: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface2: #FFFFFF;
+    --reader-paper: #FFFFFF;
+    --text: #111111;
+    --muted: #333333;
+    --accent: #222222;
+    --accent-low: #EEEEEE;
+    --link: #222222;
+    --border: #999999;
+    --shadow: none;
+  }
+  .briefing-card, #reader { box-shadow: none; background: #FFFFFF; color: #111111; }
+}

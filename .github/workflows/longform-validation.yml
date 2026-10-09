@@ -19,6 +19,7 @@ on:
       - 'site/cloud-sync.js'
       - 'site/cloud-config.json'
       - 'site/v1.css'
+      - 'site/reading-theme-v1.css'
       - 'site/index.html'
   workflow_dispatch:
   # Independent non-deploying health check: 15:05 Hong Kong time every day.
@@ -49,6 +50,7 @@ jobs:
           node tests/cloud_sync_test.js
           node tests/cloud_integration_test.js
           node tests/cloud_password_test.js
+          node tests/reading_theme_tokens_v1.js
           node --check site/sw.js
           python - <<'PY'
           import json,re,sys
