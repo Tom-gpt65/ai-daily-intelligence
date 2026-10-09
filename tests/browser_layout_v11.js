@@ -15,8 +15,14 @@ async function check(engine,browser,width){
   await page.route('https://api.github.com/**',r=>r.fulfill({status:200,headers:{'access-control-allow-origin':'*'},contentType:'application/json',body:JSON.stringify({workflow_runs:[]})}));
   await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded',timeout:25000});
   await page.locator('.essay-paragraph').first().waitFor({state:'visible',timeout:25000});
+  const fontSize=()=>page.locator('#reader .essay-paragraph').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+  const initialFont=await fontSize();
   await page.locator('#font-button').click();
+  const largeFont=await fontSize();
+  assert.ok(largeFont>=initialFont+3,engine+' '+width+': AA first tap did not enlarge actual text');
   await page.locator('#font-button').click();
+  const hugeFont=await fontSize();
+  assert.ok(hugeFont>largeFont+2,engine+' '+width+': AA second tap did not enlarge actual text');
   assert.equal(await page.locator('#reader.font-xlarge').count(),1,engine+' '+width+': large font not activated');
   const metric=await page.evaluate(()=>{
     const rect=id=>{const el=document.querySelector(id);if(!el)return null;const r=el.getBoundingClientRect();return {left:r.left,right:r.right,width:r.width}};
@@ -43,6 +49,7 @@ async function check(engine,browser,width){
   const original=await page.evaluate(()=>localStorage.getItem('ai-daily-saved-v2'));
   await page.locator('#reset-reading').click();
   assert.equal(await page.locator('#reader.font-xlarge').count(),0,engine+' '+width+': layout reset failed');
+  assert.equal(await fontSize(),initialFont,engine+' '+width+': actual font size not reset');
   assert.equal(await page.evaluate(()=>localStorage.getItem('ai-daily-font-scale')),'0',engine+' '+width+': font-scale setting not reset');
   assert.equal(await page.evaluate(()=>localStorage.getItem('ai-daily-saved-v2')),original,engine+' '+width+': reset damaged saved words');
   assert.deepEqual(failures,[],engine+' '+width+': uncaught JS failures');

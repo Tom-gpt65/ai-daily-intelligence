@@ -29,11 +29,32 @@ const {chromium,webkit}=require('playwright');
      assert.ok(measures.document<=width+2,name+' '+width+' document overflow '+JSON.stringify(measures));
      assert.ok(measures.left>=-1&&measures.right<=width+1,name+' '+width+' paragraph clipped '+JSON.stringify(measures));
      if(width<=1024)assert.notEqual(measures.select,'none','Chapter picker missing');
+     assert.equal(await page.locator('#reading-speed').count(),0,'Unwanted speed switch remains');
+     assert.equal(await page.locator('#overview-minutes').count(),0,'Unwanted minute estimate remains');
+     const editionMode=await page.evaluate(()=>document.querySelector('#status-banner').classList.contains('hidden'));
+     assert.ok(editionMode,'Redundant source-digest badge should be hidden for normal editions');
+     const fontSizes=async()=>page.evaluate(()=>{
+       const paragraph=document.querySelector('#reader .essay-paragraph');
+       const word=paragraph.querySelector('.word');
+       return {reader:parseFloat(getComputedStyle(document.querySelector('#reader')).fontSize),
+         paragraph:parseFloat(getComputedStyle(paragraph).fontSize),
+         word:word?parseFloat(getComputedStyle(word).fontSize):null};
+     });
+     const standard=await fontSizes();
      await page.locator('#font-button').click();
-     const scale=await page.locator('#reader').getAttribute('class');
-     assert.ok(scale.includes('font-large'));
+     const bigger=await fontSizes();
+     assert.ok(bigger.paragraph>=standard.paragraph+3,
+       'AA has no visible computed-size effect: '+JSON.stringify({standard,bigger}));
+     assert.equal(bigger.paragraph,bigger.word,'Clicked words must grow with paragraph text');
+     assert.match(await page.locator('#font-button').innerText(),/放大/);
+     await page.locator('#font-button').click();
+     const largest=await fontSizes();
+     assert.ok(largest.paragraph>bigger.paragraph+2,'Third font size is not larger');
+     assert.match(await page.locator('#font-button').innerText(),/特大/);
      await page.locator('#reset-reading').click({force:true});
-     assert.ok(!(await page.locator('#reader').getAttribute('class')).includes('font-large'));
+     const reset=await fontSizes();
+     assert.equal(reset.paragraph,standard.paragraph,'Font reset did not restore actual size');
+     assert.match(await page.locator('#font-button').innerText(),/標準/);
      // Test a missing inflection from the original article dictionary entirely offline.
      await page.evaluate(()=>{
        const paragraph=document.createElement('p');paragraph.className='essay-paragraph';

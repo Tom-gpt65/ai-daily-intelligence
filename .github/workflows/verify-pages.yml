@@ -106,7 +106,7 @@ jobs:
           assert './app.js?v=1' in markup,'Version-busted reader code missing from HTML'
           with urllib.request.urlopen(base+'sw.js',timeout=20) as response:
               worker=response.read().decode('utf-8')
-          assert 'ai-daily-V1-first-complete-release' in worker,'Updated iPhone cache version missing'
+          assert 'ai-daily-V1-reader-type-maintenance' in worker,'Updated iPhone cache version missing'
           assert "fetch(event.request,{cache:'no-cache'})" in worker,'Reader shell not network-first'
           print('V1 content, offline dictionary and responsive reading VERIFIED')
           PY

@@ -13,9 +13,13 @@ class FirstReleaseTests(unittest.TestCase):
         self.assertIn('./v1.css?v=1',html)
         self.assertIn('./app.js?v=1',html)
         self.assertNotIn('v16.css',html)
-        self.assertIn("ai-daily-V1-first-complete-release",worker)
+        self.assertIn("ai-daily-V1-reader-type-maintenance",worker)
         self.assertIn("'./v1.css'",worker)
         self.assertTrue((SITE/"v1.css").is_file())
+        self.assertNotIn('id="reading-speed"',html)
+        self.assertNotIn('id="overview-minutes"',html)
+        self.assertIn('class="status-pill hidden"',html)
+        self.assertIn('font-size-state',html)
     def test_learning_records_stay_backward_compatible(self):
         app=(SITE/"app.js").read_text(encoding="utf-8")
         for key in ("ai-daily-saved-v2","ai-daily-quiz-v6",
