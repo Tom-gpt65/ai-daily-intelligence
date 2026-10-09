@@ -69,3 +69,17 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   .translation-disclosure,.quality-disclosure{display:none}
   .reader .essay-paragraph{max-width:100%!important}
 }
+
+/* V1 maintenance: correct AA CSS specificity; no reading-time widgets. */
+#reader.font-large{font-size:22px;line-height:1.85}
+#reader.font-xlarge{font-size:26px;line-height:1.8}
+#reader .essay-paragraph,#reader .essay-paragraph .word{font-size:inherit}
+.font-size-state{display:inline-block;margin-inline-start:6px;font-size:11px;vertical-align:middle;letter-spacing:0}
+.edition-overview{grid-template-columns:repeat(3,minmax(0,1fr))}
+.status-row:has(.status-pill.hidden){justify-content:flex-end}
+@media(max-width:650px){
+ #reader.font-large{font-size:21.5px;line-height:1.79}
+ #reader.font-xlarge{font-size:25px;line-height:1.74}
+ .edition-overview{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .edition-overview .overview-stat:last-child{grid-column:1 / -1}
+}

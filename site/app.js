@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const state = { report: null, index: [], dictCache: new Map(), showTranslation: false, largeText: false, fontScale: 0, readingWpm: 115, view: 'today', lookup: '' };
+  const state = { report: null, index: [], dictCache: new Map(), showTranslation: false, largeText: false, fontScale: 0, view: 'today', lookup: '' };
   const safeStorage = {
     get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } },
     set(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch { toast('瀏覽器無法儲存資料。'); } }
@@ -288,15 +288,6 @@
       }
     }catch{showConnectivity(true);}
   }
-  function readingEstimate(){
-    const words=Number(state.report?.word_count)||0;
-    return words ? Math.max(1, Math.round(words/state.readingWpm*10)/10) : 0;
-  }
-  function renderReadingEstimate(){
-    const estimate=readingEstimate();
-    $('overview-minutes').textContent=estimate ? `約 ${estimate} 分鐘` : '—';
-    $('reading-speed').textContent=`閱讀速度：${state.readingWpm} 字／分鐘`;
-  }
   function renderStoryCards(r){
     const root=$('story-cards');root.replaceChildren();
     if(r.mode==='reading_feature'){
@@ -435,6 +426,16 @@
     }
   }
 
+  function applyFontScale(){
+    // Update actual computed font size without destroying the reading DOM.
+    const root=$('reader'),button=$('font-button'),scale=state.fontScale;
+    root.classList.toggle('font-large',scale>=1);
+    root.classList.toggle('font-xlarge',scale>=2);
+    const label=['標準','放大','特大'][scale];
+    button.querySelector('.font-size-state').textContent=label;
+    button.setAttribute('aria-label','調整英文字體大小；目前為'+label);
+    button.setAttribute('title','目前：'+label+'；點擊切換');
+  }
   function renderReader() {
     const root = $('reader'); root.replaceChildren();
     const r = state.report; if (!r) { root.textContent = '暫時未有報告。'; return; }
@@ -462,7 +463,7 @@
         trans.lang='zh-Hant';trans.textContent=translated[idx];root.appendChild(trans);
       }
     });
-    root.classList.toggle('font-large', state.fontScale>=1);root.classList.toggle('font-xlarge', state.fontScale>=2); updateProgress();
+    applyFontScale(); updateProgress();
   }
   function translationCacheKey(report){
     const text=report.essay.join('\n');let hash=2166136261;
@@ -620,9 +621,11 @@
       toast('暫停在已完成段落：'+String(error.message||error).slice(0,60));
     }finally{translationBusy=false;translationCancel=false;renderReader();syncTranslationButton();}
   }
-  function setModeBanner(mode) {
-    const el = $('status-banner'); el.classList.toggle('demo', mode === 'demo');
-    el.textContent = ({demo:'⚠ 示範教材 · 非即時新聞', editorial:'✦ 已整理當日新聞 · AI 英文改寫', source_digest:'來源式新聞閱讀 · 按公開摘要整理', reading_feature:'AI 英文延伸閱讀 · 非即時新聞'})[mode] || '已發布報告';
+  function setModeBanner(mode){
+    const el=$('status-banner'),notice=mode==='demo'||mode==='reading_feature';
+    el.classList.toggle('hidden',!notice);
+    el.classList.toggle('demo',mode==='demo');
+    if(notice)el.textContent=mode==='demo'?'⚠ 示範教材 · 非即時新聞':'AI 英文延伸閱讀 · 非即時新聞';
   }
   function hkDate() {
     const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
@@ -672,8 +675,6 @@
     $('report-headline').textContent = r.headline || 'AI Daily Briefing';
     $('report-subtitle').textContent = r.subtitle || '';
     $('report-metadata').textContent = `${formatDate(r.date)} · ${r.word_count || 0} words · ${r.mode==='reading_feature'?'延伸閱讀':(r.stories||[]).length+' sources'}`;
-    renderReadingEstimate();
-    $('overview-words').textContent=`${r.word_count||0} English words${r.mode==='source_digest'?' · 來源式英文深度分析':''}`;
     $('overview-stories').textContent=r.mode==='reading_feature'?'非即時新聞':(r.stories||[]).length+' 則';
     $('overview-vocab').textContent=(r.advanced_vocabulary||[]).length+' 個';
     $('reading-quality').textContent=r.quality_note||'資料可能有誤；請核實來源。';
@@ -1037,8 +1038,7 @@
     }));
     $('tools-toggle').addEventListener('click',()=>{const expanded=document.body.classList.toggle('tools-expanded');$('tools-toggle').setAttribute('aria-expanded',String(expanded));$('tools-toggle').textContent=expanded?'收起其他閱讀工具 ▴':'更多閱讀工具 ▾';});
     $('focus-toggle').addEventListener('click',()=>{focusMode=!focusMode;document.body.classList.toggle('focus-mode',focusMode);$('focus-toggle').setAttribute('aria-pressed',String(focusMode));$('focus-toggle').textContent=focusMode?'離開專注模式':'專注閱讀';});
-    $('reading-speed').addEventListener('click',()=>{const speeds=[90,115,145];state.readingWpm=speeds[(speeds.indexOf(state.readingWpm)+1)%speeds.length];safeStorage.set('ai-daily-reading-wpm',state.readingWpm);renderReadingEstimate();});
-    $('font-button').addEventListener('click',()=>{state.fontScale=(state.fontScale+1)%3;safeStorage.set('ai-daily-font-scale',state.fontScale);renderReader();toast(['標準字體','放大字體','特大字體'][state.fontScale]);});
+    $('font-button').addEventListener('click',()=>{state.fontScale=(state.fontScale+1)%3;safeStorage.set('ai-daily-font-scale',state.fontScale);applyFontScale();});
     $('theme-button').addEventListener('click',()=>{document.documentElement.classList.toggle('light');safeStorage.set('ai-daily-light',document.documentElement.classList.contains('light'));});
     $('pop-close').addEventListener('click',()=>closePopover(true));
     $('resume-reading').addEventListener('click',()=>{const amount=Number(progressRecords[state.report?.date]||0);const card=document.querySelector('.briefing-card');const target=card.getBoundingClientRect().top+scrollY+(card.offsetHeight-innerHeight)*(amount/100);window.scrollTo({top:Math.max(0,target),behavior:'smooth'});});
@@ -1089,8 +1089,7 @@
   async function init(){
     if(safeStorage.get('ai-daily-light',false))document.documentElement.classList.add('light');
     state.fontScale=Math.max(0,Math.min(2,Number(safeStorage.get('ai-daily-font-scale',0))||0));
-    const storedSpeed=Number(safeStorage.get('ai-daily-reading-wpm',115));state.readingWpm=[90,115,145].includes(storedSpeed)?storedSpeed:115;
-    renderReadingEstimate();
+    applyFontScale();
     showConnectivity();
     $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
     updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();
@@ -1105,7 +1104,7 @@
       renderScheduleHealth();
     }catch{
       showConnectivity(true);
-      $('status-banner').textContent='無法取得最新報告';$('report-headline').textContent='報告正在準備中';
+      $('status-banner').classList.remove('hidden');$('status-banner').textContent='無法取得最新報告';$('report-headline').textContent='報告正在準備中';
       $('reader').textContent='目前沒有可載入的文章。可能尚未首次發布，也可能是離線而未快取。請重新連線或檢查 GitHub Actions。';
     }
   }

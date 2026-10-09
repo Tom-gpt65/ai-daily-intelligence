@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="./v6.css">
   <link rel="stylesheet" href="./v11.css?v=1">
   <link rel="stylesheet" href="./v12.css?v=1">
-  <link rel="stylesheet" href="./v1.css?v=1">
+  <link rel="stylesheet" href="./v1.css?v=1&fix=reader-type">
 </head>
 <body>
   <a class="skip-link" href="#reader">跳到英文閱讀文章</a>
@@ -52,11 +52,10 @@
           
         </section>
         <a class="jump-to-reader" href="#reader">直接閱讀今日英文文章 <span aria-hidden="true">↓</span></a>
-        <div class="status-row"><span id="status-banner" class="status-pill">載入中…</span><div id="report-metadata" class="report-metadata"></div></div>
+        <div class="status-row"><span id="status-banner" class="status-pill hidden">載入中…</span><div id="report-metadata" class="report-metadata"></div></div>
         <div class="schedule-live" id="schedule-live" role="status"><span id="schedule-text">正在查核今日文章及排程…</span><a id="schedule-run-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml" target="_blank" rel="noopener noreferrer">工作紀錄</a><button type="button" id="refresh-schedule" aria-label="重新核對最新文章與定時狀態">↻</button></div>
         <div id="freshness-note" class="freshness-note hidden" role="status"></div>
         <section class="edition-overview" aria-label="本日閱讀概況">
-          <div class="overview-stat"><span class="overview-label">閱讀長度</span><strong id="overview-minutes">載入中…</strong><small id="overview-words">1,000 字以上 · 按閱讀速度估算</small></div>
           <div class="overview-stat"><span class="overview-label">新聞線索</span><strong id="overview-stories">—</strong><small>附原文與日期</small></div>
           <div class="overview-stat"><span class="overview-label">今日生字</span><strong id="overview-vocab">—</strong><small>點擊立即查字</small></div>
           <div class="overview-stat"><span class="overview-label">本機學習紀錄</span><strong id="overview-read">0 篇</strong><small id="overview-due">0 個待複習</small></div>
@@ -68,7 +67,7 @@
         <section class="briefing-card" aria-label="AI briefing">
           <div class="card-header"><div><div class="section-overline">DAILY EDITION</div><h2 id="report-headline">正在載入每日簡報</h2><p id="report-subtitle">新聞來源會列於文章下方。</p><div class="reading-reset-banner hidden" id="zoom-notice" role="status">偵測到 Safari 頁面被放大。若文字超出畫面，請用雙指縮小或在 Safari「大小」控制重設至 100%。<button type="button" id="zoom-dismiss" aria-label="隱藏提示">知道了</button></div></div><div class="edition-symbol">AI<span>↗</span></div></div>
           <div class="reading-bar"><span class="bar-track"><span id="progress-bar" class="bar-fill"></span></span><span id="progress-percent" aria-live="off">0%</span></div>
-          <div class="reader-toolbar"><span class="helper"><span class="mini-spark">✧</span> 點擊任何英文生字即可查詢中文意思</span><div class="toolbar-right"><button class="small-button reader-tools-more" type="button" id="tools-toggle" aria-expanded="false">更多閱讀工具 ▾</button><button class="small-button" type="button" id="reading-speed" title="調整估算閱讀速度；不會影響文章難度">閱讀速度：115 字／分鐘</button><button class="small-button" type="button" id="resume-reading">接續閱讀</button><button class="small-button" type="button" id="focus-toggle" aria-pressed="false">專注閱讀</button><button class="small-button" type="button" id="translate-toggle">顯示中文譯文</button><button class="small-button" type="button" id="font-button" aria-label="調整英文字體大小（三級循環）">A<span class="font-bigger">A</span></button><button class="small-button reset-reading" type="button" id="reset-reading" aria-label="重設閱讀版面及字體（保留生字與進度）">↺ 重設版面</button><button class="small-button" type="button" id="export-report">匯出文章</button><button class="small-button" type="button" id="print-report">列印</button></div></div>
+          <div class="reader-toolbar"><span class="helper"><span class="mini-spark">✧</span> 點擊任何英文生字即可查詢中文意思</span><div class="toolbar-right"><button class="small-button reader-tools-more" type="button" id="tools-toggle" aria-expanded="false">更多閱讀工具 ▾</button><button class="small-button" type="button" id="resume-reading">接續閱讀</button><button class="small-button" type="button" id="focus-toggle" aria-pressed="false">專注閱讀</button><button class="small-button" type="button" id="translate-toggle">顯示中文譯文</button><button class="small-button" type="button" id="font-button" aria-label="調整英文字體大小；目前為標準" title="點擊切換標準、放大和特大字體">A<span class="font-bigger">A</span><span class="font-size-state">標準</span></button><button class="small-button reset-reading" type="button" id="reset-reading" aria-label="重設閱讀版面及字體（保留生字與進度）">↺ 重設版面</button><button class="small-button" type="button" id="export-report">匯出文章</button><button class="small-button" type="button" id="print-report">列印</button></div></div>
           <nav id="reader-navigator" class="reader-navigator" aria-label="文章段落導航"></nav>
           <details class="translation-disclosure"><summary>全文翻譯及私隱說明</summary><p id="translation-policy" class="translation-policy">全文翻譯需連接第三方服務，使用前會要求同意傳送公開英文文章；譯文可能不準確。離線單字詞典不受影響。</p></details><div id="reader" class="reader" lang="en" tabindex="-1"></div>
           <details class="quality-disclosure"><summary>本文內容與來源說明</summary><div class="reading-quality" id="reading-quality"></div></details>
@@ -102,6 +101,6 @@
     <button type="button" id="save-word" class="save-button">＋ 儲存生字</button><button type="button" id="lookup-online" class="small-button online-lookup hidden">查詢線上免費詞典（只傳送此單字）</button>
   </div>
   <div id="toast" class="toast hidden" role="status"></div>
-  <script src="./app.js?v=1" defer></script>
+  <script src="./app.js?v=1&fix=reader-type" defer></script>
 </body>
 </html>
