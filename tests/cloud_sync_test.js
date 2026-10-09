@@ -17,6 +17,11 @@ const e1={event_id:'1',word:'concerns',payload:original,deleted:false,created_at
 const e2={event_id:'2',word:'concerns',payload:reviewed,deleted:false,created_at:'2026-10-09T00:01:00Z'};
 const e3={event_id:'3',word:'concerns',payload:{},deleted:true,created_at:'2026-10-09T00:02:00Z'};
 assert.equal(replay([e2,e1]).concerns.reviewLevel,3,'Later reviews win');
+const tiedTime='2026-10-09T01:00:00Z';
+const earlierInBatch={...e1,event_id:'z',created_at:tiedTime,batch_order:0};
+const laterInBatch={...e2,event_id:'a',created_at:tiedTime,batch_order:1};
+assert.equal(replay([laterInBatch,earlierInBatch]).concerns.reviewLevel,3,
+  'Batch order must win when server timestamps tie, not random UUID lexical order');
 assert.equal(replay([e3,e2,e1]).concerns,undefined,'Deletion tombstone remains deleted');
 assert.equal(replay([e1,e2,e3,e3]).concerns,undefined,'Idempotent replay');
 assert.equal(Object.keys(replay([e1,e2,e3])).length,0);
@@ -28,4 +33,4 @@ assert.deepEqual(cleanPayload({...original,extra:'do not leak'}),{
   translation:'關乎',phonetic:'',savedAt:'2026-10-09T00:00:00Z',
   reviewLevel:0,nextReview:'',lastReviewed:''
 });
-console.log('Cloud vocabulary conflict, tombstone, offline replay and data validation PASS');
+console.log('Cloud vocabulary conflict, same-timestamp batch order, tombstone, offline replay and data validation PASS');
