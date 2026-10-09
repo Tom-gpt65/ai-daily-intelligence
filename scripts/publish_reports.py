@@ -77,7 +77,12 @@ def publish(max_attempts=5):
             # last completed generation wins if it has a newer update timestamp.
             incoming=read_json(backup/"reports"/f"{current_date}.json",{})
             existing=read_json(REPORTS/f"{current_date}.json",{})
-            if existing and not incoming_is_newer(existing,incoming):
+            # An already verified sourced news article outranks a later
+            # emergency educational reserve for the same Hong Kong date.
+            # Updating content in a slow retry must not downgrade the edition.
+            preserve_news=(existing.get("mode") in ("editorial","source_digest")
+                           and incoming.get("mode")=="reading_feature" and complete(existing))
+            if existing and (preserve_news or not incoming_is_newer(existing,incoming)):
                 chosen=existing
                 preserve_remote_status=True
             else:
