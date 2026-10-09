@@ -59,6 +59,7 @@ const {chromium,webkit}=require('playwright');
      assert.ok(largest.paragraph>bigger.paragraph+2,'Third font size is not larger');
      assert.match(await page.locator('#font-button').innerText(),/特大/);
      await page.locator('#reset-reading').click({force:true});
+     await page.waitForFunction(base=>Math.abs(parseFloat(getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize)-base)<0.2,standard.paragraph,{timeout:2500});
      const reset=await fontSizes();
      assert.equal(reset.paragraph,standard.paragraph,'Font reset did not restore actual size');
      assert.match(await page.locator('#font-button').innerText(),/標準/);

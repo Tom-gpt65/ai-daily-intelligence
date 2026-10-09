@@ -20,16 +20,7 @@ async function check(engine,browser,width){
   await page.locator('#font-button').click();
   await page.waitForFunction(base=>parseFloat(getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize)>=base+3,initialFont,{timeout:2500});
   const largeFont=await fontSize();
-  const fontDebug=await page.evaluate(()=>({
-    readerClass:document.querySelector('#reader').className,
-    readerInline:document.querySelector('#reader').getAttribute('style'),
-    readerSize:getComputedStyle(document.querySelector('#reader')).fontSize,
-    paragraphSize:getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize,
-    button:document.querySelector('#font-button').textContent,
-    styles:[...document.styleSheets].map(x=>x.href?.split('/').pop()).filter(Boolean)
-  }));
-  console.log('AA computed-size check',engine,width,{initialFont,largeFont,fontDebug});
-  assert.ok(largeFont>=initialFont+3,engine+' '+width+': AA first tap did not enlarge actual text: '+JSON.stringify({initialFont,largeFont,fontDebug}));
+  assert.ok(largeFont>=initialFont+3,engine+' '+width+': AA first tap did not enlarge actual text: '+JSON.stringify({initialFont,largeFont}));
   await page.locator('#font-button').click();
   await page.waitForFunction(base=>parseFloat(getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize)>base+2,largeFont,{timeout:2500});
   const hugeFont=await fontSize();
@@ -60,6 +51,7 @@ async function check(engine,browser,width){
   const original=await page.evaluate(()=>localStorage.getItem('ai-daily-saved-v2'));
   await page.locator('#reset-reading').click();
   assert.equal(await page.locator('#reader.font-xlarge').count(),0,engine+' '+width+': layout reset failed');
+  await page.waitForFunction(base=>Math.abs(parseFloat(getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize)-base)<0.2,initialFont,{timeout:2500});
   assert.equal(await fontSize(),initialFont,engine+' '+width+': actual font size not reset');
   assert.equal(await page.evaluate(()=>localStorage.getItem('ai-daily-font-scale')),'0',engine+' '+width+': font-scale setting not reset');
   assert.equal(await page.evaluate(()=>localStorage.getItem('ai-daily-saved-v2')),original,engine+' '+width+': reset damaged saved words');
