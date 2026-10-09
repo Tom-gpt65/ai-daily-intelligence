@@ -49,6 +49,33 @@ class DSEV7Tests(unittest.TestCase):
         self.assertIn("80–120 words",extended["stem"])
         self.assertFalse(book["official"])
 
+    def test_cross_source_questions_cover_distinct_news(self):
+        paragraphs=[
+            "The opening argues that a cautious interpretation needs different sources of evidence.",
+            "Investment announcements describe financial expectations [S1] but do not demonstrate technical reliability.",
+            "The research paper [S2] presents evaluation methods, which require replication and clear limitations.",
+            "A computer release [S3] concerns hardware specifications and value to users.",
+            "A policy change [S4] concerns accountability, implementation and institutional oversight.",
+            "Finally, investment, research, hardware and governance cannot be judged by interchangeable standards."
+        ]
+        sources=[
+            {"id":"S1","title":"AI funding","publisher":"Finance","topic":"Investment"},
+            {"id":"S2","title":"Agent benchmark","publisher":"Journal","topic":"Research"},
+            {"id":"S3","title":"AI computers","publisher":"Technology","topic":"Hardware"},
+            {"id":"S4","title":"AI governance rules","publisher":"Policy","topic":"Governance"}
+        ]
+        practice=make_exam(paragraphs,sources,"2026-10-09")
+        items={q["id"]:q for q in practice["items"]}
+        import re
+        ids4=set(re.findall(r"\[(S\d+)\]",items["Q4"]["stem"]))
+        ids7=set(re.findall(r"\[(S\d+)\]",items["Q7"]["stem"]))
+        self.assertEqual(len(ids4),2)
+        self.assertEqual(len(ids7),2)
+        self.assertEqual(ids4 | ids7,{"S1","S2","S3","S4"})
+        for question in (items["Q4"],items["Q7"]):
+            self.assertIn(question["evidence_quote"].split(" / ")[0][:40],
+                          paragraphs[question["paragraph"]-1])
+
     def test_daily_shuffle_prevents_fixed_answer_key(self):
         keys=[make_exam(self.essay,self.stories,f"2026-10-{day:02d}")["items"][0]["answer"] for day in range(9,20)]
         self.assertGreater(len(set(keys)),1)
