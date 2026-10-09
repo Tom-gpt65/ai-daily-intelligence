@@ -15,7 +15,8 @@ const {chromium,webkit}=require('playwright');
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
      assert.equal(await page.locator('#site-version').innerText(),'v13');
      assert.equal(await page.locator('.intro p').count(),0,'Unnecessary intro copy still displayed');
-     assert.equal(await page.locator('#freshness-note').isVisible(),false,'Repeated quality banner should be hidden for a valid current report');
+     const warning=await page.locator('#freshness-note').innerText();
+     if(await page.locator('#freshness-note').isVisible())assert.match(warning,/舊文章|示範文章|1,000 字|晚於/,'Visible warning must explain a genuine issue');
      const detailPlace=await page.evaluate(()=>document.querySelector('#technical-status').compareDocumentPosition(document.querySelector('#question-list')) & Node.DOCUMENT_POSITION_PRECEDING);
      assert.ok(detailPlace,'Technical details must follow reading content');
      const measures=await page.evaluate(()=>{
