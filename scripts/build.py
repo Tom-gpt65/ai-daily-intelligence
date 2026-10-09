@@ -22,6 +22,7 @@ from zoneinfo import ZoneInfo
 from learning_editorial import is_promotional
 from dse_editorial import compose_briefing
 from dse_assessment_v7 import make_exam
+from editorial_quality import inspect as inspect_editorial_quality
 from source_context import enrich as enrich_source_metadata
 
 from email.utils import parsedate_to_datetime
@@ -654,6 +655,9 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         "questions": make_questions(sources),
         "practice": make_exam(essay, sources, date),
     }
+    report["editorial_quality"] = inspect_editorial_quality(essay, sources)
+    if not report["editorial_quality"]["training_structure_pass"]:
+        report["quality_note"] += " 檢測到閱讀訓練品質警告；詳情見下方品質提示。"
     report["advanced_vocabulary"] = choose_vocab(report["dictionary"])
     put_report(report)
     put_status("published", now, latest_date=date, mode=report["mode"], source_count=len(sources),
