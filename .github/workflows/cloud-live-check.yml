@@ -39,7 +39,12 @@ jobs:
                   assert json.loads(body)==expected,'Public Pages config has not caught up with main'
                   status,js=get(base+'cloud-sync.js')
                   assert status==200 and 'created_at.asc,batch_order.asc,event_id.asc' in js,'Live cloud script is outdated'
-                  print('LIVE V1 CLOUD CONFIG AND SCRIPT VERIFIED')
+                  assert '連線等待超過 20 秒' in js,'Live cloud email timeout feedback not deployed'
+                  status,app=get(base+'app.js')
+                  assert status==200 and '正在聯絡 Supabase…' in app,'Live email submit progress code missing'
+                  status,html=get(base+'index.html')
+                  assert status==200 and 'id="sync-email-feedback"' in html,'Live email feedback element missing'
+                  print('LIVE V1 CLOUD CONFIG AND MAGIC LINK FEEDBACK VERIFIED')
                   break
               except (OSError,ValueError,AssertionError) as error:
                   if attempt==11: raise
