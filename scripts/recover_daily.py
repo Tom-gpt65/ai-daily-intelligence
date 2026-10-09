@@ -16,9 +16,20 @@ def get_json(url,authorised=False):
     with urlopen(Request(url,headers=headers),timeout=25) as response:
         return json.load(response)
 
-def should_dispatch(latest_date,runs):
-    if latest_date==TODAY:
-        return False,"Today's report is already publicly listed"
+def should_dispatch(latest_date,runs,updated_at=None):
+    # A report dated today might have been published during the night, well
+    # before the 07:40 scheduled generation. Check publication time as well.
+    freshly_updated=False
+    if latest_date==TODAY and updated_at:
+        try:
+            update=datetime.fromisoformat(str(updated_at).replace("Z","+00:00"))
+            local=update.astimezone(ZoneInfo("Asia/Hong_Kong"))
+            freshly_updated=(local.date().isoformat()==TODAY and
+                             (local.hour,local.minute)>=(7,40))
+        except (TypeError,ValueError):
+            pass
+    if freshly_updated:
+        return False,"Today's edition was refreshed after the morning generation window"
     active=[r for r in runs if r.get("status") in {"queued","in_progress","waiting","pending","requested"}]
     if active:
         return False,"Another report generation is queued or running"
@@ -31,11 +42,18 @@ def main():
     except (OSError,ValueError,KeyError) as exc:
         print("Public report index unavailable, attempting scheduled recovery:",exc)
         date=None
+    updated_at=None
+    if date==TODAY:
+        try:
+            report=get_json("https://tom-gpt65.github.io/ai-daily-intelligence/reports/"+TODAY+".json?freshness=1")
+            updated_at=report.get("updated_at") if isinstance(report,dict) else None
+        except (OSError,ValueError,KeyError) as exc:
+            print("Could not confirm latest article timestamp:",exc)
     if not TOKEN:
         raise RuntimeError("Actions token missing; cannot trigger recovery safely")
     results=get_json(BASE+"/actions/runs?per_page=35",authorised=True)
     workflow=[r for r in results.get("workflow_runs",[]) if r.get("path")==".github/workflows/daily.yml"]
-    retry,reason=should_dispatch(date,workflow)
+    retry,reason=should_dispatch(date,workflow,updated_at)
     print(f"HK date={TODAY}; public latest={date}; decision={reason}")
     if not retry:return 0
     data=json.dumps({"ref":"main"}).encode("utf-8")
