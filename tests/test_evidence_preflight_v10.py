@@ -2,7 +2,7 @@
 import pathlib,sys,unittest
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-from build import source_evidence_metrics
+from build import source_evidence_metrics,choose_vocab
 
 class EvidencePreflightTests(unittest.TestCase):
     def test_three_headlines_are_not_a_thousand_word_news_briefing(self):
@@ -33,6 +33,14 @@ class EvidencePreflightTests(unittest.TestCase):
         ]
         self.assertFalse(source_evidence_metrics(sources)['sufficient'])
 
+    def test_vocab_spotlight_prioritises_advanced_words_present_in_current_text(self):
+        dictionary={'innovation':{},'scrutiny':{},'accountability':{},
+                    'extrapolation':{},'reproducibility':{}}
+        choices=choose_vocab(dictionary)
+        self.assertEqual(choices[0],'extrapolation')
+        self.assertEqual(choices[1],'reproducibility')
+        self.assertEqual(len(choices),len(set(choices)))
+        self.assertTrue(set(choices).issubset(dictionary))
     def test_scheduled_workflow_uses_the_same_evidence_rule(self):
         workflow=(ROOT/'.github/workflows/daily.yml').read_text(encoding='utf-8')
         self.assertIn('from build import source_evidence_metrics',workflow)
