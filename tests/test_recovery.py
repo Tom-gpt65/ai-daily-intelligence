@@ -16,7 +16,7 @@ class RecoveryTests(unittest.TestCase):
         decision,_=recover_daily.should_dispatch("2000-01-01",[])
         self.assertTrue(decision)
     def test_running_workflow_blocks_duplicate_dispatch(self):
-        decision,_=recover_daily.should_dispatch("2000-01-01",[{"status":"in_progress"}])
+        decision,_=recover_daily.should_dispatch("2000-01-01",[{"event":"schedule","status":"in_progress"}])
         self.assertFalse(decision)
     def test_code_only_website_deploy_does_not_block_news_recovery(self):
         push={"event":"push","status":"in_progress","created_at":recover_daily.TODAY+"T08:20:00+08:00"}
@@ -27,7 +27,7 @@ class RecoveryTests(unittest.TestCase):
         allowed,_=recover_daily.should_dispatch("2000-01-01",[task])
         self.assertFalse(allowed)
     def test_queued_workflow_blocks_duplicate_dispatch(self):
-        decision,_=recover_daily.should_dispatch(None,[{"status":"queued"}])
+        decision,_=recover_daily.should_dispatch(None,[{"event":"workflow_dispatch","status":"queued"}])
         self.assertFalse(decision)
     def test_completed_recovery_attempts_capped_per_day(self):
         run={"status":"completed","event":"workflow_dispatch",
