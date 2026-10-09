@@ -5,10 +5,44 @@
 'use strict';
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const path=require('node:path');
+const http=require('node:http');
 const {chromium,webkit}=require('playwright');
-const BASE='http://127.0.0.1:8765/';
+const ROOT=path.resolve(__dirname,'../site');
+function staticServer(){
+  return http.createServer((request,response)=>{
+    const pathname=new URL(request.url,'http://localhost').pathname;
+    const target=path.resolve(ROOT,'.'+decodeURIComponent(pathname==='/'=>'/index.html':pathname));
+    if(!target.startsWith(ROOT+path.sep)){response.writeHead(403).end();return;}
+    const ext=path.extname(target);
+    const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript',
+      '.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json',
+      '.svg':'image/svg+xml','.png':'image/png'}[ext]||'application/octet-stream';
+    fs.readFile(target,(error,body)=>{
+      if(error){response.writeHead(404).end('Not Found');return;}
+      response.writeHead(200,{'Content-Type':mime,'Cache-Control':'no-cache'}).end(body);
+    });
+  });
+}
+async function beginServing(server,port=0){
+  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(port,'127.0.0.1',()=>{
+    server.off('error',reject);resolve();
+  });});
+  return server.address().port;
+}
+async function stopServing(server){
+  if(!server.listening)return;
+  const done=new Promise((resolve,reject)=>server.close(err=>err?reject(err):resolve()));
+  server.closeAllConnections?.();
+  await done;
+}
 
 async function exercise(browserType,engine,width){
+  // Own origin is shut down for the test. This tests actual network failure,
+  // not a simulated offline text banner or a mocked Service Worker.
+  const server=staticServer();
+  const port=await beginServing(server);
+  const BASE='http://127.0.0.1:'+port+'/';
   const browser=await browserType.launch({headless:true});
   const context=await browser.newContext({
     viewport:{width,height:844},
@@ -82,12 +116,18 @@ async function exercise(browserType,engine,width){
       }));
       return match.some(m=>m.shell)&&match.some(m=>m.index)&&match.some(m=>m.gloss);
     },null,{timeout:20000});
-    await context.setOffline(true);
+    await stopServing(server);
+    await assert.rejects(page.evaluate(async url=>{
+      const response=await fetch(url+'uncached-network-probe',{cache:'no-store'});
+      return response.status;
+    },BASE),'The origin must really be unreachable during the offline test');
+    // A full navigation must be served by Service Worker CacheStorage.
     await page.reload({waitUntil:'domcontentloaded',timeout:25000});
     await page.locator('#reader .essay-paragraph .word').first().waitFor({
       state:'visible',timeout:25000
     });
-    assert.equal(await page.evaluate(()=>navigator.onLine),false,engine+' offline flag failed');
+    // navigator.onLine can remain true during an origin outage; the above
+    // failed uncached fetch proves the article is served without the origin.
     assert.equal(await page.locator('#site-version').innerText(),'V1');
     await page.locator('[data-view="words"]').click();
     assert.equal((await page.locator('#saved-count').innerText()).trim(),'1',
@@ -97,7 +137,7 @@ async function exercise(browserType,engine,width){
     const translation=await page.locator('#lookup-translation').innerText();
     assert.ok(translation.trim().length>0,engine+' offline dictionary unavailable');
     await page.locator('#pop-close').click();
-    await context.setOffline(false);
+    await beginServing(server,port);
     // Verify the saved backup and cache survived reconnection.
     await page.reload({waitUntil:'domcontentloaded',timeout:25000});
     await page.locator('#reader .essay-paragraph .word').first().waitFor({
@@ -108,7 +148,7 @@ async function exercise(browserType,engine,width){
     assert.deepEqual(errors,[],engine+' PWA unexpected JS errors');
     console.log('PASS',engine,width+'px',
       'real service worker, offline article, dictionary, saved words, safe full backup, reconnection');
-  }finally{await context.close();await browser.close();}
+  }finally{await context.close();await browser.close();await stopServing(server);}
 }
 (async()=>{
   for(const [name,engine] of [['Chromium',chromium],['WebKit',webkit]]){
