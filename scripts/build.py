@@ -82,6 +82,11 @@ VOCAB_SEED = {
     "ambiguous": "含糊不清的", "feasibility": "可行性", "contested": "存在爭議的",
     "notwithstanding": "儘管", "consequently": "因此", "nevertheless": "然而",
     "alleviate": "緩解", "paradigm": "範式；典範", "disparity": "差距",
+    "extrapolation": "從有限資料推展結論", "juxtaposition": "並置對照",
+    "juxtaposing": "並列比較", "reproducibility": "可重現性",
+    "asymmetry": "不對稱", "corroboration": "佐證", "provisional": "暫時性的",
+    "interchangeable": "可以互換的", "ambiguity": "含糊；歧義",
+    "concession": "讓步；承認反方部分論點", "qualification": "限制條件；保留語氣",
 }
 
 
@@ -550,10 +555,24 @@ def make_vocabulary(text: str, ecdict_path: Path | None) -> dict:
 
 
 def choose_vocab(dictionary: dict) -> list[str]:
-    priority = list(VOCAB_SEED)
-    marked = [w for w in priority if w in dictionary]
-    other = [w for w in dictionary if w not in marked and len(w) >= 9 and w.isalpha()]
-    return (marked + other)[:8]
+    """Prefer genuinely demanding context vocabulary over common AI buzzwords.
+
+    This is a small curated heuristic, not an HKEAA-certified word list.
+    The word must actually appear in the current article dictionary.
+    """
+    advanced = (
+        "extrapolation","juxtaposition","juxtaposing","reproducibility",
+        "corroboration","asymmetry","provisional","interchangeable",
+        "empirical","scrutiny","qualification","concession","accountability",
+        "scepticism","interoperability","substantiate","dissemination",
+        "paradigm","disparity","nuanced","sophisticated","threshold",
+        "inference","oversight","contested","stakeholders",
+    )
+    marked = [w for w in advanced if w in dictionary]
+    remaining = [w for w in VOCAB_SEED if w not in marked and w in dictionary]
+    other = sorted(w for w in dictionary if w not in marked and w not in remaining
+                   and len(w)>=10 and w.isalpha())
+    return (marked + remaining + other)[:8]
 
 
 def atomic_json(path: Path, value: object):
