@@ -186,7 +186,7 @@
     saved[key].nextReview=reviewNextDate(days);
     saved[key].lastReviewed=new Date().toISOString();
     reviewPosition++;
-    safeStorage.set(SAVED_KEY,saved);
+    persistWord(key);
     renderWords();renderReview();refreshDashboard();
     if(!reviewQueue.length)toast('本次複習已完成。');
   }
@@ -250,7 +250,7 @@
       quizSelections={...quizSelections,...qa};safeStorage.set('ai-daily-quiz-v6',quizSelections);
       saved={...saved,...clean};readRecords={...readRecords,...rr};writtenAnswers={...writtenAnswers,...wa};
       progressRecords={...progressRecords,...pp};safeStorage.set(PROGRESS_KEY,progressRecords);
-      safeStorage.set(SAVED_KEY,saved);safeStorage.set(READ_KEY,readRecords);safeStorage.set(ANSWERS_KEY,writtenAnswers);
+      persistImportedWords(clean);safeStorage.set(READ_KEY,readRecords);safeStorage.set(ANSWERS_KEY,writtenAnswers);
       updateSavedCount();refreshDashboard();renderWords();readingStatus();toast('學習進度已合併還原。');
     }catch{toast('備份檔案無效，沒有修改現有紀錄。');}
   }
@@ -982,7 +982,7 @@
       const title=document.createElement('div');title.className='word-title';title.textContent=key;
       const meaning=document.createElement('div');meaning.className='word-meaning';meaning.textContent=v.translation || '未有中文詞義';info.append(phon,title,meaning);
       if(v.nextReview){const review=document.createElement('div');review.className='word-review-date';review.textContent='下次複習：'+v.nextReview;info.appendChild(review);}
-      const acts=document.createElement('div');acts.className='word-actions';const del=document.createElement('button');del.type='button';del.textContent='移除';del.addEventListener('click',()=>{delete saved[key];reviewQueue=reviewQueue.filter(w=>w!==key);safeStorage.set(SAVED_KEY,saved);updateSavedCount();renderWords();renderReview();});acts.append(del);card.append(info,acts);root.append(card);
+      const acts=document.createElement('div');acts.className='word-actions';const del=document.createElement('button');del.type='button';del.textContent='移除';del.addEventListener('click',()=>{delete saved[key];reviewQueue=reviewQueue.filter(w=>w!==key);persistWord(key,true);renderWords();renderReview();});acts.append(del);card.append(info,acts);root.append(card);
     });
   }
   function exportVocabulary() {
@@ -998,14 +998,14 @@
       const data=JSON.parse(await file.text());
       if(data?.format!=='ai-daily-vocabulary' || data.version!==1 || !data.words || Array.isArray(data.words) || typeof data.words!=='object') throw new Error('invalid file');
       const rows=Object.entries(data.words);if(rows.length>5000) throw new Error('too many words');
-      let accepted=0;
+      let accepted=0;const imported={};
       for(const [key,value] of rows){
         if(!/^[a-z][a-z'\-]{0,45}$/.test(key) || !value || typeof value!=='object' || Array.isArray(value)) continue;
         const translation=String(value.translation||'').slice(0,300);
         const phonetic=String(value.phonetic||'').slice(0,90);
-        if(!has(saved,key)){saved[key]={translation,phonetic,savedAt:typeof value.savedAt==='string'?value.savedAt.slice(0,45):new Date().toISOString(),reviewLevel:Math.max(0,Math.min(4,Number(value.reviewLevel)||0)),nextReview:/^\d{4}-\d{2}-\d{2}$/.test(value.nextReview||'')?value.nextReview:''};accepted++;}
+        if(!has(saved,key)){saved[key]={translation,phonetic,savedAt:typeof value.savedAt==='string'?value.savedAt.slice(0,45):new Date().toISOString(),reviewLevel:Math.max(0,Math.min(4,Number(value.reviewLevel)||0)),nextReview:/^\d{4}-\d{2}-\d{2}$/.test(value.nextReview||'')?value.nextReview:''};imported[key]=saved[key];accepted++;}
       }
-      safeStorage.set(SAVED_KEY,saved);updateSavedCount();renderWords();toast(`匯入完成，新增 ${accepted} 個生字。`);
+      persistImportedWords(imported);toast(`匯入完成，新增 ${accepted} 個生字。`);
     } catch {toast('無法匯入：請使用本網站匯出的 JSON 備份。');}
   }
   function setView(view){
@@ -1179,15 +1179,27 @@
       if(has(saved,key)){toast('此單字已儲存。');return;}
       const entry=localMeaning(key)||state.dictCache.get(key)||{};
       saved[key]={translation:entry.translation||'',phonetic:entry.phonetic||'',savedAt:new Date().toISOString()};
-      safeStorage.set(SAVED_KEY,saved);updateSavedCount();$('save-word').textContent='✓ 已儲存';toast('生字已儲存在此瀏覽器。');
+      persistWord(key);$('save-word').textContent='✓ 已儲存';toast(cloudSync?.active?'生字已保存，稍後同步至其他裝置。':'生字已儲存在此瀏覽器。');
     });
+    $('sync-login').addEventListener('submit',async event=>{
+      event.preventDefault();
+      if(!cloudSync?.config)return;
+      const button=$('sync-email-submit');
+      button.disabled=true;
+      try{await cloudSync.sendEmail($('sync-email').value.trim());}
+      catch(err){cloudStatus('未能寄送登入電郵：'+err.message);}
+      finally{button.disabled=false;}
+    });
+    $('sync-now').addEventListener('click',()=>cloudSync?.sync().catch(()=>{}));
+    $('sync-import-local').addEventListener('click',mergeDeviceWords);
+    $('sync-logout').addEventListener('click',()=>cloudSync?.logout().catch(err=>cloudStatus('登出失敗：'+err.message)));
     window.addEventListener('scroll',()=>{updateProgress(true);if(Date.now()-(state.lookupOpened||0)>350)closePopover();},{passive:true});
     window.addEventListener('resize',()=>closePopover());
     window.addEventListener('pagehide',()=>safeStorage.set(PROGRESS_KEY,progressRecords));
     window.addEventListener('pageshow',event=>{if(event.persisted)checkDailyReset(true);});
-    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkDailyReset();});
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){checkDailyReset();cloudSync?.sync().catch(()=>{});}});
     window.addEventListener('offline',()=>showConnectivity());
-    window.addEventListener('online',()=>showConnectivity());
+    window.addEventListener('online',()=>{showConnectivity();cloudSync?.sync().catch(()=>{});});
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopover(true);if(e.key==='/'&&state.view==='words'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();$('word-search').focus();}});
     document.addEventListener('pointerdown',e=>{if(!$('dictionary-popover').contains(e.target) && !e.target.closest('.word'))closePopover();});
   }
