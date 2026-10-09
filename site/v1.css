@@ -97,6 +97,8 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .cloud-sync-actions label{font-size:13px;font-weight:650}
 .cloud-sync-actions input{width:100%;min-width:0;max-width:430px;padding:12px;color:inherit;border:1px solid var(--border,#293750);border-radius:8px;background:var(--panel,#121f35);font-size:16px}
 .cloud-sync-actions button{min-height:44px}
+.cloud-sync-feedback{font-size:13px;line-height:1.7;margin:0;max-width:46rem;overflow-wrap:anywhere;color:var(--muted,#a4b0c4)}
+.cloud-sync-actions button:disabled{opacity:.68;cursor:progress}
 .cloud-sync-buttons{display:flex;flex-wrap:wrap;gap:8px}
 .cloud-sync-account{overflow-wrap:anywhere;font-size:14px}
 .cloud-sync-actions input:focus-visible,.cloud-sync-actions button:focus-visible{outline:2px solid var(--accent,#c6f17e);outline-offset:2px}
