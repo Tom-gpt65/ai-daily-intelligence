@@ -35,6 +35,8 @@ jobs:
           python -m unittest discover -s tests -v
           python scripts/validate_site.py
           node --check site/app.js
+          node --check site/cloud-sync.js
+          node tests/cloud_sync_test.js
           node --check site/sw.js
           python - <<'PY'
           import json,re,sys

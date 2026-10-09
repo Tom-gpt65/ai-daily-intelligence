@@ -22,9 +22,14 @@ def validate() -> list[str]:
     missing = sorted(set(re.findall(r"\$\('([a-zA-Z][a-zA-Z0-9-]*)'\)", app)) - set(ids))
     if missing:
         errors.append("Missing JavaScript element ids: " + ", ".join(missing))
-    for src in ('index.html','app.js','style.css','v3.css','v4.css','v5.css','v6.css','v11.css','v12.css','v1.css','offline-glossary.json','reading-glossary.json','news-glossary.json','manifest.webmanifest'):
+    for src in ('index.html','app.js','cloud-sync.js','style.css','v3.css','v4.css','v5.css','v6.css','v11.css','v12.css','v1.css','offline-glossary.json','reading-glossary.json','news-glossary.json','manifest.webmanifest'):
         if src not in worker:
             errors.append(f"PWA shell missing {src}")
+    cloud=json.loads((SITE/'cloud-config.json').read_text(encoding='utf-8'))
+    if not isinstance(cloud,dict) or not isinstance(cloud.get('supabase_url'),str) or not isinstance(cloud.get('anon_key'),str):
+        errors.append('Invalid public cloud sync configuration')
+    if any('service_role' in str(value).lower() or 'sb_secret_' in str(value).lower() for value in cloud.values()):
+        errors.append('Forbidden Supabase privileged secret leaked to public config')
     manifest=json.loads((SITE/'manifest.webmanifest').read_text(encoding='utf-8'))
     if manifest.get('display')!='standalone':
         errors.append("PWA must be standalone")

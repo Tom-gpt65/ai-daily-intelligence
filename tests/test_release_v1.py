@@ -13,13 +13,20 @@ class FirstReleaseTests(unittest.TestCase):
         self.assertIn('./v1.css?v=1',html)
         self.assertIn('./app.js?v=1',html)
         self.assertNotIn('v16.css',html)
-        self.assertIn("ai-daily-V1-reader-type-maintenance",worker)
+        self.assertIn("ai-daily-V1-vocabulary-cloud-option",worker)
         self.assertIn("'./v1.css'",worker)
         self.assertTrue((SITE/"v1.css").is_file())
         self.assertNotIn('id="reading-speed"',html)
         self.assertNotIn('id="overview-minutes"',html)
         self.assertIn('class="status-pill hidden"',html)
         self.assertIn('font-size-state',html)
+        self.assertIn('id="sync-login"',html)
+        self.assertIn('id="sync-account"',html)
+        self.assertIn("./cloud-sync.js?v=1",html)
+        self.assertIn("'./cloud-sync.js'",worker)
+        settings=__import__("json").loads((SITE/"cloud-config.json").read_text(encoding="utf-8"))
+        self.assertEqual(settings["supabase_url"],"")  # No fictitious enabled service
+        self.assertEqual(settings["anon_key"],"")
     def test_learning_records_stay_backward_compatible(self):
         app=(SITE/"app.js").read_text(encoding="utf-8")
         for key in ("ai-daily-saved-v2","ai-daily-quiz-v6",

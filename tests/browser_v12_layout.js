@@ -14,6 +14,12 @@ const {chromium,webkit}=require('playwright');
      await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
      assert.equal(await page.locator('#site-version').innerText(),'V1');
+     await page.locator('[data-view="words"]').click();
+     assert.ok(await page.locator('#sync-unavailable').isVisible(),
+       'Cloud not configured should be disclosed, not silently claimed as enabled');
+     assert.ok(await page.locator('#sync-login').isHidden(),
+       'Do not display an unusable login before backend setup');
+     await page.locator('[data-view="today"]').click();
      assert.equal(await page.locator('.intro p').count(),0,'Unnecessary intro copy still displayed');
      const warning=await page.locator('#freshness-note').innerText();
      if(await page.locator('#freshness-note').isVisible())assert.match(warning,/舊文章|示範文章|1,000 字|晚於/,'Visible warning must explain a genuine issue');
