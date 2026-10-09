@@ -10,11 +10,32 @@ from learning_editorial import deepen_digest,is_promotional,_word_count
 class AuditTests(unittest.TestCase):
     def setUp(self):
         self.edition={'date':'2026-10-09','mode':'editorial','demo':False,'updated_at':'2026-10-09T08:04:00+08:00',
-                      'essay':['English news '*32], 'stories':[{'url':'https://example.com','title':'AI research'}]*3,
+                      'essay':['English news '*290+' [S1] [S2] [S3]'],
+                      'stories':[{'id':f'S{i}','url':'https://example.com','title':'AI research'} for i in range(1,4)],
                       'word_count':580,'reading_metrics':{'word_count':580}}
         self.index=[{'date':'2026-10-09'}]
     def test_fresh_article(self):
         errs,_=assess_public(self.index,self.edition,'2026-10-09');self.assertEqual(errs,[])
+    def test_essay_word_count_mismatch_is_detected(self):
+        self.edition['word_count']=585
+        errors,_=assess_public(self.index,self.edition,'2026-10-09')
+        self.assertTrue(any('word count' in e.lower() for e in errors))
+    def test_invalid_source_reference_is_detected(self):
+        self.edition['essay'][0]+=' [S9]'
+        errors,_=assess_public(self.index,self.edition,'2026-10-09')
+        self.assertTrue(any('source ID' in e for e in errors))
+    def test_unlinked_or_unreadable_story_is_rejected(self):
+        self.edition['stories'][0]['url']='javascript:alert(1)'
+        errors,_=assess_public(self.index,self.edition,'2026-10-09')
+        self.assertTrue(any('URL' in e for e in errors))
+    def test_custom_questions_cannot_claim_official_authorisation(self):
+        self.edition['practice']={'official':True,'items':[{'stem':'What?', 'evidence':'Paragraph 1'}]}
+        errors,_=assess_public(self.index,self.edition,'2026-10-09')
+        self.assertTrue(any('official HKEAA' in e for e in errors))
+    def test_invalid_mc_answer_key_is_detected(self):
+        self.edition['practice']={'official':False,'items':[{'type':'mc','stem':'What?','evidence':'P1','options':['Yes','No'],'answer':5}]}
+        errors,_=assess_public(self.index,self.edition,'2026-10-09')
+        self.assertTrue(any('answer key' in e for e in errors))
     def test_old_article_cannot_pass(self):
         errs,_=assess_public(self.index,self.edition,'2026-10-10');self.assertTrue(errs)
     def test_demo_never_passes(self):
