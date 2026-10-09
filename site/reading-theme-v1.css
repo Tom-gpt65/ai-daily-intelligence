@@ -12,6 +12,7 @@
   --reader-paper: #22292A;
   --border: #53615E;
   --control-border: #82938B;
+  --nav-border: #82938B;
   --input-border: #82938B;
   --panel: #22292A;
   --text: #E8E4DB;
@@ -37,6 +38,7 @@
   --reader-paper: #FFFDF8;
   --border: #D2CABD;
   --control-border: #838E83;
+  --nav-border: #737E73;
   --input-border: #838E83;
   --panel: #FFFDF8;
   --text: #292C29;
@@ -140,7 +142,7 @@ body, .main { background: var(--bg); color: var(--text); }
 .nav-item.selected {
   background: var(--surface2);
   color: var(--text);
-  border-color: var(--control-border);
+  border-color: var(--nav-border);
 }
 .nav-item:hover { color: var(--text); }
 .nav-item.selected .nav-icon { color: var(--accent); }
