@@ -62,6 +62,12 @@ async function exercise(browserType,engine,width){
     assert.ok(!plain.includes('SECRET_NEVER_EXPORT')&&!plain.includes('REFRESH_NEVER_EXPORT'),
       engine+' backup leaked authentication tokens');
 
+    // The production app auto-registers on HTTPS. The local HTTP loopback test
+    // explicitly registers the same SW to avoid changing production behaviour.
+    await page.evaluate(async()=>{
+      if(!('serviceWorker' in navigator))throw new Error('Service Worker unsupported');
+      await navigator.serviceWorker.register('./sw.js');
+    });
     // Wait until latest article and app shell are controlled by the actual SW.
     await page.waitForFunction(async()=>{
       if(!navigator.serviceWorker?.controller)return false;
