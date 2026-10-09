@@ -93,7 +93,38 @@ const {chromium,webkit}=require('playwright');
     console.log('PASS',engine,'interrupted paragraph resumed from',saved.results.filter(Boolean).length,'cached chunk');
     passed++;
   }finally{await recoverContext.close();}
+  const fullContext=await instance.newContext({
+    viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2
+  });
+  try{
+    const fullPage=await fullContext.newPage();
+    fullPage.on('dialog',dialog=>dialog.accept());
+    let call=0;
+    await fullPage.route('https://api.mymemory.translated.net/**',async route=>{
+      call++;
+      if(call===3||call===4){
+        await route.fulfill({status:503,headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({responseStatus:503})});
+      }else{
+        await route.fulfill({status:200,contentType:'application/json',
+          headers:{'access-control-allow-origin':'*'},
+          body:JSON.stringify({responseStatus:200,responseData:{translatedText:'這是已完成的繁體中文翻譯。'}})});
+      }
+    });
+    await fullPage.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded',timeout:20000});
+    await fullPage.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
+    const paragraphs=await fullPage.locator('#reader .essay-paragraph').count();
+    await fullPage.locator('#translate-toggle').click();
+    await fullPage.waitForFunction(()=>document.querySelector('#toast')?.textContent.includes('暫停在已完成段落'),null,{timeout:20000});
+    const buttonText=await fullPage.locator('#translate-toggle').innerText();
+    assert.match(buttonText,/繼續翻譯全文|重試全文翻譯/,engine+': user cannot retry an incomplete translation directly');
+    await fullPage.locator('#translate-toggle').click();
+    await fullPage.waitForFunction(total=>document.querySelectorAll('#reader .translation-paragraph').length===total,paragraphs,{timeout:30000});
+    assert.match(await fullPage.locator('#translate-toggle').innerText(),/隱藏繁體中文譯文/,engine+': complete translation should be hideable');
+    console.log('PASS',engine,'full translation resumes on one click after provider failure');
+    passed++;
+  }finally{await fullContext.close();}
   }finally{await instance.close();}
  }
- console.log('RESULT:',passed,'/ 10 iPhone-sized browser scenarios passed');
+ console.log('RESULT:',passed,'/ 12 iPhone browser scenarios passed');
 })().catch(error=>{console.error(error);process.exit(1);});
