@@ -83,8 +83,12 @@
       }catch{/* Reading is still usable offline without cloud settings. */}
       if(this.configValid(config)){
         try{localStorage.setItem(CONFIG_CACHE,JSON.stringify(config));}catch{/* restricted storage */}
-      }else{
+      }else if(!navigator.onLine){
         try{config=JSON.parse(localStorage.getItem(CONFIG_CACHE)||'null');}catch{config=null;}
+      }else{
+        // An intentionally disabled cloud config must disable sync, even if
+        // this device previously cached another project's public settings.
+        try{localStorage.removeItem(CONFIG_CACHE);}catch{/* restricted storage */}
       }
       if(!this.configValid(config)){
         this.options.onSignedOut?.();
