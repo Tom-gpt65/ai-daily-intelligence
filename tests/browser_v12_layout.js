@@ -47,12 +47,14 @@ const {chromium,webkit}=require('playwright');
      });
      const standard=await fontSizes();
      await page.locator('#font-button').click();
+     await page.waitForFunction(base=>parseFloat(getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize)>=base+3,standard.paragraph,{timeout:2500});
      const bigger=await fontSizes();
      assert.ok(bigger.paragraph>=standard.paragraph+3,
        'AA has no visible computed-size effect: '+JSON.stringify({standard,bigger}));
      assert.equal(bigger.paragraph,bigger.word,'Clicked words must grow with paragraph text');
      assert.match(await page.locator('#font-button').innerText(),/放大/);
      await page.locator('#font-button').click();
+     await page.waitForFunction(base=>parseFloat(getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize)>base+2,bigger.paragraph,{timeout:2500});
      const largest=await fontSizes();
      assert.ok(largest.paragraph>bigger.paragraph+2,'Third font size is not larger');
      assert.match(await page.locator('#font-button').innerText(),/特大/);

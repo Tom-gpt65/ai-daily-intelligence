@@ -18,6 +18,7 @@ async function check(engine,browser,width){
   const fontSize=()=>page.locator('#reader .essay-paragraph').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
   const initialFont=await fontSize();
   await page.locator('#font-button').click();
+  await page.waitForFunction(base=>parseFloat(getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize)>=base+3,initialFont,{timeout:2500});
   const largeFont=await fontSize();
   const fontDebug=await page.evaluate(()=>({
     readerClass:document.querySelector('#reader').className,
@@ -30,6 +31,7 @@ async function check(engine,browser,width){
   console.log('AA computed-size check',engine,width,{initialFont,largeFont,fontDebug});
   assert.ok(largeFont>=initialFont+3,engine+' '+width+': AA first tap did not enlarge actual text: '+JSON.stringify({initialFont,largeFont,fontDebug}));
   await page.locator('#font-button').click();
+  await page.waitForFunction(base=>parseFloat(getComputedStyle(document.querySelector('#reader .essay-paragraph')).fontSize)>base+2,largeFont,{timeout:2500});
   const hugeFont=await fontSize();
   assert.ok(hugeFont>largeFont+2,engine+' '+width+': AA second tap did not enlarge actual text');
   assert.equal(await page.locator('#reader.font-xlarge').count(),1,engine+' '+width+': large font not activated');
