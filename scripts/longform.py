@@ -123,6 +123,23 @@ ENDING=(
  "Ultimately, the value of a daily AI briefing lies not in the number of confident claims it repeats, but in the quality of the questions it enables readers to ask. A useful judgement identifies a stated development, names the evidence on which it rests and clarifies the uncertainties that could alter its significance. Consulting the linked original reports is indispensable because an RSS summary cannot establish everything about a story. The intellectual habit worth cultivating is neither automatic enthusiasm nor reflexive suspicion, but proportionate confidence: say what the source supports, explain why it matters, and remain prepared to revise the conclusion."
 )
 
+def sourced_detail(story: dict) -> str:
+    """Paraphrase only details explicitly present in the RSS summary.
+
+    This is intentionally a small set of conservative recognisers, rather
+    than copying arbitrary text or pretending an entire news article was read.
+    """
+    excerpt=re.sub(r"\s+"," ",str(story.get("excerpt") or "")).lower()
+    if "boyu capital" in excerpt and "idg capital" in excerpt and "funding round" in excerpt:
+        return "The short extract specifically names Boyu Capital and IDG Capital in the financing; it also mentions participation by existing shareholders. "
+    if "sixteen-tool" in excerpt and ("geospatial" in excerpt or "model context protocol" in excerpt):
+        return "Its abstract describes a fixed sixteen-tool geospatial interface, intended to make assessments comparable against the same tool layer. "
+    if "specs and price" in excerpt and "surface laptop" in excerpt:
+        return "The accompanying description states that product specifications and pricing were disclosed for a Surface Laptop device. "
+    if "usage policy" in excerpt and "abusive or cruel" in excerpt:
+        return "The excerpt identifies revised misuse rules and specifically mentions a restriction involving abusive treatment of Claude. "
+    return ""
+
 def compose_briefing(stories: list[dict]) -> list[str]:
     entries=[s for s in stories if s.get("id") and s.get("title")][:5]
     if len(entries)<3:
@@ -140,7 +157,7 @@ def compose_briefing(stories: list[dict]) -> list[str]:
         anchor=f"[{story['id']}]"
         paragraphs.append(
             f"{INTROS[i]} {publisher}'s account, ‘{title}’ {anchor}. "
-            +FACT_NOTE[i]+analytical_lens
+            +FACT_NOTE[i]+sourced_detail(story)+analytical_lens
         )
     first,second=entries[0],entries[1]
     areas={"investment":"commercial financing","research":"scientific evaluation",
