@@ -18,6 +18,14 @@ class RecoveryTests(unittest.TestCase):
     def test_running_workflow_blocks_duplicate_dispatch(self):
         decision,_=recover_daily.should_dispatch("2000-01-01",[{"status":"in_progress"}])
         self.assertFalse(decision)
+    def test_code_only_website_deploy_does_not_block_news_recovery(self):
+        push={"event":"push","status":"in_progress","created_at":recover_daily.TODAY+"T08:20:00+08:00"}
+        allowed,_=recover_daily.should_dispatch("2000-01-01",[push])
+        self.assertTrue(allowed)
+    def test_active_scheduled_news_generation_blocks_retry(self):
+        task={"event":"schedule","status":"in_progress","created_at":recover_daily.TODAY+"T07:40:00+08:00"}
+        allowed,_=recover_daily.should_dispatch("2000-01-01",[task])
+        self.assertFalse(allowed)
     def test_queued_workflow_blocks_duplicate_dispatch(self):
         decision,_=recover_daily.should_dispatch(None,[{"status":"queued"}])
         self.assertFalse(decision)
