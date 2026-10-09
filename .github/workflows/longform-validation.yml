@@ -1,0 +1,46 @@
+name: Validate long-form reading without Pages deployment
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/longform-validation.yml'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'site/reports/**'
+      - 'site/app.js'
+      - 'site/index.html'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  longform:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - name: Check every regression and public English word count
+        shell: bash
+        run: |
+          python -m unittest discover -s tests -v
+          python scripts/validate_site.py
+          node --check site/app.js
+          node --check site/sw.js
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          root=Path('site/reports')
+          index=json.loads((root/'index.json').read_text(encoding='utf-8'))
+          article=json.loads((root/(index[0]['date']+'.json')).read_text(encoding='utf-8'))
+          words=len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b"," ".join(article['essay'])))
+          assert words>=1000,(words,'Below new minimum')
+          assert article['word_count']==index[0]['word_count']==words
+          assert len(article['stories'])>=3
+          print('LATEST LONG-FORM VERIFIED',index[0]['date'],'words=',words,'sources=',len(article['stories']))
+          PY
