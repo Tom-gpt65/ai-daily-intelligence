@@ -52,12 +52,7 @@ async function exercise(browserType,engine,width){
     serviceWorkers:'allow'
   });
   try{
-    // No external GitHub API calls are required to read a cached article.
-    await context.route('https://api.github.com/**',route=>route.fulfill({
-      status:200,contentType:'application/json',
-      headers:{'access-control-allow-origin':'*'},
-      body:JSON.stringify({workflow_runs:[]})
-    }));
+    // Do not install Playwright request routes: they can bypass Service Worker fetch handling.
     const page=await context.newPage();
     const errors=[];
     page.on('pageerror',error=>errors.push(error.message));
@@ -116,6 +111,21 @@ async function exercise(browserType,engine,width){
       }));
       return match.some(m=>m.shell)&&match.some(m=>m.index)&&match.some(m=>m.gloss);
     },null,{timeout:20000});
+    // Confirm the browser truly attributes a request to the Service Worker
+    // BEFORE the origin goes away; merely having a controller is insufficient.
+    const swResponses=[];
+    const observe=response=>{
+      if(response.url().includes('sw-intercept-probe=1'))
+        swResponses.push(response.fromServiceWorker());
+    };
+    page.on('response',observe);
+    await page.evaluate(async()=>{
+      const response=await fetch('./index.html?sw-intercept-probe=1',{cache:'no-store'});
+      if(!response.ok)throw new Error('Pre-offline SW shell probe failed');
+    });
+    page.off('response',observe);
+    assert.ok(swResponses.includes(true),
+      engine+' controlled page never served a response via Service Worker (test environment problem)');
     await stopServing(server);
     await assert.rejects(page.evaluate(async url=>{
       const response=await fetch(url+'uncached-network-probe',{cache:'no-store'});
