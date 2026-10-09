@@ -17,6 +17,10 @@ on:
       - 'site/index.html'
       - 'site/reports/**'
   workflow_dispatch:
+  # Daily browser quality check, no production site changes.
+  schedule:
+    - cron: '20 15 * * *'
+      timezone: 'Asia/Hong_Kong'
 
 permissions:
   contents: read

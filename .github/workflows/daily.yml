@@ -9,7 +9,6 @@ on:
     paths:
       - '.github/workflows/daily.yml'
       - 'scripts/**'
-      - 'tests/**'
       - 'requirements.txt'
       - 'site/**'
       - '!site/reports/**'
