@@ -36,7 +36,7 @@ class LongFormTests(unittest.TestCase):
                           "evaluation and explain how the fixed testing interface can support "
                           "comparisons between agents before they are deployed widely."}
         extract=attributed_excerpt(source,2)
-        self.assertIn("RSS",extract.lower() if False else extract)
+        self.assertIn("linked source",extract)
         self.assertIn("“Researchers describe",extract)
         quoted=extract.split("“",1)[1].split("”",1)[0]
         self.assertLessEqual(len(quoted.replace("…","").split()),18)
