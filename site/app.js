@@ -287,17 +287,30 @@
     if(!Array.isArray(json.workflow_runs))throw new Error('Invalid GitHub response');
     return json.workflow_runs;
   }
+  let scheduleHealthRevision=0;
+  function viewingHistoricalReport(){
+    return Boolean(state.report?.date && state.index?.[0]?.date &&
+      state.report.date!==state.index[0].date);
+  }
   async function renderScheduleHealth(){
+    // An older GitHub API reply must not replace a newer historical view.
+    const revision=++scheduleHealthRevision;
     const label=$('schedule-text'),link=$('schedule-run-link'),bar=$('schedule-live');
     if(!label||!link||!bar)return;
     bar.classList.remove('schedule-failed','schedule-success','schedule-recovered');
-    if(state.report?.date && state.index?.[0]?.date && state.report.date!==state.index[0].date){
+    if(viewingHistoricalReport()){
       label.textContent='目前正在閱讀歷史文章';
       return;
     }
     label.textContent='正在核對今日定時及補救更新…';
     const today=hkDate();
     const checked=await Promise.allSettled([fetchDailyRuns('schedule'),fetchDailyRuns('workflow_dispatch')]);
+    if(revision!==scheduleHealthRevision)return;
+    if(viewingHistoricalReport()){
+      bar.classList.remove('schedule-failed','schedule-success','schedule-recovered');
+      label.textContent='目前正在閱讀歷史文章';
+      return;
+    }
     const [scheduled,dispatched]=checked.map(outcome=>outcome.status==='fulfilled'?
       outcome.value.filter(run=>hkDayFor(run.created_at)===today):null);
     const schedule=scheduled?.[0]||null;
