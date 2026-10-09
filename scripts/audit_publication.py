@@ -73,10 +73,10 @@ def assess_public(index: object, report: object, expected: str) -> tuple[list[st
         errors.append("Public report has no valid update timestamp")
     reading = report.get("reading_metrics")
     count = reading.get("word_count", report.get("word_count", 0)) if isinstance(reading, dict) else report.get("word_count", 0)
-    if not isinstance(count, int) or count < 250:
-        errors.append("Public article is unusually short and unusable as a daily briefing")
-    elif count < 550:
-        warnings.append(f"Briefing has only {count} English words (target 550–650)")
+    if not isinstance(count, int) or count < 1000:
+        errors.append(f"Public long-form article is below 1,000 English words ({count} recorded)")
+    elif count > 1550:
+        warnings.append(f"Long-form article exceeds preferred 1,550-word upper bound ({count} words)")
     if report.get("mode") == "source_digest":
         warnings.append("Fallback RSS digest published: factual context and English quality need review")
     if isinstance(report.get("stories"), list) and len(report["stories"]) < 3:
