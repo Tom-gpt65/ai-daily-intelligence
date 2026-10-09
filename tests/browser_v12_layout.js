@@ -1,6 +1,9 @@
 /* v12 layout regression: actual Chromium/WebKit viewport, reset and cache controls */
 const assert=require('node:assert/strict');
 const {chromium,webkit}=require('playwright');
+const fs=require('node:fs'),path=require('node:path');
+const cloudConfig=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../site/cloud-config.json'),'utf8'));
+const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
 (async()=>{
  let count=0;
  for(const [name,engine] of [['Chromium',chromium],['WebKit',webkit]]){
@@ -15,10 +18,17 @@ const {chromium,webkit}=require('playwright');
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
      assert.equal(await page.locator('#site-version').innerText(),'V1');
      await page.locator('[data-view="words"]').click();
-     assert.ok(await page.locator('#sync-unavailable').isVisible(),
-       'Cloud not configured should be disclosed, not silently claimed as enabled');
-     assert.ok(await page.locator('#sync-login').isHidden(),
-       'Do not display an unusable login before backend setup');
+     if(cloudConfigured){
+       await page.locator('#sync-login').waitFor({state:'visible',timeout:15000});
+       assert.ok(await page.locator('#sync-unavailable').isHidden(),
+         'Configured cloud service must not be reported as unavailable');
+       assert.match(await page.locator('#sync-indicator').innerText(),/未登入/,
+         'Cloud-enabled visitor must remain signed out without a valid session');
+     }else{
+       await page.locator('#sync-unavailable').waitFor({state:'visible',timeout:15000});
+       assert.ok(await page.locator('#sync-login').isHidden(),
+         'Do not display an unusable login before backend setup');
+     }
      await page.locator('[data-view="today"]').click();
      assert.equal(await page.locator('.intro p').count(),0,'Unnecessary intro copy still displayed');
      const warning=await page.locator('#freshness-note').innerText();
