@@ -914,6 +914,37 @@
     url.searchParams.set('fresh',Date.now().toString(36));
     location.assign(url.toString());
   }
+  let lastObservedHKDay=hkDate(),lastRefreshAt=0,latestRefreshBusy=false;
+  async function refreshLatestReport({force=false,quiet=false}={}){
+    if(latestRefreshBusy)return;
+    latestRefreshBusy=true;
+    const button=$('refresh-schedule');
+    button.disabled=true;button.setAttribute('aria-busy','true');
+    try{
+      const res=await fetch('./reports/index.json?check='+Date.now(),{cache:'no-store'});
+      if(!res.ok)throw Error('HTTP '+res.status);
+      const idx=await res.json();
+      if(!Array.isArray(idx)||!idx.length||!/^\d{4}-\d{2}-\d{2}$/.test(idx[0].date||''))throw Error('日期索引無效');
+      const next=idx[0].date,changed=next!==state.report?.date;
+      state.index=idx;
+      if(changed||force)await loadReport(next);
+      if(!changed&&!force)renderFreshness();
+      $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
+      await Promise.allSettled([renderPipelineStatus(),renderScheduleHealth()]);
+      if(!quiet)toast(changed?'新一期文章已載入，學習紀錄保留。':'已重新核對今日報告與排程。');
+    }catch(error){
+      if(!quiet)toast('更新失敗：'+String(error.message||error).slice(0,50));
+      await renderScheduleHealth();
+    }finally{latestRefreshBusy=false;button.disabled=false;button.removeAttribute('aria-busy');}
+  }
+  function checkDailyReset(force=false){
+    if(document.visibilityState==='hidden')return;
+    const current=hkDate(),changed=current!==lastObservedHKDay;
+    if(changed)lastObservedHKDay=current;
+    if(!changed&&!force&&Date.now()-lastRefreshAt<300000)return;
+    lastRefreshAt=Date.now();
+    refreshLatestReport({quiet:true});
+  }
   function initEvents(){
     document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
     $('reader').addEventListener('click',e=>{const t=e.target.closest('button.word');if(t)showLookup(t.textContent,t);});
