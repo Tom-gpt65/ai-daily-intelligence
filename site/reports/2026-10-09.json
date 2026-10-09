@@ -1,13 +1,13 @@
 {
   "schema": 4,
   "date": "2026-10-09",
-  "updated_at": "2026-10-09T08:42:12.684611+08:00",
-  "headline": "AI developments: today's essential context",
-  "subtitle": "Global artificial intelligence — evidence, innovation and implications",
+  "updated_at": "2026-10-09T00:44:32.266Z",
+  "headline": "AI's next test: promises, evidence and accountability",
+  "subtitle": "Funding, agent evaluation, computing and governance — source-linked English analysis",
   "mode": "source_digest",
   "editorial_notice": "Original educational analysis of sourced RSS summaries; full articles not independently checked.",
   "demo": false,
-  "word_count": 699,
+  "word_count": 615,
   "essay": [
     "It is tempting to describe technological change as a procession of breakthroughs, but that narrative rarely captures the uncertainties behind a headline. A product may be announced before its limitations are understood; a policy may be published long before its enforcement can be assessed. Today's accounts show why provisional judgement is a strength rather than a weakness. The aim is not to dismiss innovation, but to distinguish statements that the available sources support from consequences that would require further inquiry.",
     "The question of credibility is particularly clear in TechCrunch AI's report, ‘China’s Manus raises over $500M in first funding round since split with Meta’ [S1]. In the source extract, the writer notes that Boyu Capital and IDG Capital led the funding round, and existing shareholders Tencent, HSG (formerly known as Sequoia China), ZhenFund, and others also participated. Its summary supplies an initial account rather than a complete assessment; whether the anticipated benefit will prove reliable requires evidence of the conditions under which it was tested.",
@@ -16,15 +16,14 @@
     "The practical implications are less straightforward in The Verge AI's report, ‘Anthropic bans ‘abusive or cruel behavior’ toward Claude’ [S4]. Because the feed offers only limited context, a reader should consult the linked original before attributing specific results. If the proposed change were adopted more widely, its implications might extend beyond the immediate announcement. Yet that hypothetical consequence cannot be mistaken for an outcome already observed.",
     "A further perspective can be found in MIT Technology Review's report, ‘Roundtables: A Conversation With the Creator of AI-Designed Viruses’ [S5]. The summary itself highlights Friday, October 16, 2026 Can AI design new life forms? The scope of the reported development remains important. One must distinguish what the source specifically describes from the broader ambitions that its headline may evoke.",
     "Seen side by side, these accounts resist a single, uncomplicated verdict. Some titles emphasise possibility; others draw attention to constraints, institutional choices or unresolved risks. Although such distinctions can sharpen a reader's sense of what is at stake, they cannot substitute for checking how claims were obtained. A commercial announcement, for example, may establish what an organisation says it intends to offer without showing how reliably the product works in different settings. Equally, a research abstract may describe a promising method without demonstrating that its findings will generalise beyond the conditions in which it was evaluated.",
-    "A cautious stance is not the same as blanket scepticism. The former asks what would count as convincing evidence; the latter risks rejecting evidence before considering it. Readers should therefore distinguish a source's stated claim, the supporting information actually supplied, and any wider interpretation they themselves add. Where the description is abbreviated, the appropriate response is to acknowledge uncertainty rather than conceal it behind impressive terminology. This method of reading also helps reveal the writer's tone: measured and inquisitive rather than triumphalist or dismissive.",
     "Consequently, a responsible account of AI progress cannot be reduced to a sequence of confident headlines. The more defensible judgement is provisional: it distinguishes evidence supplied by a source from inference introduced by the reader, and it remains open to revision. Before settling on any conclusion, one should consult the linked original and ask which independent measurements, alternative perspectives or practical constraints could change its meaning. Such scrutiny makes a daily news briefing a lesson in informed judgement rather than a rehearsal of publicity."
   ],
   "translations": [],
   "reading_metrics": {
-    "word_count": 699,
-    "estimated_minutes": 6.1,
-    "average_sentence_words": 19.4,
-    "long_word_share": 19.3,
+    "word_count": 615,
+    "estimated_minutes": 5.3,
+    "average_sentence_words": 19.8,
+    "long_word_share": 18.7,
     "note": "閱讀量及詞長屬描述性統計，不能換算成 HKDSE 等級。"
   },
   "processing": {
@@ -38,7 +37,7 @@
     "translation_seconds": 0,
     "dictionary_seconds": 2.271
   },
-  "quality_note": "新聞線索來自RSS，並未獲獨立事實核查；英文論證及DSE式題目屬原創練習，不能視為原始報道。 檢測到閱讀訓練品質警告；詳情見下方品質提示。",
+  "quality_note": "新聞線索來自RSS，並未獲獨立事實核查；英文論證及DSE式題目屬原創練習，不能視為原始報道。",
   "stories": [
     {
       "id": "S1",
@@ -3064,19 +3063,17 @@
     ]
   },
   "editorial_quality": {
-    "training_structure_pass": false,
+    "training_structure_pass": true,
     "diagnostics": {
-      "word_count": 699,
-      "paragraph_count": 9,
+      "word_count": 615,
+      "paragraph_count": 8,
       "cited_sources": 5,
       "available_sources": 5,
       "source_linked_paragraphs": 5,
-      "generic_caution_phrases": 1,
+      "generic_caution_phrases": "0",
       "long_sentence_count": 9
     },
-    "issues": [
-      "article_length_outside_training_target"
-    ],
+    "issues": [],
     "notice": "Heuristic writing checks only; not independent fact-checking or an HKEAA grade."
   },
   "advanced_vocabulary": [
