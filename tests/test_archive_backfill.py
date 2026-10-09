@@ -63,7 +63,7 @@ class ArchiveBackfillTests(unittest.TestCase):
         sw = (ROOT / "site" / "sw.js").read_text(encoding="utf-8")
         self.assertIn('id="site-version" class="site-version" aria-label="網站版本">V1', html)
         self.assertIn('app.js?v=1', html)
-        self.assertIn('ai-daily-V1-vocabulary-password-login', sw)
+        self.assertIn('ai-daily-V1-paper-calm-reading', sw)
 
 if __name__ == "__main__":
     unittest.main()
