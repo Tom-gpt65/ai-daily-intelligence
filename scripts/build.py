@@ -529,6 +529,23 @@ def make_vocabulary(text: str, ecdict_path: Path | None) -> dict:
     surface_words = set(re.findall(r"\b[a-zA-Z][a-zA-Z'-]{2,}\b", text.lower()))
     words = set().union(*(word_forms(w) for w in surface_words)) if surface_words else set()
     vocab = {w: {"translation": meaning, "phonetic": "", "part_of_speech": "", "definition": ""} for w, meaning in VOCAB_SEED.items() if w in words}
+    # Trusted, hand-reviewed baseline for common educational vocabulary missing
+    # from ECDICT's optional Chinese translation field. No network required.
+    try:
+        glossary_path = ROOT / "site" / "offline-glossary.json"
+        glossary = json.loads(glossary_path.read_text(encoding="utf-8"))
+        if isinstance(glossary, dict):
+            for term, meaning in glossary.items():
+                if (term in words and re.fullmatch(r"[a-z-]+", term)
+                        and isinstance(meaning, str) and 0 < len(meaning) < 150):
+                    vocab.setdefault(term, {
+                        "translation": meaning,
+                        "phonetic": "",
+                        "part_of_speech": "",
+                        "definition": "",
+                    })
+    except (OSError, ValueError, TypeError) as exc:
+        print(f"[dictionary warning] Offline glossary unavailable: {exc}", file=sys.stderr)
     if ecdict_path and ecdict_path.is_file():
         try:
             from opencc import OpenCC

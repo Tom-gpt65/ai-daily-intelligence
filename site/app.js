@@ -42,7 +42,28 @@
     if(v.length>5 && v.endsWith('ly')) forms.push(v.slice(0,-2));
     return [...new Set(forms)].filter(Boolean);
   }
-  function localMeaning(word) { const dic = state.report?.dictionary || {}; for (const key of stems(word)) if (dic[key]) return { ...dic[key], key }; return null; }
+  const offlineGlossary=Object.create(null);
+  // Essential fallback works even if an outdated PWA has not cached the new glossary.
+  offlineGlossary.concern={translation:'關乎；涉及（動詞）；憂慮；關切（名詞）',phonetic:'',part_of_speech:'',definition:''};
+  async function preloadOfflineGlossary(){
+    try{
+      const response=await fetch('./offline-glossary.json',{cache:'force-cache'});
+      if(!response.ok)return;
+      const words=await response.json();
+      if(!words||typeof words!=='object'||Array.isArray(words))return;
+      for(const [word,meaning] of Object.entries(words)){
+        if(/^[a-z-]+$/.test(word)&&typeof meaning==='string'&&meaning.length>0&&meaning.length<150)
+          offlineGlossary[word]={translation:meaning,phonetic:'',part_of_speech:'',definition:''};
+      }
+    }catch{/* Offline reading is still available with the bundled dictionary and core fallback. */}
+  }
+  function localMeaning(word) {
+    const dic=state.report?.dictionary||{};
+    const forms=stems(word);
+    for(const key of forms)if(dic[key]?.translation)return {...dic[key],key};
+    for(const key of forms)if(offlineGlossary[key]?.translation)return {...offlineGlossary[key],key};
+    return null;
+  }
   function dueWords() {return Object.keys(saved).filter(key=>!saved[key]?.nextReview || saved[key].nextReview<=hkDate());}
   function updateSavedCount() { $('saved-count').textContent = Object.keys(saved).length; $('review-count').textContent=`(${dueWords().length})`; }
   function reviewNextDate(days) {const dt=new Date(hkDate()+'T00:00:00Z');dt.setUTCDate(dt.getUTCDate()+days);return dt.toISOString().slice(0,10);}
@@ -1042,6 +1063,7 @@
     showConnectivity();
     $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
     updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();
+    await preloadOfflineGlossary();
     $('refresh-schedule').addEventListener('click',()=>refreshLatestReport({force:true}));
     if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
     try{
