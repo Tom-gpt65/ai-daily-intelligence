@@ -64,7 +64,8 @@ class RecoveryTests(unittest.TestCase):
         sources=[{"id":f"S{i}","title":"Research","url":f"https://example.com/{i}"} for i in range(1,4)]
         report={"date":date,"mode":"source_digest","word_count":count,
                 "essay":paragraphs,"stories":sources,
-                "practice":{"items":[{"stem":"Question"}]*7}}
+                "practice":{"items":[{"stem":"Question"}]*7},
+                "dictionary":{w:{"translation":"中文字義"} for w in ("editorial","evidence","analysis")}}
         index={"date":date,"word_count":count,"stories":3}
         self.assertTrue(recover_daily.edition_is_readable(index,report))
         self.assertFalse(recover_daily.edition_is_readable(index,{**report,"essay":["too short"]}))
