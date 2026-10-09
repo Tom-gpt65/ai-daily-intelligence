@@ -72,7 +72,7 @@ jobs:
           assert not report.get('demo'), 'Latest report is a demo, not current news'
           assert len(report.get('stories',[]))>=3,'Source links missing'
           assert len(report.get('essay',[]))>=5,'Reading text incomplete'
-          assert report.get('word_count',0)>=550,'English practice is too short'
+          assert 550<=report.get('word_count',0)<=650,'English practice must contain 550–650 English words'
           questions=report.get('practice',{}).get('items',[])
           assert len(questions)>=7,'Daily HKDSE-style exercise incomplete'
           assert all(isinstance(q.get('paragraph'),int) and 1<=q['paragraph']<=len(report['essay']) for q in questions),'DSE evidence paragraph pointers invalid'
