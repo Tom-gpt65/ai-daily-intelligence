@@ -57,6 +57,8 @@ const {chromium,webkit}=require('playwright');
      await history.click();
      await page.waitForFunction(()=>document.querySelector('#report-headline')?.textContent?.startsWith('AI literacy:'),null,{timeout:12000});
      assert.match(await page.locator('#report-metadata').innerText(),/8 October 2026/,'Historical reading did not open');
+     assert.ok(await page.locator('#freshness-note').isHidden(),'Historical reading should not claim the latest edition is missing');
+     assert.match(await page.locator('#schedule-text').innerText(),/歷史文章/,'Historical reading must not be labelled as a failed daily schedule');
      assert.ok(await page.locator('#reader .essay-paragraph').count()>=10,'Historical passage paragraphs missing');
      assert.ok(await page.locator('#question-list').count()===1,'Historical practice panel missing');
      const evidence=page.locator('#reader .word').filter({hasText:/^evidence$/i}).first();
@@ -90,6 +92,14 @@ const {chromium,webkit}=require('playwright');
      assert.ok(persisted.word?.translation && persisted.quiz && persisted.writing,
        'A reload must not erase saved words or practice answers');
      assert.equal(await page.locator('#site-version').innerText(),'v16','Routine archive testing must not upgrade site version');
+     const ui=await page.evaluate(()=>{
+       const reader=document.querySelector('#reader');
+       return {font:getComputedStyle(reader).fontFamily,
+         disclosure:!!document.querySelector('.translation-disclosure #translation-policy'),
+         quality:!!document.querySelector('.quality-disclosure #reading-quality')};
+     });
+     assert.match(ui.font,/Iowan|Palatino|Georgia/,'English long-form serif system font missing');
+     assert.ok(ui.disclosure&&ui.quality,'Important editorial and privacy notices must remain accessible');
      assert.deepEqual(errors,[],name+' '+width+' script errors');
      console.log('PASS',name,width,'reader reflow, picker and reset');
      count++;
