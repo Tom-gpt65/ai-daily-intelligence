@@ -8,15 +8,25 @@ create table if not exists public.vocabulary_events (
   payload jsonb not null default '{}'::jsonb,
   deleted boolean not null default false,
   created_at timestamptz not null default now(),
+  batch_order smallint not null default 0 check (batch_order between 0 and 99),
   constraint vocabulary_payload_is_object check (jsonb_typeof(payload) = 'object'),
   constraint vocabulary_payload_length check (length(payload::text) <= 4096)
 );
-create index if not exists vocabulary_events_owner_order_idx
-  on public.vocabulary_events(user_id, created_at, event_id);
+-- Repeatable migration for tables created with an earlier copy of V1 SQL.
+alter table public.vocabulary_events
+  add column if not exists batch_order smallint not null default 0
+  check (batch_order between 0 and 99);
+-- Index previously ordered by random event_id on timestamp ties.
+drop index if exists public.vocabulary_events_owner_order_idx;
+create index vocabulary_events_owner_order_idx
+  on public.vocabulary_events(user_id, created_at, batch_order, event_id);
 
 alter table public.vocabulary_events enable row level security;
-revoke all on public.vocabulary_events from public, anon;
-grant select, insert, delete on public.vocabulary_events to authenticated;
+-- Clients must not supply/alter created_at: server timestamps decide cross-device order.
+revoke all on public.vocabulary_events from public, anon, authenticated;
+grant select, delete on public.vocabulary_events to authenticated;
+grant insert (event_id, user_id, word, payload, deleted, batch_order)
+  on public.vocabulary_events to authenticated;
 
 drop policy if exists "owner select vocabulary events" on public.vocabulary_events;
 create policy "owner select vocabulary events"
@@ -31,6 +41,7 @@ create policy "owner delete vocabulary events"
   on public.vocabulary_events for delete to authenticated
   using ((select auth.uid()) = user_id);
 
+-- Within one server insert request, batch_order (0..99) preserves client edit order.
 -- No UPDATE policy: old events cannot be silently altered by clients.
 -- Deleting one saved word creates a tombstone (old history remains).
 -- To erase an entire account's cloud vocabulary history, execute as that
