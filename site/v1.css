@@ -74,7 +74,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 #reader.font-large{font-size:22px;line-height:1.85}
 #reader.font-xlarge{font-size:26px;line-height:1.8}
 #reader .essay-paragraph,#reader .essay-paragraph .word{font-size:inherit}
-.font-size-state{display:inline-block;margin-inline-start:6px;font-size:11px;vertical-align:middle;letter-spacing:0}
+.font-size-state{display:inline-block;margin-inline-start:6px;font-size:11px;font-weight:650;color:var(--accent);vertical-align:middle;letter-spacing:0}
 .edition-overview{grid-template-columns:repeat(3,minmax(0,1fr))}
 .status-row:has(.status-pill.hidden){justify-content:flex-end}
 @media(max-width:650px){
