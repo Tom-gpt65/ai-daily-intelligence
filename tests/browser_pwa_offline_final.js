@@ -121,8 +121,11 @@ async function exercise(browserType,engine,width){
       const response=await fetch(url+'uncached-network-probe',{cache:'no-store'});
       return response.status;
     },BASE),'The origin must really be unreachable during the offline test');
-    // A full navigation must be served by Service Worker CacheStorage.
-    await page.reload({waitUntil:'domcontentloaded',timeout:25000});
+    // A normal same-origin navigation (not DevTools Page.reload) must be served
+    // by Service Worker CacheStorage even when the origin has been shut down.
+    await page.goto(BASE+'index.html?offline-navigation=1',{
+      waitUntil:'domcontentloaded',timeout:25000
+    });
     await page.locator('#reader .essay-paragraph .word').first().waitFor({
       state:'visible',timeout:25000
     });
