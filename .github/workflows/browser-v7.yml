@@ -9,6 +9,7 @@ on:
       - 'tests/status_regression_v8.js'
       - 'tests/browser_layout_v11.js'
       - 'tests/browser_v12_layout.js'
+      - 'tests/browser_cloud_sync.js'
       - 'site/app.js'
       - 'site/cloud-sync.js'
       - 'site/cloud-config.json'
@@ -62,6 +63,8 @@ jobs:
         run: node tests/browser_layout_v11.js
       - name: Verify v12 responsive chapter navigation and reader reset
         run: node tests/browser_v12_layout.js
+      - name: Verify simulated two-device cloud vocabulary interactions
+        run: node tests/browser_cloud_sync.js
       - name: Browser smoke summary
         if: always()
         run: |
