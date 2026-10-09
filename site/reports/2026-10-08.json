@@ -1,0 +1,3185 @@
+{
+  "schema": 4,
+  "date": "2026-10-08",
+  "updated_at": "2026-10-09T13:09:32.902+08:00",
+  "headline": "AI literacy: Language and uncertainty",
+  "subtitle": "8 October archive backfill · Original extended English reading · Not a historical news report",
+  "mode": "reading_feature",
+  "editorial_notice": "Historical educational backfill prepared on 9 October 2026 for the missing 8 October reading slot. This is evergreen learning material, not reporting published on 8 October; no event or news source is claimed.",
+  "demo": false,
+  "word_count": 1248,
+  "essay": [
+    "AI can assist people with research, writing, planning and education, but each promise invites a question about evidence. A system may offer an answer that sounds confident while the information behind it remains incomplete. The responsible reader therefore asks what the tool actually does, which conditions were tested, and whether its performance can be repeated. This approach is neither hostile to technology nor unreservedly optimistic. It allows the benefits of innovation to be considered alongside uncertainty, risk and practical limitations. A useful evaluation begins with careful questions rather than a dramatic headline. The purpose of this reading is to develop that habit of judgement.",
+    "The difference between a claim and a result is fundamental. A company may announce a new system, while a researcher may present a benchmark score. Neither statement, taken alone, explains how a device will perform for every user. A claim can express an ambition, a plan or a prediction. A result reports an observation made under specific conditions. The distinction matters because an observation does not automatically support a wider promise. A reader should look for a clear method, a useful comparison, and an explanation of the conditions that shaped the findings. These questions turn attention from the excitement of an announcement to the strength of the supporting evidence.",
+    "An investment announcement can attract attention because a financial sum seems precise. Yet the precision of a number should not be confused with certainty about future value. Funding may provide resources for research, infrastructure or staff, but it does not prove that every plan will succeed. A careful reader can ask which activities the investment supports, what evidence of progress is available, and what important risks remain. These questions are relevant even when an announcement is accurate. Money is one measure of confidence and opportunity; reliable performance is another. Treating the two measures as interchangeable would weaken an otherwise reasonable analysis.",
+    "Language is especially important when a report discusses artificial intelligence. Words such as possible, likely and proven express different degrees of certainty. A writer who replaces possible with proven changes the meaning of the evidence. Similarly, the phrase may improve describes a potential result rather than an established outcome. Careful reading requires attention to these qualifications. It also requires readers to notice who makes a claim and what the original source actually says. When the evidence is limited, measured language is a form of accuracy. It is not a refusal to draw conclusions; it is a way to keep conclusions proportionate to what is known.",
+    "Different sources may describe the same event from different perspectives. A company can focus on plans and products, while a research group can emphasise methods and measurements. A news report may identify a public concern that neither source treats as central. These differences do not mean that one perspective must always be rejected. Instead, the reader should compare the purpose of each source, the facts that it provides, and the questions it leaves unanswered. The strongest analysis does not simply count sources. It examines whether the accounts offer independent evidence or repeat the same statement. Agreement between reports is useful context, but it cannot replace verification.",
+    "Governance asks how technology should be used and who is responsible when something goes wrong. A policy can set rules for a service, but the existence of a rule does not establish that every risk has disappeared. Responsible governance also needs attention to enforcement, accountability and the experience of users. Some decisions involve a tradeoff between access, safety and individual choice. These concerns cannot be settled by a single benchmark score. They demand a different form of evaluation, one that examines institutions as well as technical systems. A reader should therefore distinguish what a policy promises from what its implementation can reasonably achieve.",
+    "Fairness is another area where simple claims can mislead. A system may work well for a particular group while producing less reliable results for others. That difference may arise from data, design, language or the conditions of use. A statement that a tool is accurate does not explain whose experience was measured. A careful reader asks which groups were included, how errors were defined, and whether important differences were examined. The purpose of these questions is not to assume failure. It is to test whether the available evidence is sufficient for the conclusion. Responsible evaluation requires attention to people who might otherwise remain invisible.",
+    "Education offers a practical example of both benefits and limitations. A digital tool can help learners practise language, explore ideas and review difficult material. However, an immediate answer is not identical to understanding. Students still need to explain their reasoning, compare sources and decide whether a claim is supported. If a system supplies an incorrect explanation with confidence, the learner may practise an error. A useful approach treats technology as support for independent thinking rather than a replacement for it. The quality of learning depends partly on the questions asked, the feedback received and the effort used to examine the answer.",
+    "Reliability is not the same as a single successful demonstration. A service may perform well during one test yet fail when demand increases or conditions change. To assess reliability, an evaluation should consider repeated use, clear error records and the consequences of failure. A result that looks impressive in isolation may offer little information about how often a problem occurs. These limitations matter for individual users and for organisations that depend on a system. Responsible decisions therefore balance potential benefits against the probability and impact of errors. The goal is not perfect certainty, but evidence strong enough to support the proposed use.",
+    "Transparency can make evaluation more useful, although it does not solve every problem. When a publisher explains a method, readers can identify assumptions and ask whether the results deserve confidence. When important information is absent, a careful writer should say what cannot be concluded. This is particularly important in a field where new announcements arrive quickly. Transparent language allows a reader to separate evidence from interpretation and to understand where further research is needed. It also encourages correction when better information becomes available. A transparent report may sound less dramatic, but its limits are part of its value to the reader.",
+    "Public discussion of artificial intelligence often moves between opportunity and anxiety. Some people emphasise potential economic benefits, while others focus on safety, employment or control. These perspectives need not be treated as mutually exclusive. A technology can offer useful applications and still create meaningful risks. The quality of a discussion depends on whether each position uses clear evidence and recognises uncertainty. It is reasonable to welcome innovation without accepting every commercial promise. It is equally reasonable to examine risks without assuming that every new system will fail. Nuanced judgement requires comparing arguments rather than choosing a position based only on excitement or fear.",
+    "A strong conclusion returns to the difference between what is known and what is merely possible. Evidence, methods, context and responsibility belong together because each changes the meaning of a claim. A headline can begin an inquiry, but it cannot complete it. The reader should ask what happened, what was measured, which limitations remain and who may be affected. Where the available information does not support a firm judgement, a qualified conclusion is the appropriate response. Such care is useful beyond artificial intelligence: it is a central skill in academic reading, public discussion and everyday decisions. The aim is not certainty about everything, but better reasons for believing something."
+  ],
+  "translations": [],
+  "reading_metrics": {
+    "word_count": 1248,
+    "estimated_minutes": 10.9,
+    "average_sentence_words": 14,
+    "long_word_share": 18.2,
+    "note": "閱讀量及詞長屬描述性統計，不能換算成 HKDSE 等級。"
+  },
+  "processing": {
+    "source_count": 0,
+    "backup_reading": true,
+    "offline_dictionary_complete": true,
+    "historical_backfill": true
+  },
+  "quality_note": "2026 年 10 月 8 日補建之 AI 素養英文閱讀教材，並非當日新聞。全部可點擊英文詞形附有離線繁體中文詞義；詞義需按語境判斷。",
+  "stories": [],
+  "dictionary": {
+    "ai": {
+      "translation": "人工智能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "can": {
+      "translation": "能夠",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "assist": {
+      "translation": "協助",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "people": {
+      "translation": "人們",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "with": {
+      "translation": "與；帶有",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "research": {
+      "translation": "研究",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "writing": {
+      "translation": "寫作",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "planning": {
+      "translation": "規劃",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "and": {
+      "translation": "與；以及",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "education": {
+      "translation": "教育",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "but": {
+      "translation": "但是",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "each": {
+      "translation": "每一個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "promise": {
+      "translation": "承諾",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "invites": {
+      "translation": "引發",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "a": {
+      "translation": "一個（不定冠詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "question": {
+      "translation": "問題；質疑",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "about": {
+      "translation": "關於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "evidence": {
+      "translation": "證據",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "system": {
+      "translation": "系統；制度",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "may": {
+      "translation": "可能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "offer": {
+      "translation": "提供",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "an": {
+      "translation": "一個（不定冠詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "answer": {
+      "translation": "答案；回答",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "that": {
+      "translation": "那；該",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "sounds": {
+      "translation": "聽起來",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "confident": {
+      "translation": "有信心的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "while": {
+      "translation": "當……時；然而",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "the": {
+      "translation": "該；這（定冠詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "information": {
+      "translation": "資訊",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "behind": {
+      "translation": "背後",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "it": {
+      "translation": "它",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "remains": {
+      "translation": "仍然",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "incomplete": {
+      "translation": "不完整的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "responsible": {
+      "translation": "負責任的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reader": {
+      "translation": "讀者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "therefore": {
+      "translation": "因此",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "asks": {
+      "translation": "詢問",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "what": {
+      "translation": "甚麼",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "tool": {
+      "translation": "工具",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "actually": {
+      "translation": "實際上",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "does": {
+      "translation": "做；確實（助動詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "which": {
+      "translation": "哪個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "conditions": {
+      "translation": "條件；情況",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "were": {
+      "translation": "是（過去式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "tested": {
+      "translation": "經測試的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "whether": {
+      "translation": "是否",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "its": {
+      "translation": "它的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "performance": {
+      "translation": "表現；性能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "be": {
+      "translation": "是；成為",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "repeated": {
+      "translation": "重複的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "this": {
+      "translation": "這個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "approach": {
+      "translation": "方法；取向",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "is": {
+      "translation": "是",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "neither": {
+      "translation": "兩者皆不",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "hostile": {
+      "translation": "敵對的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "to": {
+      "translation": "向；到；用於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "technology": {
+      "translation": "科技；技術",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "nor": {
+      "translation": "也不",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "unreservedly": {
+      "translation": "毫無保留地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "optimistic": {
+      "translation": "樂觀的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "allows": {
+      "translation": "容許",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "benefits": {
+      "translation": "益處",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "of": {
+      "translation": "……的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "innovation": {
+      "translation": "創新",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "considered": {
+      "translation": "被考慮的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "alongside": {
+      "translation": "並列",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "uncertainty": {
+      "translation": "不確定性",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "risk": {
+      "translation": "風險",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "practical": {
+      "translation": "實際的；實用的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "limitations": {
+      "translation": "局限",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "useful": {
+      "translation": "有用的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "evaluation": {
+      "translation": "評估",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "begins": {
+      "translation": "開始",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "careful": {
+      "translation": "謹慎的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "questions": {
+      "translation": "問題",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "rather": {
+      "translation": "相當；而不是",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "than": {
+      "translation": "比",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "dramatic": {
+      "translation": "引人注目的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "headline": {
+      "translation": "新聞標題",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "purpose": {
+      "translation": "目的；用途",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reading": {
+      "translation": "閱讀",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "develop": {
+      "translation": "發展",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "habit": {
+      "translation": "習慣",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "judgement": {
+      "translation": "判斷",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "difference": {
+      "translation": "差別；差異",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "between": {
+      "translation": "在……之間",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "claim": {
+      "translation": "聲稱；主張",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "result": {
+      "translation": "結果",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "fundamental": {
+      "translation": "根本的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "company": {
+      "translation": "公司",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "announce": {
+      "translation": "宣布",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "new": {
+      "translation": "新的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "researcher": {
+      "translation": "研究人員",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "present": {
+      "translation": "呈現；當前的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "benchmark": {
+      "translation": "基準測試；評測基準",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "score": {
+      "translation": "分數",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "statement": {
+      "translation": "聲明",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "taken": {
+      "translation": "採取",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "alone": {
+      "translation": "單獨；僅憑",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "explains": {
+      "translation": "解釋",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "how": {
+      "translation": "如何",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "device": {
+      "translation": "裝置；設備",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "will": {
+      "translation": "將會",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "perform": {
+      "translation": "執行；表現",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "for": {
+      "translation": "為了；對於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "every": {
+      "translation": "每個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "user": {
+      "translation": "使用者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "express": {
+      "translation": "表達；表明",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "ambition": {
+      "translation": "雄心；目標",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "plan": {
+      "translation": "計劃",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "or": {
+      "translation": "或者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "prediction": {
+      "translation": "預測",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reports": {
+      "translation": "報告（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "observation": {
+      "translation": "觀察結果",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "made": {
+      "translation": "製作；作出",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "under": {
+      "translation": "在……之下",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "specific": {
+      "translation": "具體的；特定的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "distinction": {
+      "translation": "區別",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "matters": {
+      "translation": "重要；事情",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "because": {
+      "translation": "因為",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "not": {
+      "translation": "不",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "automatically": {
+      "translation": "自動地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "support": {
+      "translation": "支持",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "wider": {
+      "translation": "更廣泛的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "should": {
+      "translation": "應該",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "look": {
+      "translation": "看；尋找",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "clear": {
+      "translation": "清楚的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "method": {
+      "translation": "方法",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "comparison": {
+      "translation": "比較；對比",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "explanation": {
+      "translation": "解釋",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "shaped": {
+      "translation": "塑造",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "findings": {
+      "translation": "研究發現",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "these": {
+      "translation": "這些",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "turn": {
+      "translation": "轉變",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "attention": {
+      "translation": "注意；關注",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "from": {
+      "translation": "從；來自",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "excitement": {
+      "translation": "興奮",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "announcement": {
+      "translation": "宣布；公布",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "strength": {
+      "translation": "優點；強度",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "supporting": {
+      "translation": "支持；佐證",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "investment": {
+      "translation": "投資",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "attract": {
+      "translation": "吸引",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "financial": {
+      "translation": "財務的；金融的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "sum": {
+      "translation": "金額",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "seems": {
+      "translation": "似乎",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "precise": {
+      "translation": "精確的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "yet": {
+      "translation": "然而；仍未",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "precision": {
+      "translation": "精確度；準確性",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "number": {
+      "translation": "數字",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "confused": {
+      "translation": "混淆的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "certainty": {
+      "translation": "確定性",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "future": {
+      "translation": "未來；未來的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "value": {
+      "translation": "價值；重視",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "funding": {
+      "translation": "資金；融資",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "provide": {
+      "translation": "提供",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "resources": {
+      "translation": "資源",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "infrastructure": {
+      "translation": "基礎設施",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "staff": {
+      "translation": "員工",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "prove": {
+      "translation": "證明",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "succeed": {
+      "translation": "成功",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "ask": {
+      "translation": "詢問",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "activities": {
+      "translation": "活動",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "supports": {
+      "translation": "支持",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "progress": {
+      "translation": "進展",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "available": {
+      "translation": "可用的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "important": {
+      "translation": "重要的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "risks": {
+      "translation": "風險",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "remain": {
+      "translation": "仍然",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "are": {
+      "translation": "是（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "relevant": {
+      "translation": "相關的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "even": {
+      "translation": "甚至；即使",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "when": {
+      "translation": "當……時；何時",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "accurate": {
+      "translation": "準確的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "money": {
+      "translation": "金錢",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "one": {
+      "translation": "一個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "measure": {
+      "translation": "測量；評估；衡量標準",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "confidence": {
+      "translation": "信心",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "opportunity": {
+      "translation": "機會",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reliable": {
+      "translation": "可靠的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "another": {
+      "translation": "另一個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "treating": {
+      "translation": "對待",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "two": {
+      "translation": "二；兩個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "measures": {
+      "translation": "措施；衡量",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "as": {
+      "translation": "作為；如同",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "interchangeable": {
+      "translation": "可互換的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "would": {
+      "translation": "會（條件式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "weaken": {
+      "translation": "削弱",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "otherwise": {
+      "translation": "否則",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reasonable": {
+      "translation": "合理的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "analysis": {
+      "translation": "分析",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "language": {
+      "translation": "語言；措辭",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "especially": {
+      "translation": "尤其",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "report": {
+      "translation": "報告",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "discusses": {
+      "translation": "討論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "artificial": {
+      "translation": "人工的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "intelligence": {
+      "translation": "智能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "words": {
+      "translation": "詞語",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "such": {
+      "translation": "這類",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "possible": {
+      "translation": "可能的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "likely": {
+      "translation": "很可能的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "proven": {
+      "translation": "已證實的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "different": {
+      "translation": "不同的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "degrees": {
+      "translation": "程度",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "writer": {
+      "translation": "作者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "who": {
+      "translation": "誰；……的人",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "replaces": {
+      "translation": "取代",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "changes": {
+      "translation": "變化",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "meaning": {
+      "translation": "意思",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "similarly": {
+      "translation": "同樣地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "phrase": {
+      "translation": "片語",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "improve": {
+      "translation": "改善",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "describes": {
+      "translation": "描述",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "potential": {
+      "translation": "潛力；潛在的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "established": {
+      "translation": "已確立的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "outcome": {
+      "translation": "結果",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "requires": {
+      "translation": "需要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "qualifications": {
+      "translation": "限制條件；保留",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "also": {
+      "translation": "也",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "readers": {
+      "translation": "讀者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "notice": {
+      "translation": "留意",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "makes": {
+      "translation": "使得",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "original": {
+      "translation": "原本的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "source": {
+      "translation": "來源；資料來源",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "says": {
+      "translation": "表示",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "limited": {
+      "translation": "有限的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "measured": {
+      "translation": "經測量的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "form": {
+      "translation": "形式；構成",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "accuracy": {
+      "translation": "準確性",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "refusal": {
+      "translation": "拒絕",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "draw": {
+      "translation": "得出；繪畫",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "conclusions": {
+      "translation": "結論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "way": {
+      "translation": "方式",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "keep": {
+      "translation": "保持",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "proportionate": {
+      "translation": "相稱的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "known": {
+      "translation": "已知的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "sources": {
+      "translation": "資料來源",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "describe": {
+      "translation": "描述",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "same": {
+      "translation": "相同的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "event": {
+      "translation": "事件",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "perspectives": {
+      "translation": "觀點",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "focus": {
+      "translation": "重點；集中",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "on": {
+      "translation": "在……之上；關於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "plans": {
+      "translation": "計劃（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "products": {
+      "translation": "產品",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "group": {
+      "translation": "群體",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "emphasise": {
+      "translation": "強調",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "methods": {
+      "translation": "方法",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "measurements": {
+      "translation": "測量結果",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "news": {
+      "translation": "新聞",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "identify": {
+      "translation": "指出；識別",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "public": {
+      "translation": "公眾；公開的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "concern": {
+      "translation": "關乎；涉及（動詞）；憂慮；關切（名詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "treats": {
+      "translation": "對待",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "central": {
+      "translation": "核心的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "differences": {
+      "translation": "差異",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "do": {
+      "translation": "做（亦作助動詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "mean": {
+      "translation": "意思是；意味著",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "perspective": {
+      "translation": "觀點；角度",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "must": {
+      "translation": "必須",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "always": {
+      "translation": "總是",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "rejected": {
+      "translation": "遭拒絕的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "instead": {
+      "translation": "取而代之；反而",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "compare": {
+      "translation": "比較",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "facts": {
+      "translation": "事實",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "provides": {
+      "translation": "提供",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "leaves": {
+      "translation": "留下",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "unanswered": {
+      "translation": "未獲回答的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "strongest": {
+      "translation": "最強的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "simply": {
+      "translation": "僅僅",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "count": {
+      "translation": "計算",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "examines": {
+      "translation": "檢視",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "accounts": {
+      "translation": "報道；說明",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "independent": {
+      "translation": "獨立的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "repeat": {
+      "translation": "重複",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "agreement": {
+      "translation": "協議；一致意見",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "context": {
+      "translation": "背景；語境",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "cannot": {
+      "translation": "不能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "replace": {
+      "translation": "取代",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "verification": {
+      "translation": "核實；驗證",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "governance": {
+      "translation": "治理；管治",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "used": {
+      "translation": "使用過的；被使用的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "something": {
+      "translation": "某事",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "goes": {
+      "translation": "前往",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "wrong": {
+      "translation": "錯誤的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "policy": {
+      "translation": "政策；規則",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "set": {
+      "translation": "制定；一套",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "rules": {
+      "translation": "規則",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "service": {
+      "translation": "服務",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "existence": {
+      "translation": "存在",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "rule": {
+      "translation": "規則；規定",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "establish": {
+      "translation": "確立；證實",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "has": {
+      "translation": "有；已經（助動詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "disappeared": {
+      "translation": "消失了",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "needs": {
+      "translation": "需要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "enforcement": {
+      "translation": "執行；強制實施",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "accountability": {
+      "translation": "問責性",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "experience": {
+      "translation": "經驗；體驗",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "users": {
+      "translation": "使用者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "some": {
+      "translation": "一些",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "decisions": {
+      "translation": "決策（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "involve": {
+      "translation": "涉及",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "tradeoff": {
+      "translation": "取捨；權衡",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "access": {
+      "translation": "使用權；存取",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "safety": {
+      "translation": "安全",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "individual": {
+      "translation": "個人；個體",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "choice": {
+      "translation": "選擇",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "concerns": {
+      "translation": "關乎；涉及；憂慮",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "settled": {
+      "translation": "已解決",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "by": {
+      "translation": "由；透過",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "single": {
+      "translation": "單一的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "they": {
+      "translation": "他們；它們",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "demand": {
+      "translation": "需求；要求；需要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "institutions": {
+      "translation": "機構",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "well": {
+      "translation": "良好地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "technical": {
+      "translation": "技術的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "systems": {
+      "translation": "系統",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "distinguish": {
+      "translation": "區分；辨別",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "promises": {
+      "translation": "承諾",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "implementation": {
+      "translation": "實施",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reasonably": {
+      "translation": "合理地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "achieve": {
+      "translation": "達成",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "fairness": {
+      "translation": "公平性",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "area": {
+      "translation": "範疇",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "where": {
+      "translation": "哪裏",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "simple": {
+      "translation": "簡單的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "claims": {
+      "translation": "聲稱；主張",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "mislead": {
+      "translation": "誤導",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "work": {
+      "translation": "工作；運作",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "particular": {
+      "translation": "特定的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "producing": {
+      "translation": "產生",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "less": {
+      "translation": "較少",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "results": {
+      "translation": "結果",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "others": {
+      "translation": "其他人",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "arise": {
+      "translation": "產生；出現",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "data": {
+      "translation": "資料；數據",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "design": {
+      "translation": "設計",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "use": {
+      "translation": "使用",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "explain": {
+      "translation": "解釋",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "whose": {
+      "translation": "誰的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "was": {
+      "translation": "是（過去式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "groups": {
+      "translation": "群體（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "included": {
+      "translation": "已包括",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "errors": {
+      "translation": "錯誤（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "defined": {
+      "translation": "界定",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "examined": {
+      "translation": "經檢視的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "assume": {
+      "translation": "假定",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "failure": {
+      "translation": "失敗；故障",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "test": {
+      "translation": "測試",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "sufficient": {
+      "translation": "足夠的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "conclusion": {
+      "translation": "結論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "might": {
+      "translation": "可能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "invisible": {
+      "translation": "看不見的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "offers": {
+      "translation": "提供",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "example": {
+      "translation": "例子",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "both": {
+      "translation": "兩者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "digital": {
+      "translation": "數碼的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "help": {
+      "translation": "幫助",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "learners": {
+      "translation": "學習者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "practise": {
+      "translation": "練習",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "explore": {
+      "translation": "探索",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "ideas": {
+      "translation": "想法",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "review": {
+      "translation": "檢討；複習",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "difficult": {
+      "translation": "困難的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "material": {
+      "translation": "材料；實質的；重要的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "however": {
+      "translation": "然而；不過",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "immediate": {
+      "translation": "即時的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "identical": {
+      "translation": "相同的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "understanding": {
+      "translation": "理解",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "students": {
+      "translation": "學生",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "still": {
+      "translation": "仍然",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "need": {
+      "translation": "需要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "their": {
+      "translation": "他們的；它們的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reasoning": {
+      "translation": "推理",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "decide": {
+      "translation": "決定",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "supported": {
+      "translation": "獲支持的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "if": {
+      "translation": "如果",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "supplies": {
+      "translation": "提供",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "incorrect": {
+      "translation": "不正確的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "learner": {
+      "translation": "學習者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "error": {
+      "translation": "錯誤",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "thinking": {
+      "translation": "思考",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "replacement": {
+      "translation": "替代品",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "quality": {
+      "translation": "質素",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "learning": {
+      "translation": "學習",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "depends": {
+      "translation": "取決於；依賴",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "partly": {
+      "translation": "部分地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "asked": {
+      "translation": "已詢問",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "feedback": {
+      "translation": "回饋",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "received": {
+      "translation": "獲得",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "effort": {
+      "translation": "努力",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "examine": {
+      "translation": "檢視；審查",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reliability": {
+      "translation": "可靠性",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "successful": {
+      "translation": "成功的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "demonstration": {
+      "translation": "示範",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "during": {
+      "translation": "在……期間",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "fail": {
+      "translation": "失敗",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "increases": {
+      "translation": "增加",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "change": {
+      "translation": "改變",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "assess": {
+      "translation": "評估；評定",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "consider": {
+      "translation": "考慮",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "records": {
+      "translation": "紀錄",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "consequences": {
+      "translation": "後果",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "looks": {
+      "translation": "看起來",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "impressive": {
+      "translation": "令人印象深刻的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "in": {
+      "translation": "在……之中",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "isolation": {
+      "translation": "孤立",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "little": {
+      "translation": "少量的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "often": {
+      "translation": "經常",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "problem": {
+      "translation": "問題",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "occurs": {
+      "translation": "發生",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "matter": {
+      "translation": "重要；事情",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "organisations": {
+      "translation": "組織",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "depend": {
+      "translation": "依賴；取決於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "balance": {
+      "translation": "權衡；平衡",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "against": {
+      "translation": "反對；相對於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "probability": {
+      "translation": "概率",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "impact": {
+      "translation": "影響；衝擊",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "goal": {
+      "translation": "目標",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "perfect": {
+      "translation": "完美的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "strong": {
+      "translation": "強大的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "enough": {
+      "translation": "足夠",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "proposed": {
+      "translation": "擬議的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "transparency": {
+      "translation": "透明度",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "make": {
+      "translation": "使得；製作",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "more": {
+      "translation": "更多",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "although": {
+      "translation": "儘管；雖然",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "solve": {
+      "translation": "解決",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "publisher": {
+      "translation": "出版者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "assumptions": {
+      "translation": "假設",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "deserve": {
+      "translation": "值得；應得",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "absent": {
+      "translation": "缺乏的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "say": {
+      "translation": "說",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "concluded": {
+      "translation": "得出結論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "particularly": {
+      "translation": "尤其；特別是",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "field": {
+      "translation": "領域",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "announcements": {
+      "translation": "宣布（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "arrive": {
+      "translation": "到達",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "quickly": {
+      "translation": "迅速地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "transparent": {
+      "translation": "透明的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "separate": {
+      "translation": "分開的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "interpretation": {
+      "translation": "詮釋；理解",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "understand": {
+      "translation": "理解",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "further": {
+      "translation": "進一步的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "needed": {
+      "translation": "需要的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "encourages": {
+      "translation": "鼓勵",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "correction": {
+      "translation": "修正",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "better": {
+      "translation": "更好的；更佳地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "becomes": {
+      "translation": "變成",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "sound": {
+      "translation": "聽起來",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "limits": {
+      "translation": "限制",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "part": {
+      "translation": "部分",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "discussion": {
+      "translation": "討論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "moves": {
+      "translation": "移動",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "anxiety": {
+      "translation": "焦慮；憂慮",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "economic": {
+      "translation": "經濟的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "employment": {
+      "translation": "就業",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "control": {
+      "translation": "控制",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "treated": {
+      "translation": "對待",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "mutually": {
+      "translation": "相互地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "exclusive": {
+      "translation": "獨有的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "applications": {
+      "translation": "應用；用途",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "create": {
+      "translation": "創造",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "meaningful": {
+      "translation": "有意義的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "position": {
+      "translation": "立場",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "uses": {
+      "translation": "使用",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "recognises": {
+      "translation": "認識到",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "welcome": {
+      "translation": "歡迎",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "without": {
+      "translation": "沒有",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "accepting": {
+      "translation": "接受",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "commercial": {
+      "translation": "商業的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "equally": {
+      "translation": "同樣地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "assuming": {
+      "translation": "假設",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "nuanced": {
+      "translation": "細緻入微的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "comparing": {
+      "translation": "比較",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "arguments": {
+      "translation": "論據",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "choosing": {
+      "translation": "選擇",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "based": {
+      "translation": "基於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "only": {
+      "translation": "只有；僅",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "fear": {
+      "translation": "恐懼",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "returns": {
+      "translation": "返回",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "merely": {
+      "translation": "僅僅",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "responsibility": {
+      "translation": "責任",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "belong": {
+      "translation": "屬於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "together": {
+      "translation": "一起",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "begin": {
+      "translation": "開始",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "inquiry": {
+      "translation": "探究",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "complete": {
+      "translation": "完成；完整的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "happened": {
+      "translation": "發生了",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "affected": {
+      "translation": "受影響的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "firm": {
+      "translation": "堅定的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "qualified": {
+      "translation": "附有保留的；具資格的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "appropriate": {
+      "translation": "適當的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "response": {
+      "translation": "回應",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "care": {
+      "translation": "關注；小心",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "beyond": {
+      "translation": "超出",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "skill": {
+      "translation": "技能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "academic": {
+      "translation": "學術的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "everyday": {
+      "translation": "日常的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "aim": {
+      "translation": "目的；旨在",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "everything": {
+      "translation": "一切",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reasons": {
+      "translation": "理由",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "believing": {
+      "translation": "相信",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    }
+  },
+  "questions": [],
+  "practice": {
+    "label": "HKDSE Paper 1 Part B2-inspired daily practice",
+    "official": false,
+    "basis": "HKEAA 2026 English Language Assessment Framework, Reading objectives",
+    "instructions": "Original exercises. MC questions have answer keys; written responses need human judgement.",
+    "items": [
+      {
+        "id": "Q1",
+        "type": "mc",
+        "skill": "Writer's purpose / interpretation",
+        "marks": 1,
+        "stem": "What is the most defensible reading of the writer's treatment of evidence?",
+        "options": [
+          "Evidence must be weighed against the limits of what the text actually establishes.",
+          "Every confident AI announcement guarantees a successful result.",
+          "A product's popularity can replace careful evaluation.",
+          "All uncertain claims are necessarily false."
+        ],
+        "answer": 0,
+        "explanation": "Reported claims are distinguished from independently substantiated conclusions.",
+        "evidence": "Paragraph 1",
+        "paragraph": 1,
+        "evidence_quote": "AI can assist people with research, writing, planning and education, but each promise invites a question about evidence"
+      },
+      {
+        "id": "Q2",
+        "type": "mc",
+        "skill": "Vocabulary in context",
+        "marks": 1,
+        "stem": "Which option best conveys the meaning of 'qualified' as it is used in paragraph 12?",
+        "options": [
+          "expressed with reservations",
+          "an official guarantee of success",
+          "a financial reward for innovation",
+          "an unrelated technical instruction"
+        ],
+        "answer": 0,
+        "explanation": "The meaning follows from the writer's contrast between assertions, evidence and interpretation.",
+        "evidence": "Paragraph 12",
+        "paragraph": 12,
+        "evidence_quote": "Where the available information does not support a firm judgement, a qualified conclusion is the appropriate response"
+      },
+      {
+        "id": "Q3",
+        "type": "mc",
+        "skill": "Writer's tone / attitude",
+        "marks": 1,
+        "stem": "What attitude is best supported by the writer's language in paragraph 1?",
+        "options": [
+          "Measured and questioning, with qualifications rather than outright dismissal.",
+          "Unreservedly celebratory of every reported AI success.",
+          "Indifferent to uncertainty in scientific claims.",
+          "Personally hostile towards technology users."
+        ],
+        "answer": 0,
+        "explanation": "The contrast and qualifying expressions signal a measured judgement.",
+        "evidence": "Paragraph 1",
+        "paragraph": 1,
+        "evidence_quote": "AI can assist people with research, writing, planning and education, but each promise invites a question about evidence. A system may offer an answer that sounds confident"
+      },
+      {
+        "id": "Q4",
+        "type": "short",
+        "skill": "Argument comparison",
+        "marks": 2,
+        "stem": "Compare TWO different forms of evidence or evaluation discussed in the reading. Explain one important limitation of each.",
+        "guidance": [
+          "State a defensible interpretation of the specified text (1 mark).",
+          "Support it using relevant evidence and an explanation (1 mark)."
+        ],
+        "evidence": "Paragraph 2",
+        "paragraph": 2,
+        "evidence_quote": "The difference between a claim and a result is fundamental"
+      },
+      {
+        "id": "Q5",
+        "type": "short",
+        "skill": "Language features / contrast",
+        "marks": 2,
+        "stem": "How does the writer use contrast or qualification in paragraph 1 to develop the argument? Identify one example.",
+        "guidance": [
+          "State a defensible interpretation of the specified text (1 mark).",
+          "Support it using relevant evidence and an explanation (1 mark)."
+        ],
+        "evidence": "Paragraph 1",
+        "paragraph": 1,
+        "evidence_quote": "AI can assist people with research, writing, planning and education, but each promise invites a question about evidence"
+      },
+      {
+        "id": "Q6",
+        "type": "short",
+        "skill": "Inference and evidence",
+        "marks": 2,
+        "stem": "Identify ONE conclusion that cannot safely be drawn from the discussion of AI testing and explain what further evidence would be necessary.",
+        "guidance": [
+          "State a defensible interpretation of the specified text (1 mark).",
+          "Support it using relevant evidence and an explanation (1 mark)."
+        ],
+        "evidence": "Paragraph 2",
+        "paragraph": 2,
+        "evidence_quote": "The difference between a claim and a result is fundamental"
+      },
+      {
+        "id": "Q7",
+        "type": "extended",
+        "skill": "Cross-text synthesis / evaluation",
+        "marks": 4,
+        "stem": "Compare the opening and concluding arguments. How does the writer develop or qualify the initial position? (60–90 words)",
+        "guidance": [
+          "Accurately interpret the introduction and conclusion (2 marks).",
+          "Make an explicit analytical connection rather than listing claims (1 mark).",
+          "Specify one important limitation or condition affecting the overall conclusion (1 mark)."
+        ],
+        "evidence": "Paragraph 1 and Paragraph 12",
+        "paragraph": 1,
+        "evidence_quote": "AI can assist people with research, writing, planning and education, but each promise invites a question about evidence / A strong conclusion returns to the difference between what is known and what is merely possible"
+      }
+    ]
+  },
+  "advanced_vocabulary": [
+    "interchangeable",
+    "accountability",
+    "nuanced",
+    "information",
+    "incomplete",
+    "responsible",
+    "conditions",
+    "performance"
+  ]
+}
