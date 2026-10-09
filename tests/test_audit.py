@@ -10,14 +10,14 @@ from learning_editorial import deepen_digest,is_promotional,_word_count
 class AuditTests(unittest.TestCase):
     def setUp(self):
         self.edition={'date':'2026-10-09','mode':'editorial','demo':False,'updated_at':'2026-10-09T08:04:00+08:00',
-                      'essay':['English news '*290+' [S1] [S2] [S3]'],
+                      'essay':['English news '*515+' [S1] [S2] [S3]'],
                       'stories':[{'id':f'S{i}','url':'https://example.com','title':'AI research'} for i in range(1,4)],
-                      'word_count':580,'reading_metrics':{'word_count':580}}
+                      'word_count':1033,'reading_metrics':{'word_count':1033}}
         self.index=[{'date':'2026-10-09'}]
     def test_fresh_article(self):
         errs,_=assess_public(self.index,self.edition,'2026-10-09');self.assertEqual(errs,[])
     def test_essay_word_count_mismatch_is_detected(self):
-        self.edition['word_count']=585
+        self.edition['word_count']=1038
         errors,_=assess_public(self.index,self.edition,'2026-10-09')
         self.assertTrue(any('word count' in e.lower() for e in errors))
     def test_invalid_source_reference_is_detected(self):
@@ -64,7 +64,7 @@ class AuditTests(unittest.TestCase):
     def test_short_fallback_flagged(self):
         self.edition['mode']='source_digest';self.edition['reading_metrics']={'word_count':493}
         errs,warn=assess_public(self.index,self.edition,'2026-10-09')
-        self.assertEqual(errs,[]);self.assertEqual(len(warn),2)
+        self.assertTrue(any('1,000' in item for item in errs));self.assertTrue(any('Fallback' in item for item in warn))
     def test_correct_scheduled_run(self):
         runs={'workflow_runs':[{'event':'schedule','conclusion':'success','created_at':'2026-10-09T00:05:00Z'}]}
         self.assertTrue(recent_successful_schedule(runs,'2026-10-09'))
