@@ -435,7 +435,7 @@ def review_model_text(generated: str, stories: list[dict]) -> tuple[bool, str]:
         return False, "unwanted link or promotional language"
     if len(re.findall(r"(?im)^\s*According to\b", generated)) > 1:
         return False, "repetitive attribution openings"
-    if not (550 <= words <= 680 and 5 <= len(paras) <= 10):
+    if not (550 <= words <= 650 and 5 <= len(paras) <= 10):
         return False, "length or paragraph count outside target"
     return True, "passed structural checks; not fact-checked"
 
