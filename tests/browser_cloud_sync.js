@@ -55,7 +55,7 @@ async function attach(ctx){
   });
 }
 async function login(page,token){
-  await page.goto(ORIGIN+'#access_token='+token+'&refresh_token=refresh&expires_in=3600',{
+  await page.goto(ORIGIN+'?auth=mock-'+token+'#access_token='+token+'&refresh_token=refresh&expires_in=3600',{
     waitUntil:'domcontentloaded'});
   await page.locator('#sync-account').waitFor({state:'visible',timeout:15000});
   await page.locator('#sync-now').click();
