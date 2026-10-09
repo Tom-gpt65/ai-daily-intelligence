@@ -7,6 +7,7 @@ on:
       - 'site/cloud-sync.js'
       - 'site/reading-theme-v1.css'
       - 'tests/browser_reading_theme_v1.js'
+      - 'tests/browser_pwa_offline_final.js'
       - 'tests/browser_cloud_sync.js'
       - 'tests/browser_cloud_email.js'
       - 'tests/browser_cloud_password.js'
@@ -28,6 +29,7 @@ on:
       - 'site/v1.css'
       - 'site/reading-theme-v1.css'
       - 'tests/browser_reading_theme_v1.js'
+      - 'tests/browser_pwa_offline_final.js'
       - 'site/v6.css'
       - 'site/v11.css'
       - 'site/v12.css'
@@ -69,6 +71,8 @@ jobs:
             curl -sf http://127.0.0.1:8765/ > /dev/null && break
             sleep 1
           done
+      - name: Verify installed PWA offline reading and safe backup in Chromium/WebKit
+        run: node tests/browser_pwa_offline_final.js
       - name: Exercise 320px–430px iPhone-sized screens
         run: node tests/browser_regression_v7.js
       - name: Verify recovered-versus-scheduled status on iPad and desktop-width screens

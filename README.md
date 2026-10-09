@@ -92,6 +92,17 @@ python tests/browser_smoke_optional.py
 
 [自動生成紀錄](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml) | [每日獨立核對](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml) | [缺稿補救紀錄](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/recovery.yml)
 
+## V1 最終穩定方案：獨立巡檢與真實離線驗收
+
+V1 已具備每日文章生成、教育備援、公開發布審核與缺稿補救；最新低維護封版新增：
+
+- **香港時間 14:35，每天一次獨立健康檢查**：[V1 final autopilot](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/v1-final-autopilot.yml)，驗證公開網站、當日閱讀、iOS PWA manifest、離線快取、Supabase Auth 可用性及匿名詞庫隔離。結果在 GitHub Actions 顯示通過或失敗；排程仍可能因平台原因略過。
+- **Chromium／WebKit 服務中斷與備份測試**：檢查 PWA 註冊和可見快取（如測試環境可讀取）、現存閱讀頁面在伺服器中斷後的本機生字／字義，以及下載不含登入憑證的完整學習 JSON；恢復連線後本機資料仍存在。**自動化目前無法確證 CacheStorage 在所有引擎的可靠性，亦未驗證 iOS PWA 離線冷啟動成功**，必須以真機另行驗收。
+- **資料安全**：不在 GitHub 存放密碼、私人生字或使用者備份。閱讀位置及答題仍保存在各裝置，使用者應每月在 **我的生字庫 → 備份全部學習進度** 下載私有 JSON 檔案。
+- **明確失敗處理手冊**：[V1 終極穩定與低維護運行手冊](docs/V1_FINAL_AUTOPILOT.md)。不因這些例行維護提升 V1 版本號。
+
+**限制：** 沒有第三方付費監測、沒有後台私人帳戶登入權限、也沒有 iOS 裝置全自動備份；不能保證永久免維護或未來每日絕對準時上線。
+
 ## V1 閱讀舒適配色（Paper Calm / Soft Graphite）
 
 - **Paper Calm（日間暖紙白）預設**，主文章背景 `#FFFDF8`、正文 `#292C29`，減低彩色裝飾對長文閱讀的干擾。
@@ -148,7 +159,7 @@ python tests/browser_smoke_optional.py
 
 ## V1 跨裝置生字同步（須啟用 Supabase）
 
-V1 已加入可選擇的電郵登入（Magic Link 或管理員建立的電郵＋密碼帳戶）、私人生字事件同步及離線佇列。**Supabase 專案的公開配置現已加入 `site/cloud-config.json`，但尚未完成真實電郵登入及兩裝置驗收，不能宣稱整項跨裝置功能已完成正式驗證。** 使用雲端前請先匯出本機生字 JSON 備份；原有本機生字須由使用者主動選擇匯入。
+V1 已加入可選擇的電郵登入（Magic Link 或管理員建立的電郵＋密碼帳戶）、私人生字事件同步及離線佇列。**Supabase 公開配置已部署，使用者已回報完成真實的電郵＋密碼登入及 iOS PWA 安裝驗收。** 帳戶隔離與兩裝置同步另有模擬測試、RLS 公開隔離核對；這些自動測試仍不能代替所有真實裝置與獨立帳戶的資料權限驗收。 使用雲端前請先匯出本機生字 JSON 備份；原有本機生字須由使用者主動選擇匯入。
 
 詳細啟用步驟與 Row Level Security：[`docs/CLOUD_SYNC_SETUP.md`](docs/CLOUD_SYNC_SETUP.md)，建表 SQL：[`docs/SUPABASE_VOCABULARY.sql`](docs/SUPABASE_VOCABULARY.sql)。
 

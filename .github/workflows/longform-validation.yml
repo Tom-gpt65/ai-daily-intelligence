@@ -50,6 +50,7 @@ jobs:
           node tests/cloud_sync_test.js
           node tests/cloud_integration_test.js
           node tests/cloud_password_test.js
+          node --check tests/browser_pwa_offline_final.js
           node tests/reading_theme_tokens_v1.js
           node --check site/sw.js
           python - <<'PY'
