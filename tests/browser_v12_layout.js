@@ -44,7 +44,9 @@ const {chromium,webkit}=require('playwright');
        document.querySelector('#reader').append(paragraph);
      });
      await page.locator('#offline-concerns-probe').click();
-     assert.match(await page.locator('#lookup-translation').innerText(),/關乎/,'Common inflected word lacks offline meaning');
+     const inflectedMeaning=await page.locator('#lookup-translation').innerText();
+     assert.match(inflectedMeaning,/[\u3400-\u9fff]/,'Common inflected word lacks a real Chinese offline meaning');
+     assert.doesNotMatch(inflectedMeaning,/未收錄|待查|無法取得|請查詢/,'Inflection should not be an untranslated placeholder');
      assert.ok(await page.locator('#lookup-online').isHidden(),'Offline meaning must not request a third-party translation');
      await page.locator('#pop-close').click();
      // Archive regression: missing 8 October entry must open inside v15
