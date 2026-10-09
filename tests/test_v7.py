@@ -26,7 +26,7 @@ class DSEV7Tests(unittest.TestCase):
         book=make_exam(self.essay,self.stories,"2026-10-09")
         self.assertFalse(book["official"])
         self.assertEqual(7,len(book["items"]))
-        self.assertEqual(12,sum(x["marks"] for x in book["items"]))
+        self.assertEqual(13,sum(x["marks"] for x in book["items"]))
         for item in book["items"]:
             self.assertGreaterEqual(item["paragraph"],1)
             self.assertLessEqual(item["paragraph"],len(self.essay))
