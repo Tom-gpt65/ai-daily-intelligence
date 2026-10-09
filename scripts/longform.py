@@ -151,7 +151,7 @@ def compose_briefing(stories: list[dict]) -> list[str]:
         topic=category(story)
         occurrence=category_occurrences.get(topic,0)
         category_occurrences[topic]=occurrence+1
-        analytical_lens=LENSES[topic] if occurrence==0 else ALTERNATE_ANGLES[(occurrence-1+i)%len(ALTERNATE_ANGLES)]
+        analytical_lens=LENSES[topic] if occurrence==0 else ALTERNATE_ANGLES[(occurrence-1)%len(ALTERNATE_ANGLES)]
         title=str(story["title"]).strip().replace("\n"," ")
         publisher=str(story.get("publisher") or "the linked publisher").strip()
         anchor=f"[{story['id']}]"
