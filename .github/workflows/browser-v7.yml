@@ -24,6 +24,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Reuse free Playwright browser cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-linux-ubuntu2404-v1.55.0-chromium-webkit
       - name: Install browser test dependency and engines
         run: |
           npm install --no-save playwright@1.55.0
