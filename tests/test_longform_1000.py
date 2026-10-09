@@ -3,6 +3,7 @@ import pathlib,sys,unittest
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 from longform import compose_briefing,word_count,sourced_detail,attributed_excerpt
+from editorial_quality import inspect
 
 def story(i,kind):
     title={'investment':'AI funding round announced',
@@ -21,6 +22,9 @@ class LongFormTests(unittest.TestCase):
                 essay=compose_briefing(data)
                 self.assertGreaterEqual(word_count(' '.join(essay)),1000)
                 self.assertLessEqual(word_count(' '.join(essay)),1550)
+                checked=inspect(essay,data)
+                blockers={'article_length_outside_training_target','near_duplicate_paragraph_padding','insufficient_explicit_source_attribution','insufficient_event_specific_paragraphs'}
+                self.assertFalse(blockers.intersection(checked['issues']),checked['issues'])
                 self.assertGreaterEqual(len(essay),8)
                 for item in data:self.assertIn('['+item['id']+']',' '.join(essay))
     def test_just_two_news_items_cannot_be_padded_into_a_fake_feature(self):
@@ -31,6 +35,7 @@ class LongFormTests(unittest.TestCase):
         source_paragraphs=essay[1:6]
         self.assertEqual(len(set(source_paragraphs)),5)
         self.assertGreaterEqual(word_count(' '.join(essay)),1000)
+        self.assertNotIn('near_duplicate_paragraph_padding',inspect(essay,data)['issues'])
     def test_source_specific_rss_quotation_is_attributed_and_bounded(self):
         source={"excerpt":"Researchers describe the unusual data constraints involved in environmental AI "
                           "evaluation and explain how the fixed testing interface can support "
