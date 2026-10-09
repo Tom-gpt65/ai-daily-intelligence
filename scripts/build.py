@@ -601,6 +601,20 @@ def make_questions(stories: list[dict]) -> list[str]:
     ]
 
 
+def source_evidence_metrics(sources: list[dict]) -> dict:
+    """Count genuinely informative RSS summaries before allocating model CPU.
+
+    A few lengthy headlines are not enough to sustain a 1,000-word news
+    feature. This is still a heuristic; source descriptions are not audited.
+    """
+    counts=[len(re.findall(r"\b[A-Za-z]+\b",str(s.get("excerpt","")))) for s in sources]
+    headline_counts=[len(re.findall(r"\b[A-Za-z]+\b",str(s.get("title","")))) for s in sources]
+    total=sum(counts)+sum(headline_counts)
+    detailed=sum(n>=12 for n in counts)
+    return {"word_count":total,"detailed_sources":detailed,
+            "sufficient":len(sources)>=3 and total>=85 and detailed>=2}
+
+
 def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None = None, diagnostics: dict | None = None):
     date = now.astimezone(TZ).date().isoformat()
     diagnostics = diagnostics or {}
@@ -611,10 +625,17 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         put_status(stage, now, source_count=0, **diagnostics)
         print("[no fresh reporting] Retaining previous report; never invent a new edition.", file=sys.stderr)
         return False
-    # Do not fabricate 1,000 words of reported developments from one or two headlines.
-    total_evidence_words = sum(len(re.findall(r"\b[A-Za-z]+\b",
-                                   s.get("title", "") + " " + s.get("excerpt", ""))) for s in sources)
-    evidence_adequate = len(sources) >= 3 and total_evidence_words >= 85
+    # Disallow a long report built from little more than attractive headlines.
+    evidence = source_evidence_metrics(sources)
+    total_evidence_words = evidence["word_count"]
+    evidence_adequate = evidence["sufficient"]
+    if not evidence_adequate:
+        put_status("insufficient_evidence", now, source_count=len(sources),
+                   evidence_word_count=total_evidence_words,
+                   detailed_source_count=evidence["detailed_sources"], **diagnostics)
+        print("[evidence warning] Fewer than two substantial source descriptions "
+              "or too little attributed information; retaining previous edition.", file=sys.stderr)
+        return False
     model_started = time.perf_counter()
     essay = generate_essay(sources) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "1") == "1" else None
     model_seconds = round(time.perf_counter() - model_started, 3) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "1") == "1" else 0
