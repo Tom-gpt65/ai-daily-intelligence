@@ -15,7 +15,10 @@ class EvidencePreflightTests(unittest.TestCase):
     def test_two_long_sources_and_one_short_source_can_provide_context(self):
         long=('Research teams describe a proposed framework and specific evaluation '
               'procedures under comparable operational conditions, highlighting '
-              'limitations and unresolved assumptions about performance. ')
+              'limitations and unresolved assumptions about performance. '
+              'The description outlines conditions, acknowledges uncertainty, '
+              'and notes that comparisons require consistent assessment criteria, '
+              'making the source informative but not independently corroborated. ')
         sources=[
             {'title':'An AI agent research evaluation is proposed','excerpt':long},
             {'title':'AI developers introduce an industry policy','excerpt':long},
