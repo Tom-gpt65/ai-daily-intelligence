@@ -57,7 +57,18 @@ async function attach(ctx){
 async function login(page,token){
   await page.goto(ORIGIN+'?auth=mock-'+token+'#access_token='+token+'&refresh_token=refresh&expires_in=3600',{
     waitUntil:'domcontentloaded'});
-  await page.locator('#sync-account').waitFor({state:'visible',timeout:15000});
+  try{await page.locator('#sync-account').waitFor({state:'visible',timeout:15000});}
+  catch(error){
+    const diagnostic=await page.evaluate(()=>({
+      currentUrl:location.pathname+location.search,
+      syncStatus:document.querySelector('#sync-status')?.textContent,
+      unavailable:!document.querySelector('#sync-unavailable')?.classList.contains('hidden'),
+      loginVisible:!document.querySelector('#sync-login')?.classList.contains('hidden'),
+      moduleReady:Boolean(window.AIDailyCloud),
+      sessionPresent:Boolean(localStorage.getItem('ai-daily-cloud-session-v1'))
+    }));
+    throw new Error('Fake Supabase login not active: '+JSON.stringify(diagnostic),{cause:error});
+  }
   await page.locator('#sync-now').click();
   await page.waitForFunction(()=>document.querySelector('#sync-status')?.textContent.includes('同步完成'),null,{timeout:15000});
 }
