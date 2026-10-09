@@ -27,6 +27,30 @@ class LongFormTests(unittest.TestCase):
                 self.assertFalse(blockers.intersection(checked['issues']),checked['issues'])
                 self.assertGreaterEqual(len(essay),8)
                 for item in data:self.assertIn('['+item['id']+']',' '.join(essay))
+    def test_security_robotics_and_general_ai_classification(self):
+        from longform import category
+        cases=[
+            ("Anthropic launches free AI security scans for open-source projects","General AI","security"),
+            ("AI breakthroughs in robotics","Research","robotics"),
+            ("A study of biology and protein research","Research","bioscience"),
+            ("How AI agent benchmarks are evaluated","Research","research"),
+            ("General AI tools for writing","General AI","technology"),
+        ]
+        for title,topic,expected in cases:
+            with self.subTest(title=title):
+                self.assertEqual(category({"title":title,"topic":topic}),expected)
+    def test_factual_alignment_for_security_and_robotics(self):
+        from longform import compose_briefing
+        examples=[
+            {"id":"S1","publisher":"One","title":"Security scanner for open-source projects","topic":"General AI","excerpt":"The provider describes a service for finding potential security issues in open-source projects."},
+            {"id":"S2","publisher":"Two","title":"A new research framework and benchmark","topic":"Research","excerpt":"Researchers evaluate a benchmark for comparing language models and methods."},
+            {"id":"S3","publisher":"Three","title":"Progress in robotics","topic":"Research","excerpt":"A report discusses how robots move from research into practical conditions."}
+        ]
+        text=compose_briefing(examples)
+        self.assertIn("Software security",text[1])
+        self.assertNotIn("biological sequence",text[1])
+        self.assertIn("Robotics research",text[3])
+        self.assertIn("software security"," ".join(text))
     def test_just_two_news_items_cannot_be_padded_into_a_fake_feature(self):
         self.assertEqual(compose_briefing([story(1,'research'),story(2,'investment')]),[])
     def test_identical_topics_do_not_repeat_entire_analysis_paragraph(self):

@@ -48,6 +48,21 @@ class DailyGuaranteeTests(unittest.TestCase):
                 fingerprints.add("\n".join(edition["essay"]))
         self.assertGreaterEqual(len(fingerprints),12)
 
+    def test_reserve_topics_are_diverse_and_headlines_are_grounded(self):
+        bank=json.loads((ROOT/"site"/"reading-library.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(bank["topics"]),24)
+        self.assertEqual(len(bank["titles"]),24)
+        days=[(datetime(2026,10,10,tzinfo=timezone.utc)+timedelta(days=i)).date().isoformat() for i in range(40)]
+        previous=None
+        for date in days:
+            edition=build_reading(date)
+            body=edition["essay"][1:-1]
+            self.assertEqual(len(body),10)
+            self.assertEqual(len(set(body)),10)
+            self.assertIn(edition["headline"].removeprefix("AI literacy: "),bank["titles"])
+            if previous is not None:
+                self.assertFalse(set(body)&set(previous),date+" repeated yesterday's paragraphs")
+            previous=body
     def test_every_word_has_exact_surface_lookup(self):
         edition=build_reading("2026-10-10")
         for word in article_words(edition["essay"]):
