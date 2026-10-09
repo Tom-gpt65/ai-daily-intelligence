@@ -8,9 +8,11 @@ on:
       - 'tests/browser_regression_v7.js'
       - 'tests/status_regression_v8.js'
       - 'tests/browser_layout_v11.js'
+      - 'tests/browser_v12_layout.js'
       - 'site/app.js'
       - 'site/v6.css'
       - 'site/v11.css'
+      - 'site/v12.css'
       - 'site/sw.js'
       - 'site/index.html'
       - 'site/reports/**'
@@ -51,6 +53,8 @@ jobs:
         run: node tests/status_regression_v8.js
       - name: Verify reflow, headings, safe reader reset and fresh PWA shell
         run: node tests/browser_layout_v11.js
+      - name: Verify v12 responsive chapter navigation and reader reset
+        run: node tests/browser_v12_layout.js
       - name: Browser smoke summary
         if: always()
         run: |
