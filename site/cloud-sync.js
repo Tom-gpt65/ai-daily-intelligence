@@ -87,6 +87,7 @@
         try{config=JSON.parse(localStorage.getItem(CONFIG_CACHE)||'null');}catch{config=null;}
       }
       if(!this.configValid(config)){
+        this.options.onSignedOut?.();
         this.setStatus('尚未啟用雲端同步；本機生字與備份功能維持正常。');
         this.options.onAvailable?.(false);
         return false;
@@ -99,6 +100,7 @@
         history.replaceState(null,'',location.pathname+location.search);
       }
       if(hash.has('access_token')&&hash.has('refresh_token')){
+        localStorage.removeItem(USER_CACHE); // A new magic-link identity must be verified first.
         this.session={
           access_token:hash.get('access_token'),
           refresh_token:hash.get('refresh_token'),
@@ -140,7 +142,7 @@
             this.setStatus('離線或伺服器暫時無法連線；此裝置變更會保留並等待同步。');
           }else this.setStatus('暫時無法確認登入：'+statusError(err));
         }
-      }else this.setStatus('尚未登入；輸入電郵即可在各裝置同步生字。');
+      }else {this.options.onSignedOut?.();this.setStatus('尚未登入；輸入電郵即可在各裝置同步生字。');}
       return true;
     }
     storeSession(){localStorage.setItem(SESSION,JSON.stringify(this.session));}
