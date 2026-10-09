@@ -46,6 +46,9 @@ async function scenario(engine,browser,scenarioName,scheduledRuns,manualRuns,rep
   await page.locator('#schedule-live.'+expectedClass).waitFor({state:'visible',timeout:20000});
   const label=await page.locator('#schedule-text').innerText();
   assert.ok(label.includes(expectedText),engine+' '+scenarioName+': wrong status: '+label);
+  assert.ok(!label.includes('08:00 目標未達成'),engine+': status falsely asserts an exact public deadline');
+  if(scenarioName==='scheduled failed + recovery succeeds')assert.ok(label.includes('原定排程失敗'));
+
   if(expectedLink)assert.ok((await page.locator('#schedule-run-link').getAttribute('href')).includes(expectedLink),engine+' '+scenarioName+': wrong execution link');
   assert.ok(await page.locator('#reader .essay-paragraph').count()>=5,engine+' '+scenarioName+': article not loaded');
   assert.deepEqual(errors,[],engine+' '+scenarioName+': JavaScript errors');
@@ -58,11 +61,11 @@ async function scenario(engine,browser,scenarioName,scheduledRuns,manualRuns,rep
 (async()=>{
  for(const {engine,browser} of [{engine:'chromium',browser:chromium},{engine:'webkit',browser:webkit}]){
   await scenario(engine,browser,'scheduled failed + recovery succeeds',[scheduled],[recovered],
-    '08:44:32','schedule-recovered','額外觸發生成已成功','71002');
+    '08:44:32','schedule-recovered','補救成功','71002');
   await scenario(engine,browser,'scheduled failed + article stale',[scheduled],[recovered],
-    '07:35:00','schedule-failed','尚未確認今日文章已更新','71001');
+    '07:35:00','schedule-failed','尚未確認更新','71001');
   await scenario(engine,browser,'scheduled succeeds',[succeeded],[],
-    '07:58:00','schedule-success','07:40 定時工作成功','71003');
+    '07:58:00','schedule-success','原定排程正常','71003');
  }
  console.log('RESULT: 6 / 6 schedule and tablet-view regression cases passed');
 })().catch(err=>{console.error(err);process.exit(1);});
