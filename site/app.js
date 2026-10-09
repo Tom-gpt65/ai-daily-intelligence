@@ -677,7 +677,7 @@
     setModeBanner(r.mode); renderFreshness(); renderReader(); renderReaderNavigator(); readingStatus(); updateZoomNotice();
     syncTranslationButton();
     const sources = $('source-list'); sources.replaceChildren();
-    if (!(r.stories || []).length) { const note = document.createElement('div'); note.className='empty-state'; note.textContent='此為離線示範教材，不包含實際新聞來源。'; sources.appendChild(note); }
+    if (!(r.stories || []).length) { const note = document.createElement('div'); note.className='empty-state'; note.textContent=r.mode==='reading_feature'?'本篇為原創 AI 素養延伸閱讀，並非即時新聞，因此沒有當日新聞來源。':'此為離線示範教材，不包含實際新聞來源。'; sources.appendChild(note); }
     (r.stories || []).forEach(s => {
       const a = document.createElement('a'); a.className = 'source-item';
       try { const u = new URL(s.url); if (!['http:', 'https:'].includes(u.protocol)) return; a.href=u.href; } catch { return; }
