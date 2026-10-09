@@ -28,6 +28,7 @@
   function orderedEvents(events){
     return events.slice().sort((a,b)=>
       String(a.created_at||'').localeCompare(String(b.created_at||''))||
+      (Number(a.batch_order)||0)-(Number(b.batch_order)||0)||
       String(a.event_id||'').localeCompare(String(b.event_id||'')));
   }
   function replay(events){
@@ -234,7 +235,9 @@
         await this.ensureToken();
         const snapshot=this.pending.slice();
         for(let i=0;i<snapshot.length;i+=100){
-          const batch=snapshot.slice(i,i+100).map(e=>({...e,user_id:this.user.id}));
+          // PostgreSQL now() gives all rows in one request the same timestamp.
+          // Explicit batch order makes consecutive edits deterministic.
+          const batch=snapshot.slice(i,i+100).map((e,batch_order)=>({...e,user_id:this.user.id,batch_order}));
           await this.request('POST','/rest/v1/vocabulary_events?on_conflict=event_id',batch);
           const acknowledged=new Set(batch.map(e=>e.event_id));
           this.pending=this.pending.filter(e=>!acknowledged.has(e.event_id));
@@ -242,8 +245,8 @@
         }
         const events=[];
         for(let offset=0;offset<EVENT_LIMIT;offset+=1000){
-          const path='/rest/v1/vocabulary_events?select=event_id,word,payload,deleted,created_at'
-            +'&order=created_at.asc,event_id.asc&limit=1000&offset='+offset;
+          const path='/rest/v1/vocabulary_events?select=event_id,word,payload,deleted,created_at,batch_order'
+            +'&order=created_at.asc,batch_order.asc,event_id.asc&limit=1000&offset='+offset;
           const page=await this.request('GET',path);
           if(!Array.isArray(page))throw new Error('雲端返回的資料格式不正確');
           events.push(...page);

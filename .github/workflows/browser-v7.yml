@@ -1,6 +1,13 @@
 name: iPhone browser regression — Chromium and WebKit
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/cloud-sync.js'
+      - 'tests/browser_cloud_sync.js'
+      - 'site/app.js'
+      - '.github/workflows/browser-v7.yml'
   push:
     branches: [main]
     paths:

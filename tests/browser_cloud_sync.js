@@ -36,10 +36,11 @@ async function attach(ctx){
     if(!user)return response(route,{message:'invalid login'},401);
     if(url.pathname==='/auth/v1/user')return response(route,user);
     if(url.pathname==='/rest/v1/vocabulary_events'&&req.method()==='POST'){
+      const serverTime=new Date(Date.parse('2026-10-09T00:00:00Z')+(++seq)*1000).toISOString();
       for(const entry of JSON.parse(req.postData())){
         if(entry.user_id!==user.id)return response(route,{message:'RLS denied'},403);
         if(!events.some(x=>x.event_id===entry.event_id)){
-          events.push({...entry,created_at:new Date(Date.parse('2026-10-09T00:00:00Z')+(++seq)*1000).toISOString()});
+          events.push({...entry,created_at:serverTime});
         }
       }
       return route.fulfill({status:204,headers:{'access-control-allow-origin':'*'}});
@@ -47,8 +48,8 @@ async function attach(ctx){
     if(url.pathname==='/rest/v1/vocabulary_events'&&req.method()==='GET'){
       const offset=Number(url.searchParams.get('offset')||0);
       return response(route,events.filter(e=>e.user_id===user.id)
-        .slice(offset,offset+1000).map(({event_id,word,payload,deleted,created_at})=>
-          ({event_id,word,payload,deleted,created_at})));
+        .slice(offset,offset+1000).map(({event_id,word,payload,deleted,created_at,batch_order})=>
+          ({event_id,word,payload,deleted,created_at,batch_order})));
     }
     if(url.pathname==='/auth/v1/logout')return response(route,{});
     return response(route,{message:'unknown route'},404);

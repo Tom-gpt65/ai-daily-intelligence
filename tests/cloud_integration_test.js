@@ -17,15 +17,18 @@ global.fetch=async (url,options={})=>{
   if(path.includes('/rest/v1/vocabulary_events?on_conflict=event_id')){
     assert.equal(options.headers.Prefer,'resolution=ignore-duplicates,return=minimal');
     assert.equal(options.headers.Authorization,'Bearer example-access-token');
+    // Supabase's default now() is constant within one INSERT transaction.
+    const serverTime=next();
     for(const event of JSON.parse(options.body)){
       assert.equal(event.user_id,user,'Must write only the authenticated owner');
-      if(!events.some(row=>row.event_id===event.event_id))events.push({...event,created_at:next()});
+      assert.ok(Number.isInteger(event.batch_order)&&event.batch_order>=0&&event.batch_order<100);
+      if(!events.some(row=>row.event_id===event.event_id))events.push({...event,created_at:serverTime});
     }
     return {ok:true,status:201,text:async()=>''};
   }
   if(path.includes('/rest/v1/vocabulary_events?select=')){
     const offset=Number(path.match(/offset=(\d+)/)?.[1]||0);
-    const page=events.slice(offset,offset+1000).map(({event_id,word,payload,deleted,created_at})=>({event_id,word,payload,deleted,created_at}));
+    const page=events.slice(offset,offset+1000).map(({event_id,word,payload,deleted,created_at,batch_order})=>({event_id,word,payload,deleted,created_at,batch_order}));
     return {ok:true,status:200,text:async()=>JSON.stringify(page)};
   }
   throw new Error('Unexpected request '+path);
@@ -60,6 +63,15 @@ client.session={access_token:'example-access-token',refresh_token:'refresh-token
   const count=events.length;
   await client.sync();
   assert.equal(events.length,count,'Repeated sync must not duplicate acknowledged events');
+  // Two edits queued before a single server POST share created_at.
+  client.record('concerns',{translation:'關乎',reviewLevel:1});
+  client.record('concerns',{translation:'關乎',reviewLevel:6});
+  clearTimeout(client.retryTimer);
+  await client.sync();
+  assert.equal(rendered.concerns.reviewLevel,6,'Later edit in one batch must win');
+  const finalBatch=events.slice(-2);
+  assert.equal(finalBatch[0].created_at,finalBatch[1].created_at);
+  assert.deepEqual(finalBatch.map(e=>e.batch_order),[0,1]);
   assert.match(state,/同步完成/);
-  console.log('Cloud mocked E2E PASS: create, offline review, reconnect, delete, idempotent sync');
+  console.log('Cloud mocked E2E PASS: create, offline review, reconnect, delete, idempotent sync and tied timestamp ordering');
 })().catch(err=>{console.error(err);process.exit(1);});
