@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="./v4.css">
   <link rel="stylesheet" href="./v5.css">
   <link rel="stylesheet" href="./v6.css">
+  <link rel="stylesheet" href="./v11.css">
 </head>
 <body>
   <a class="skip-link" href="#reader">跳到英文閱讀文章</a>
@@ -39,11 +40,10 @@
     <main class="main">
       <header class="topbar">
         <div class="breadcrumbs"><span>LEARNING DASHBOARD</span><span class="slash">/</span><span id="crumb">DAILY BRIEFING</span></div>
-        <div class="top-actions"><span id="today-label" class="date-label"></span><button type="button" id="theme-button" class="icon-button" aria-label="切換深淺色">☼</button></div>
+        <div class="top-actions"><span id="today-label" class="date-label"></span><button type="button" id="reload-latest" class="small-button refresh-content" aria-label="檢查網站新版本及重新載入今日文章" title="重新取得最新網站及文章">↻ 更新內容</button><button type="button" id="theme-button" class="icon-button" aria-label="切換深淺色">☼</button></div>
       </header>
       <div class="page" id="view-today">
         <div id="connection-alert" class="connection-alert hidden" role="status"></div>
-        <div id="pipeline-alert" class="pipeline-alert hidden" role="status"></div>
         <section class="intro">
           <div class="eyebrow"><span class="star">✦</span> KNOW MORE. READ BETTER.</div>
           <h1>Your deeper<br><em>AI perspective.</em></h1>
@@ -52,7 +52,8 @@
         <a class="jump-to-reader" href="#reader">直接閱讀今日英文文章 <span aria-hidden="true">↓</span></a>
         <div class="status-row"><span id="status-banner" class="status-pill">載入中…</span><div id="report-metadata" class="report-metadata"></div></div>
         <a class="audit-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml" target="_blank" rel="noopener noreferrer">↗ 查看每日發布驗證（香港時間 08:05 及 09:17 預定檢查）</a>
-        <div class="schedule-live" id="schedule-live" role="status"><span id="schedule-text">正在查核每日 07:40 排程…</span><a id="schedule-run-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml" target="_blank" rel="noopener noreferrer">查看紀錄</a><button type="button" id="refresh-schedule" aria-label="重新檢查今日定時更新">↻</button></div>
+        <div class="schedule-live" id="schedule-live" role="status"><span id="schedule-text">正在查核今日文章及排程…</span><a id="schedule-run-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml" target="_blank" rel="noopener noreferrer">工作紀錄</a><button type="button" id="refresh-schedule" aria-label="重新核對最新文章與定時狀態">↻</button></div>
+        <details class="technical-status" id="technical-status"><summary>更新技術詳情（RSS、模型、執行時間）</summary><div id="pipeline-alert" class="pipeline-alert hidden" role="status"></div></details>
         <div id="freshness-note" class="freshness-note hidden" role="status"></div>
         <section class="edition-overview" aria-label="本日閱讀概況">
           <div class="overview-stat"><span class="overview-label">閱讀長度</span><strong id="overview-minutes">載入中…</strong><small id="overview-words">1,000 字以上 · 按閱讀速度估算</small></div>
@@ -67,7 +68,7 @@
         <section class="briefing-card" aria-label="AI briefing">
           <div class="card-header"><div><div class="section-overline">DAILY EDITION</div><h2 id="report-headline">正在載入每日簡報</h2><p id="report-subtitle">新聞來源會列於文章下方。</p></div><div class="edition-symbol">AI<span>↗</span></div></div>
           <div class="reading-bar"><span class="bar-track"><span id="progress-bar" class="bar-fill"></span></span><span id="progress-percent" aria-live="off">0%</span></div>
-          <div class="reader-toolbar"><span class="helper"><span class="mini-spark">✧</span> 點擊任何英文生字即可查詢中文意思</span><div class="toolbar-right"><button class="small-button reader-tools-more" type="button" id="tools-toggle" aria-expanded="false">更多閱讀工具 ▾</button><button class="small-button" type="button" id="reading-speed" title="調整估算閱讀速度；不會影響文章難度">閱讀速度：115 字／分鐘</button><button class="small-button" type="button" id="resume-reading">接續閱讀</button><button class="small-button" type="button" id="focus-toggle" aria-pressed="false">專注閱讀</button><button class="small-button" type="button" id="translate-toggle">顯示中文譯文</button><button class="small-button" type="button" id="font-button" aria-label="調整英文字體大小（三級循環）">A<span class="font-bigger">A</span></button><button class="small-button" type="button" id="export-report">匯出文章</button><button class="small-button" type="button" id="print-report">列印</button></div></div>
+          <div class="reader-toolbar"><span class="helper"><span class="mini-spark">✧</span> 點擊任何英文生字即可查詢中文意思</span><div class="toolbar-right"><button class="small-button reader-tools-more" type="button" id="tools-toggle" aria-expanded="false">更多閱讀工具 ▾</button><button class="small-button" type="button" id="reading-speed" title="調整估算閱讀速度；不會影響文章難度">閱讀速度：115 字／分鐘</button><button class="small-button" type="button" id="resume-reading">接續閱讀</button><button class="small-button" type="button" id="focus-toggle" aria-pressed="false">專注閱讀</button><button class="small-button" type="button" id="translate-toggle">顯示中文譯文</button><button class="small-button" type="button" id="font-button" aria-label="調整英文字體大小（三級循環）">A<span class="font-bigger">A</span></button><button class="small-button reset-reading" type="button" id="reset-reading" aria-label="重設閱讀版面及字體（保留生字與進度）">↺ 重設版面</button><button class="small-button" type="button" id="export-report">匯出文章</button><button class="small-button" type="button" id="print-report">列印</button></div></div>
           <nav id="reader-navigator" class="reader-navigator" aria-label="文章段落導航"></nav>
           <p id="translation-policy" class="translation-policy">全文翻譯需要網絡。使用前須同意把公開英文文章傳送至免費第三方翻譯服務；翻譯可能不準確。單字詞典仍可離線使用。</p><div id="reader" class="reader" lang="en" tabindex="-1"></div>
           <div class="reading-quality" id="reading-quality"></div>
