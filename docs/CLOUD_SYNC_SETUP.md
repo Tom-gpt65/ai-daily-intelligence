@@ -5,7 +5,7 @@
 ## 1. 建立安全的 Supabase 專案
 
 1. 在 [Supabase](https://supabase.com/dashboard) 建立新專案，記下 **Project URL**（格式 `https://xxxx.supabase.co`）與可公開的 **anon／publishable key**。
-2. 打開 **SQL Editor**，完整執行 [SUPABASE_VOCABULARY.sql](SUPABASE_VOCABULARY.sql)。確認 `public.vocabulary_events` 已啟用 Row Level Security（RLS），SELECT／INSERT 僅容許登入的 `auth.uid() = user_id`。
+2. 打開 **SQL Editor**，完整執行 [SUPABASE_VOCABULARY.sql](SUPABASE_VOCABULARY.sql)（已執行舊版 SQL 的專案亦須重新執行以補上 `batch_order` 欄位及欄位權限）。確認 `public.vocabulary_events` 已啟用 Row Level Security（RLS），SELECT／INSERT 僅容許登入的 `auth.uid() = user_id`；`created_at` 只能由資料庫產生，瀏覽器不能自行指定。
 3. 到 **Authentication → Providers → Email** 啟用 Email OTP／Magic Link。到 **Authentication → URL Configuration**：
    - **Site URL**：`https://tom-gpt65.github.io/ai-daily-intelligence/`
    - **Redirect URLs**：加入相同完整網址；測試本機可另外加入 `http://127.0.0.1:8765/`。
@@ -38,7 +38,7 @@
 ## 4. 避免混淆及已知限制
 
 - **只同步生字庫和生字複習資料**。閱讀位置、文章已讀日期、閱讀理解答案仍留在每部裝置的本機，未加入雲端同步。
-- 對同一個字有衝突修改時，按照**雲端實際收到事件的先後次序**決定最新狀態；離線裝置最後補傳的改動可能覆蓋已上傳的修改。所有歷史事件仍儲存在擁有人帳戶下，可以由管理員協助復原。
+- 對同一個字有衝突修改時，依資料庫賦予的接收時間排序；同一次請求批量上傳、具有相同資料庫時間的多項操作，再按 `batch_order` 保留該批次中的修改先後次序。離線裝置最後補傳的改動可能覆蓋已上傳的修改。跨裝置幾乎同時提交時仍採用伺服器時間與排序後備規則，**不是跨裝置語義合併**。所有歷史事件仍儲存在擁有人帳戶下，可以由管理員協助復原。
 - 刪除生字會新增刪除事件，讓另一部裝置亦刪除。**舊資料事件仍存於雲端事件紀錄**；要永久刪除所有私人雲端詞庫資料，須執行已登入身份的擁有人 DELETE 操作或由專案管理員協助刪除。不能以「刪除生字」當成完全抹除雲端歷史。
 - 使用者的 access／refresh session token 儲存在各裝置此網站的 localStorage。共用裝置請登出；清空瀏覽器資料會清除本機未同步佇列。單一裝置的瀏覽器隱私設定可能阻止持久保存。
 - 需要網絡才能首次登入、完成郵件驗證，以及提交雲端變更。**目前未有真實 Supabase 帳戶測試**時，不能宣稱已達成實際跨裝置同步。
@@ -47,7 +47,7 @@
 
 ## 5. 驗收測試
 
-- `node tests/cloud_sync_test.js`：詞語格式、離線變更、刪除事件、冪等重播。
+- `node tests/cloud_sync_test.js`：詞語格式、離線變更、刪除事件、冪等重播及同時間批次排序。
 - `node --check site/cloud-sync.js` 及 `node --check site/app.js`：JavaScript 語法。
 - 原有 Chromium／WebKit 瀏覽器測試：未連雲端時不妨礙閱讀、生字儲存、測驗及舊 JSON 備份。
 - **真實環境驗收**：在兩個不同裝置登入相同電郵，測試新增、刪除、複習評級、離線修改後重連，以及不同電郵之間的資料隔離。**未完成之前不能視為整個功能正式啟用。**
