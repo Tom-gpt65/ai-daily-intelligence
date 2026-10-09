@@ -6,6 +6,7 @@ on:
     paths:
       - 'site/cloud-sync.js'
       - 'tests/browser_cloud_sync.js'
+      - 'tests/browser_cloud_email.js'
       - 'site/app.js'
       - '.github/workflows/browser-v7.yml'
   push:
@@ -72,6 +73,8 @@ jobs:
         run: node tests/browser_v12_layout.js
       - name: Verify simulated two-device cloud vocabulary interactions
         run: node tests/browser_cloud_sync.js
+      - name: Verify iPad and Chromium Magic Link feedback without sending real email
+        run: node tests/browser_cloud_email.js
       - name: Browser smoke summary
         if: always()
         run: |
