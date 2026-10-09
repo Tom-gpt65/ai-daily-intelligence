@@ -31,8 +31,13 @@ const {chromium,webkit}=require('playwright');
      if(width<=1024)assert.notEqual(measures.select,'none','Chapter picker missing');
      assert.equal(await page.locator('#reading-speed').count(),0,'Unwanted speed switch remains');
      assert.equal(await page.locator('#overview-minutes').count(),0,'Unwanted minute estimate remains');
-     const editionMode=await page.evaluate(()=>document.querySelector('#status-banner').classList.contains('hidden'));
-     assert.ok(editionMode,'Redundant source-digest badge should be hidden for normal editions');
+     const editionBadge=await page.evaluate(()=>{
+       const el=document.querySelector('#status-banner');
+       const mode=document.querySelector('#report-metadata').textContent.includes('延伸閱讀')?'reading_feature':'news';
+       return {hidden:el.classList.contains('hidden'),mode};
+     });
+     assert.equal(editionBadge.hidden,editionBadge.mode==='news',
+       'Normal news must not show a redundant badge; backup reading must retain its warning');
      const fontSizes=async()=>page.evaluate(()=>{
        const paragraph=document.querySelector('#reader .essay-paragraph');
        const word=paragraph.querySelector('.word');
