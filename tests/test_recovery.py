@@ -52,10 +52,30 @@ class RecoveryTests(unittest.TestCase):
         stale={"status":"completed","event":"workflow_dispatch","created_at":"2020-01-01T00:00:00Z"}
         allowed,_=recover_daily.should_dispatch("2000-01-01",[stale,stale])
         self.assertTrue(allowed)
+    def test_fresh_but_invalid_article_must_retry(self):
+        allowed,_=recover_daily.should_dispatch(recover_daily.TODAY,[],
+            recover_daily.TODAY+"T08:15:00+08:00",quality_ok=False)
+        self.assertTrue(allowed)
+    def test_public_passage_validation(self):
+        import re
+        date=recover_daily.TODAY
+        paragraphs=["Editorial evidence [S1] [S2] [S3] " + "analysis "*200]*5
+        count=len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b"," ".join(paragraphs)))
+        sources=[{"id":f"S{i}","title":"Research","url":f"https://example.com/{i}"} for i in range(1,4)]
+        report={"date":date,"mode":"source_digest","word_count":count,
+                "essay":paragraphs,"stories":sources,
+                "practice":{"items":[{"stem":"Question"}]*7}}
+        index={"date":date,"word_count":count,"stories":3}
+        self.assertTrue(recover_daily.edition_is_readable(index,report))
+        self.assertFalse(recover_daily.edition_is_readable(index,{**report,"essay":["too short"]}))
+        self.assertFalse(recover_daily.edition_is_readable(index,{**report,"practice":{"items":[]}}))
+        self.assertFalse(recover_daily.edition_is_readable({**index,"stories":4},report))
     def test_retry_schedule_only_twice(self):
         yaml=(ROOT/".github/workflows/recovery.yml").read_text(encoding="utf-8")
         self.assertIn("cron: '20 8 * * *'",yaml)
         self.assertIn("cron: '40 9 * * *'",yaml)
+        self.assertIn("cron: '25 10 * * *'",yaml)
+        self.assertIn("cron: '25 12 * * *'",yaml)
         self.assertIn("actions: write",yaml)
         self.assertNotIn("OPENAI_API_KEY",yaml)
 
