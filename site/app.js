@@ -175,7 +175,7 @@
     if(!Number.isFinite(time)||hkDayFor(r.updated_at)!==today)return false;
     const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date(time));
     const get=k=>Number(parts.find(p=>p.type===k)?.value||-1);
-    return get('hour')*60+get('minute')>=460;
+    return get('hour')*60+get('minute') >= (r.mode==='reading_feature'?420:460);
   }
   async function fetchDailyRuns(event){
     const url='https://api.github.com/repos/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml/runs?event='+event+'&per_page=25';
@@ -199,6 +199,11 @@
     const activeRecovery=dispatched?.find(run=>run.status!=='completed')||null;
     const ready=reportMorningReady(today);
     const stamp=ready?hkClockFor(state.report.updated_at):'';
+    if(ready&&state.report?.mode==='reading_feature'){
+      label.textContent='✓ 今日英文閱讀已提供（AI 延伸閱讀 · 非即時新聞）';
+      bar.classList.add('schedule-recovered');
+      return;
+    }
     const now=new Date();
     const hours=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(now);
     const hh=Number(hours.find(x=>x.type==='hour')?.value||0);
@@ -290,6 +295,11 @@
   }
   function renderStoryCards(r){
     const root=$('story-cards');root.replaceChildren();
+    if(r.mode==='reading_feature'){
+      const p=document.createElement('p');p.className='demo-explainer';
+      p.textContent='今日提供經預先準備的 AI 素養英文閱讀，並非當日新聞；原定新聞更新仍可能稍後發布。';
+      root.appendChild(p);return;
+    }
     if(r.mode==='demo'){
       const p=document.createElement('p');p.className='demo-explainer';p.textContent='本頁只提供虛構閱讀練習，沒有今日真實新聞。完成部署後，最新報道將顯示在這裏。';root.append(p);return;
     }
@@ -608,7 +618,7 @@
   }
   function setModeBanner(mode) {
     const el = $('status-banner'); el.classList.toggle('demo', mode === 'demo');
-    el.textContent = ({demo:'⚠ 示範教材 · 非即時新聞', editorial:'✦ 已整理當日新聞 · AI 英文改寫', source_digest:'ⓘ 來源式英文練習 · 模型改寫未通過審核'})[mode] || '已發布報告';
+    el.textContent = ({demo:'⚠ 示範教材 · 非即時新聞', editorial:'✦ 已整理當日新聞 · AI 英文改寫', source_digest:'ⓘ 來源式英文練習 · 模型改寫未通過審核', reading_feature:'✦ 今日 AI 延伸閱讀 · 非即時新聞'})[mode] || '已發布報告';
   }
   function hkDate() {
     const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
@@ -637,6 +647,8 @@
       message=`此為 ${formatDate(r.date)} 的舊文章；今日報告尚未確認發布。請查看工作紀錄。`;
     else if(daysOld(r.date)<0)
       message='文章日期晚於香港今日日期，請檢查資料。';
+    else if(r.mode==='reading_feature')
+      message='今日屬原創 AI 素養延伸閱讀，並非即時新聞。';
     else if(Number(r.word_count)<1000)
       message='⚠ 本篇低於 1,000 字閱讀標準，請查看發布驗證。';
     // The source type and unverified-news disclaimer remain on the article
@@ -655,10 +667,10 @@
     const r = state.report; if (!r) return;
     $('report-headline').textContent = r.headline || 'AI Daily Briefing';
     $('report-subtitle').textContent = r.subtitle || '';
-    $('report-metadata').textContent = `${formatDate(r.date)} · ${r.word_count || 0} words · ${(r.stories || []).length} sources`;
+    $('report-metadata').textContent = `${formatDate(r.date)} · ${r.word_count || 0} words · ${r.mode==='reading_feature'?'延伸閱讀':(r.stories||[]).length+' sources'}`;
     renderReadingEstimate();
     $('overview-words').textContent=`${r.word_count||0} English words${r.mode==='source_digest'?' · 來源式英文深度分析':''}`;
-    $('overview-stories').textContent=(r.stories||[]).length+' 則';
+    $('overview-stories').textContent=r.mode==='reading_feature'?'非即時新聞':(r.stories||[]).length+' 則';
     $('overview-vocab').textContent=(r.advanced_vocabulary||[]).length+' 個';
     $('reading-quality').textContent=r.quality_note||'資料可能有誤；請核實來源。';
     renderStoryCards(r);refreshDashboard();renderResume();
@@ -904,7 +916,7 @@
     }catch{if(serial===requestSerial)toast('載入報告失敗，請檢查網絡或離線快取。');}
   }
   function isValidReport(r, date){
-    return r && r.date===date && ['demo','editorial','source_digest'].includes(r.mode) &&
+    return r && r.date===date && ['demo','editorial','source_digest','reading_feature'].includes(r.mode) &&
       Array.isArray(r.essay) && r.essay.length>0 && r.essay.length<=15 &&
       r.essay.every(p=>typeof p==='string'&&p.length<=5000) &&
       Array.isArray(r.stories) && r.stories.length<=8 &&
@@ -921,7 +933,7 @@
     if(!state.report)return;
     const r=state.report;
     const sources=(r.stories||[]).map(s=>`[${s.id}] ${s.publisher} · ${s.title}\n${s.url}`).join('\n\n');
-    const text=[r.headline,`${r.date} | ${r.mode} | ${r.word_count||0} words`,r.editorial_notice||'',...r.essay,'ORIGINAL SOURCES',sources,'Generated from RSS descriptions; verify claims against originals.'].join('\n\n');
+    const text=[r.headline,`${r.date} | ${r.mode} | ${r.word_count||0} words`,r.editorial_notice||'',...r.essay,...(r.mode==='reading_feature'?['EVERGREEN EDUCATIONAL READING — NOT TODAY\'S NEWS']:['ORIGINAL SOURCES',sources,'Generated from RSS descriptions; verify claims against originals.'])].join('\n\n');
     const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
     a.href=url;a.download=`ai-daily-${r.date}.txt`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);
   }
