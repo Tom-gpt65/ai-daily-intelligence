@@ -1308,7 +1308,7 @@
     updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();initCloudSync();
     await preloadOfflineGlossary();
     $('refresh-schedule').addEventListener('click',()=>refreshLatestReport({force:true}));
-    if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+    if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost' || location.hostname==='127.0.0.1')){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
     try{
       const response=await fetch('./reports/index.json',{cache:'no-store'});if(!response.ok)throw new Error('No report index');
       state.index=await response.json();if(!Array.isArray(state.index)||state.index.length>400||!state.index.every(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date||'')))throw new Error('Invalid index');
