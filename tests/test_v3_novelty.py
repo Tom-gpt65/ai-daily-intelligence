@@ -100,7 +100,11 @@ class V3OriginalityTests(unittest.TestCase):
                     if number:
                         for i,row in enumerate(rows):
                             row["url"]+="?edition=2026-10-12-"+str(i)
-                            row["title"]+=" — independent evaluation "+str(i+1)
+                            row["title"]=(
+                                "AI security scanners for open-source projects",
+                                "AI robotics evaluation under practical conditions",
+                                "AI governance policy for responsible use",
+                            )[i]
                             parts=row["excerpt"].split(". ")
                             row["excerpt"]=". ".join(parts[1:]+parts[:1])
                     self.assertTrue(build.build_live(now,None,sources=rows),
