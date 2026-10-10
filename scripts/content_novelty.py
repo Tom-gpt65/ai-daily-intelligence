@@ -15,7 +15,7 @@ from pathlib import Path
 TOKEN = re.compile(r"[A-Za-z]+(?:['’-][A-Za-z]+)*")
 STYLES = ("evidence_audit", "comparative_study", "consequence_map",
           "question_driven_review")
-MAX_FIVE_GRAM_OVERLAP = 0.48
+MAX_FIVE_GRAM_OVERLAP = 0.16
 LOOKBACK_DAYS = 60
 
 
