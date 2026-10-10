@@ -1,5 +1,5 @@
 name: V3 8–10 October automatic article reconstruction
-# Replay after archive-aware V3 prose selection; fail closed on any quality gate.
+# Replay after acceptance-test correction: similar sources may be safely rejected.
 
 on:
   push:
