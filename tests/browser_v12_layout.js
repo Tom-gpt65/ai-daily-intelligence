@@ -100,7 +100,9 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      const history=page.locator('#archive-list .archive-card').filter({hasText:'8 October 2026'});
      await history.waitFor({state:'visible',timeout:8000});
      await history.click();
-     await page.waitForFunction(()=>document.querySelector('#report-headline')?.textContent?.startsWith('AI literacy:'),null,{timeout:12000});
+     // Today's backup can ALSO start with "AI literacy:"; wait for
+     // the selected article DATE so this cannot pass before navigation.
+     await page.waitForFunction(()=>document.querySelector('#report-metadata')?.textContent?.includes('8 October 2026'),null,{timeout:12000});
      assert.match(await page.locator('#report-metadata').innerText(),/8 October 2026/,'Historical reading did not open');
      assert.ok(await page.locator('#freshness-note').isHidden(),'Historical reading should not claim the latest edition is missing');
      assert.match(await page.locator('#schedule-text').innerText(),/歷史文章/,'Historical reading must not be labelled as a failed daily schedule');

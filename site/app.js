@@ -338,8 +338,31 @@
     const ready=reportMorningReady(today);
     const stamp=ready?hkClockFor(state.report.updated_at):'';
     if(ready&&state.report?.mode==='reading_feature'){
-      label.textContent='✓ 今日英文閱讀已提供（AI 延伸閱讀 · 非即時新聞）';
-      bar.classList.add('schedule-recovered');
+      // A valid educational reserve is NOT proof that the 07:40 news
+      // pipeline worked. Do not hide scheduled/dispatch failures behind a
+      // green "reading available" banner (2026-10-10 incident).
+      const failedSchedule=schedule?.status==='completed'&&schedule.conclusion==='failure';
+      const failedDispatch=dispatched?.find(run=>run.status==='completed'&&run.conclusion==='failure');
+      if(failedSchedule||failedDispatch){
+        label.textContent='⚠ 今日 AI 延伸閱讀已提供，但新聞更新工作失敗（現為非即時新聞）';
+        bar.classList.add('schedule-failed');
+        const failure=failedDispatch||schedule;
+        link.href=failure?.html_url||link.href;
+      }else if(schedule?.status==='completed'&&schedule.conclusion==='success'||completedRecovery){
+        label.textContent='ⓘ 今日 AI 延伸閱讀已提供；新聞流程完成，但未有達標即時新聞';
+        bar.classList.add('schedule-recovered');
+        const completed=completedRecovery||schedule;
+        link.href=completed?.html_url||link.href;
+      }else if(schedule&&schedule.status!=='completed'||activeRecovery){
+        label.textContent='今日 AI 延伸閱讀已提供；新聞更新仍在執行（現為非即時新聞）';
+        link.href=(activeRecovery||schedule)?.html_url||link.href;
+      }else{
+        label.textContent='✓ 今日英文閱讀已提供（AI 延伸閱讀 · 非即時新聞）';
+        bar.classList.add('schedule-recovered');
+      }
+      if(scheduled===null||dispatched===null){
+        label.textContent+='（部分 GitHub 紀錄暫時無法查核）';
+      }
       return;
     }
     const now=new Date();

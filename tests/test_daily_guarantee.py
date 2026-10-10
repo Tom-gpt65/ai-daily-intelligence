@@ -75,4 +75,20 @@ class DailyGuaranteeTests(unittest.TestCase):
         self.assertIn("reading_backup.py --if-missing",morning)
         self.assertIn("cron: '5 7 * * *'",morning)
 
+    def test_publication_checks_validate_real_articles_not_mutable_unit_fixtures(self):
+        # Production is a runtime pipeline, not a CI runner. A 07:05 reserve
+        # is an expected valid state; the full test suite runs in CI.
+        for name in ("daily.yml","early-reading.yml"):
+            with self.subTest(workflow=name):
+                workflow=(ROOT/".github/workflows"/name).read_text(encoding="utf-8")
+                self.assertIn("python scripts/validate_site.py",workflow)
+                self.assertIn("node --check site/app.js",workflow)
+                self.assertIn("node --check site/sw.js",workflow)
+                self.assertNotIn("python -m unittest discover",workflow,
+                    "Full regression tests must not block daily publishing")
+        ci=(ROOT/".github/workflows/longform-validation.yml").read_text(encoding="utf-8")
+        self.assertIn("python -m unittest discover -s tests -v",ci)
+        self.assertIn(".github/workflows/daily.yml",ci)
+        self.assertIn(".github/workflows/early-reading.yml",ci)
+
 if __name__=="__main__":unittest.main()
