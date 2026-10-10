@@ -34,7 +34,7 @@ def dump(path: Path, value: object):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def main():
+def rebuild_preview():
     assert MAX_FIVE_GRAM_OVERLAP == LIMIT, "Public V3 gate must also enforce 16%"
     originals = {
         day: json.loads((ROOT/"site/reports"/(day+".json")).read_text(encoding="utf-8"))
@@ -81,13 +81,13 @@ def main():
             rebuilt8["processing"]["historical_backfill"] = True
             rebuilt8["processing"]["generator_seed_date"] = "2026-10-09"
             rebuilt8["generation_provenance"] = "reading_backup.build_reading (original educational library)"
-            if rebuilt8["essay"] == originals[DAYS[0]]["essay"] or not complete(rebuilt8):
-                raise RuntimeError("8 October reading must change and retain complete offline translations.")
+            if not complete(rebuilt8):
+                raise RuntimeError("8 October preview must retain complete offline translations.")
             build.put_report(rebuilt8)
 
             for day in DAYS[1:]:
                 original = originals[day]
-                source_clock = datetime.fromisoformat(original["updated_at"].replace("Z", "+00:00"))
+                source_clock = datetime.fromisoformat(day+"T23:30:00+08:00")
                 # This is historical replay, NOT a claim of fresh news today.
                 if not build.build_live(source_clock, None, sources=copy.deepcopy(original["stories"])):
                     state = json.loads(build.STATUS_PATH.read_text(encoding="utf-8"))
@@ -103,7 +103,6 @@ def main():
             for day in DAYS:
                 target = build.REPORTS/(day+".json")
                 article = json.loads(target.read_text(encoding="utf-8"))
-                article["updated_at"] = updated_at
                 article["history_rebuilt_at"] = updated_at
                 article["historical_rebuild"] = True
                 article["rebuild_target_max_five_gram_overlap"] = LIMIT
@@ -124,7 +123,7 @@ def main():
                     report = reports[row["date"]]
                     row.update(headline=report["headline"], mode=report["mode"],
                                word_count=report["word_count"],
-                               stories=len(report["stories"]), updated_at=updated_at)
+                               stories=len(report["stories"]), updated_at=report["updated_at"])
             index.sort(key=lambda item: item["date"], reverse=True)
             dump(index_path, index)
             errors = validate_site.validate()
@@ -165,4 +164,20 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    # Reconstruction never mutates the active published tree.
+    destination=ROOT/'.cache/history-preview'
+    destination.mkdir(parents=True,exist_ok=True)
+    base_root=ROOT
+    with tempfile.TemporaryDirectory(prefix='history-preview-') as name:
+        sandbox=Path(name)
+        shutil.copytree(base_root/'site',sandbox/'site')
+        (sandbox/'docs').mkdir()
+        ROOT=sandbox
+        try:
+            result=rebuild_preview()
+            shutil.copytree(sandbox/'site/reports',destination/'reports',dirs_exist_ok=True)
+            shutil.copytree(sandbox/'docs',destination/'docs',dirs_exist_ok=True)
+            print('Preview retained:',destination)
+        finally:
+            ROOT=base_root
+    raise SystemExit(result)

@@ -65,9 +65,9 @@ async function check(engine,browser,width){
    for(const width of [320,390,820,1024,1180]) await check(engine,browser,width);
  }
  const sw=fs.readFileSync(path.join(root,'site/sw.js'),'utf8');
- assert.ok(sw.includes("fetch(event.request,{cache:'no-cache'})"),'Service worker still serves stale CSS or JavaScript without first checking the network');
- assert.ok(sw.includes("cache.match(event.request,{ignoreSearch:true})"),'Offline fallback ignores version-busting query');
- assert.ok(fs.readFileSync(path.join(root,'site/index.html'),'utf8').includes('app.js?v=3'),
+ assert.ok(sw.includes("boundedFetch(event.request,{cache:'no-cache'})"),'Service worker still serves stale CSS or JavaScript without first checking the network');
+ assert.ok(sw.includes("url.search=''")&&sw.includes('dataKey(event.request)'),'Offline shell cache does not canonicalize version-busting queries');
+ assert.ok(fs.readFileSync(path.join(root,'site/index.html'),'utf8').includes('app.js?v=s1-1'),
    'HTML does not break old iPhone JavaScript URL');
  console.log('RESULT:',passes,'/ 10 responsive browser layouts plus PWA freshness invariants passed');
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import tempfile
 import time
+import re
 from datetime import datetime,timezone
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -26,6 +27,14 @@ def read_json(path, default):
         return json.loads(Path(path).read_text(encoding="utf-8"))
     except (FileNotFoundError,ValueError):
         return default
+
+def read_index(path):
+    rows=json.loads(Path(path).read_text(encoding='utf-8'))
+    if (not isinstance(rows,list) or not rows or any(not isinstance(row,dict) or
+            not re.fullmatch(r'\d{4}-\d{2}-\d{2}',str(row.get('date',''))) for row in rows)
+            or len({row['date'] for row in rows})!=len(rows)):
+        raise ValueError('Invalid history index; refusing to replace it')
+    return rows
 
 def merge_index(remote, local):
     """Newly generated date wins, without discarding other published dates."""
@@ -55,39 +64,51 @@ def incoming_is_newer(existing, incoming):
 
 def select_edition(existing, incoming):
     """A complete same-day news edition wins over an emergency reserve."""
+    from edition_contract import issues as edition_issues
+    usable=bool(existing) and not edition_issues(existing)
     preserve_news=(existing.get("mode") in ("editorial","source_digest")
-                   and incoming.get("mode")=="reading_feature" and complete(existing))
-    return existing if existing and (preserve_news or not incoming_is_newer(existing,incoming)) else incoming
+                   and incoming.get("mode")=="reading_feature" and usable)
+    return existing if usable and (preserve_news or not incoming_is_newer(existing,incoming)) else incoming
 
 def git(*args):
     return subprocess.run(["git",*args],cwd=ROOT,check=True,
                           text=True,capture_output=True)
 
 def publish(max_attempts=5):
+    # This reset is permitted only in disposable Actions workspaces. Refuse
+    # to erase unrelated code edits if the helper is accidentally run locally.
+    changed = git("status", "--porcelain", "--untracked-files=no").stdout.splitlines()
+    if any(not line[3:].replace('\\', '/').startswith(("site/reports/", "site/system-status.json")) for line in changed):
+        raise RuntimeError("Refusing publication reset: unrelated working-tree edits exist")
+    paths=[line[3:].replace('\\','/') for line in changed]
+    paths+=git('ls-files','--others','--exclude-standard','site/reports').stdout.splitlines()
+    generated_dates={match.group(1) for path in paths if (match:=re.fullmatch(r'site/reports/(\d{4}-\d{2}-\d{2})\.json',path))}
+    if len(generated_dates)>1:
+        raise RuntimeError('Multiple changed editions; refusing ambiguous daily replay')
     with tempfile.TemporaryDirectory(prefix="daily-publish-") as tmp:
         backup=Path(tmp)
         shutil.copytree(REPORTS,backup/"reports")
         status_backup=STATUS.read_bytes() if STATUS.exists() else b""
-        report_index=read_json(backup/"reports"/"index.json",[])
+        report_index=read_index(backup/"reports"/"index.json")
         # Only replay the newly produced edition files and this run's status.
         # Never restore old copies of all reports over newer remote files.
-        current_date=report_index[0].get("date") if report_index else None
-        if not current_date or not (backup/"reports"/f"{current_date}.json").exists():
+        current_date=next(iter(generated_dates),None)
+        if current_date and (not any(row['date']==current_date for row in report_index) or not (backup/"reports"/f"{current_date}.json").exists()):
             raise RuntimeError("Missing generated report and index; refusing publication")
         for attempt in range(1,max_attempts+1):
             git("fetch","origin","main")
             git("reset","--hard","origin/main")
-            remote=read_json(REPORTS/"index.json",[])
+            remote=read_index(REPORTS/"index.json")
             REPORTS.mkdir(parents=True,exist_ok=True)
             # Do not regress a report already published for the same date:
             # last completed generation wins if it has a newer update timestamp.
-            incoming=read_json(backup/"reports"/f"{current_date}.json",{})
+            incoming=read_json(backup/"reports"/f"{current_date}.json",{}) if current_date else {}
             existing=read_json(REPORTS/f"{current_date}.json",{})
             # An already verified sourced news article outranks a later
             # emergency educational reserve for the same Hong Kong date.
             # Updating content in a slow retry must not downgrade the edition.
-            chosen=select_edition(existing,incoming)
-            if chosen is existing:
+            chosen=select_edition(existing,incoming) if current_date else {}
+            if not current_date or chosen is existing:
                 preserve_remote_status=True
             else:
                 if not incoming.get("essay"):
@@ -100,20 +121,42 @@ def publish(max_attempts=5):
                 preserve_remote_status=False
             # Only this run's dated edition may override an index row. Replaying
             # yesterday's stale local rows can invalidate newer remote history.
-            combined=merge_index(remote,[])
-            combined=[row for row in combined if row["date"]!=current_date]
-            chosen_row={
-                "date":current_date,
-                "headline":chosen.get("headline",""),
-                "mode":chosen.get("mode","source_digest"),
-                "word_count":chosen.get("word_count",0),
-                "stories":len(chosen.get("stories",[])),
-                "updated_at":chosen.get("updated_at","")
-            }
-            combined=merge_index(combined,[chosen_row])
-            (REPORTS/"index.json").write_text(json.dumps(combined,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-            if status_backup and not preserve_remote_status:
-                STATUS.write_bytes(status_backup)
+            combined=remote
+            if current_date:
+                combined=[row for row in merge_index(remote,[]) if row['date']!=current_date]
+                chosen_row={
+                    "date":current_date,
+                    "headline":chosen.get("headline",""),
+                    "mode":chosen.get("mode","source_digest"),
+                    "word_count":chosen.get("word_count",0),
+                    "stories":len(chosen.get("stories",[])),
+                    "updated_at":chosen.get("updated_at","")
+                }
+                combined=merge_index(combined,[chosen_row])
+                (REPORTS/"index.json").write_text(json.dumps(combined,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+            # A failed new-day attempt can retain yesterday's article while
+            # still publishing its NEW failure status. Never drop it merely
+            # because the selected reading file did not change.
+            proposed_status=json.loads(status_backup) if status_backup else {}
+            current_status=read_json(STATUS,{})
+            previous_check=utc_instant(current_status.get('checked_at'))
+            proposed_check=utc_instant(proposed_status.get('checked_at'))
+            if proposed_check and (previous_check is None or proposed_check>=previous_check):
+                info={**proposed_status,'latest_date':combined[0]['date'],'mode':combined[0]['mode']}
+                from verify_publication import publication_outcome, HK
+                actual_report=read_json(REPORTS/(combined[0]['date']+'.json'),{})
+                accepted=publication_outcome(combined,actual_report,proposed_check.astimezone(HK).date().isoformat(),allow_archived=True)
+                info['publication']=accepted
+                info['news_outcome']='current_news_available' if accepted['news'] else 'archived_reading' if accepted.get('backup') else 'educational_fallback'
+                if accepted.get('backup'):
+                    info['backup']={**info.get('backup',{}),'kind':'archived_reading','date':accepted['date'],'requested_date':accepted['requested_date']}
+                    if info.get('state')=='published':info['state']='reading_reserve_reused'
+                else:
+                    info.pop('backup',None)
+                    if info.get('state')=='reading_reserve_reused':info['state']='published'
+                if preserve_remote_status and proposed_status.get('state')=='published' and chosen.get('mode') in ('editorial','source_digest'):
+                    info={**info,'mode':chosen['mode'],'latest_date':combined[0]['date']}
+                STATUS.write_text(json.dumps(info,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
             # Fetch/reset may have brought new code, assets and glossary rules.
             # Validate the actual merged deployment, not the pre-fetch snapshot.
             import validate_site
@@ -124,11 +167,15 @@ def publish(max_attempts=5):
                 if issues:raise RuntimeError("Merged publication invalid: "+"; ".join(issues[:6]))
             finally:
                 validate_site.SITE=previous_site
+            # reset may have fetched changed Python rules. Validate in a fresh
+            # process too so imported pre-reset modules cannot approve them.
+            if (ROOT/'scripts/validate_site.py').is_file():
+                subprocess.run([sys.executable,'scripts/validate_site.py'],cwd=ROOT,check=True)
             git("add","site/reports","site/system-status.json")
             if not git("diff","--cached","--name-only").stdout.strip():
                 print("[publish] Already up to date")
                 return
-            git("commit","-m",f"Update AI daily edition {current_date}")
+            git("commit","-m",f"Update AI daily edition/status {current_date or combined[0]['date']}")
             try:
                 git("push","origin","HEAD:main")
                 print(f"[publish] Updated {current_date} on attempt {attempt}")

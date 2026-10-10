@@ -5,6 +5,7 @@ from datetime import date as calendar_date
 from pathlib import Path
 from edition_guarantee import complete
 from editorial_quality import contains_machine_artifacts, inspect
+from edition_contract import issues as edition_issues
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
@@ -15,15 +16,15 @@ def validate() -> list[str]:
     app = (SITE / "app.js").read_text(encoding="utf-8")
     worker = (SITE / "sw.js").read_text(encoding="utf-8")
     release=json.loads((SITE/"release.json").read_text(encoding="utf-8"))
-    if (release.get("version")!="V3" or ">V3<" not in markup
-            or release.get("cache_namespace")!="ai-daily-V3-novel-reading"
+    if (release.get("version")!="S1" or ">S1<" not in markup
+            or release.get("cache_namespace")!="ai-daily-S1-1-reading"
             or release["cache_namespace"] not in worker):
         errors.append("Public release and PWA cache version disagree")
     for name in ("app.js","cloud-sync.js","v1.css","reading-theme-v1.css"):
         if "./"+name+"?v="+release.get("asset_revision","") not in markup:
             errors.append("Asset revision differs from release: "+name)
-    for source in re.findall(r'(?:href|src)="(\./[^"#?]+)"', markup):
-        if not (SITE / source[2:]).exists():
+    for source in re.findall(r'(?:href|src)="(\./[^"#]+)"', markup):
+        if not (SITE / source[2:].split('?',1)[0]).exists():
             errors.append(f"Missing linked local asset: {source}")
     ids = re.findall(r'\bid="([^" ]+)"', markup)
     if len(ids) != len(set(ids)):
@@ -61,6 +62,12 @@ def validate() -> list[str]:
             continue
         try:
             article=json.loads((SITE/'reports'/(date+'.json')).read_text(encoding='utf-8'))
+            errors.extend(date+': '+message for message in edition_issues(article,item,SITE/'reports'))
+            # V1/V2/S1 historical bytes remain compatible. Every new dated
+            # edition after S1 starts must use the strict profile, including
+            # educational reserves; older flags cannot bypass the gate.
+            if date > release.get('legacy_editions_through','2026-10-10') and article.get('validation_profile') != 's1':
+                errors.append('New edition missing S1 originality contract: '+date)
             if article.get('date')!=date:
                 errors.append('Report date mismatch: '+date)
             if item.get('word_count')!=article.get('word_count'):
@@ -89,7 +96,7 @@ def validate() -> list[str]:
                 if any(not isinstance(q,dict) or not isinstance(q.get('paragraph'),int)
                        or not 1<=q['paragraph']<=len(paragraphs) or not q.get('evidence_quote') for q in items):
                     errors.append('Broken reading question or evidence pointer: '+date)
-                elif article.get('validation_profile') in ('v2','v3'):
+                elif article.get('validation_profile') in ('v2','v3','s1'):
                     for question in items:
                         locations=[int(n)-1 for n in re.findall(r"Paragraph (\d+)",str(question.get('evidence','')))]
                         locations=locations or [question['paragraph']-1]
@@ -118,10 +125,10 @@ def validate() -> list[str]:
                 from content_novelty import audit_history
                 novelty=audit_history(article,SITE/'reports')
                 if not novelty['pass']:
-                    errors.append('V3 news reuses past prose, theme or structure: '+date+
+                    errors.append('S1 news reuses past prose, theme or structure: '+date+
                                   ' '+', '.join(novelty['issues'][:4]))
                 if article.get('novelty',{}).get('pass') is not True:
-                    errors.append('V3 publication is missing a successful originality audit: '+date)
+                    errors.append('S1 publication is missing a successful originality audit: '+date)
             if i==0 and item.get('updated_at')!=article.get('updated_at'):
                 errors.append('Latest report revision differs from index: '+date)
         except (OSError, KeyError, ValueError, TypeError) as exc:

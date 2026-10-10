@@ -27,7 +27,7 @@ ASSETS = (
 
 def public_get(url: str, headers: dict | None = None) -> tuple[int, bytes]:
     """Return status/body (including expected 401/403 responses) with size caps."""
-    h = {"User-Agent": "V3-Final-Autopilot/3", "Cache-Control": "no-cache"}
+    h = {"User-Agent": "S1-Final-Autopilot/3", "Cache-Control": "no-cache"}
     if headers:
         h.update(headers)
     req = Request(url, headers=h)
@@ -80,9 +80,9 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
         else:
             checks.append("iPhone/iPad standalone manifest and icons")
 
-        if ('id="site-version"' not in html or '>V3<' not in html or
-            "./reading-theme-v1.css?v=3" not in html or
-            "ai-daily-V3-novel-reading" not in worker or
+        if ('id="site-version"' not in html or '>S1<' not in html or
+            "./reading-theme-v1.css?v=s1-1" not in html or
+            "ai-daily-S1-1-reading" not in worker or
             "const SHELL=" not in worker or
             "'./reports/index.json'" not in worker or
             "'./reading-theme-v1.css'" not in worker or
@@ -92,7 +92,7 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
             "ai-daily-saved-v2" not in app):
             errors.append("Public reading app, offline cache, theme or login is out of date")
         else:
-            checks.append("V3 code, paper/night themes and offline shell")
+            checks.append("S1 code, paper/night themes and offline shell")
 
         if not isinstance(index, list) or not index or not isinstance(index[0], dict):
             errors.append("Public daily article index is missing or invalid")
@@ -201,7 +201,7 @@ def run() -> int:
         time.sleep(8)
     errors, warnings, checks = outcome
     lines = [
-        "### V3 maintenance health (Hong Kong)",
+        "### S1 maintenance health (Hong Kong)",
         f"- Expected article date: {today}",
         f"- Public site: {BASE}",
         f"- Outcome: {'PASS' if not errors else 'FAIL'}",

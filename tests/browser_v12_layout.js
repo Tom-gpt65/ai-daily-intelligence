@@ -16,7 +16,7 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      page.on('pageerror',e=>errors.push(e.message));
      await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
-     assert.equal(await page.locator('#site-version').innerText(),'V3');
+     assert.equal(await page.locator('#site-version').innerText(),'S1');
      await page.locator('[data-view="words"]').click();
      if(cloudConfigured){
        await page.locator('#sync-login').waitFor({state:'visible',timeout:15000});
@@ -144,7 +144,7 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      }));
      assert.ok(persisted.word?.translation && persisted.quiz && persisted.writing,
        'A reload must not erase saved words or practice answers');
-     assert.equal(await page.locator('#site-version').innerText(),'V3','Routine archive testing must not change published V2 version');
+     assert.equal(await page.locator('#site-version').innerText(),'S1','Routine archive testing must not change published V2 version');
      const ui=await page.evaluate(()=>{
        const reader=document.querySelector('#reader');
        return {font:getComputedStyle(reader).fontFamily,

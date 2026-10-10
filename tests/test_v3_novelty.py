@@ -126,7 +126,7 @@ class V3OriginalityTests(unittest.TestCase):
                         self.assertFalse((dest/"reports"/(day+".json")).exists())
                         break
                     report=json.loads((build.REPORTS/(day+".json")).read_text("utf-8"))
-                    self.assertEqual(report.get("validation_profile"),"v3")
+                    self.assertEqual(report.get("validation_profile"),"s1")
                     self.assertTrue(report.get("novelty",{}).get("pass"))
                     self.assertLess(report["novelty"]["max_overlap"],0.16)
                     self.assertEqual(validate_site.validate(),[])

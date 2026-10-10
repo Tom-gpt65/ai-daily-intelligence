@@ -59,6 +59,7 @@
     constructor(options){
       this.options=options;this.config=null;this.session=null;this.user=null;
       this.pending=[];this.busy=null;this.retryTimer=null;
+      this.epoch=0;this.authRequest=0;this.refreshBusy=null;
     }
     get active(){return Boolean(this.user&&this.session);}
     setStatus(message){this.options.onStatus?.(message);}
@@ -88,6 +89,7 @@
       }catch{return false;}
     }
     async init(){
+      const authRequest=++this.authRequest;
       let config;
       try{
         const response=await fetch('./cloud-config.json',{cache:'no-store'});
@@ -137,6 +139,7 @@
           if(!navigator.onLine)throw new Error('目前離線');
           await this.ensureToken();
           const profile=await this.request('GET','/auth/v1/user');
+          if(authRequest!==this.authRequest)return false;
           if(!/^[0-9a-f-]{36}$/i.test(profile.id||''))throw new Error('登入帳戶無效');
           this.user={id:profile.id,email:profile.email||''};
           localStorage.setItem(USER_CACHE,JSON.stringify(this.user));
@@ -145,6 +148,7 @@
           this.setStatus('已登入，正在同步生字…');
           await this.sync();
         }catch(err){
+          if(authRequest!==this.authRequest)return false;
           if(/401|403|登入已失效/.test(statusError(err))){
             this.session=null;this.user=null;localStorage.removeItem(SESSION);
             localStorage.removeItem(USER_CACHE);
@@ -164,13 +168,18 @@
     storeSession(){localStorage.setItem(SESSION,JSON.stringify(this.session));}
     async request(method,path,body,allowRefresh=true){
       if(!this.config)throw new Error('未設定雲端服務');
+      const epoch=this.epoch;
       const headers={'apikey':this.config.key,'Content-Type':'application/json'};
       if(this.session?.access_token)headers.Authorization='Bearer '+this.session.access_token;
       if(method==='POST'&&path.startsWith('/rest/v1/vocabulary_events'))
         headers.Prefer='resolution=ignore-duplicates,return=minimal';
-      const response=await fetch(this.config.url+path,{method,headers,
+      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
+      let response;
+      try{response=await fetch(this.config.url+path,{method,headers,
         ...(body===undefined?{}:{body:JSON.stringify(body)}),
-        cache:'no-store'});
+        cache:'no-store',signal:controller.signal});}
+      finally{clearTimeout(timer);}
+      if(epoch!==this.epoch)throw new Error('帳戶已變更，已忽略舊同步回應');
       if(response.status===401&&allowRefresh&&this.session?.refresh_token){
         await this.refresh();return this.request(method,path,body,false);
       }
@@ -179,19 +188,31 @@
         throw new Error((error.msg||error.message||error.error_description||('HTTP '+response.status)).slice(0,150));
       }
       if(response.status===204||response.status===205)return null;
-      const bodyText=await response.text();return bodyText?JSON.parse(bodyText):null;
+      const bodyText=await response.text();
+      if(epoch!==this.epoch)throw new Error('帳戶已變更，已忽略舊同步回應');
+      return bodyText?JSON.parse(bodyText):null;
     }
     async refresh(){
       if(!this.session?.refresh_token)throw new Error('登入已失效');
-      const r=await fetch(this.config.url+'/auth/v1/token?grant_type=refresh_token',{
+      if(this.refreshBusy)return this.refreshBusy;
+      const epoch=this.epoch,refreshToken=this.session.refresh_token;
+      const task=(async()=>{
+      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
+      let r;
+      try{r=await fetch(this.config.url+'/auth/v1/token?grant_type=refresh_token',{
         method:'POST',headers:{apikey:this.config.key,'Content-Type':'application/json'},
-        body:JSON.stringify({refresh_token:this.session.refresh_token}),cache:'no-store'
-      });
+        body:JSON.stringify({refresh_token:refreshToken}),cache:'no-store',signal:controller.signal
+      });}finally{clearTimeout(timer);}
       if(!r.ok)throw new Error(r.status===401?'登入已失效':'無法更新登入狀態');
       const value=await r.json();
+      if(epoch!==this.epoch)throw new Error('帳戶已變更，已忽略舊登入回應');
+      if(!value.access_token||!value.refresh_token)throw new Error('登入憑證不完整');
       this.session={access_token:value.access_token,refresh_token:value.refresh_token,
         expires_at:Date.now()+Number(value.expires_in||3600)*1000};
       this.storeSession();
+      })();
+      this.refreshBusy=task;
+      try{return await task;}finally{if(this.refreshBusy===task)this.refreshBusy=null;}
     }
     async ensureToken(){
       if(!this.session)throw new Error('尚未登入');
@@ -204,6 +225,7 @@
       if(typeof password!=='string'||password.length<8||password.length>256)
         throw new Error('請輸入至少 8 字元的帳戶密碼');
       if(!navigator.onLine)throw new Error('目前離線，首次登入需要網絡');
+      const authRequest=++this.authRequest;
       // Password goes only to Supabase Auth via HTTPS. Never cache or log it.
       const controller=new AbortController();
       const timeout=setTimeout(()=>controller.abort(),20000);
@@ -243,7 +265,9 @@
           refresh_token:tokens.refresh_token,
           expires_at:Date.now()+Number(tokens.expires_in||3600)*1000
         };
+        if(authRequest!==this.authRequest)throw new Error('登入操作已取消或被新登入取代');
         // Do not switch to an unverified user or lose another account's queue.
+        this.epoch++;this.busy=null;this.refreshBusy=null;clearTimeout(this.retryTimer);
         this.session=nextSession;
         this.user={id:profile.id,email:profile.email};
         this.storeSession();
@@ -310,14 +334,18 @@
     async sync(){
       if(!this.active||!navigator.onLine)return;
       if(this.busy)return this.busy;
-      this.busy=(async()=>{
+      const epoch=this.epoch,owner=this.user.id;
+      const current=()=>this.epoch===epoch&&this.user?.id===owner;
+      const task=(async()=>{
         await this.ensureToken();
+        if(!current())return;
         const snapshot=this.pending.slice();
         for(let i=0;i<snapshot.length;i+=100){
           // PostgreSQL now() gives all rows in one request the same timestamp.
           // Explicit batch order makes consecutive edits deterministic.
           const batch=snapshot.slice(i,i+100).map((e,batch_order)=>({...e,user_id:this.user.id,batch_order}));
           await this.request('POST','/rest/v1/vocabulary_events?on_conflict=event_id',batch);
+          if(!current())return;
           const acknowledged=new Set(batch.map(e=>e.event_id));
           this.pending=this.pending.filter(e=>!acknowledged.has(e.event_id));
           this.savePending();
@@ -327,30 +355,42 @@
           const path='/rest/v1/vocabulary_events?select=event_id,word,payload,deleted,created_at,batch_order'
             +'&order=created_at.asc,batch_order.asc,event_id.asc&limit=1000&offset='+offset;
           const page=await this.request('GET',path);
+          if(!current())return;
           if(!Array.isArray(page))throw new Error('雲端返回的資料格式不正確');
           events.push(...page);
           if(page.length<1000)break;
           if(events.length>=EVENT_LIMIT)throw new Error('同步紀錄已達安全上限，請先匯出備份並聯絡管理員');
         }
         const words=combineWithPending(events,this.pending);
+        if(!current())return;
         this.options.onWords?.(words);
         this.setStatus('雲端同步完成 · '+Object.keys(words).length+' 個生字');
         if(this.pending.length)this.schedule();
       })().catch(err=>{
+        if(!current())return;
         this.setStatus('雲端未能同步；變更仍保存在此裝置。'+statusError(err));
         throw err;
-      }).finally(()=>{this.busy=null;});
-      return this.busy;
+      }).finally(()=>{if(this.busy===task)this.busy=null;});
+      this.busy=task;
+      return task;
     }
     async logout(){
-      if(this.session){
-        try{await this.request('POST','/auth/v1/logout',{});}catch{/* Local logout always works offline. */}
-      }
+      const previous=this.session,config=this.config;
+      this.epoch++;this.authRequest++;this.busy=null;this.refreshBusy=null;
+      clearTimeout(this.retryTimer);
       this.session=null;this.user=null;this.pending=[];
       localStorage.removeItem(SESSION);
       localStorage.removeItem(USER_CACHE);
       this.options.onSignedOut?.();
       this.setStatus('已登出雲端帳戶；原有本機生字仍保留。');
+      if(previous&&config&&navigator.onLine){
+        const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),5000);
+        try{await fetch(config.url+'/auth/v1/logout',{method:'POST',headers:{apikey:config.key,
+          Authorization:'Bearer '+previous.access_token,'Content-Type':'application/json'},
+          body:'{}',cache:'no-store',signal:controller.signal});}
+        catch{/* Local logout already completed; pending per-user queue is retained. */}
+        finally{clearTimeout(timer);}
+      }
     }
   }
   return {Client,cleanWord,cleanPayload,replay,combineWithPending};

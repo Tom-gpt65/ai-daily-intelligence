@@ -1,0 +1,39 @@
+name: S1 release contract and failure simulations
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - 'site/**'
+      - '.github/workflows/**'
+      - 'package*.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: All Python, Node and site gates
+        run: |
+          python -m unittest discover -s tests -v
+          node tests/run_js_tests.js
+          python scripts/validate_site.py
+      - name: Consecutive future mornings and year boundary
+        run: |
+          python scripts/morning_canary.py --first-day 2026-10-11
+          python scripts/morning_canary.py --first-day 2026-12-31

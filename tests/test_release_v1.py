@@ -1,4 +1,4 @@
-"""Public V3 version contract; legacy user data still retains existing keys."""
+"""Public S1 version contract; legacy user data still retains existing keys."""
 import pathlib
 import unittest
 
@@ -9,14 +9,14 @@ class FirstReleaseTests(unittest.TestCase):
     def test_public_version_and_asset_cache(self):
         html=(SITE/"index.html").read_text(encoding="utf-8")
         worker=(SITE/"sw.js").read_text(encoding="utf-8")
-        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">V3',html)
-        self.assertIn('./v1.css?v=3',html)
-        self.assertIn('./app.js?v=3',html)
+        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">S1',html)
+        self.assertIn('./v1.css?v=s1-1',html)
+        self.assertIn('./app.js?v=s1-1',html)
         self.assertNotIn('v16.css',html)
-        self.assertIn("ai-daily-V3-novel-reading",worker)
+        self.assertIn("ai-daily-S1-1-reading",worker)
         self.assertIn("'./v1.css'",worker)
         self.assertIn("'./reading-theme-v1.css'",worker)
-        self.assertIn('./reading-theme-v1.css?v=3',html)
+        self.assertIn('./reading-theme-v1.css?v=s1-1',html)
         self.assertTrue((SITE/'reading-theme-v1.css').is_file())
         self.assertTrue((SITE/"v1.css").is_file())
         self.assertNotIn('id="reading-speed"',html)
@@ -32,7 +32,7 @@ class FirstReleaseTests(unittest.TestCase):
         self.assertIn("'/auth/v1/token?grant_type=password'",auth)
         self.assertIn("'/auth/v1/user'",auth)
         self.assertNotIn('localStorage.setItem(SESSION,JSON.stringify(password))',auth)
-        self.assertIn("./cloud-sync.js?v=3",html)
+        self.assertIn("./cloud-sync.js?v=s1-1",html)
         self.assertIn("'./cloud-sync.js'",worker)
         settings=__import__("json").loads((SITE/"cloud-config.json").read_text(encoding="utf-8"))
         self.assertIsInstance(settings["supabase_url"],str)
@@ -53,9 +53,11 @@ class FirstReleaseTests(unittest.TestCase):
                     "ai-daily-answers-v1","ai-daily-learning-backup"):
             with self.subTest(key=key):
                 self.assertIn(key,app)
-    def test_current_docs_only_describe_v1_as_formal_version(self):
+    def test_current_docs_describe_s1_and_preserve_legacy_documents(self):
         readme=(ROOT/"README.md").read_text(encoding="utf-8")
-        self.assertIn("第一個完整正式版本",readme)
+        self.assertIn("S1 正式版",readme)
+        self.assertIn("嚴格 <16%",readme)
+        self.assertTrue((ROOT/"docs"/"S1_RELEASE_AUDIT.md").exists())
         self.assertIn("V1",readme)
         self.assertTrue((ROOT/"docs"/"V1_FINAL_AUDIT.md").exists())
         self.assertTrue((ROOT/"docs"/"FINALISE_WEBSITE_V1.md").exists())

@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       use_model:
-        description: 'Optional local-model draft (slower; sourced digest is the V2 default)'
+        description: 'Optional model draft preview only; formal S1 publishes attributed source analysis'
         type: boolean
         default: false
 
@@ -28,10 +28,12 @@ permissions:
 concurrency:
   # Every Pages publisher shares this lock; code deploys cannot race the news.
   group: ai-daily-news
+  queue: max
   cancel-in-progress: false
 
 jobs:
   daily:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 55
     environment:
@@ -42,7 +44,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: true
-          ref: ${{ github.event_name == 'push' && 'main' || github.ref }}
+          ref: main
 
       - name: Configure Python
         uses: actions/setup-python@v5
@@ -68,6 +70,13 @@ jobs:
           node --check site/app.js
           node --check site/cloud-sync.js
           node --check site/sw.js
+
+      - name: Regression gate for code releases
+        if: github.event_name == 'push'
+        run: |
+          python -m unittest discover -s tests -v
+          node tests/run_js_tests.js
+          python scripts/morning_canary.py
 
       - name: Collect recent RSS headlines
         if: github.event_name != 'push'
@@ -172,18 +181,7 @@ jobs:
         if: ${{ github.event_name != 'push' && steps.passage.outcome == 'success' }}
         run: |
           python scripts/validate_site.py
-          python - <<'PY'
-          from pathlib import Path
-          from datetime import datetime
-          from zoneinfo import ZoneInfo
-          import json
-          today=datetime.now(ZoneInfo("Asia/Hong_Kong")).date().isoformat()
-          index=json.loads(Path("site/reports/index.json").read_text(encoding="utf-8"))
-          assert index and index[0]["date"]==today,"Daily publication cannot publish a stale article"
-          report=json.loads(Path("site/reports",today+".json").read_text(encoding="utf-8"))
-          assert report.get("mode") in ("source_digest","editorial","reading_feature")
-          print("FINAL PUBLICATION ACCEPTED:",today,report["mode"])
-          PY
+          python scripts/verify_publication.py
 
       - name: Report degraded external news (without claiming current news)
         if: ${{ always() && github.event_name != 'push' && steps.passage.outcome == 'success' }}
@@ -202,13 +200,15 @@ jobs:
           reason=info.get("state","unavailable")
           missing=info.get("missing_examples",[])
           detail="; missing words: "+", ".join(str(w) for w in missing[:12]) if missing else ""
-          print(f"::warning title=News NOT published::Safe educational reading will be deployed; the final current-news acceptance will fail visibly. Reason: {reason}{detail}")
+          publication=info.get('publication',{})
+          label=info.get('news_outcome','safe_dated_reading')
+          print(f"::warning title=News generation degraded::This attempt did not produce a new news edition. Accepted reading: {label}. Reason: {reason}{detail}")
           summary=os.environ.get("GITHUB_STEP_SUMMARY")
           if summary:
               with open(summary,"a",encoding="utf-8") as stream:
-                  stream.write("\n### News publication outcome: EDUCATIONAL FALLBACK, not current news\n")
+                  stream.write("\n### Accepted reading outcome: "+label+"\n")
                   stream.write(f"- Reason: {reason}{detail}\n")
-                  stream.write("- Safe reading is deployed first; the final news acceptance fails if no current-news edition is available.\n")
+                  stream.write("- Validated reading is deployed first; the final news acceptance fails if no current-news edition is available.\n")
           PY
           fi
           if [ "$DEPENDENCY_OUTCOME" = "failure" ]; then
@@ -252,7 +252,7 @@ jobs:
 
       # A failed news job still leaves the safe dated reading publicly deployed.
       # The final failure enables normal GitHub Actions failure notifications.
-      - name: Verify public V2 deployment and require current news for news runs
+      - name: Verify public S1 deployment and require current news for news runs
         env:
           PUBLICATION_EVENT: ${{ github.event_name }}
         run: |

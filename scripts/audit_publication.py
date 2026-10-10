@@ -11,6 +11,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 from edition_guarantee import complete
+from edition_contract import issues as edition_issues
 
 HK = ZoneInfo("Asia/Hong_Kong")
 BASE = "https://tom-gpt65.github.io/ai-daily-intelligence/"
@@ -23,6 +24,7 @@ def assess_public(index: object, report: object, expected: str) -> tuple[list[st
         errors.append(f"Latest public report is {index[0].get('date')}, expected {expected}")
     if not isinstance(report, dict):
         return errors + ["Public article JSON is invalid"], warnings
+    errors.extend(edition_issues(report,index[0]))
     if report.get("date") != expected:
         errors.append("Public report date differs from today's Hong Kong date")
     if report.get("demo") or report.get("mode") == "demo":

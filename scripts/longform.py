@@ -249,12 +249,15 @@ def sourced_detail(story: dict) -> str:
     """
     excerpt=re.sub(r"\s+"," ",str(story.get("excerpt") or "")).lower()
     if "boyu capital" in excerpt and "idg capital" in excerpt and "funding round" in excerpt:
-        return "The short extract specifically names Boyu Capital and IDG Capital in the financing; it also mentions participation by existing shareholders. "
+        detail="The short extract specifically names Boyu Capital and IDG Capital in the financing. "
+        if "existing shareholders" in excerpt:
+            detail+="It also mentions participation by existing shareholders. "
+        return detail
     if "sixteen-tool" in excerpt and ("geospatial" in excerpt or "model context protocol" in excerpt):
-        return "Its abstract describes a fixed sixteen-tool geospatial interface, intended to make assessments comparable against the same tool layer. "
+        return "The source describes a sixteen-tool geospatial interface. Such a design could support comparison against the same tool layer. "
     if "specs and price" in excerpt and "surface laptop" in excerpt:
         return "The accompanying description states that product specifications and pricing were disclosed for a Surface Laptop device. "
-    if "usage policy" in excerpt and "abusive or cruel" in excerpt:
+    if "usage policy" in excerpt and "abusive or cruel" in excerpt and "claude" in excerpt:
         return "The excerpt identifies revised misuse rules and specifically mentions a restriction involving abusive treatment of Claude. "
     return ""
 

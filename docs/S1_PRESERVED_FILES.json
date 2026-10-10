@@ -1,0 +1,12 @@
+{
+  "baseline_commit": "bf4dfe51ae69a4dbeddc3df60accbf341418bd2b",
+  "sha256": {
+    "site/reports/2026-10-08.json": "ff908c9a3e23515380b2080e0f6164475316bdf19d0b73baf269d7428db61ade",
+    "site/reports/2026-10-09.json": "30951062d27a08b6f4760d5284c940f6ef47321e293a12429fee44bb4f3560ec",
+    "site/reports/2026-10-10.json": "b5cac5d4bbdcf0db89a58f73abfae6f515cb9e6f77c7c909c37d368e432eee37",
+    "site/cloud-config.json": "56d2c96af017b3f4990296214ace80a56edade123d68cdf8c39bcf79bb93c1f2",
+    "site/manifest.webmanifest": "b401d00f43337567c2877ff9570d09d3ff02548939e8f33ff97131af4d6f2e57",
+    "docs/SUPABASE_VOCABULARY.sql": "51dba2bc0c43f68870e660ad9e47142cb45ff3223239efdc73c431ecb751c713"
+  },
+  "hash_format": "SHA256 of original Git blob bytes (LF); normalize only checkout CRLF when testing"
+}

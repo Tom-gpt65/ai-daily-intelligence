@@ -203,12 +203,12 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
               "what further evidence would be necessary. How does this distinction "
               "advance the writer's overall argument? (80–120 words)")
         evidence=f"{cite_location(p1)} and {cite_location(p2)}"
-        sample=quote_sentence(essay,p1)+" / "+quote_sentence(essay,p2)
+        sample=quote_sentence(essay,p1)[:150]+" / "+quote_sentence(essay,p2)[:150]
     else:
         p1,p2=0,len(essay)-1
         stem="Compare the opening and concluding arguments. How does the writer develop or qualify the initial position? (60–90 words)"
         evidence=f"{cite_location(p1)} and {cite_location(p2)}"
-        sample=quote_sentence(essay,p1)+" / "+quote_sentence(essay,p2)
+        sample=quote_sentence(essay,p1)[:150]+" / "+quote_sentence(essay,p2)[:150]
     items.append({"id":"Q7","type":"extended","skill":"Cross-text synthesis / evaluation","marks":4,
       "stem":stem,
       "guidance":["Accurately interpret both passages or cited source accounts (2 marks).",

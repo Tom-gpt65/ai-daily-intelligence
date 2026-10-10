@@ -6,6 +6,10 @@ on:
     paths:
       - 'scripts/**'
       - 'requirements.txt'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'site/release.json'
+      - 'site/sw.js'
       - 'site/**'
       - '.github/workflows/daily.yml'
       - '.github/workflows/first-attempt-canary.yml'
@@ -25,6 +29,10 @@ on:
       - '.github/workflows/recovery.yml'
       - 'scripts/**'
       - 'requirements.txt'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'site/release.json'
+      - 'site/sw.js'
       - 'tests/**'
       - 'site/reports/**'
       - 'site/app.js'
@@ -60,6 +68,7 @@ jobs:
           python scripts/morning_canary.py
           node --check site/app.js
           node --check site/cloud-sync.js
+          node tests/run_js_tests.js
           node tests/cloud_sync_test.js
           node tests/cloud_integration_test.js
           node tests/cloud_password_test.js

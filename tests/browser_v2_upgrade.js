@@ -1,4 +1,4 @@
-/* Actual V1 service worker -> V2 upgrade at the production subdirectory scope.
+/* Actual V1/V2/V3 service worker -> S1 upgrade at the production subdirectory scope.
  * Local disposable browser contexts only; cloud configuration is disabled.
  * Real cache migration/network failures; no mocked service worker or private API. */
 'use strict';
@@ -10,7 +10,8 @@ const {chromium,webkit}=require('playwright');
 const ROOT=path.resolve(__dirname,'../site');
 const PREFIX='/ai-daily-intelligence/';
 const LATEST=JSON.parse(fs.readFileSync(path.join(ROOT,'reports/index.json'),'utf8'))[0].date;
-async function exercise(engine,type){
+const CACHE_FIXTURE=JSON.parse(fs.readFileSync(path.join(ROOT,'reports/'+LATEST+'.json'),'utf8'));
+async function exercise(engine,type,legacyVersion){
   let legacy=true,failedData=false;
   const server=http.createServer((request,response)=>{
     const pathname=new URL(request.url,'http://localhost').pathname;
@@ -23,7 +24,7 @@ async function exercise(engine,type){
     }
     let target=path.resolve(ROOT,relative);
     if(!target.startsWith(ROOT+path.sep)){response.writeHead(403).end();return;}
-    if(relative==='sw.js'&&legacy)target=path.join(__dirname,'fixtures/legacy-sw-v1.js');
+    if(relative==='sw.js'&&legacy)target=path.join(__dirname,'fixtures/legacy-sw-'+legacyVersion+'.js');
     const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript',
       '.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json',
       '.png':'image/png','.svg':'image/svg+xml'}[path.extname(target)]||'application/octet-stream';
@@ -34,10 +35,11 @@ async function exercise(engine,type){
   });
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const BASE='http://127.0.0.1:'+server.address().port+PREFIX;
-  const browser=await type.launch({headless:true});
-  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,
-    hasTouch:true,serviceWorkers:'allow'});
+  let browser,context;
   try{
+  browser=await type.launch({headless:true});
+  context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,
+    hasTouch:true,serviceWorkers:'allow'});
     const page=await context.newPage(),errors=[];
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto(BASE,{waitUntil:'domcontentloaded'});
@@ -47,8 +49,8 @@ async function exercise(engine,type){
       await navigator.serviceWorker.ready;
     });
     await page.waitForFunction(async()=>navigator.serviceWorker.controller&&
-      (await caches.keys()).includes('ai-daily-V1-paper-calm-reading-reports'));
-    const stored=await page.evaluate(async()=>{
+      (await caches.keys()).some(key=>key.startsWith('ai-daily-V')&&key.endsWith('-reports')));
+    const stored=await page.evaluate(async fixture=>{
       const snapshot={
         'ai-daily-saved-v2':JSON.stringify({evidence:{word:'evidence',translation:'證據'}}),
         'ai-daily-reading-progress-v1':JSON.stringify({'2026-10-09':48}),
@@ -60,15 +62,15 @@ async function exercise(engine,type){
       };
       for(const [key,value] of Object.entries(snapshot))localStorage.setItem(key,value);
       const cache=await caches.open('ai-daily-V1-paper-calm-reading-reports');
-      await cache.put('./reports/2026-10-01.json?rev=old',new Response('{"historicSentinel":true}'));
+      await cache.put('./reports/2026-10-01.json?rev=old',new Response(JSON.stringify({...fixture,date:'2026-10-01',historicSentinel:true})));
       // Some existing tablets have V2 as their most recent installation.
-      // Its visited report must survive the V3 upgrade too.
+      // Its visited report must survive the S1 upgrade too.
       const previousV2=await caches.open('ai-daily-V2-stable-reading-reports');
       await previousV2.put('./reports/2026-10-02.json?rev=v2',
-        new Response('{"v2Sentinel":true}'));
+        new Response(JSON.stringify({...fixture,date:'2026-10-02',v2Sentinel:true})));
       await caches.open('unrelated-application');
       return snapshot;
-    });
+    },CACHE_FIXTURE);
     console.log(engine+' seeded V1 public keys:',await page.evaluate(async()=>
       (await (await caches.open('ai-daily-V1-paper-calm-reading-reports')).keys()).map(key=>key.url)));
     legacy=false;
@@ -76,15 +78,15 @@ async function exercise(engine,type){
     // Poll the ACTUAL cache contents from Node. In some browser engines,
     // passing an async predicate to waitForFunction can incorrectly resolve
     // before the service worker's waitUntil(activate) migration completes.
-    // A V3 cache name may exist while it is still EMPTY during install.
+    // A S1 cache name may exist while it is still EMPTY during install.
     let ready=false,lastState;
     for(let attempt=0;attempt<100;attempt++){
       lastState=await page.evaluate(async()=>{
         const keys=await caches.keys();
-        const v2=keys.includes('ai-daily-V3-novel-reading-reports');
+        const v2=keys.includes('ai-daily-S1-1-reading-reports');
         let foundIndex=false,foundHistory=false;
         if(v2){
-          const store=await caches.open('ai-daily-V3-novel-reading-reports');
+          const store=await caches.open('ai-daily-S1-1-reading-reports');
           const index=await store.match('./reports/index.json');
           const history=await store.match('./reports/2026-10-01.json');
           foundIndex=!!index;
@@ -102,16 +104,16 @@ async function exercise(engine,type){
       }
       await new Promise(resolve=>setTimeout(resolve,200));
     }
-    assert.ok(ready,engine+' V1/V2->V3 worker activation/migration incomplete: '+JSON.stringify(lastState));
+    assert.ok(ready,engine+' V1/V2->S1 worker activation/migration incomplete: '+JSON.stringify(lastState));
     const migrated=await page.evaluate(async()=>{
-      const cache=await caches.open('ai-daily-V3-novel-reading-reports');
+      const cache=await caches.open('ai-daily-S1-1-reading-reports');
       const history=await cache.match('./reports/2026-10-01.json');
       return {history:history?await history.json():null, publicKeys:(await cache.keys()).map(key=>key.url),
               index:!!await cache.match('./reports/index.json'),keys:await caches.keys()};
     });
     assert.equal(migrated.history?.historicSentinel,true,engine+' lost public V1 history: '+JSON.stringify(migrated));
     const migratedV2=await page.evaluate(async()=>{
-      const store=await caches.open('ai-daily-V3-novel-reading-reports');
+      const store=await caches.open('ai-daily-S1-1-reading-reports');
       const response=await store.match('./reports/2026-10-02.json');
       return response?await response.json():null;
     });
@@ -128,7 +130,7 @@ async function exercise(engine,type){
       await response.json();
     },{date:LATEST,i});
     const variants=await page.evaluate(async date=>{
-      const cache=await caches.open('ai-daily-V3-novel-reading-reports');
+      const cache=await caches.open('ai-daily-S1-1-reading-reports');
       return (await cache.keys()).filter(key=>key.url.includes('/'+date+'.json')).map(key=>key.url);
     },LATEST);
     assert.equal(variants.length,1);
@@ -140,13 +142,13 @@ async function exercise(engine,type){
     },LATEST);
     assert.equal(cached.status,200);
     assert.equal(cached.report.date,LATEST);
-    assert.equal(await page.locator('#site-version').innerText(),'V3');
+    assert.equal(await page.locator('#site-version').innerText(),'S1');
     assert.equal(errors.length,0,errors.join('\n'));
-    console.log(engine+' V1/V2 -> V3 PASS: public report migration, unchanged device/account/session/pending data, canonical refreshes, HTTP 503 fallback, subdirectory scope');
+    console.log(engine+' V1/V2 -> S1 PASS: public report migration, unchanged device/account/session/pending data, canonical refreshes, HTTP 503 fallback, subdirectory scope');
   }finally{
-    await context.close();await browser.close();
+    await context?.close();await browser?.close();
     server.closeAllConnections?.();await new Promise(resolve=>server.close(resolve));
   }
 }
-(async()=>{await exercise('Chromium',chromium);await exercise('WebKit',webkit);})()
+(async()=>{for(const legacy of ['v1','v2','v3']){await exercise('Chromium '+legacy,chromium,legacy);await exercise('WebKit '+legacy,webkit,legacy);}})()
   .catch(error=>{console.error(error);process.exitCode=1;});

@@ -63,64 +63,11 @@ def canary_sources(now: datetime) -> list[dict]:
 
 
 def test_future_publication(first_day: str) -> list[str]:
-    """Exercise real production site validation against simulated future state.
-
-    Makes a temporary copy of PUBLIC site files; existing published reports,
-    localStorage, Supabase and live GitHub Pages are never modified.
-    """
-    initial_errors = validate_site.validate()
-    if initial_errors:
-        raise ValueError("Current published site invalid: " + "; ".join(initial_errors[:5]))
-    old_site = validate_site.SITE
-    old_reports,old_status=build.REPORTS,build.STATUS_PATH
-    previous_env={key:os.environ.get(key) for key in ("OLLAMA_ENABLED","TRANSLATE_ENABLED")}
-    checked: list[str] = []
-    with tempfile.TemporaryDirectory(prefix="v2-morning-canary-") as name:
-        try:
-            os.environ["OLLAMA_ENABLED"]="0"
-            os.environ["TRANSLATE_ENABLED"]="0"
-            for offset in (0, 1, 2, 7, 30):
-                # A fresh copy for EACH date prevents a replaced day-zero
-                # article from disagreeing with yesterday's original index.
-                temporary_site=Path(name)/str(offset)/"site"
-                shutil.copytree(ROOT/"site",temporary_site)
-                validate_site.SITE=temporary_site
-                build.REPORTS=temporary_site/"reports"
-                build.STATUS_PATH=temporary_site/"system-status.json"
-                day = (datetime.fromisoformat(first_day).date() + timedelta(days=offset)).isoformat()
-                now = datetime.fromisoformat(day + "T07:05:00+08:00")
-                reserve = build_reading(day, now)
-                assert_valid_reserve(reserve, day)
-                build.put_report(reserve)
-                issues = validate_site.validate()
-                if issues:
-                    raise ValueError("Day " + day + " would deadlock the news-first publication: "
-                                     + "; ".join(issues[:6]))
-                news_time=datetime.fromisoformat(day+"T07:40:00+08:00")
-                if build.build_live(news_time,None,sources=[],diagnostics={"feeds_total":6,"feeds_ok":0}):
-                    raise ValueError("RSS outage fabricated current news")
-                index=json.loads((build.REPORTS/"index.json").read_text("utf-8"))
-                if publication_outcome(index,reserve,day)["news"]:
-                    raise ValueError("Reserve incorrectly counted as current news")
-                # The actual production builder, no model, dictionary download
-                # or mocks of validation. Only synthetic RSS inputs are injected.
-                if not build.build_live(news_time,None,sources=canary_sources(news_time)):
-                    raise ValueError("Offline sourced-news transition failed: "+build.STATUS_PATH.read_text("utf-8"))
-                news=json.loads((build.REPORTS/(day+".json")).read_text("utf-8"))
-                index=json.loads((build.REPORTS/"index.json").read_text("utf-8"))
-                if not publication_outcome(index,news,day)["news"] or validate_site.validate():
-                    raise ValueError("Accepted reserve-to-news transition is invalid: "+day)
-                later_reserve=build_reading(day,datetime.fromisoformat(day+"T08:20:00+08:00"))
-                if select_edition(news,later_reserve) is not news:
-                    raise ValueError("Late recovery downgraded current news to educational reading")
-                checked.append(day)
-        finally:
-            validate_site.SITE = old_site
-            build.REPORTS,build.STATUS_PATH=old_reports,old_status
-            for key,value in previous_env.items():
-                if value is None:os.environ.pop(key,None)
-                else:os.environ[key]=value
-    return checked
+    from s1_simulation import simulate
+    rows = simulate(first_day, canary_sources)
+    selected = {0,1,2,7,30}
+    origin = datetime.fromisoformat(first_day).date()
+    return [r["date"] for r in rows if (datetime.fromisoformat(r["date"]).date()-origin).days in selected]
 
 
 def main() -> int:
@@ -128,9 +75,9 @@ def main() -> int:
     parser.add_argument("--first-day", default=datetime.now(HK).date().isoformat())
     args = parser.parse_args()
     checked = test_future_publication(args.first_day)
-    print("PASS: 07:05 reserve -> RSS outage -> first 07:40 sourced-news build "
+    print("PASS: sequential future days, strict originality and honest archived fallback "
           "-> late recovery without downgrade; no network or production writes.")
-    print("PASS: production validator accepted dates: " + ", ".join(checked))
+    print("PASS: production validator accepted reading states for dates: " + ", ".join(checked))
     print("PASS: public assets, archive, dictionary, exam and fallback/news labelling intact.")
     return 0
 

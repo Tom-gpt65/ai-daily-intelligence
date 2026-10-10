@@ -14,10 +14,11 @@ from zoneinfo import ZoneInfo
 from build import ROOT, REPORTS, reading_metrics, choose_vocab, put_report, put_status
 from dse_assessment_v7 import make_exam
 from edition_guarantee import fill_dictionary,complete,article_words
+from content_novelty import audit_history
 
 HK=ZoneInfo("Asia/Hong_Kong")
 
-def build_reading(date,now=None):
+def build_reading(date,now=None,variant=0):
     now=now or datetime.now(timezone.utc)
     bank=json.loads((ROOT/"site"/"reading-library.json").read_text(encoding="utf-8"))
     topics=list(bank["topics"])
@@ -27,7 +28,7 @@ def build_reading(date,now=None):
     # The arithmetic is deterministic for each date: no paid model, no RSS,
     # and no randomness that could change an already assigned daily lesson.
     # With 24 topics, adjacent days draw non-overlapping topic groups.
-    selected=sorted({(ordinal*7+i*5)%len(topics) for i in range(10)})
+    selected=sorted({(ordinal*7+variant+i*5)%len(topics) for i in range(10)})
     if len(selected)!=10:
         raise ValueError("The reserve reading library must support ten unique sections")
     chosen=[topics[i] for i in selected]
@@ -69,7 +70,72 @@ def build_reading(date,now=None):
         raise ValueError("Reserve reading failed questions or dictionary gate")
     return report
 
+
+def ensure_reading(today, now=None):
+    """Publish only a novel reserve, otherwise retain explicitly dated history.
+
+    A finite educational bank cannot honestly supply unlimited new material.
+    Reusing an archived passage does not create a new dated edition or pass
+    the originality gate. News can still upgrade it later in the morning.
+    """
+    now = now or datetime.now(timezone.utc)
+    from build import STATUS_PATH, REPORTS, atomic_json
+    from edition_contract import issues as edition_issues
+    try:
+        existing=json.loads((REPORTS/(today+'.json')).read_text(encoding='utf-8'))
+        if not edition_issues(existing,reports=REPORTS):
+            return existing
+    except (OSError, ValueError, TypeError, KeyError):
+        pass
+    try:
+        previous = json.loads(STATUS_PATH.read_text(encoding="utf-8"))
+        checked = datetime.fromisoformat(previous.get("checked_at", ""))
+        if checked.astimezone(HK).date().isoformat() != today:
+            previous = {}
+    except (OSError, ValueError, TypeError):
+        previous = {}
+    failed = previous.get("state") in {
+        "feed_error", "no_new_stories", "insufficient_evidence",
+        "incomplete_dictionary", "editorial_quality_rejected", "build_failed",
+        "repetitive_content", "history_unavailable"}
+    for variant in range(24):
+        candidate = build_reading(today, now, variant=variant)
+        try:
+            novelty = audit_history(candidate, REPORTS)
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            previous = {**previous, "state": "history_unavailable", "failure_reason": str(exc)}
+            failed = True
+            break
+        if not novelty["pass"]:
+            continue
+        candidate.update(validation_profile="s1", novelty=novelty)
+        if edition_issues(candidate,reports=REPORTS):
+            continue
+        put_report(candidate)
+        if failed:
+            atomic_json(STATUS_PATH, {**previous, "latest_date": today, "mode": "reading_feature",
+                                     "published_reading_at": candidate["updated_at"]})
+        else:
+            put_status("published", now, latest_date=today, mode="reading_feature", source_count=0)
+        return candidate
+    # Keep the original article date and all user progress/answer anchors.
+    index = json.loads((REPORTS/"index.json").read_text(encoding="utf-8"))
+    if not index:
+        raise ValueError("No validated archived reading available")
+    original = json.loads((REPORTS/(index[0]["date"]+".json")).read_text(encoding="utf-8"))
+    if edition_issues(original, index[0]):
+        raise ValueError("Archived backup failed reading/dictionary/questions contract")
+    info = {**previous, "schema": 1, "checked_at": now.astimezone(HK).isoformat(),
+            "state": previous.get("state") if failed else "reading_reserve_reused",
+            "latest_date": original["date"], "mode": original["mode"],
+            "backup": {"kind": "archived_reading", "date": original["date"],
+                       "requested_date": today, "reason": "No reserve passed the strict 60-day <16% originality gate"}}
+    atomic_json(STATUS_PATH, info)
+    print("[safe downgrade] No novel reserve accepted; archived reading retained:", original["date"])
+    return original
+
 def main():
+    from build import REPORTS
     parser=argparse.ArgumentParser()
     parser.add_argument("--date",default=datetime.now(HK).date().isoformat())
     parser.add_argument("--if-missing",action="store_true")
@@ -79,39 +145,15 @@ def main():
         existing=REPORTS/(today+".json")
         try:
             article=json.loads(existing.read_text(encoding="utf-8"))
-            if article.get("date")==today and not article.get("demo") and complete(article) and article.get("word_count",0)>=1000 and len(article.get("practice",{}).get("items",[]))>=7:
+            from edition_contract import issues as edition_issues
+            if article.get("date")==today and not edition_issues(article, reports=REPORTS):
                 print(f"[daily] Existing {today} passage is complete ({article['mode']}); keep it")
                 return 0
         except (OSError,ValueError,TypeError,AttributeError):
             pass
     if today!=datetime.now(HK).date().isoformat() and not args.date:
         raise ValueError("A past date requires an explicit date argument")
-    previous_status={}
-    try:
-        from build import STATUS_PATH
-        previous_status=json.loads(STATUS_PATH.read_text(encoding="utf-8"))
-        checked=datetime.fromisoformat(previous_status.get("checked_at", ""))
-        if checked.astimezone(HK).date().isoformat()!=today:previous_status={}
-    except (OSError,ValueError,TypeError,AttributeError):
-        previous_status={}
-    report=build_reading(today)
-    put_report(report)
-    # Preserve the real failed NEWS attempt when publishing the first reserve.
-    # Otherwise a new-day RSS/dictionary failure disappears behind "published".
-    failed_state=previous_status.get("state") in {
-        "feed_error","no_new_stories","insufficient_evidence",
-        "incomplete_dictionary","editorial_quality_rejected","build_failed"}
-    if failed_state:
-        from build import atomic_json, STATUS_PATH
-        atomic_json(STATUS_PATH,{**previous_status,"latest_date":today,
-                    "mode":"reading_feature","published_reading_at":report["updated_at"]})
-    else:
-        put_status("published",datetime.now(timezone.utc),latest_date=today,
-               mode="reading_feature",source_count=0,
-               fallback_reason="No verified current-news passage was available")
-    print(f"[daily] Published clearly labelled educational fallback for {today}; "
-          f"{report['word_count']} words; {len(article_words(report['essay']))} offline word forms; "
-          f"{len(report['practice']['items'])} questions")
+    ensure_reading(today)
     return 0
 
 if __name__=="__main__":

@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'package*.json'
+      - 'tests/run_js_tests.js'
+      - 'tests/fixtures/legacy-sw-*.js'
       - 'site/sw.js'
       - 'site/index.html'
       - 'site/release.json'
@@ -26,6 +29,9 @@ on:
   push:
     branches: [main]
     paths:
+      - 'package*.json'
+      - 'tests/run_js_tests.js'
+      - 'tests/fixtures/legacy-sw-*.js'
       - 'site/release.json'
       - 'site/*glossary.json'
       - 'tests/browser_v2_upgrade.js'
@@ -75,36 +81,10 @@ jobs:
           key: playwright-linux-ubuntu2404-v1.55.0-chromium-webkit
       - name: Install browser test dependency and engines
         run: |
-          npm install --no-save playwright@1.55.0
+          npm ci --ignore-scripts
           npx playwright install --with-deps chromium webkit
-      - name: Serve the static reading site
-        run: |
-          python3 -m http.server 8765 --bind 127.0.0.1 --directory site > /tmp/reading-server.log 2>&1 &
-          echo $! > /tmp/reading-server.pid
-          for n in $(seq 1 30); do
-            curl -sf http://127.0.0.1:8765/ > /dev/null && break
-            sleep 1
-          done
-      - name: Verify installed PWA offline reading and safe backup in Chromium/WebKit
-        run: node tests/browser_pwa_offline_final.js
-      - name: Verify actual V1/V2 to V3 PWA upgrade preserves private and offline data
-        run: node tests/browser_v2_upgrade.js
-      - name: Exercise 320px–430px iPhone-sized screens
-        run: node tests/browser_regression_v7.js
-      - name: Verify recovered-versus-scheduled status on iPad and desktop-width screens
-        run: node tests/status_regression_v8.js
-      - name: Verify reflow, headings, safe reader reset and fresh PWA shell
-        run: node tests/browser_layout_v11.js
-      - name: Verify v12 responsive chapter navigation and reader reset
-        run: node tests/browser_v12_layout.js
-      - name: Verify simulated two-device cloud vocabulary interactions
-        run: node tests/browser_cloud_sync.js
-      - name: Verify iPad and Chromium Magic Link feedback without sending real email
-        run: node tests/browser_cloud_email.js
-      - name: Verify password login and cross-device sync without SMTP in Chromium/WebKit
-        run: node tests/browser_cloud_password.js
-      - name: Verify Paper Calm and Soft Graphite visual contrast and theme persistence
-        run: node tests/browser_reading_theme_v1.js
+      - name: Run all browser regressions with guaranteed server cleanup
+        run: node tests/run_js_tests.js --browser
       - name: Browser smoke summary
         if: always()
         run: |
