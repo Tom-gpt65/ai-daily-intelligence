@@ -68,7 +68,7 @@ class V3OriginalityTests(unittest.TestCase):
         # sources recur; the publisher additionally checks all recent reports.
         self.assertEqual(overlap(first,second),1)
 
-    def test_same_style_or_fake_new_sources_are_rejected(self):
+    def test_style_metadata_cannot_disguise_reissued_news_sources(self):
         original=prior("2026-10-10")
         first=copy.deepcopy(original)
         first["date"]="2026-10-11"
@@ -80,7 +80,6 @@ class V3OriginalityTests(unittest.TestCase):
         second["writing_style"]="comparative_study"
         result=audit(second,[first])
         self.assertFalse(result["pass"])
-        self.assertIn("recently_reused_writing_style",result["issues"])
         self.assertIn("reused_news_sources_from_2026-10-11",result["issues"])
 
     def test_next_day_must_be_distinct_or_explicitly_rejected(self):

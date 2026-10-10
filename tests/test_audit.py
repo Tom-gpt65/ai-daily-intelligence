@@ -17,9 +17,10 @@ class AuditTests(unittest.TestCase):
         from morning_canary import canary_sources
         now=datetime.fromisoformat('2026-10-09T08:04:00+08:00')
         with tempfile.TemporaryDirectory() as folder:
-            with patch.object(build,'REPORTS',Path(folder)),patch.object(build,'STATUS_PATH',Path(folder)/'status.json'),redirect_stdout(io.StringIO()):
+            reports=Path(folder)/'site/reports';reports.mkdir(parents=True)
+            with patch.object(build,'REPORTS',reports),patch.object(build,'STATUS_PATH',Path(folder)/'site/status.json'),redirect_stdout(io.StringIO()):
                 self.assertTrue(build.build_live(now,None,sources=canary_sources(now)))
-                self.edition=json.loads((Path(folder)/'2026-10-09.json').read_text('utf-8'))
+                self.edition=json.loads((reports/'2026-10-09.json').read_text('utf-8'))
         self.index=[{key:self.edition[key] for key in ('date','mode','updated_at','word_count')}]
         self.index[0]['stories']=len(self.edition['stories'])
     def test_educational_backup_is_accepted_with_warning(self):

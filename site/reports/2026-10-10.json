@@ -3,11 +3,11 @@
   "validation_profile": "s1",
   "content_generation_profile": "source_outline_v2",
   "date": "2026-10-10",
-  "updated_at": "2026-10-10T23:17:31.019833+08:00",
-  "headline": "AI Research: GameCommBench: A Unified Benchmark and Type-Aware Evaluation for AI-Generated Game Commentary",
-  "subtitle": "Questions and counterarguments · 5 linked RSS reports · Critical English reading",
-  "writing_style": "question_driven_review",
-  "writing_style_label": "Questions and counterarguments",
+  "updated_at": "2026-10-10T23:41:50.492761+08:00",
+  "headline": "AI evidence review: from commentary to institutional decisions and disputed accounts",
+  "subtitle": "Source-by-source evidence review · 5 linked RSS reports · Critical English reading",
+  "writing_style": "evidence_audit",
+  "writing_style_label": "Source-by-source evidence review",
   "focus_category": "research",
   "novelty": {
     "pass": true,
@@ -16,7 +16,7 @@
     "most_similar_date": "2026-10-09",
     "compared_editions": 3,
     "threshold": 0.16,
-    "writing_style": "question_driven_review"
+    "writing_style": "evidence_audit"
   },
   "mode": "source_digest",
   "editorial_notice": "Automatically reconstructed reading from the archived 2026-10-10 RSS snapshot; not fresh reporting or independently confirmed news.",
@@ -692,2186 +692,8 @@
       "part_of_speech": "",
       "definition": ""
     },
-    "benchmarks": {
-      "translation": "n. 基準( benchmark的複數形式 )",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "overall": {
-      "translation": "a. 全部的, 全體的, 從頭至尾的, 一切在內的\\nadv. 從頭到尾, 總的說來\\nn. 罩衫, 工作服",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "completed": {
-      "translation": "已完成的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "alone": {
-      "translation": "單獨；僅憑",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "supports": {
-      "translation": "支持",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "one": {
-      "translation": "一個",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "why": {
-      "translation": "為甚麼",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "those": {
-      "translation": "那些",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "converting": {
-      "translation": "[建] 轉化, 改變",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "accepted": {
-      "translation": "a. 公認的, 一般承認的\\n[經] 已承兌, 已認付",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "knowledge": {
-      "translation": "n. 知識, 學問, 認識, 知道",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "uses": {
-      "translation": "使用",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "still": {
-      "translation": "仍然",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "serve": {
-      "translation": "vt. 可作...用, 服務, 經歷, 招待, 供應, 送交, 對待\\nvi. 服務, 服役, 侍應, 適合, 有用, 開球\\nn. 發球, 輪到發球",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "visible": {
-      "translation": "可見的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "users": {
-      "translation": "使用者",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "important": {
-      "translation": "重要的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "superior": {
-      "translation": "n. 長者, 佔優勢的人, 上級\\na. 上級的, 出衆的, 高傲的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "require": {
-      "translation": "要求；需要",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "available": {
-      "translation": "可用的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "assumptions": {
-      "translation": "假設",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "concerns": {
-      "translation": "關乎；涉及；憂慮",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "turning": {
-      "translation": "轉變；轉向",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "make": {
-      "translation": "使得；製作",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "after": {
-      "translation": "之後",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "distinction": {
-      "translation": "區別",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "requires": {
-      "translation": "需要",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "removal": {
-      "translation": "n. 移動, 移居, 遷移, 排除, 切除\\n[醫] 切除, 除去",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "presentation": {
-      "translation": "n. 贈與, 描述, 介紹\\n[計] 簡報",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "assuming": {
-      "translation": "假設",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "demonstrated": {
-      "translation": "已展示的；已證明的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "final": {
-      "translation": "最後的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "center": {
-      "translation": "n. 中心, 中心點, 中鋒\\na. 中央的, 位在正中的\\nvt. 集中, 定中心\\nvi. 居中\\n[計] 居中; 中央",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "remains": {
-      "translation": "仍然",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "whether": {
-      "translation": "是否",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "readers": {
-      "translation": "讀者",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "allows": {
-      "translation": "容許",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "meaningful": {
-      "translation": "有意義的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "excerpt": {
-      "translation": "摘錄；節錄",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "sources": {
-      "translation": "資料來源",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "negotiations": {
-      "translation": "n. 磋商；談判（negotiation的複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "remain": {
-      "translation": "仍然",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "use": {
-      "translation": "使用",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "should": {
-      "translation": "應該",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "only": {
-      "translation": "只有；僅",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "needs": {
-      "translation": "需要",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "down": {
-      "translation": "a. 向下的\\nadv. 下, 下去, 降下\\nprep. 往下, 沿着\\nn. 丘陵, 軟毛, 開闊的高地\\n[計] 向下, 退下命令",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "offered": {
-      "translation": "v. 提供, 提議；奉獻（offer過去時態）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "assessed": {
-      "translation": "v. 對…進行評估（assess過去時形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "here": {
-      "translation": "這裏；本文中",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "accomplish": {
-      "translation": "vt. 完成, 達到, 實現, 使完美",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "valuation": {
-      "translation": "n. 評價, 估價, 價值判斷\\n[經] 估價, 計價, 評價",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "newcomer": {
-      "translation": "n. 新來者",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "interpreted": {
-      "translation": "v. 解釋( interpret的過去式和過去分詞 ); 理解; 把…理解爲; 演繹（按自己的感覺演奏音樂或表現角色）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "open": {
-      "translation": "開放的；未定的；打開",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "discussion": {
-      "translation": "討論",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "established": {
-      "translation": "已確立的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "raised": {
-      "translation": "a. 凸起的, 浮雕的, 發酵的\\n[醫] 隆起的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "as": {
-      "translation": "作為；如同",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "way": {
-      "translation": "方式",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "open-ended": {
-      "translation": "a. 可修訂的, 可調整的, 無確定答案的, 末端開口的, 自由回答的\\n[計] 可擴充的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "different": {
-      "translation": "不同的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "scientific": {
-      "translation": "科學的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "proposal": {
-      "translation": "提案；建議",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "limits": {
-      "translation": "限制",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "counting": {
-      "translation": "n. 計算\\n[醫] 計數",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "typesafe’s": {
-      "translation": "易於於樣態的安全",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "follows": {
-      "translation": "跟隨；由此得出",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "distinctions": {
-      "translation": "n. 區別( distinction的複數形式 ); 榮譽; 特質; 卓越",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "business": {
-      "translation": "商業；業務",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "ai-generated": {
-      "translation": "由人工智能生成的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "artificial": {
-      "translation": "人工的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "mistake": {
-      "translation": "錯誤",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "presents": {
-      "translation": "n. 出品；禮物（present的複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "the": {
-      "translation": "該；這（定冠詞）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "using": {
-      "translation": "使用",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "your": {
-      "translation": "pron. 你的, 你們的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "safety": {
-      "translation": "安全",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "requirement": {
-      "translation": "n. 需求, 必要條件, 要求\\n[化] 要求; 合同要求",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "compare": {
-      "translation": "比較",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "audiences": {
-      "translation": "n. 觀衆, 聽衆, 讀者( audience的複數形式 )",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "same": {
-      "translation": "相同的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "adding": {
-      "translation": "增加；加入",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "tackling": {
-      "translation": "n. 用具, 裝備, 套具, 扭住, 抱住, 捲起",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "meant": {
-      "translation": "mean的過去式和過去分詞",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "leaving": {
-      "translation": "留下；離開中",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "how": {
-      "translation": "如何",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "organisation's": {
-      "translation": "組織；機構（所有格：……的）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "reading": {
-      "translation": "閱讀",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "began": {
-      "translation": "begin的過去式",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "that": {
-      "translation": "那；該",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "answer": {
-      "translation": "答案；回答",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "described": {
-      "translation": "v. 描述, 描寫（describe的過去式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "reports": {
-      "translation": "報告（複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "extract": {
-      "translation": "摘錄；提取",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "explains": {
-      "translation": "解釋",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "boundaries": {
-      "translation": "n. 分界線( boundary的名詞複數 ); 範圍; 使球越過邊界線的擊球（得加分）; 疆界",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "creates": {
-      "translation": "[n. 創建；創立",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "speed": {
-      "translation": "速度",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "collection": {
-      "translation": "n. 收集, 採集, (一批)收藏品, 募捐\\n[醫] 收集; 收集品, 標本",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "dependencies": {
-      "translation": "n. 依賴性, 相關性；管理",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "involved": {
-      "translation": "涉及的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "party's": {
-      "translation": "n. 宴會, 黨, 政黨, 團體, 當事人, 聚會\\nv. 舉辦聚會（所有格：……的）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "negotiating": {
-      "translation": "n. 談判",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "works": {
-      "translation": "作品；運作",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "found": {
-      "translation": "發現；找到的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "without": {
-      "translation": "沒有",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "committed": {
-      "translation": "a. 獻身於某種事業的\\n[計] 委託的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "combines": {
-      "translation": "結合",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "justify": {
-      "translation": "證明……合理",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "allegation": {
-      "translation": "n. 斷言, 主張, 申辯\\n[法] 聲明, 事實陳述, 斷言",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "enthusiasm": {
-      "translation": "熱情",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "particular": {
-      "translation": "特定的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "compared": {
-      "translation": "a. 比較的, 對照的（compare的過去式和過去分詞）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "viewer": {
-      "translation": "n. 觀察者, 看電視者, 視察員, 觀察器\\n[化] 指示器",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "call": {
-      "translation": "n. 呼叫, 訪問, 打電話, 號召, 召集, 要求\\nvt. 呼叫, 召集, 打電話\\nvi. 叫喊, 訪問, 叫牌\\n[計] 調用; 呼叫; DOS內部命令:在批處理文件中調用另一個批處理文件",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "reasoning": {
-      "translation": "推理",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "discovery": {
-      "translation": "n. 發現, 被發現的事物\\n[法] 要求告知, 發現, 發覺",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "explicitly": {
-      "translation": "adv. 明確地；明白地",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "investigation": {
-      "translation": "調查；研究",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "missing": {
-      "translation": "缺少的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "might": {
-      "translation": "可能",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "calling": {
-      "translation": "n. 職業, 行業, 呼喚, 召集\\n[計] 呼叫",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
     "explain": {
       "translation": "解釋",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "additional": {
-      "translation": "額外的；補充的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "consideration": {
-      "translation": "n. 考慮, 原因\\n[法] 考慮, 思考, 報酬",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "which": {
-      "translation": "哪個",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "difficult": {
-      "translation": "困難的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "field": {
-      "translation": "領域",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "side": {
-      "translation": "n. 旁邊, 側, 方面, 脅, 側邊, 血統\\na. 旁的, 側的, 次要的\\nvt. 同意, 支持\\nvi. 支持, 贊助",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "arxiv": {
-      "translation": "arXiv；學術預印本發布平台",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "company's": {
-      "translation": "公司的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "story": {
-      "translation": "新聞故事；報道",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "drops": {
-      "translation": "n. 藥水, 滴劑\\n[化] 滴劑",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "says": {
-      "translation": "表示",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "it": {
-      "translation": "它",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "challenge": {
-      "translation": "質疑；挑戰",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "judgement": {
-      "translation": "判斷",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "reward": {
-      "translation": "n. 報酬, 酬謝, 賞金\\nvt. 獎賞, 酬謝, 給...應有報應",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "governments": {
-      "translation": "n. 政權；政府；可轉讓政府證券（government的複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "do": {
-      "translation": "做（亦作助動詞）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "is": {
-      "translation": "是",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "staff": {
-      "translation": "員工",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "analysis": {
-      "translation": "分析",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "ai": {
-      "translation": "人工智能",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "agreement": {
-      "translation": "協議；一致意見",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "reporting": {
-      "translation": "報道；報告",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "foundational": {
-      "translation": "a. 基礎的, 基本的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "care": {
-      "translation": "關注；小心",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "claiming": {
-      "translation": "v. 要求（應得權利）( claim的現在分詞 ); 聲稱; 需要; 奪走",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "return": {
-      "translation": "返回；回報",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "stated": {
-      "translation": "已陳述的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "shows": {
-      "translation": "n. 秀場, 表演（show的複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "wider": {
-      "translation": "更廣泛的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "credit": {
-      "translation": "n. 信用, 信任, 榮譽, 貸款, 學分\\nvt. 歸功於, 讚頌, 信任, 相信\\n[計] 信用量",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "concerned": {
-      "translation": "a. 關心的, 有關的, 參與的, 擔心的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "restrictions": {
-      "translation": "限制",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "about": {
-      "translation": "關於",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "verge": {
-      "translation": "邊緣；在 The Verge 名稱中指該科技新聞網站",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "techcrunch": {
-      "translation": "TechCrunch；科技新聞網站",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "status": {
-      "translation": "n. 狀態, 情形, 地位, 要人身份\\n[計] 狀態",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "range": {
-      "translation": "範圍",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "was": {
-      "translation": "是（過去式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "residents": {
-      "translation": "n. 居民；房客；住院醫生（resident的複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "and": {
-      "translation": "與；以及",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "disclosure": {
-      "translation": "n. 揭發, 泄露, 揭發(或暴露)的事實\\n[經] 揭示, 披露",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "individual": {
-      "translation": "個人；個體",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "decision": {
-      "translation": "決策",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "or": {
-      "translation": "或者",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "action": {
-      "translation": "n. 行動, 活動, 動作, 作用, 戰鬥, 行爲, 訴訟\\nvt. 對...起訴\\n[計] 方式",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "examined": {
-      "translation": "經檢視的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "sciences": {
-      "translation": "科學學科",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "statements": {
-      "translation": "n. 聲明；報告；陳述句；狀態說明（statement的複數形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "usefulness": {
-      "translation": "實用性；用處",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "its": {
-      "translation": "它的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "confidence": {
-      "translation": "信心",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "general": {
-      "translation": "一般的；整體的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "interpreting": {
-      "translation": "[計] 解釋的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "extracts": {
-      "translation": "n. 摘錄( extract的名詞複數 ); 引用; 提煉物; 濃縮物\\nv. 提取( extract的第三人稱單數 ); （費力地）拔出; 選取; 獲得",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "reasons": {
-      "translation": "理由",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "remark": {
-      "translation": "n. 評論, 注意\\nvt. 評論, 注意\\nvi. 評論, 談論\\n[計] 註釋",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "institutional": {
-      "translation": "機構的；制度的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "were": {
-      "translation": "是（過去式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "could": {
-      "translation": "可以；可能",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "internal": {
-      "translation": "a. 內在的, 國內的\\n[醫] 內的, 內部的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "identifying": {
-      "translation": "n. 識別, 標識；標識關係",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "titles": {
-      "translation": "n. 標題；字幕；主題（title複數形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "resulting": {
-      "translation": "[計] 結果的, 合成的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "keeping": {
-      "translation": "保持；維持",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "strong": {
-      "translation": "強大的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "before": {
-      "translation": "在……之前",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "than": {
-      "translation": "比",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "large": {
-      "translation": "a. 大的, 大量的, 寬大的, 廣博的\\nadv. 大大地, 誇大地",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "so": {
-      "translation": "因此；如此",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "itself": {
-      "translation": "它本身",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "covered": {
-      "translation": "a. 隱蔽着的, 掩藏着的, 有屋頂的\\n[建] 塗抹了的, 覆蓋了的, 掩蓋了的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "benchmarking": {
-      "translation": "[計] 確定基準點, 標記",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "satisfactory": {
-      "translation": "a. 滿意的, 贖罪的\\n[法] 令人滿意的, 令當事人滿意的, 充分的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "learned": {
-      "translation": "a. 有學問的, 學術上的\\nlearn的過去式和過去分詞",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "problems": {
-      "translation": "問題（複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "questions": {
-      "translation": "問題",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "examines": {
-      "translation": "檢視",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "jev": {
-      "translation": "對象",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "under": {
-      "translation": "在……之下",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "doubles": {
-      "translation": "n. 雙打",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "tokens": {
-      "translation": "n. 代幣( token的複數形式 ); 象徵",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "independently": {
-      "translation": "adv. 獨立地, 自立地",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "much": {
-      "translation": "n. 大量, 許多, 重要的事\\na. 很多的, 重要的\\nadv. 多, 甚, 幾乎",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "separately": {
-      "translation": "adv. [表]分開, 不相連, 分隔, 分離, 不同, 單獨, 獨立, 各自, 各別, 脫離肉體, 靈魂\\n[計] 分離地",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "attribution": {
-      "translation": "署名；歸屬",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "differently": {
-      "translation": "以不同方式",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "establish": {
-      "translation": "確立；證實",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "non-text": {
-      "translation": "非文字",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "endorsing": {
-      "translation": "背書",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "verdict": {
-      "translation": "判斷；裁決",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "next": {
-      "translation": "下一個",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "appearance": {
-      "translation": "外觀；表象",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "concealed": {
-      "translation": "a. 隱蔽的, 隱匿的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "accurate": {
-      "translation": "準確的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "partial": {
-      "translation": "a. 部分的, 偏袒的, 偏愛的\\nn. 分音",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "represented": {
-      "translation": "被代表的；被呈現的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "analytical": {
-      "translation": "分析性的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "deals": {
-      "translation": "n. 協約；份額；交易（deal的複數形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "automated": {
-      "translation": "自動化的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "also": {
-      "translation": "也",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "strategic": {
-      "translation": "a. 戰略的, 戰略上的\\n[經] 戰略的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "participation": {
-      "translation": "n. 參與, 分享\\n[經] 參與, 參股",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "people": {
-      "translation": "人們",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "treated": {
-      "translation": "對待",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "prevent": {
-      "translation": "v. 預防, 防止, 阻止, 妨礙",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "restriction": {
-      "translation": "限制",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "frontier": {
-      "translation": "n. 邊界, 邊境\\n[法] 國境, 邊境, 邊界",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "involving": {
-      "translation": "v. 包括；涉及；使陷於（involve的ing形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "valid": {
-      "translation": "a. 有確實根據的, 有法律效力的, 正當的, 正確的\\n[經] 有效的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "plausible": {
-      "translation": "合理可信的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "disclosed": {
-      "translation": "已披露的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "unavailable": {
-      "translation": "無法取得的；不可用的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "discussed": {
-      "translation": "v. 商討；討論（discuss的過去分詞）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "kinds": {
-      "translation": "種類",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "convincing": {
-      "translation": "有說服力的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "evidential": {
-      "translation": "與證據有關的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "separate": {
-      "translation": "分開的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "gamecommbench": {
-      "translation": "玩家基於",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "corporations": {
-      "translation": "n. 公司, 企業（corporation的複數形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "separates": {
-      "translation": "n. 可搭配穿着的女服\\nv. 分開( separate的第三人稱單數 ); （使）分離; 區分; 隔開",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "can": {
-      "translation": "能夠",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "success": {
-      "translation": "成功",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "differ": {
-      "translation": "有所不同",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "perception": {
-      "translation": "n. 知覺, 感覺, 領悟力, 獲取\\n[醫] 知覺",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "inquiry": {
-      "translation": "探究",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "absence": {
-      "translation": "缺乏；不存在",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "prefer": {
-      "translation": "vt. 寧可, 較喜歡, 提出\\n[法] 給予優先權, 優先償還, 提出",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "terms": {
-      "translation": "n. 條件, 條款, 費用, 價錢, 關係, 地位, 交誼\\n[經] 條件",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "information": {
-      "translation": "資訊",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "any": {
-      "translation": "任何的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "lines": {
-      "translation": "n. 臺詞",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "operating": {
-      "translation": "運作中的；操作的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "want": {
-      "translation": "n. 需要的東西, 缺乏, 貧困, 需要\\nvt. 要, 希望, 應該, 缺少\\nvi. 生活困苦, 需要, 缺少",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "valued": {
-      "translation": "a. 經估價的, 貴重的, 受尊重的\\n[法] 受尊重的, 受重視的, 貴重的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "leaves": {
-      "translation": "留下",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "request": {
-      "translation": "n. 請求, 需要, 申請書\\nvt. 請求, 要求, 邀請\\n[計] 請求",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "standards": {
-      "translation": "n. 標準；規格（standard的複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "with": {
-      "translation": "與；帶有",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "known": {
-      "translation": "已知的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "researchers": {
-      "translation": "n. 研究員, 調查者( researcher的複數形式 )",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "these": {
-      "translation": "這些",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "too": {
-      "translation": "adv. 也, 非常, 太",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "happened": {
-      "translation": "發生了",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "identify": {
-      "translation": "指出；識別",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "consulted": {
-      "translation": "v. 商議, 商量( consult的過去式和過去分詞 ); 請教; 翻閱; 求教於",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "significance": {
-      "translation": "重要性；意義",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "inputs": {
-      "translation": "n. 輸入；投入（input的複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "need": {
-      "translation": "需要",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "considers": {
-      "translation": "考慮",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "commentary": {
-      "translation": "n. 註釋, 評論, 說明\\n[法] 註釋, 評註, 評論",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "to": {
-      "translation": "向；到；用於",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "a": {
-      "translation": "一個（不定冠詞）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "describes": {
-      "translation": "描述",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "depend": {
-      "translation": "依賴；取決於",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "conceal": {
-      "translation": "隱藏；掩蓋",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "account": {
-      "translation": "敘述；報道；說明（亦可指帳戶）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "amazon": {
-      "translation": "n. 亞馬孫河\\n[醫] 無乳腺者",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "for": {
-      "translation": "為了；對於",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "financially": {
-      "translation": "adv. 金融上；財政上",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "summary": {
-      "translation": "摘要",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "describing": {
-      "translation": "[計] 描述的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "generation": {
-      "translation": "n. 一代, 一世, 產生\\n[醫] 生殖, 世代",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "contextual": {
-      "translation": "a. 上下文的, 前後關係的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "purposes": {
-      "translation": "n. 目的；意志（purpose的複數形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "commitments": {
-      "translation": "n. 委託( commitment的複數形式 ); 任務; 承擔的義務",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "maintaining": {
-      "translation": "維持；保持",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "defined": {
-      "translation": "界定",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "disputed": {
-      "translation": "有爭議的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "type-aware": {
-      "translation": "敏感於樣態的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "experienced": {
-      "translation": "有經驗的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "intelligence": {
-      "translation": "智能",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "reader": {
-      "translation": "讀者",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "have": {
-      "translation": "有；已經",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "conditions": {
-      "translation": "條件；情況",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "organisational": {
-      "translation": "組織的；機構的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "from": {
-      "translation": "從；來自",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "considered": {
-      "translation": "被考慮的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "entertaining": {
-      "translation": "a. 使人愉快的, 有趣的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "invites": {
-      "translation": "引發",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "unreliable": {
-      "translation": "不可靠的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "result": {
-      "translation": "結果",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "testing": {
-      "translation": "測試；檢驗",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "certifying": {
-      "translation": "v. （尤指書面）證明( certify的現在分詞 ); 發證書給…; 證明（某人）患有精神病; 頒發（或授予）專業合格證書",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "of": {
-      "translation": "……的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "will": {
-      "translation": "將會",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "able": {
-      "translation": "能夠的；有能力的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "differences": {
-      "translation": "差異",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "explaining": {
-      "translation": "v. 講解, 解釋( explain的現在分詞 ); 說明…的原因, 辯解; 說明, 解釋, 辯解",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "systems": {
-      "translation": "系統",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "resolve": {
-      "translation": "解決；決定",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "supplies": {
-      "translation": "提供",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "are": {
-      "translation": "是（複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "fire": {
-      "translation": "n. 火, 爐火, 電爐, 火災, 閃光體, 炮火, 熱情\\nvt. 點燃, 燒製, 使發光, 激動, 放槍, 解僱\\nvi. 着火, 燒火, 開槍, 射擊, 激動",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "while": {
-      "translation": "當……時；然而",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "ndas": {
-      "translation": "abbr. New Dictionary of American Slang <新美國俚語辭典>",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "output": {
-      "translation": "輸出結果",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "sophistication": {
-      "translation": "n. 詭辯, 老於世故, 複雜(性)\\n[醫] 摻假",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "ability": {
-      "translation": "能力",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "progress": {
-      "translation": "進展",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "resources": {
-      "translation": "資源",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "significantly": {
-      "translation": "adv. 值得注目地；意味深長地",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "unified": {
-      "translation": "a. 統一的；一致標準的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "unresolved": {
-      "translation": "尚未解決的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "affecting": {
-      "translation": "a. 感人的, 動人的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "when": {
-      "translation": "當……時；何時",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "proposed": {
-      "translation": "擬議的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "following": {
-      "translation": "接下來的；下列的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "show": {
-      "translation": "顯示；展示",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "dispute": {
-      "translation": "爭議",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "just": {
-      "translation": "a. 正直的, 合理的, 正確的, 應得的\\nadv. 剛剛, 正好, 僅僅",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "on": {
-      "translation": "在……之上；關於",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "accounts": {
-      "translation": "報道；說明",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "score": {
-      "translation": "分數",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "first": {
-      "translation": "第一；首先",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "attempt": {
-      "translation": "n. 嘗試, 企圖\\nvt. 嘗試, 企圖",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "be": {
-      "translation": "是；成為",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "attributed": {
-      "translation": "歸因的；註明來源的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "reputations": {
-      "translation": "n. 名氣( reputation的複數形式 ); 好名聲; 信譽; 榮譽",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "explanation": {
-      "translation": "解釋",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "focus": {
-      "translation": "重點；集中",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "assesses": {
-      "translation": "vt. 評定（assess的第三人稱單數形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "exceed": {
-      "translation": "超過",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "possible": {
-      "translation": "可能的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "being": {
-      "translation": "存在；正在",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "what": {
-      "translation": "甚麼",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "comparable": {
-      "translation": "a. 可比較的, 比得上的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "argument": {
-      "translation": "論點；論證；爭論",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "distinguishes": {
-      "translation": "v. 辨別, 區別( distinguish的第三人稱單數 ); 使出衆; （憑任何感覺器官）識別出; 看清",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "functions": {
-      "translation": "n. 功能；函數（function的複數形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "incorrect": {
-      "translation": "不正確的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "measurement": {
-      "translation": "測量",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "during": {
-      "translation": "在……期間",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "standing": {
-      "translation": "n. 起立, 持續, 身分\\na. 立着的, 不動的, 經常的, 持續的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "clarification": {
-      "translation": "n. 澄清, 淨化\\n[計] 澄清報告; 澄清",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "description": {
-      "translation": "描述；說明",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "faster": {
-      "translation": "更快的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "in": {
-      "translation": "在……之中",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "confidentiality": {
-      "translation": "[計] 機密性\\n[經] 保密",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "rewarded": {
-      "translation": "v. 酬謝, 獎賞( reward的過去式和過去分詞 )",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
@@ -2882,374 +704,26 @@
       "part_of_speech": "",
       "definition": ""
     },
-    "access": {
-      "translation": "使用權；存取",
+    "governments": {
+      "translation": "n. 政權；政府；可轉讓政府證券（government的複數）",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "developments": {
-      "translation": "n. 建設；發展；進展（development的複數）",
+    "intelligence": {
+      "translation": "智能",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "stop": {
-      "translation": "n. 停止, 車站, 逗留, 填塞, 障礙, (風琴的)音栓\\nvi. 停止, 被塞住\\nvt. 塞住, 堵塞, 阻止, 擊落, 停止, 終止, 斷絕",
+    "significantly": {
+      "translation": "adv. 值得注目地；意味深長地",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "three": {
-      "translation": "num. 三, 三個",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "answers": {
-      "translation": "n. 答案, 回答（answer的複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "indicate": {
-      "translation": "vt. 顯示, 象徵, 指示, 指出\\n[醫] 指示",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "card": {
-      "translation": "n. 卡片, 紙牌, 節目單, 明信片, 梳棉機\\nvt. 備置卡片, 記於卡片上, 梳理\\n[計] 卡片, 卡",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "combined": {
-      "translation": "a. 結合的；組合的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "multimodal": {
-      "translation": "[計] 多模式的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "then": {
-      "translation": "然後；當時",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "may": {
-      "translation": "可能",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "another": {
-      "translation": "另一個",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "play": {
-      "translation": "n. 遊戲, 遊玩, 玩笑, 運動, 比賽, 賭博, 跳動, 表演, 劇本\\nv. 玩, 遊戲, 假裝, 開玩笑, 比賽, 扮演, 演奏, 演戲, 傳搖曳, (使)跳動\\n[計] 播放",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "fuller": {
-      "translation": "n. 漂洗工, 套柄鐵錘\\n[機] 半圓型錘",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "existing": {
-      "translation": "現有的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "protect": {
-      "translation": "vt. 防衛, 保護, 警戒\\n[法] 庇護, 保護, 警戒",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "became": {
-      "translation": "become的過去式",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "they": {
-      "translation": "他們；它們",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "exercise": {
-      "translation": "練習；運用",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "announcement": {
-      "translation": "宣布；公布",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "investigations": {
-      "translation": "n. （正式的）調查( investigation的複數形式 ); 偵查; 科學研究; 學術研究",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "examination": {
-      "translation": "檢查；審視；考試",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "confident": {
-      "translation": "有信心的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "fluent": {
-      "translation": "流暢的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "supplied": {
-      "translation": "a. 有...提供的；備有...的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "clear": {
-      "translation": "清楚的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "excited": {
-      "translation": "a. 興奮的, 已勵磁的, 已激發的, 激昂的, 激動的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "proof": {
-      "translation": "證據；證明",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "finding": {
-      "translation": "n. 發現, 發現物, 決定, 裁決\\n[法] 調查結果, 對事實的認定, 判定的要素",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "solution": {
-      "translation": "解決方法",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "help": {
-      "translation": "幫助",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "speech": {
-      "translation": "n. 演講, 說話, 談話, 言語, 引語, 民族語言\\n[醫] 言語, 語言",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "audience": {
-      "translation": "受眾；觀眾",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "wrongdoing": {
-      "translation": "n. 幹壞事, 壞事",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "keep": {
-      "translation": "保持",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "imply": {
-      "translation": "暗示；意味著",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "making": {
-      "translation": "作出；製作",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "involve": {
-      "translation": "涉及",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "weeks": {
-      "translation": "n. 威克斯（姓氏）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "fewer": {
-      "translation": "a. 較少的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "documents": {
-      "translation": "n. 文檔（document的複數形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "game": {
-      "translation": "n. 比賽, 玩耍, 比分, 得勝, 比賽規則, 策略, 遊戲, 野味\\nvi. 賭博\\na. 勇敢的, 有膽量的, 關於野味的, 跛的\\n[計] 博弈; 對策",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "useful": {
-      "translation": "有用的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "launch": {
-      "translation": "推出；發布",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "theoretical": {
-      "translation": "a. 理論的, 理論上的, 假設的, 推理的\\n[計] 理論的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "preserve": {
-      "translation": "保存；維護",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "begins": {
-      "translation": "開始",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "confirmation": {
-      "translation": "確認",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "openproblembench": {
-      "translation": "OpenProblemBench：用來評估人工智能處理數學與理論物理未解難題的研究基準測試",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "unsupported": {
-      "translation": "缺乏證據支持的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "process": {
-      "translation": "過程；處理",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "resolves": {
-      "translation": "n. 決意, 決定( resolve的名詞複數 ); （會議等的）決議\\nv. 決定, 決心( resolve的第三人稱單數 ); 解決（問題、疑問。、困難等）; 分解; （指委員會或集會）表決",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "independent": {
-      "translation": "獨立的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "by": {
-      "translation": "由；透過",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "at": {
-      "translation": "在；於",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "change": {
-      "translation": "改變",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "quality": {
-      "translation": "質素",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "makes": {
-      "translation": "使得",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "intelligibility": {
-      "translation": "n. 可理解性, 明瞭\\n[計] 可識度, 可懂度, 清晰度",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "comparing": {
-      "translation": "比較",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "individuals": {
-      "translation": "n. 個人；個體（individual的複數）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "work": {
-      "translation": "工作；運作",
+    "answer": {
+      "translation": "答案；回答",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
@@ -3260,212 +734,50 @@
       "part_of_speech": "",
       "definition": ""
     },
+    "examination": {
+      "translation": "檢查；審視；考試",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
     "if": {
       "translation": "如果",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "local": {
-      "translation": "本地的；本機的",
+    "standing": {
+      "translation": "n. 起立, 持續, 身分\\na. 立着的, 不動的, 經常的, 持續的",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "favoured": {
-      "translation": "a. 受到優待的, 優惠的, 受優惠的, 有天賦的",
+    "remark": {
+      "translation": "n. 評論, 注意\\nvt. 評論, 注意\\nvi. 評論, 談論\\n[計] 註釋",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "employment": {
-      "translation": "就業",
+    "progress": {
+      "translation": "進展",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "disagreement": {
-      "translation": "意見分歧；不同意",
+    "investigation": {
+      "translation": "調查；研究",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "an": {
-      "translation": "一個（不定冠詞）",
+    "much": {
+      "translation": "n. 大量, 許多, 重要的事\\na. 很多的, 重要的\\nadv. 多, 甚, 幾乎",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "requiring": {
-      "translation": "v. 要求( require的現在分詞 ); 需要; 想要; 命令",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "response": {
-      "translation": "回應",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "ambition": {
-      "translation": "雄心；目標",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "contribution": {
-      "translation": "n. 捐助, 捐助之物, 貢獻\\n[經] 貢獻, 捐款, 補助品",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "firm": {
-      "translation": "堅定的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "maker": {
-      "translation": "n. 製造者, 上帝\\n[經] 製造者, 出票人",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "needed": {
-      "translation": "需要的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "carried": {
-      "translation": "進行；攜帶",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "explained": {
-      "translation": "已解釋的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "report": {
-      "translation": "報告",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "member": {
-      "translation": "n. 成員, 會員\\n[醫] │肢, 肢體",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "illustrates": {
-      "translation": "v. 給…加插圖( illustrate的第三人稱單數 ); 說明; 表明; （用示例、圖畫等）說明",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "evaluator": {
-      "translation": "評估者；評測者",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "agents": {
-      "translation": "n. 間諜；代理人；代理商；特工人員（agent的複數形式）",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "openai": {
-      "translation": "OpenAI：從事人工智能研究與產品開發的機構",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "evaluating": {
-      "translation": "評估",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "interest": {
-      "translation": "興趣；利益",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "area": {
-      "translation": "範疇",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "selected": {
-      "translation": "被選取的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "ask": {
-      "translation": "詢問",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "task": {
-      "translation": "任務",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "received": {
-      "translation": "獲得",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "out": {
-      "translation": "向外；離開",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "conclusions": {
-      "translation": "結論",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "supported": {
-      "translation": "獲支持的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "confirmed": {
-      "translation": "已確認的",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "wording": {
-      "translation": "措辭；用字",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "either": {
-      "translation": "兩者之一；任何一方",
-      "phonetic": "",
-      "part_of_speech": "",
-      "definition": ""
-    },
-    "short": {
-      "translation": "簡短的",
+    "three": {
+      "translation": "num. 三, 三個",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
@@ -3476,26 +788,134 @@
       "part_of_speech": "",
       "definition": ""
     },
-    "this": {
-      "translation": "這個",
+    "stated": {
+      "translation": "已陳述的",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "decisions": {
-      "translation": "決策（複數）",
+    "field": {
+      "translation": "領域",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "publishers": {
-      "translation": "n. 出版商, 出版公司；出版社（publisher的複數）",
+    "contribution": {
+      "translation": "n. 捐助, 捐助之物, 貢獻\\n[經] 貢獻, 捐款, 補助品",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
     },
-    "obligations": {
-      "translation": "n. 義務；債務；承付款項（obligation的複數）",
+    "differ": {
+      "translation": "有所不同",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "non-text": {
+      "translation": "非文字",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "make": {
+      "translation": "使得；製作",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "status": {
+      "translation": "n. 狀態, 情形, 地位, 要人身份\\n[計] 狀態",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "consulted": {
+      "translation": "v. 商議, 商量( consult的過去式和過去分詞 ); 請教; 翻閱; 求教於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "uses": {
+      "translation": "使用",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "inquiry": {
+      "translation": "探究",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "removal": {
+      "translation": "n. 移動, 移居, 遷移, 排除, 切除\\n[醫] 切除, 除去",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "keep": {
+      "translation": "保持",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "discussed": {
+      "translation": "v. 商討；討論（discuss的過去分詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "involved": {
+      "translation": "涉及的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "alone": {
+      "translation": "單獨；僅憑",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "as": {
+      "translation": "作為；如同",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "identify": {
+      "translation": "指出；識別",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "particular": {
+      "translation": "特定的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "wrongdoing": {
+      "translation": "n. 幹壞事, 壞事",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "excited": {
+      "translation": "a. 興奮的, 已勵磁的, 已激發的, 激昂的, 激動的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "offered": {
+      "translation": "v. 提供, 提議；奉獻（offer過去時態）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "local": {
+      "translation": "本地的；本機的",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
@@ -3506,8 +926,2588 @@
       "part_of_speech": "",
       "definition": ""
     },
+    "considers": {
+      "translation": "考慮",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "while": {
+      "translation": "當……時；然而",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "difficult": {
+      "translation": "困難的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "either": {
+      "translation": "兩者之一；任何一方",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "interest": {
+      "translation": "興趣；利益",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "techcrunch": {
+      "translation": "TechCrunch；科技新聞網站",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "restriction": {
+      "translation": "限制",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "could": {
+      "translation": "可以；可能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "individual": {
+      "translation": "個人；個體",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "verdict": {
+      "translation": "判斷；裁決",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "described": {
+      "translation": "v. 描述, 描寫（describe的過去式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "valued": {
+      "translation": "a. 經估價的, 貴重的, 受尊重的\\n[法] 受尊重的, 受重視的, 貴重的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "available": {
+      "translation": "可用的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "assesses": {
+      "translation": "vt. 評定（assess的第三人稱單數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "conceal": {
+      "translation": "隱藏；掩蓋",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "way": {
+      "translation": "方式",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "covered": {
+      "translation": "a. 隱蔽着的, 掩藏着的, 有屋頂的\\n[建] 塗抹了的, 覆蓋了的, 掩蓋了的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "developments": {
+      "translation": "n. 建設；發展；進展（development的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "account": {
+      "translation": "敘述；報道；說明（亦可指帳戶）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "illustrates": {
+      "translation": "v. 給…加插圖( illustrate的第三人稱單數 ); 說明; 表明; （用示例、圖畫等）說明",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "contextual": {
+      "translation": "a. 上下文的, 前後關係的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "so": {
+      "translation": "因此；如此",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "raised": {
+      "translation": "a. 凸起的, 浮雕的, 發酵的\\n[醫] 隆起的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "viewer": {
+      "translation": "n. 觀察者, 看電視者, 視察員, 觀察器\\n[化] 指示器",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "newcomer": {
+      "translation": "n. 新來者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "require": {
+      "translation": "要求；需要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "terms": {
+      "translation": "n. 條件, 條款, 費用, 價錢, 關係, 地位, 交誼\\n[經] 條件",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "disagreement": {
+      "translation": "意見分歧；不同意",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "employment": {
+      "translation": "就業",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "finding": {
+      "translation": "n. 發現, 發現物, 決定, 裁決\\n[法] 調查結果, 對事實的認定, 判定的要素",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "analysis": {
+      "translation": "分析",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "treated": {
+      "translation": "對待",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "proposed": {
+      "translation": "擬議的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "that": {
+      "translation": "那；該",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "story": {
+      "translation": "新聞故事；報道",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "valid": {
+      "translation": "a. 有確實根據的, 有法律效力的, 正當的, 正確的\\n[經] 有效的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "supplied": {
+      "translation": "a. 有...提供的；備有...的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "separates": {
+      "translation": "n. 可搭配穿着的女服\\nv. 分開( separate的第三人稱單數 ); （使）分離; 區分; 隔開",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "artificial": {
+      "translation": "人工的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "experienced": {
+      "translation": "有經驗的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "needs": {
+      "translation": "需要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "plausible": {
+      "translation": "合理可信的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "at": {
+      "translation": "在；於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "requiring": {
+      "translation": "v. 要求( require的現在分詞 ); 需要; 想要; 命令",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "access": {
+      "translation": "使用權；存取",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "any": {
+      "translation": "任何的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "information": {
+      "translation": "資訊",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "jev": {
+      "translation": "對象",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "happened": {
+      "translation": "發生了",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "analytical": {
+      "translation": "分析性的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "focus": {
+      "translation": "重點；集中",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "titles": {
+      "translation": "n. 標題；字幕；主題（title複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "being": {
+      "translation": "存在；正在",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "just": {
+      "translation": "a. 正直的, 合理的, 正確的, 應得的\\nadv. 剛剛, 正好, 僅僅",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "users": {
+      "translation": "使用者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "wider": {
+      "translation": "更廣泛的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "ndas": {
+      "translation": "abbr. New Dictionary of American Slang <新美國俚語辭典>",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
     "problem": {
       "translation": "問題",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "safety": {
+      "translation": "安全",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "comparing": {
+      "translation": "比較",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "then": {
+      "translation": "然後；當時",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "presents": {
+      "translation": "n. 出品；禮物（present的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "invites": {
+      "translation": "引發",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "unresolved": {
+      "translation": "尚未解決的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "an": {
+      "translation": "一個（不定冠詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "independently": {
+      "translation": "adv. 獨立地, 自立地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "request": {
+      "translation": "n. 請求, 需要, 申請書\\nvt. 請求, 要求, 邀請\\n[計] 請求",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "first": {
+      "translation": "第一；首先",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "amazon": {
+      "translation": "n. 亞馬孫河\\n[醫] 無乳腺者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "able": {
+      "translation": "能夠的；有能力的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "considered": {
+      "translation": "被考慮的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "answers": {
+      "translation": "n. 答案, 回答（answer的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "maker": {
+      "translation": "n. 製造者, 上帝\\n[經] 製造者, 出票人",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "prefer": {
+      "translation": "vt. 寧可, 較喜歡, 提出\\n[法] 給予優先權, 優先償還, 提出",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "summary": {
+      "translation": "摘要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "assessed": {
+      "translation": "v. 對…進行評估（assess過去時形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "investigations": {
+      "translation": "n. （正式的）調查( investigation的複數形式 ); 偵查; 科學研究; 學術研究",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "satisfactory": {
+      "translation": "a. 滿意的, 贖罪的\\n[法] 令人滿意的, 令當事人滿意的, 充分的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "play": {
+      "translation": "n. 遊戲, 遊玩, 玩笑, 運動, 比賽, 賭博, 跳動, 表演, 劇本\\nv. 玩, 遊戲, 假裝, 開玩笑, 比賽, 扮演, 演奏, 演戲, 傳搖曳, (使)跳動\\n[計] 播放",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "party's": {
+      "translation": "n. 宴會, 黨, 政黨, 團體, 當事人, 聚會\\nv. 舉辦聚會（所有格：……的）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "interpreted": {
+      "translation": "v. 解釋( interpret的過去式和過去分詞 ); 理解; 把…理解爲; 演繹（按自己的感覺演奏音樂或表現角色）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "deals": {
+      "translation": "n. 協約；份額；交易（deal的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "leaves": {
+      "translation": "留下",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "established": {
+      "translation": "已確立的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "speech": {
+      "translation": "n. 演講, 說話, 談話, 言語, 引語, 民族語言\\n[醫] 言語, 語言",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "involving": {
+      "translation": "v. 包括；涉及；使陷於（involve的ing形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "serve": {
+      "translation": "vt. 可作...用, 服務, 經歷, 招待, 供應, 送交, 對待\\nvi. 服務, 服役, 侍應, 適合, 有用, 開球\\nn. 發球, 輪到發球",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "functions": {
+      "translation": "n. 功能；函數（function的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "explaining": {
+      "translation": "v. 講解, 解釋( explain的現在分詞 ); 說明…的原因, 辯解; 說明, 解釋, 辯解",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "identifying": {
+      "translation": "n. 識別, 標識；標識關係",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "too": {
+      "translation": "adv. 也, 非常, 太",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "show": {
+      "translation": "顯示；展示",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "result": {
+      "translation": "結果",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "how": {
+      "translation": "如何",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "completed": {
+      "translation": "已完成的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "want": {
+      "translation": "n. 需要的東西, 缺乏, 貧困, 需要\\nvt. 要, 希望, 應該, 缺少\\nvi. 生活困苦, 需要, 缺少",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "are": {
+      "translation": "是（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "corporations": {
+      "translation": "n. 公司, 企業（corporation的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "people": {
+      "translation": "人們",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "confidence": {
+      "translation": "信心",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "assuming": {
+      "translation": "假設",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "whether": {
+      "translation": "是否",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "kinds": {
+      "translation": "種類",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "existing": {
+      "translation": "現有的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "verge": {
+      "translation": "邊緣；在 The Verge 名稱中指該科技新聞網站",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "learned": {
+      "translation": "a. 有學問的, 學術上的\\nlearn的過去式和過去分詞",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "disclosure": {
+      "translation": "n. 揭發, 泄露, 揭發(或暴露)的事實\\n[經] 揭示, 披露",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "company's": {
+      "translation": "公司的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "use": {
+      "translation": "使用",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "combined": {
+      "translation": "a. 結合的；組合的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "resolves": {
+      "translation": "n. 決意, 決定( resolve的名詞複數 ); （會議等的）決議\\nv. 決定, 決心( resolve的第三人稱單數 ); 解決（問題、疑問。、困難等）; 分解; （指委員會或集會）表決",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "establish": {
+      "translation": "確立；證實",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "incorrect": {
+      "translation": "不正確的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "launch": {
+      "translation": "推出；發布",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "confident": {
+      "translation": "有信心的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "which": {
+      "translation": "哪個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "when": {
+      "translation": "當……時；何時",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "follows": {
+      "translation": "跟隨；由此得出",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "visible": {
+      "translation": "可見的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "enthusiasm": {
+      "translation": "熱情",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "this": {
+      "translation": "這個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "selected": {
+      "translation": "被選取的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "overall": {
+      "translation": "a. 全部的, 全體的, 從頭至尾的, 一切在內的\\nadv. 從頭到尾, 總的說來\\nn. 罩衫, 工作服",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "unified": {
+      "translation": "a. 統一的；一致標準的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "down": {
+      "translation": "a. 向下的\\nadv. 下, 下去, 降下\\nprep. 往下, 沿着\\nn. 丘陵, 軟毛, 開闊的高地\\n[計] 向下, 退下命令",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "out": {
+      "translation": "向外；離開",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "audience": {
+      "translation": "受眾；觀眾",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "preserve": {
+      "translation": "保存；維護",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "adding": {
+      "translation": "增加；加入",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "partial": {
+      "translation": "a. 部分的, 偏袒的, 偏愛的\\nn. 分音",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "and": {
+      "translation": "與；以及",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "limits": {
+      "translation": "限制",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "what": {
+      "translation": "甚麼",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "making": {
+      "translation": "作出；製作",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "next": {
+      "translation": "下一個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "side": {
+      "translation": "n. 旁邊, 側, 方面, 脅, 側邊, 血統\\na. 旁的, 側的, 次要的\\nvt. 同意, 支持\\nvi. 支持, 贊助",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reader": {
+      "translation": "讀者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "claiming": {
+      "translation": "v. 要求（應得權利）( claim的現在分詞 ); 聲稱; 需要; 奪走",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "care": {
+      "translation": "關注；小心",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "gamecommbench": {
+      "translation": "玩家基於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "why": {
+      "translation": "為甚麼",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reasons": {
+      "translation": "理由",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "demonstrated": {
+      "translation": "已展示的；已證明的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "boundaries": {
+      "translation": "n. 分界線( boundary的名詞複數 ); 範圍; 使球越過邊界線的擊球（得加分）; 疆界",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "readers": {
+      "translation": "讀者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "valuation": {
+      "translation": "n. 評價, 估價, 價值判斷\\n[經] 估價, 計價, 評價",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "resolve": {
+      "translation": "解決；決定",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "separate": {
+      "translation": "分開的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "differences": {
+      "translation": "差異",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "wording": {
+      "translation": "措辭；用字",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "keeping": {
+      "translation": "保持；維持",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "range": {
+      "translation": "範圍",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "tackling": {
+      "translation": "n. 用具, 裝備, 套具, 扭住, 抱住, 捲起",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reward": {
+      "translation": "n. 報酬, 酬謝, 賞金\\nvt. 獎賞, 酬謝, 給...應有報應",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "success": {
+      "translation": "成功",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "knowledge": {
+      "translation": "n. 知識, 學問, 認識, 知道",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "scientific": {
+      "translation": "科學的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "your": {
+      "translation": "pron. 你的, 你們的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "works": {
+      "translation": "作品；運作",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "collection": {
+      "translation": "n. 收集, 採集, (一批)收藏品, 募捐\\n[醫] 收集; 收集品, 標本",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "says": {
+      "translation": "表示",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "description": {
+      "translation": "描述；說明",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "additional": {
+      "translation": "額外的；補充的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "ambition": {
+      "translation": "雄心；目標",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "usefulness": {
+      "translation": "實用性；用處",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "these": {
+      "translation": "這些",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "it": {
+      "translation": "它",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "calling": {
+      "translation": "n. 職業, 行業, 呼喚, 召集\\n[計] 呼叫",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "ability": {
+      "translation": "能力",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "internal": {
+      "translation": "a. 內在的, 國內的\\n[醫] 內的, 內部的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "evaluator": {
+      "translation": "評估者；評測者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "represented": {
+      "translation": "被代表的；被呈現的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "committed": {
+      "translation": "a. 獻身於某種事業的\\n[計] 委託的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "itself": {
+      "translation": "它本身",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "proposal": {
+      "translation": "提案；建議",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "received": {
+      "translation": "獲得",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "confidentiality": {
+      "translation": "[計] 機密性\\n[經] 保密",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "call": {
+      "translation": "n. 呼叫, 訪問, 打電話, 號召, 召集, 要求\\nvt. 呼叫, 召集, 打電話\\nvi. 叫喊, 訪問, 叫牌\\n[計] 調用; 呼叫; DOS內部命令:在批處理文件中調用另一個批處理文件",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "typesafe’s": {
+      "translation": "易於於樣態的安全",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "decision": {
+      "translation": "決策",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "than": {
+      "translation": "比",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "documents": {
+      "translation": "n. 文檔（document的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "need": {
+      "translation": "需要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "dependencies": {
+      "translation": "n. 依賴性, 相關性；管理",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "justify": {
+      "translation": "證明……合理",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "maintaining": {
+      "translation": "維持；保持",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "do": {
+      "translation": "做（亦作助動詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "perception": {
+      "translation": "n. 知覺, 感覺, 領悟力, 獲取\\n[醫] 知覺",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "remains": {
+      "translation": "仍然",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "game": {
+      "translation": "n. 比賽, 玩耍, 比分, 得勝, 比賽規則, 策略, 遊戲, 野味\\nvi. 賭博\\na. 勇敢的, 有膽量的, 關於野味的, 跛的\\n[計] 博弈; 對策",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "final": {
+      "translation": "最後的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "confirmation": {
+      "translation": "確認",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "by": {
+      "translation": "由；透過",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "faster": {
+      "translation": "更快的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "was": {
+      "translation": "是（過去式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "explicitly": {
+      "translation": "adv. 明確地；明白地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "explains": {
+      "translation": "解釋",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "business": {
+      "translation": "商業；業務",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "frontier": {
+      "translation": "n. 邊界, 邊境\\n[法] 國境, 邊境, 邊界",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "comparable": {
+      "translation": "a. 可比較的, 比得上的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "general": {
+      "translation": "一般的；整體的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "protect": {
+      "translation": "vt. 防衛, 保護, 警戒\\n[法] 庇護, 保護, 警戒",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "accepted": {
+      "translation": "a. 公認的, 一般承認的\\n[經] 已承兌, 已認付",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "supplies": {
+      "translation": "提供",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "another": {
+      "translation": "另一個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "sciences": {
+      "translation": "科學學科",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "endorsing": {
+      "translation": "背書",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "quality": {
+      "translation": "質素",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "distinguishes": {
+      "translation": "v. 辨別, 區別( distinguish的第三人稱單數 ); 使出衆; （憑任何感覺器官）識別出; 看清",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "process": {
+      "translation": "過程；處理",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "became": {
+      "translation": "become的過去式",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "meaningful": {
+      "translation": "有意義的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "clear": {
+      "translation": "清楚的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "they": {
+      "translation": "他們；它們",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "openproblembench": {
+      "translation": "OpenProblemBench：用來評估人工智能處理數學與理論物理未解難題的研究基準測試",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "were": {
+      "translation": "是（過去式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "unsupported": {
+      "translation": "缺乏證據支持的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "firm": {
+      "translation": "堅定的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "requires": {
+      "translation": "需要",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "separately": {
+      "translation": "adv. [表]分開, 不相連, 分隔, 分離, 不同, 單獨, 獨立, 各自, 各別, 脫離肉體, 靈魂\\n[計] 分離地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "remain": {
+      "translation": "仍然",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "obligations": {
+      "translation": "n. 義務；債務；承付款項（obligation的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "exceed": {
+      "translation": "超過",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "commentary": {
+      "translation": "n. 註釋, 評論, 說明\\n[法] 註釋, 評註, 評論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "generation": {
+      "translation": "n. 一代, 一世, 產生\\n[醫] 生殖, 世代",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "ask": {
+      "translation": "詢問",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "unreliable": {
+      "translation": "不可靠的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "presentation": {
+      "translation": "n. 贈與, 描述, 介紹\\n[計] 簡報",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "openai": {
+      "translation": "OpenAI：從事人工智能研究與產品開發的機構",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "distinction": {
+      "translation": "區別",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "institutional": {
+      "translation": "機構的；制度的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "area": {
+      "translation": "範疇",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "same": {
+      "translation": "相同的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "in": {
+      "translation": "在……之中",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "still": {
+      "translation": "仍然",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "arxiv": {
+      "translation": "arXiv；學術預印本發布平台",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "stop": {
+      "translation": "n. 停止, 車站, 逗留, 填塞, 障礙, (風琴的)音栓\\nvi. 停止, 被塞住\\nvt. 塞住, 堵塞, 阻止, 擊落, 停止, 終止, 斷絕",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "might": {
+      "translation": "可能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "using": {
+      "translation": "使用",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "of": {
+      "translation": "……的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "possible": {
+      "translation": "可能的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "organisation's": {
+      "translation": "組織；機構（所有格：……的）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "a": {
+      "translation": "一個（不定冠詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "have": {
+      "translation": "有；已經",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "distinctions": {
+      "translation": "n. 區別( distinction的複數形式 ); 榮譽; 特質; 卓越",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "appearance": {
+      "translation": "外觀；表象",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "shows": {
+      "translation": "n. 秀場, 表演（show的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "favoured": {
+      "translation": "a. 受到優待的, 優惠的, 受優惠的, 有天賦的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "assumptions": {
+      "translation": "假設",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "explained": {
+      "translation": "已解釋的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "for": {
+      "translation": "為了；對於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "lines": {
+      "translation": "n. 臺詞",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "negotiations": {
+      "translation": "n. 磋商；談判（negotiation的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "compare": {
+      "translation": "比較",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "meant": {
+      "translation": "mean的過去式和過去分詞",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "will": {
+      "translation": "將會",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "rewarded": {
+      "translation": "v. 酬謝, 獎賞( reward的過去式和過去分詞 )",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "supports": {
+      "translation": "支持",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "unavailable": {
+      "translation": "無法取得的；不可用的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "creates": {
+      "translation": "[n. 創建；創立",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "significance": {
+      "translation": "重要性；意義",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reading": {
+      "translation": "閱讀",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "intelligibility": {
+      "translation": "n. 可理解性, 明瞭\\n[計] 可識度, 可懂度, 清晰度",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "certifying": {
+      "translation": "v. （尤指書面）證明( certify的現在分詞 ); 發證書給…; 證明（某人）患有精神病; 頒發（或授予）專業合格證書",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "publishers": {
+      "translation": "n. 出版商, 出版公司；出版社（publisher的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "strategic": {
+      "translation": "a. 戰略的, 戰略上的\\n[經] 戰略的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "excerpt": {
+      "translation": "摘錄；節錄",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "accurate": {
+      "translation": "準確的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "to": {
+      "translation": "向；到；用於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "superior": {
+      "translation": "n. 長者, 佔優勢的人, 上級\\na. 上級的, 出衆的, 高傲的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "discussion": {
+      "translation": "討論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "fuller": {
+      "translation": "n. 漂洗工, 套柄鐵錘\\n[機] 半圓型錘",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "defined": {
+      "translation": "界定",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "is": {
+      "translation": "是",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "disclosed": {
+      "translation": "已披露的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "foundational": {
+      "translation": "a. 基礎的, 基本的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "clarification": {
+      "translation": "n. 澄清, 淨化\\n[計] 澄清報告; 澄清",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "theoretical": {
+      "translation": "a. 理論的, 理論上的, 假設的, 推理的\\n[計] 理論的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "exercise": {
+      "translation": "練習；運用",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "useful": {
+      "translation": "有用的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "open-ended": {
+      "translation": "a. 可修訂的, 可調整的, 無確定答案的, 末端開口的, 自由回答的\\n[計] 可擴充的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "participation": {
+      "translation": "n. 參與, 分享\\n[經] 參與, 參股",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "different": {
+      "translation": "不同的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "credit": {
+      "translation": "n. 信用, 信任, 榮譽, 貸款, 學分\\nvt. 歸功於, 讚頌, 信任, 相信\\n[計] 信用量",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "combines": {
+      "translation": "結合",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "output": {
+      "translation": "輸出結果",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "its": {
+      "translation": "它的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "concerned": {
+      "translation": "a. 關心的, 有關的, 參與的, 擔心的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "can": {
+      "translation": "能夠",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "action": {
+      "translation": "n. 行動, 活動, 動作, 作用, 戰鬥, 行爲, 訴訟\\nvt. 對...起訴\\n[計] 方式",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "the": {
+      "translation": "該；這（定冠詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "questions": {
+      "translation": "問題",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "solution": {
+      "translation": "解決方法",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "may": {
+      "translation": "可能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "those": {
+      "translation": "那些",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "entertaining": {
+      "translation": "a. 使人愉快的, 有趣的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "center": {
+      "translation": "n. 中心, 中心點, 中鋒\\na. 中央的, 位在正中的\\nvt. 集中, 定中心\\nvi. 居中\\n[計] 居中; 中央",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "restrictions": {
+      "translation": "限制",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "ai-generated": {
+      "translation": "由人工智能生成的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "judgement": {
+      "translation": "判斷",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "resources": {
+      "translation": "資源",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "attribution": {
+      "translation": "署名；歸屬",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "compared": {
+      "translation": "a. 比較的, 對照的（compare的過去式和過去分詞）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "benchmarking": {
+      "translation": "[計] 確定基準點, 標記",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "researchers": {
+      "translation": "n. 研究員, 調查者( researcher的複數形式 )",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "indicate": {
+      "translation": "vt. 顯示, 象徵, 指示, 指出\\n[醫] 指示",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "known": {
+      "translation": "已知的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "weeks": {
+      "translation": "n. 威克斯（姓氏）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "fire": {
+      "translation": "n. 火, 爐火, 電爐, 火災, 閃光體, 炮火, 熱情\\nvt. 點燃, 燒製, 使發光, 激動, 放槍, 解僱\\nvi. 着火, 燒火, 開槍, 射擊, 激動",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "tokens": {
+      "translation": "n. 代幣( token的複數形式 ); 象徵",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "began": {
+      "translation": "begin的過去式",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "member": {
+      "translation": "n. 成員, 會員\\n[醫] │肢, 肢體",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "standards": {
+      "translation": "n. 標準；規格（standard的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "makes": {
+      "translation": "使得",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "accomplish": {
+      "translation": "vt. 完成, 達到, 實現, 使完美",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "imply": {
+      "translation": "暗示；意味著",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "residents": {
+      "translation": "n. 居民；房客；住院醫生（resident的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "organisational": {
+      "translation": "組織的；機構的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "prevent": {
+      "translation": "v. 預防, 防止, 阻止, 妨礙",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "conditions": {
+      "translation": "條件；情況",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "differently": {
+      "translation": "以不同方式",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "under": {
+      "translation": "在……之下",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "depend": {
+      "translation": "依賴；取決於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "decisions": {
+      "translation": "決策（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "score": {
+      "translation": "分數",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "evaluating": {
+      "translation": "評估",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "supported": {
+      "translation": "獲支持的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "audiences": {
+      "translation": "n. 觀衆, 聽衆, 讀者( audience的複數形式 )",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reports": {
+      "translation": "報告（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "during": {
+      "translation": "在……期間",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "purposes": {
+      "translation": "n. 目的；意志（purpose的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "financially": {
+      "translation": "adv. 金融上；財政上",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "before": {
+      "translation": "在……之前",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "interpreting": {
+      "translation": "[計] 解釋的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "missing": {
+      "translation": "缺少的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "describing": {
+      "translation": "[計] 描述的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "explanation": {
+      "translation": "解釋",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "return": {
+      "translation": "返回；回報",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "argument": {
+      "translation": "論點；論證；爭論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "task": {
+      "translation": "任務",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "operating": {
+      "translation": "運作中的；操作的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "negotiating": {
+      "translation": "n. 談判",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "only": {
+      "translation": "只有；僅",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "drops": {
+      "translation": "n. 藥水, 滴劑\\n[化] 滴劑",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "open": {
+      "translation": "開放的；未定的；打開",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "attempt": {
+      "translation": "n. 嘗試, 企圖\\nvt. 嘗試, 企圖",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "report": {
+      "translation": "報告",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "individuals": {
+      "translation": "n. 個人；個體（individual的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "doubles": {
+      "translation": "n. 雙打",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "testing": {
+      "translation": "測試；檢驗",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "consideration": {
+      "translation": "n. 考慮, 原因\\n[法] 考慮, 思考, 報酬",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "extract": {
+      "translation": "摘錄；提取",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "begins": {
+      "translation": "開始",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "large": {
+      "translation": "a. 大的, 大量的, 寬大的, 廣博的\\nadv. 大大地, 誇大地",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "examines": {
+      "translation": "檢視",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "affecting": {
+      "translation": "a. 感人的, 動人的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "proof": {
+      "translation": "證據；證明",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "turning": {
+      "translation": "轉變；轉向",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "leaving": {
+      "translation": "留下；離開中",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "or": {
+      "translation": "或者",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "inputs": {
+      "translation": "n. 輸入；投入（input的複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "announcement": {
+      "translation": "宣布；公布",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "without": {
+      "translation": "沒有",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reporting": {
+      "translation": "報道；報告",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "attributed": {
+      "translation": "歸因的；註明來源的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "with": {
+      "translation": "與；帶有",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "fewer": {
+      "translation": "a. 較少的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "requirement": {
+      "translation": "n. 需求, 必要條件, 要求\\n[化] 要求; 合同要求",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "resulting": {
+      "translation": "[計] 結果的, 合成的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "card": {
+      "translation": "n. 卡片, 紙牌, 節目單, 明信片, 梳棉機\\nvt. 備置卡片, 記於卡片上, 梳理\\n[計] 卡片, 卡",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "agents": {
+      "translation": "n. 間諜；代理人；代理商；特工人員（agent的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "confirmed": {
+      "translation": "已確認的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "challenge": {
+      "translation": "質疑；挑戰",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "here": {
+      "translation": "這裏；本文中",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "examined": {
+      "translation": "經檢視的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "converting": {
+      "translation": "[建] 轉化, 改變",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "multimodal": {
+      "translation": "[計] 多模式的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "disputed": {
+      "translation": "有爭議的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "also": {
+      "translation": "也",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "dispute": {
+      "translation": "爭議",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "staff": {
+      "translation": "員工",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "sources": {
+      "translation": "資料來源",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "should": {
+      "translation": "應該",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "short": {
+      "translation": "簡短的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "speed": {
+      "translation": "速度",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "strong": {
+      "translation": "強大的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "important": {
+      "translation": "重要的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "mistake": {
+      "translation": "錯誤",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "benchmarks": {
+      "translation": "n. 基準( benchmark的複數形式 )",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "conclusions": {
+      "translation": "結論",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "work": {
+      "translation": "工作；運作",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "systems": {
+      "translation": "系統",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "accounts": {
+      "translation": "報道；說明",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "statements": {
+      "translation": "n. 聲明；報告；陳述句；狀態說明（statement的複數形式）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "measurement": {
+      "translation": "測量",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "carried": {
+      "translation": "進行；攜帶",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "ai": {
+      "translation": "人工智能",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "help": {
+      "translation": "幫助",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "about": {
+      "translation": "關於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "allegation": {
+      "translation": "n. 斷言, 主張, 申辯\\n[法] 聲明, 事實陳述, 斷言",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "counting": {
+      "translation": "n. 計算\\n[醫] 計數",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "commitments": {
+      "translation": "n. 委託( commitment的複數形式 ); 任務; 承擔的義務",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "independent": {
+      "translation": "獨立的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "one": {
+      "translation": "一個",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "concerns": {
+      "translation": "關乎；涉及；憂慮",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "fluent": {
+      "translation": "流暢的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "involve": {
+      "translation": "涉及",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "problems": {
+      "translation": "問題（複數）",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "allows": {
+      "translation": "容許",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "change": {
+      "translation": "改變",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reasoning": {
+      "translation": "推理",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "agreement": {
+      "translation": "協議；一致意見",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "response": {
+      "translation": "回應",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "type-aware": {
+      "translation": "敏感於樣態的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "following": {
+      "translation": "接下來的；下列的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "automated": {
+      "translation": "自動化的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "after": {
+      "translation": "之後",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "needed": {
+      "translation": "需要的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "evidential": {
+      "translation": "與證據有關的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "be": {
+      "translation": "是；成為",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "concealed": {
+      "translation": "a. 隱蔽的, 隱匿的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "reputations": {
+      "translation": "n. 名氣( reputation的複數形式 ); 好名聲; 信譽; 榮譽",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "discovery": {
+      "translation": "n. 發現, 被發現的事物\\n[法] 要求告知, 發現, 發覺",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "convincing": {
+      "translation": "有說服力的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "extracts": {
+      "translation": "n. 摘錄( extract的名詞複數 ); 引用; 提煉物; 濃縮物\\nv. 提取( extract的第三人稱單數 ); （費力地）拔出; 選取; 獲得",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "describes": {
+      "translation": "描述",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "found": {
+      "translation": "發現；找到的",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "on": {
+      "translation": "在……之上；關於",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "sophistication": {
+      "translation": "n. 詭辯, 老於世故, 複雜(性)\\n[醫] 摻假",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "from": {
+      "translation": "從；來自",
+      "phonetic": "",
+      "part_of_speech": "",
+      "definition": ""
+    },
+    "absence": {
+      "translation": "缺乏；不存在",
       "phonetic": "",
       "part_of_speech": "",
       "definition": ""
@@ -3636,6 +3636,7 @@
       }
     ]
   },
+  "practice_revision": "ab75ba30ef667b512221ccb8d9f26bc5113ca10dfa7e2df4dcf26e813bd4f514",
   "editorial_quality": {
     "training_structure_pass": true,
     "diagnostics": {
@@ -3664,10 +3665,10 @@
     "evaluation",
     "evidence"
   ],
-  "history_rebuilt_at": "2026-10-10T23:17:31.019833+08:00",
+  "history_rebuilt_at": "2026-10-10T23:41:50.492761+08:00",
   "historical_rebuild": true,
   "source_snapshot_date": "2026-10-10",
-  "historical_source_reference_at": "2026-10-10T23:17:31.019833+08:00",
+  "historical_source_reference_at": "2026-10-10T23:30:00+08:00",
   "original_revision_sha256": "b5cac5d4bbdcf0db89a58f73abfae6f515cb9e6f77c7c909c37d368e432eee37",
   "generation_provenance": "build.build_live -> source_outline.compose; archived source snapshot only"
 }

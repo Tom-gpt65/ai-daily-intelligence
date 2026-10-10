@@ -95,6 +95,10 @@ def issues(report, row=None, reports=None):
     if not isinstance(items, list) or len(items) < 7 or practice.get("official") is True:
         errors.append("missing_practice")
     else:
+        if report.get('content_generation_profile')=='source_outline_v2':
+            from dse_assessment_v7 import assessment_revision
+            if report.get('practice_revision')!=assessment_revision(items):
+                errors.append('question_revision_mismatch')
         for q in items:
             if not isinstance(q, dict) or not isinstance(q.get("paragraph"), int) or not 1 <= q["paragraph"] <= len(essay) or not q.get("evidence_quote"):
                 errors.append("invalid_question_evidence")

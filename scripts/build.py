@@ -24,7 +24,7 @@ from learning_editorial import is_promotional
 from dse_editorial import compose_briefing
 from longform import WRITING_STYLES, category as story_category
 from content_novelty import audit_history, recent_articles, audit as audit_novelty
-from dse_assessment_v7 import make_exam
+from dse_assessment_v7 import make_exam, assessment_revision
 from editorial_quality import inspect as inspect_editorial_quality
 from source_context import enrich as enrich_source_metadata
 from edition_guarantee import fill_dictionary,complete
@@ -761,15 +761,23 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     focus_category = None
     last_reasons = []
     for candidate, model_written, variant in candidates:
+        if not candidate:
+            put_status('insufficient_evidence',now,source_count=len(sources),
+                       failure_reason='No coherent source-specific outline: unsupported or repeated analytical contexts',
+                       generation_issues=['unsupported_or_repeated_analytical_context'],**diagnostics)
+            return False
         this_quality = inspect_editorial_quality(candidate, sources)
         if critical.intersection(this_quality["issues"]):
             last_reasons = this_quality["issues"]
             continue
-        writing_style, style_label = WRITING_STYLES[(ordinal+variant)%len(WRITING_STYLES)]
-        lead = sources[(ordinal+variant)%min(3,len(sources))]
+        writing_style, style_label = 'evidence_audit', 'Source-by-source evidence review'
+        lead = sources[0]
         focus_category = story_category(lead)
         lead_title = str(lead.get("title","")).strip().replace("\n"," ")
-        headline = "AI "+focus_category.capitalize()+": "+lead_title[:100]
+        from source_outline import RULES, context_key
+        first_focus=RULES[context_key(sources[0])][1].split(':')[0].lower()
+        last_focus=RULES[context_key(sources[-1])][1].split(':')[0].lower()
+        headline = 'AI evidence review: from '+first_focus+' to '+last_focus
         subtitle = style_label+" · "+str(len(sources))+" linked RSS reports · Critical English reading"
         preview = {"date":date, "mode":"editorial" if model_written else "source_digest",
                    "headline":headline, "essay":candidate, "stories":sources,
@@ -841,6 +849,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         "questions": make_questions(sources),
         "practice": make_exam(essay, sources, date),
     }
+    report['practice_revision']=assessment_revision(report['practice']['items'])
     report["editorial_quality"] = quality
     if not report["editorial_quality"]["training_structure_pass"]:
         report["quality_note"] += " 檢測到閱讀訓練品質警告；詳情見下方品質提示。"

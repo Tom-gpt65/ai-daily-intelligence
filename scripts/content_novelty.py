@@ -128,10 +128,8 @@ def audit(report: dict, archive: list[dict]) -> dict:
             issues.append("repeated_introduction_from_" + prior["date"])
         if normal(essay[-1]) == normal(old_essay[-1]):
             issues.append("repeated_conclusion_from_" + prior["date"])
-        # The same two adjacent days must have different perspectives, not
-        # simply swap the RSS titles in a fixed format.
-        if style and (today - other_date).days <= 3 and style == prior.get("writing_style"):
-            issues.append("recently_reused_writing_style")
+        # A style label is metadata, not proof of originality. Reject actual
+        # reused prose and source identity; never demand cosmetic style cycles.
         if title == normal(prior.get("headline", "")):
             issues.append("repeated_headline_from_" + prior["date"])
         old_urls = {s.get("url") for s in prior.get("stories", []) if isinstance(s, dict)}

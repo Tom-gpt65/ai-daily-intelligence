@@ -264,7 +264,7 @@
       }
       const rr={},wa={};
       for(const [key,value] of Object.entries(data.readRecords))if(/^\d{4}-\d{2}-\d{2}$/.test(key)&&typeof value==='string')rr[key]=value.slice(0,45);
-      for(const [key,value] of Object.entries(data.writtenAnswers))if(/^\d{4}-\d{2}-\d{2}-(?:\d+|v[67]-Q\d+|v[67]-legacy-\d+)$/.test(key)&&typeof value==='string')wa[key]=value.slice(0,2500);
+      for(const [key,value] of Object.entries(data.writtenAnswers))if(/^\d{4}-\d{2}-\d{2}-(?:\d+|v[67]-Q\d+|v[67]-legacy-\d+|s1-[a-f0-9]{64}-Q\d+)$/.test(key)&&typeof value==='string')wa[key]=value.slice(0,2500);
       const pp={};
       if(data.progressRecords && typeof data.progressRecords==='object' && !Array.isArray(data.progressRecords)) {
         for(const [key,value] of Object.entries(data.progressRecords)) {
@@ -274,7 +274,7 @@
       const qa={};
       if(data.quizSelections&&typeof data.quizSelections==='object'&&!Array.isArray(data.quizSelections)){
         for(const [key,value] of Object.entries(data.quizSelections).slice(0,2500)){
-          if(!/^\d{4}-\d{2}-\d{2}-v[67]-Q\d+$/.test(key)||!value||typeof value!=='object')continue;
+          if(!/^\d{4}-\d{2}-\d{2}-(?:v[67]|s1-[a-f0-9]{64})-Q\d+$/.test(key)||!value||typeof value!=='object')continue;
           if(!Number.isInteger(value.selected)||value.selected<0||value.selected>5)continue;
           qa[key]={selected:value.selected,correct:Boolean(value.correct),submittedAt:String(value.submittedAt||'').slice(0,40)};
         }
@@ -283,7 +283,9 @@
       saved={...saved,...clean};readRecords={...readRecords,...rr};writtenAnswers={...writtenAnswers,...wa};
       progressRecords={...progressRecords,...pp};safeStorage.set(PROGRESS_KEY,progressRecords);
       persistImportedWords(clean);safeStorage.set(READ_KEY,readRecords);safeStorage.set(ANSWERS_KEY,writtenAnswers);
-      updateSavedCount();refreshDashboard();renderWords();readingStatus();toast('學習進度已合併還原。');
+      updateSavedCount();refreshDashboard();renderWords();readingStatus();
+      if(state.report)renderReport();
+      toast('學習進度已合併還原。');
     }catch{toast('備份檔案無效，沒有修改現有紀錄。');}
   }
   function hkDayFor(timestamp){
@@ -920,10 +922,12 @@
     });
     const questions=$('question-list');questions.replaceChildren();
     const practice=r.practice&&Array.isArray(r.practice.items)?r.practice:null;
+    const revision=/^[a-f0-9]{64}$/.test(r.practice_revision||'')?r.practice_revision:'';
     const entries=practice?practice.items:(r.questions||[]).map((text,i)=>({id:'legacy-'+i,type:'short',skill:'Independent reflection',marks:0,stem:text,guidance:['Refer back to the cited sources. No automatic marking is available.']}));
     $('practice-meta').textContent=practice?
       practice.label+' · '+entries.length+' 題 · '+entries.reduce((sum,item)=>sum+(item.marks||0),0)+' 分。僅有客觀選擇題可作參考評分；書面回答須人工判斷。':
       '舊版閱讀練習：請按原始來源核對；非官方評分。';
+    if(revision&&r.historical_rebuild)$('practice-meta').textContent+=' 本篇已重製；原版答案保留，新題目獨立作答。';
     function evidenceLink(body,item){
       if(!Number.isInteger(item.paragraph)||item.paragraph<1||item.paragraph>r.essay.length)return;
       const link=document.createElement('button');link.type='button';link.className='question-action evidence-jump';
@@ -944,7 +948,7 @@
       skill.textContent=(item.skill||'Reading comprehension')+' · '+(item.marks||0)+' marks · '+(item.type==='mc'?'Multiple choice':'Written response');
       const label=document.createElement('strong');label.className='question-label';label.textContent=item.stem||String(item);
       body.append(skill,label);
-      const key=r.date+'-v7-'+(item.id||index);
+      const key=r.date+(revision?'-s1-'+revision:'-v7')+'-'+(item.id||index);
       if(item.type==='mc'&&Array.isArray(item.options)&&Number.isInteger(item.answer)){
         const field=document.createElement('div');field.className='question-options';field.setAttribute('role','radiogroup');field.setAttribute('aria-label',item.stem);
         const feedback=document.createElement('div');feedback.className='question-feedback';feedback.hidden=true;feedback.setAttribute('role','status');
@@ -983,7 +987,7 @@
         const answer=document.createElement('textarea');answer.className='question-answer';answer.rows=item.type==='extended'?5:3;
         answer.placeholder=item.type==='extended'?'以英文寫約 60–90 字（需要人手評分）':'以英文作答（不會自動評分）';
         answer.setAttribute('aria-label','Question '+(index+1)+' answer');
-        answer.value=writtenAnswers[key]||writtenAnswers[r.date+'-v6-'+(item.id||index)]||'';
+        answer.value=writtenAnswers[key]||(!revision?writtenAnswers[r.date+'-v6-'+(item.id||index)]:'')||'';
         answer.addEventListener('input',()=>{if(answer.value.trim())writtenAnswers[key]=answer.value.slice(0,2500);else delete writtenAnswers[key];safeStorage.set(ANSWERS_KEY,writtenAnswers);});
         const feedback=document.createElement('div');feedback.className='question-feedback';feedback.hidden=true;
         const button=document.createElement('button');button.type='button';button.className='question-action';button.textContent='查看評分準則（非自動判分）';

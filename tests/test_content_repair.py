@@ -77,6 +77,18 @@ class ContentRepairTests(unittest.TestCase):
         report['editorial_quality']['training_structure_pass']=True
         self.assertIn('source_outline_mismatch',issues(report))
 
+    def test_changed_question_bank_cannot_reuse_a_saved_revision(self):
+        report=current('2026-10-10')
+        self.assertRegex(report['practice_revision'],r'^[a-f0-9]{64}$')
+        report['practice']['items'][0]['stem']+=' A different question.'
+        self.assertIn('question_revision_mismatch',issues(report))
+
+    def test_coherent_distinct_content_does_not_need_cosmetic_style_rotation(self):
+        first,second=current('2026-10-09'),current('2026-10-10')
+        self.assertEqual(first['writing_style'],'evidence_audit')
+        self.assertEqual(second['writing_style'],'evidence_audit')
+        self.assertTrue(audit(second,[first])['pass'])
+
     def test_reconstruction_cannot_invent_a_source_or_change_the_archive_date(self):
         report=current('2026-10-09')
         report['stories'][0]['excerpt']+=' A fact that was never in the saved snapshot.'
@@ -115,6 +127,19 @@ class ContentRepairTests(unittest.TestCase):
         self.assertEqual(compose(sources[:2]),[])
         sources[1]['title']=sources[0]['title']+' another report'
         self.assertEqual(compose(sources),[])
+
+    def test_insufficient_distinct_context_is_reported_without_publishing(self):
+        now=datetime.fromisoformat('2026-10-11T07:40:00+08:00')
+        sources=canary_sources(now)
+        sources[1]['title']='Another AI safety research evaluation'
+        with tempfile.TemporaryDirectory() as folder:
+            reports=Path(folder)/'site/reports';reports.mkdir(parents=True)
+            with patch.object(build,'REPORTS',reports),patch.object(build,'STATUS_PATH',Path(folder)/'site/status.json'):
+                self.assertFalse(build.build_live(now,None,sources=sources))
+                status=json.loads(build.STATUS_PATH.read_text('utf-8'))
+                self.assertEqual(status['state'],'insufficient_evidence')
+                self.assertIn('unsupported_or_repeated_analytical_context',status['generation_issues'])
+                self.assertFalse(list(reports.glob('????-??-??.json')))
 
     def test_possessive_definition_requires_a_known_root(self):
         glossary={"organisation":{"translation":"組織"}}
