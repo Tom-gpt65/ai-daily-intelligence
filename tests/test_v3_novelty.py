@@ -53,15 +53,12 @@ class V3OriginalityTests(unittest.TestCase):
                  for delta in range(4)]
         self.assertEqual(len(set(designs)),4)
 
-    def test_every_daily_narrative_has_source_links_and_new_lead_and_ending(self):
+    def test_identical_sources_are_not_disguised_by_calendar_rotation(self):
         start=datetime(2026,10,11,tzinfo=timezone.utc)
         news=canary_sources(start)
         first=compose_briefing(news,day="2026-10-11")
         second=compose_briefing(news,day="2026-10-12")
-        self.assertNotEqual(first[0],second[0])
-        self.assertNotEqual(first[-1],second[-1])
-        self.assertNotEqual(len(first),len(second),
-                            "Two consecutive V3 narrative designs need genuinely different paragraph counts")
+        self.assertEqual(first,second)
         self.assertGreaterEqual(len(first),8)
         self.assertGreaterEqual(len(second),8)
         for essay in (first,second):
@@ -69,7 +66,7 @@ class V3OriginalityTests(unittest.TestCase):
                 self.assertIn("["+source["id"]+"]"," ".join(essay))
         # The generator alone cannot guarantee uniqueness when the same
         # sources recur; the publisher additionally checks all recent reports.
-        self.assertTrue(overlap(first,second)<1)
+        self.assertEqual(overlap(first,second),1)
 
     def test_same_style_or_fake_new_sources_are_rejected(self):
         original=prior("2026-10-10")

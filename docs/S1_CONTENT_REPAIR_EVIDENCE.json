@@ -1,0 +1,101 @@
+{
+  "generated_at": "2026-10-10T23:17:31.019833+08:00",
+  "program": "repair_content_history.py -> build.build_live -> source_outline.compose",
+  "threshold_exclusive": 0.16,
+  "five_word_overlap": {
+    "2026-10-09 / original 2026-10-09": 0.08912510220768602,
+    "2026-10-09 / original 2026-10-10": 0.0,
+    "2026-10-10 / original 2026-10-09": 0.0,
+    "2026-10-10 / original 2026-10-10": 0.10105448154657294,
+    "rebuilt 09 / rebuilt 10": 0.09254709254709255
+  },
+  "original_quality": {
+    "2026-10-09": {
+      "training_structure_pass": false,
+      "diagnostics": {
+        "word_count": 1327,
+        "paragraph_count": 11,
+        "cited_sources": 5,
+        "available_sources": 5,
+        "source_linked_paragraphs": 9,
+        "generic_caution_phrases": 1,
+        "long_sentence_count": 12,
+        "maximum_repeated_paragraph_similarity": 0.05,
+        "machine_text_artifacts": false,
+        "repeated_sentence_count": 3,
+        "repeated_sixteen_word_fragments": 0
+      },
+      "issues": [
+        "repeated_meaningful_sentence",
+        "premature_concluding_transition"
+      ],
+      "notice": "Heuristic writing checks only; not independent fact-checking or an HKEAA grade."
+    },
+    "2026-10-10": {
+      "training_structure_pass": false,
+      "diagnostics": {
+        "word_count": 1237,
+        "paragraph_count": 10,
+        "cited_sources": 5,
+        "available_sources": 5,
+        "source_linked_paragraphs": 8,
+        "generic_caution_phrases": 1,
+        "long_sentence_count": 17,
+        "maximum_repeated_paragraph_similarity": 0.5,
+        "machine_text_artifacts": false,
+        "repeated_sentence_count": 6,
+        "repeated_sixteen_word_fragments": 79
+      },
+      "issues": [
+        "repeated_meaningful_sentence",
+        "repeated_content_fragment",
+        "premature_concluding_transition"
+      ],
+      "notice": "Heuristic writing checks only; not independent fact-checking or an HKEAA grade."
+    }
+  },
+  "rebuilt_quality": {
+    "2026-10-09": {
+      "training_structure_pass": true,
+      "diagnostics": {
+        "word_count": 1225,
+        "paragraph_count": 8,
+        "cited_sources": 5,
+        "available_sources": 5,
+        "source_linked_paragraphs": 7,
+        "generic_caution_phrases": 0,
+        "long_sentence_count": 7,
+        "maximum_repeated_paragraph_similarity": 0.008,
+        "machine_text_artifacts": false,
+        "repeated_sentence_count": 0,
+        "repeated_sixteen_word_fragments": 0
+      },
+      "issues": [],
+      "notice": "Heuristic writing checks only; not independent fact-checking or an HKEAA grade."
+    },
+    "2026-10-10": {
+      "training_structure_pass": true,
+      "diagnostics": {
+        "word_count": 1219,
+        "paragraph_count": 8,
+        "cited_sources": 5,
+        "available_sources": 5,
+        "source_linked_paragraphs": 7,
+        "generic_caution_phrases": 0,
+        "long_sentence_count": 7,
+        "maximum_repeated_paragraph_similarity": 0.006,
+        "machine_text_artifacts": false,
+        "repeated_sentence_count": 0,
+        "repeated_sixteen_word_fragments": 0
+      },
+      "issues": [],
+      "notice": "Heuristic writing checks only; not independent fact-checking or an HKEAA grade."
+    }
+  },
+  "original_sha256": {
+    "2026-10-09": "30951062d27a08b6f4760d5284c940f6ef47321e293a12429fee44bb4f3560ec",
+    "2026-10-10": "b5cac5d4bbdcf0db89a58f73abfae6f515cb9e6f77c7c909c37d368e432eee37"
+  },
+  "site_validation": "PASS",
+  "applied": true
+}

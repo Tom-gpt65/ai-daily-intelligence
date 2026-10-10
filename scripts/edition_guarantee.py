@@ -48,6 +48,16 @@ def fill_dictionary(paragraphs, existing, translator=None):
         # Conservative suffix candidate only. The displayed surface remains
         # the dictionary key, so even 'concerns' is guaranteed offline.
         stems=[word]
+        if word.endswith(("'s",'’s')):
+            root=word[:-2]
+            item=output.get(root)
+            if not actual_meaning(item):
+                meaning=next((g.get(root) for g in glossaries if isinstance(g.get(root),str) and CJK.search(g[root])),None)
+                if meaning:
+                    item={'translation':meaning}
+            if actual_meaning(item):
+                output[word]={**item,'translation':item['translation']+'（所有格：……的）'}
+                continue
         if len(word)>4:
             if word.endswith("ies"):stems.append(word[:-3]+"y")
             if word.endswith("ing"):stems.extend([word[:-3],word[:-3]+"e"])

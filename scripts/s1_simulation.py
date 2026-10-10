@@ -70,7 +70,9 @@ def simulate(first_day, sources_factory):
                     raise ValueError("Final simulated publication invalid: "+"; ".join(errors[:4]))
                 index=json.loads((build.REPORTS/'index.json').read_text('utf-8'))
                 actual=publication_outcome(index,report,day,allow_archived=True)
-                if not accepted and actual['news']:
+                existing=before.get(day+'.json')
+                retained=(existing is not None and json.loads(existing)==report)
+                if not accepted and actual['news'] and not retained:
                     raise ValueError("Failed new-day generation labelled current news")
                 rows.append({'date':day,'reading_date':report['date'],
                              'news_accepted':accepted,'mode':report['mode'],

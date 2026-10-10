@@ -518,6 +518,8 @@ def translate_essay(paragraphs: list[str]) -> list[str]:
 def word_forms(word: str) -> set[str]:
     """Conservative English suffix forms; dictionary decides whether a candidate is real."""
     forms = {word}
+    if word.endswith(("'s",'’s')):
+        forms.add(word[:-2])
     if len(word) >= 5:
         if word.endswith("ies"): forms.add(word[:-3] + "y")
         if word.endswith("ing"):
@@ -712,13 +714,34 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     ordinal = CalendarDate.fromisoformat(date).toordinal()
     critical = {"article_length_outside_training_target", "near_duplicate_paragraph_padding",
                 "insufficient_explicit_source_attribution", "insufficient_event_specific_paragraphs",
-                "machine_text_artifact"}
+                "machine_text_artifact", "repeated_meaningful_sentence",
+                "repeated_content_fragment", "premature_concluding_transition"}
     try:
         archive = recent_articles(REPORTS,date)
     except (OSError, ValueError, KeyError, TypeError) as exc:
         put_status('history_unavailable',now,failure_reason=str(exc),source_count=len(sources),**diagnostics)
         return False
     recent_prose = [r["essay"] for r in archive]
+    # Source identity does not become fresh merely because 60 days elapse or
+    # a query parameter/timestamp is changed. The 60-day prose gate remains
+    # separate; source reuse is checked against the full dated archive.
+    def identity(s):
+        url=urlsplit(safe_url(s.get('url','')))
+        return (url.netloc.lower(),url.path,title_signature(str(s.get('title',''))))
+    incoming={identity(s) for s in sources}
+    try:
+        all_paths=list(REPORTS.glob('????-??-??.json'))+list((REPORTS/'archive-revisions').glob('*/*.json'))
+        for path in all_paths:
+            if path.stem>=date:
+                continue
+            old=json.loads(path.read_text(encoding='utf-8'))
+            known={identity(s) for s in old.get('stories',[]) if isinstance(s,dict)}
+            if len(incoming & known)>=3:
+                put_status('repetitive_content',now,source_count=len(sources),novelty_issues=['reissued_existing_source_snapshots'],**diagnostics)
+                return False
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        put_status('history_unavailable',now,failure_reason=str(exc),source_count=len(sources),**diagnostics)
+        return False
     # Numerical/name checks cannot prove that a model invented no other fact.
     # Keep optional model output as a PRIVATE runner preview; formal S1 uses
     # attributed extracts and conditional educational analysis only.
@@ -726,7 +749,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         atomic_json(ROOT/'.cache/model-draft.json',{'date':date,'essay':model_draft,
                     'published':False,'reason':'Unverified model factual claims cannot enter the formal release'})
     candidates = ((essay_fallback(sources,date,variant,recent_prose), False, variant)
-                  for variant in range(48))
+                  for variant in range(1))
     essay = None
     good = False
     quality = None
@@ -788,6 +811,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     report = {
         "schema": 4,
         "validation_profile": "s1",
+        "content_generation_profile": "source_outline_v2",
         "date": date,
         "updated_at": now.astimezone(TZ).isoformat(),
         "headline": headline,

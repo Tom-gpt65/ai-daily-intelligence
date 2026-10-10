@@ -1,8 +1,9 @@
 {
   "version": "S1",
-  "asset_revision": "s1-2",
-  "cache_namespace": "ai-daily-S1-2-reading",
+  "asset_revision": "s1-3",
+  "cache_namespace": "ai-daily-S1-3-reading",
   "legacy_editions_through": "2026-10-10",
+  "content_generation_profile": "source_outline_v2",
   "originality": {
     "phrase_words": 5,
     "lookback_days": 60,

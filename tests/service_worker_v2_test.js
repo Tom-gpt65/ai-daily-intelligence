@@ -60,7 +60,7 @@ async function emit(type,request){
   await cacheAPI.open('unrelated-application');
   await emit('install');
   await emit('activate');
-  const data=await cacheAPI.open('ai-daily-S1-2-reading-reports');
+  const data=await cacheAPI.open('ai-daily-S1-3-reading-reports');
   const keys=await data.keys();
   assert.equal(keys.filter(key=>/\/reports\/\d{4}-/.test(key.url)).length,42);
   assert.ok(await data.match('./reports/index.json'),'Index was pruned');

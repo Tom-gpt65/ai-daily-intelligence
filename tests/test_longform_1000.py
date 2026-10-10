@@ -1,5 +1,6 @@
 """Free long-form DSE training invariants for daily editions."""
-import pathlib,sys,unittest
+import pathlib,sys,unittest,json
+from datetime import datetime
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 from longform import compose_briefing,word_count,sourced_detail,attributed_excerpt
@@ -15,10 +16,12 @@ def story(i,kind):
             'topic':kind,'excerpt':'Public description highlights an important new development.'}
 
 class LongFormTests(unittest.TestCase):
-    def test_three_to_five_different_news_items_always_exceed_thousand_words(self):
+    def test_three_to_five_substantial_distinct_contexts_support_long_reading(self):
+        from morning_canary import canary_sources
         for count in (3,4,5):
             with self.subTest(count=count):
-                data=[story(i+1,['investment','research','hardware','governance','bioscience'][i]) for i in range(count)]
+                data=(canary_sources(datetime.fromisoformat('2026-10-11T07:40:00+08:00')) if count==3 else
+                      json.loads((ROOT/'site/reports/2026-10-09.json').read_text('utf-8'))['stories'][:count])
                 essay=compose_briefing(data)
                 self.assertGreaterEqual(word_count(' '.join(essay)),1000)
                 self.assertLessEqual(word_count(' '.join(essay)),1550)
@@ -49,17 +52,14 @@ class LongFormTests(unittest.TestCase):
         text=compose_briefing(examples)
         self.assertIn("Software security",text[1])
         self.assertNotIn("biological sequence",text[1])
-        self.assertIn("Robotics research",text[3])
+        self.assertIn("Robotics research",next(p for p in text if '[S3]' in p))
         self.assertIn("software security"," ".join(text))
     def test_just_two_news_items_cannot_be_padded_into_a_fake_feature(self):
         self.assertEqual(compose_briefing([story(1,'research'),story(2,'investment')]),[])
-    def test_identical_topics_do_not_repeat_entire_analysis_paragraph(self):
+    def test_identical_topics_are_rejected_instead_of_padding_a_feature(self):
         data=[story(i,'research') for i in range(1,6)]
         essay=compose_briefing(data)
-        source_paragraphs=essay[1:6]
-        self.assertEqual(len(set(source_paragraphs)),5)
-        self.assertGreaterEqual(word_count(' '.join(essay)),1000)
-        self.assertNotIn('near_duplicate_paragraph_padding',inspect(essay,data)['issues'])
+        self.assertEqual(essay,[])
     def test_source_specific_rss_quotation_is_attributed_and_bounded(self):
         source={"excerpt":"Researchers describe the unusual data constraints involved in environmental AI "
                           "evaluation and explain how the fixed testing interface can support "
@@ -73,7 +73,7 @@ class LongFormTests(unittest.TestCase):
     def test_insufficient_excerpt_does_not_invent_evidence(self):
         self.assertEqual(attributed_excerpt({"excerpt":"New AI."}),"")
     def test_no_generic_padding_claims_fact_checking(self):
-        sample=[story(i,"research") for i in range(1,6)]
+        sample=json.loads((ROOT/'site/reports/2026-10-09.json').read_text('utf-8'))['stories']
         result=" ".join(compose_briefing(sample))
         self.assertNotIn("independently verified",result)
         self.assertIn("attributed",result)

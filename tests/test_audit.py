@@ -9,9 +9,17 @@ from learning_editorial import deepen_digest,is_promotional,_word_count
 
 class AuditTests(unittest.TestCase):
     def setUp(self):
-        import json
-        self.edition=json.loads((ROOT/'site/reports/2026-10-10.json').read_text(encoding='utf-8'))
-        self.edition.update(date='2026-10-09',updated_at='2026-10-09T08:04:00+08:00')
+        import json,tempfile,io
+        from contextlib import redirect_stdout
+        from datetime import datetime
+        from unittest.mock import patch
+        import build
+        from morning_canary import canary_sources
+        now=datetime.fromisoformat('2026-10-09T08:04:00+08:00')
+        with tempfile.TemporaryDirectory() as folder:
+            with patch.object(build,'REPORTS',Path(folder)),patch.object(build,'STATUS_PATH',Path(folder)/'status.json'),redirect_stdout(io.StringIO()):
+                self.assertTrue(build.build_live(now,None,sources=canary_sources(now)))
+                self.edition=json.loads((Path(folder)/'2026-10-09.json').read_text('utf-8'))
         self.index=[{key:self.edition[key] for key in ('date','mode','updated_at','word_count')}]
         self.index[0]['stories']=len(self.edition['stories'])
     def test_educational_backup_is_accepted_with_warning(self):

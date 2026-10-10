@@ -5,6 +5,7 @@ It detects limited but objective signals before content is offered to learners.
 """
 from __future__ import annotations
 import re
+from collections import Counter
 
 WORDS=re.compile(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b")
 GENERIC=(
@@ -29,6 +30,32 @@ MACHINE_ARTIFACTS=(
 def contains_machine_artifacts(text: str) -> bool:
     """Reject obvious RSS metadata, prompt wrappers and broken characters."""
     return any(pattern.search(text) for pattern in MACHINE_ARTIFACTS)
+
+def repetition_diagnostics(paragraphs: list[str]) -> dict:
+    """Count occurrences, rather than unique shingles which hide repeated blocks.
+
+    Ignore source labels and punctuation; repeating a 16-word fragment or a
+    complete meaningful sentence is a publication failure, even across parts
+    of paragraphs with otherwise different titles and quotations.
+    """
+    fragments=Counter()
+    sentences=Counter()
+    for paragraph in paragraphs:
+        cleaned=re.sub(r"\[S\d+\]","",paragraph,flags=re.I)
+        tokens=[w.lower() for w in WORDS.findall(cleaned)]
+        fragments.update(tuple(tokens[i:i+16]) for i in range(max(0,len(tokens)-15)))
+        for sentence in re.split(r"(?<=[.!?])\s+",cleaned):
+            terms=tuple(w.lower() for w in WORDS.findall(sentence))
+            if len(terms)>=10:
+                sentences[terms]+=1
+    return {"repeated_sentence_count":sum(n-1 for n in sentences.values() if n>1),
+            "repeated_sixteen_word_fragments":sum(n-1 for n in fragments.values() if n>1)}
+
+def outline_issues(paragraphs: list[str], sources: list[dict]) -> list[str]:
+    """Verify the actual construction, never trust a saved quality flag."""
+    from source_outline import compose
+    expected=compose(sources)
+    return [] if expected and paragraphs==expected else ["source_outline_mismatch"]
 
 def repeated_paragraph_similarity(paragraphs: list[str]) -> float:
     """Highest pairwise four-word shingle overlap, ignoring source-ID labels.
@@ -77,6 +104,7 @@ def inspect(paragraphs: list[str], sources: list[dict]) -> dict:
         "long_sentence_count":long_sentences,
         "maximum_repeated_paragraph_similarity":repeated_similarity,
         "machine_text_artifacts":contains_machine_artifacts(text),
+        **repetition_diagnostics(paragraphs),
     }
     issues=[]
     if contains_machine_artifacts(text): issues.append("machine_text_artifact")
@@ -90,6 +118,12 @@ def inspect(paragraphs: list[str], sources: list[dict]) -> dict:
         issues.append("generic_qualification_overuse")
     if repeated_similarity>=0.68:
         issues.append("near_duplicate_paragraph_padding")
+    if indicators['repeated_sentence_count']:
+        issues.append('repeated_meaningful_sentence')
+    if indicators['repeated_sixteen_word_fragments']:
+        issues.append('repeated_content_fragment')
+    if any(re.match(r"(?i)^\s*(finally|in conclusion|ultimately)\b",p) for p in paragraphs[:-2]):
+        issues.append('premature_concluding_transition')
     if len(sentence_lengths)>=8 and long_sentences<2:
         issues.append("limited_complex_sentence_practice")
     return {

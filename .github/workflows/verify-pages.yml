@@ -108,13 +108,13 @@ jobs:
           assert 'refreshLatestReport' in javascript,'Cross-day revalidation logic not deployed'
           with urllib.request.urlopen(base+'index.html',timeout=20) as response:
               markup=response.read().decode('utf-8')
-          assert './v1.css?v=s1-2' in markup,'Newest responsive stylesheet missing from HTML'
-          assert './app.js?v=s1-2' in markup,'Version-busted reader code missing from HTML'
-          assert './cloud-sync.js?v=s1-2' in markup,'Cloud synchronization module not included'
+          assert './v1.css?v=s1-3' in markup,'Newest responsive stylesheet missing from HTML'
+          assert './app.js?v=s1-3' in markup,'Version-busted reader code missing from HTML'
+          assert './cloud-sync.js?v=s1-3' in markup,'Cloud synchronization module not included'
           with urllib.request.urlopen(base+'sw.js',timeout=20) as response:
               worker=response.read().decode('utf-8')
-          assert 'ai-daily-S1-2-reading' in worker,'Updated iPhone cache version missing'
-          assert './reading-theme-v1.css?v=s1-2' in markup,'Reading colour stylesheet not deployed'
+          assert 'ai-daily-S1-3-reading' in worker,'Updated iPhone cache version missing'
+          assert './reading-theme-v1.css?v=s1-3' in markup,'Reading colour stylesheet not deployed'
           assert "boundedFetch(event.request,{cache:'no-cache'})" in worker,'Reader shell not network-first'
           print('S1 content, offline dictionary and responsive reading VERIFIED')
           PY
