@@ -71,6 +71,31 @@ async function scenario(engine,browser,scenarioName,scheduledRuns,manualRuns,rep
 }
 
 
+async function dictionaryGateDiagnostic(engine,browser){
+ const instance=await browser.launch({headless:true});
+ try{
+  const context=await instance.newContext({viewport:{width:1024,height:768}});
+  const page=await context.newPage(),errors=[];
+  page.on('pageerror',e=>errors.push(e.message));
+  await page.route(url=>url.pathname.endsWith('/system-status.json'),route=>
+    route.fulfill({status:200,contentType:'application/json',
+      body:JSON.stringify({state:'incomplete_dictionary',missing_count:2,
+        missing_examples:['openai','openproblembench'],
+        checked_at:new Date().toISOString(),feeds_failed:0})}));
+  await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded',timeout:20000});
+  const alert=page.locator('#pipeline-alert');
+  await alert.getByText(/新聞已收集，但新稿未能發布/).waitFor({timeout:15000});
+  const label=await alert.innerText();
+  assert.match(label,/openai/);
+  assert.match(label,/openproblembench/);
+  assert.match(label,/備援正常部署/);
+  assert.ok(!await alert.evaluate(el=>el.classList.contains('pipeline-success')),
+    engine+' a rejected-news article must not display green publication success');
+  assert.deepEqual(errors,[],engine+' dictionary alert JavaScript errors');
+  console.log('PASS',engine,'rejected sourced news reports dictionary error without claiming new publication');
+ }finally{await instance.close();}
+}
+
 async function historicalRace(engine,browser){
  const instance=await browser.launch({headless:true});
  try{
@@ -114,7 +139,8 @@ async function historicalRace(engine,browser){
   await scenario(engine,browser,'scheduled succeeds but article remains educational',
     [succeeded],[],
     '07:20:00','schedule-recovered','未有達標即時新聞','71003','reading_feature');
+  await dictionaryGateDiagnostic(engine,browser);
   await historicalRace(engine,browser);
  }
- console.log('RESULT: 12 schedule/tablet cases and 2 delayed historical status cases passed');
+ console.log('RESULT: 12 schedule/tablet cases, 2 dictionary rejection alerts and 2 delayed historical status cases passed');
 })().catch(err=>{console.error(err);process.exit(1);});
