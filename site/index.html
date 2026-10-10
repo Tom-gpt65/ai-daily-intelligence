@@ -67,6 +67,7 @@
         <a class="jump-to-reader" href="#reader">直接閱讀今日英文文章 <span aria-hidden="true">↓</span></a>
         <div class="status-row"><span id="status-banner" class="status-pill hidden">載入中…</span><div id="report-metadata" class="report-metadata"></div></div>
         <div class="schedule-live" id="schedule-live" role="status"><span id="schedule-text">正在查核今日文章及排程…</span><a id="schedule-run-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml" target="_blank" rel="noopener noreferrer">工作紀錄</a><button type="button" id="refresh-schedule" aria-label="重新核對最新文章與定時狀態">↻</button></div>
+        <div id="pipeline-alert" class="pipeline-alert hidden" role="status" aria-live="polite"></div>
         <div id="freshness-note" class="freshness-note hidden" role="status"></div>
         <section class="edition-overview" aria-label="本日閱讀概況">
           <div class="overview-stat"><span class="overview-label">新聞線索</span><strong id="overview-stories">—</strong><small>附原文與日期</small></div>
@@ -94,7 +95,7 @@
           <div class="panel"><div class="panel-top"><span class="section-overline">SOURCES & VERIFICATION</span><span class="panel-icon">↗</span></div><h3>新聞來源</h3><p class="panel-copy">查看原始報道與資料日期。</p><div id="source-list" class="source-list"></div></div>
           <div class="panel"><div class="panel-top"><span class="section-overline">ENGLISH DEVELOPMENT</span><span class="panel-icon">◇</span></div><h3>英文閱讀理解</h3><p class="panel-copy">練習推論、語境詞義、作者態度與跨來源比較；並非官方試題。</p><div id="practice-meta" class="dse-practice-label"></div><div id="question-list" class="question-list"></div></div>
         </section>
-        <details class="technical-status operational-details" id="technical-status"><summary>系統更新與驗證詳情</summary><div id="pipeline-alert" class="pipeline-alert hidden" role="status"></div><a class="audit-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml" target="_blank" rel="noopener noreferrer">↗ 查看每日發布驗證（香港時間 08:05、09:17 及 13:17 預定檢查）</a></details>
+        <details class="technical-status operational-details" id="technical-status"><summary>系統更新與驗證詳情</summary><a class="audit-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml" target="_blank" rel="noopener noreferrer">↗ 查看每日發布驗證（香港時間 08:05、09:17 及 13:17 預定檢查）</a></details>
         <div class="footer-note" id="legal-note">新聞分析取材自公開資訊，可能包含未經獨立核實的內容；延伸閱讀則為原創教材，並非當日新聞。請核對原始來源。</div>
       </div>
       <div class="page alternate hidden" id="view-archive"><div class="eyebrow">YOUR READING HISTORY</div><h1 class="secondary-title">Past <em>editions.</em></h1><p class="alternate-subtitle">選取過往報告，回顧 AI 發展脈絡。</p><div class="archive-tools"><input type="search" id="archive-search" placeholder="搜尋標題或日期…" aria-label="搜尋歷史報告"><select id="archive-mode" aria-label="報告類型"><option value="all">全部類型</option><option value="editorial">AI 英文改寫</option><option value="source_digest">來源摘要</option><option value="reading_feature">AI 延伸閱讀</option><option value="demo">示範文章</option></select></div><div id="archive-list" class="archive-list"></div></div>
