@@ -171,9 +171,14 @@ jobs:
       - name: Report degraded external news (without claiming current news)
         if: ${{ always() && github.event_name != 'push' && steps.passage.outcome == 'success' }}
         env:
+          DEPENDENCY_OUTCOME: ${{ steps.optional-dependencies.outcome }}
           FEED_OUTCOME: ${{ steps.preflight.outcome }}
           BUILD_OUTCOME: ${{ steps.build.outcome }}
         run: |
+          if [ "$DEPENDENCY_OUTCOME" = "failure" ]; then
+            echo "::warning title=Optional conversion unavailable::OpenCC installation failed; bundled offline Chinese glossary remains in use."
+            echo "- Optional OpenCC install failed: bundled offline meanings retained." >> "$GITHUB_STEP_SUMMARY"
+          fi
           if [ "$FEED_OUTCOME" = "failure" ]; then
             echo "::warning title=News feed prefetch unavailable::RSS/network collection failed; validated educational reading was preserved."
             echo "- External RSS collection failed: safe dated reading fallback retained." >> "$GITHUB_STEP_SUMMARY"
