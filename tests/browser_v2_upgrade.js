@@ -61,6 +61,11 @@ async function exercise(engine,type){
       for(const [key,value] of Object.entries(snapshot))localStorage.setItem(key,value);
       const cache=await caches.open('ai-daily-V1-paper-calm-reading-reports');
       await cache.put('./reports/2026-10-01.json?rev=old',new Response('{"historicSentinel":true}'));
+      // Some existing tablets have V2 as their most recent installation.
+      // Its visited report must survive the V3 upgrade too.
+      const previousV2=await caches.open('ai-daily-V2-stable-reading-reports');
+      await previousV2.put('./reports/2026-10-02.json?rev=v2',
+        new Response('{"v2Sentinel":true}'));
       await caches.open('unrelated-application');
       return snapshot;
     });
@@ -71,15 +76,15 @@ async function exercise(engine,type){
     // Poll the ACTUAL cache contents from Node. In some browser engines,
     // passing an async predicate to waitForFunction can incorrectly resolve
     // before the service worker's waitUntil(activate) migration completes.
-    // A V2 cache name may exist while it is still EMPTY during install.
+    // A V3 cache name may exist while it is still EMPTY during install.
     let ready=false,lastState;
     for(let attempt=0;attempt<100;attempt++){
       lastState=await page.evaluate(async()=>{
         const keys=await caches.keys();
-        const v2=keys.includes('ai-daily-V2-stable-reading-reports');
+        const v2=keys.includes('ai-daily-V3-novel-reading-reports');
         let foundIndex=false,foundHistory=false;
         if(v2){
-          const store=await caches.open('ai-daily-V2-stable-reading-reports');
+          const store=await caches.open('ai-daily-V3-novel-reading-reports');
           const index=await store.match('./reports/index.json');
           const history=await store.match('./reports/2026-10-01.json');
           foundIndex=!!index;
@@ -91,19 +96,28 @@ async function exercise(engine,type){
         return {keys,foundIndex,foundHistory};
       });
       if(lastState.foundIndex&&lastState.foundHistory&&
-         !lastState.keys.includes('ai-daily-V1-paper-calm-reading-reports')){
+         !lastState.keys.includes('ai-daily-V1-paper-calm-reading-reports')&&
+         !lastState.keys.includes('ai-daily-V2-stable-reading-reports')){
         ready=true;break;
       }
       await new Promise(resolve=>setTimeout(resolve,200));
     }
-    assert.ok(ready,engine+' V1->V2 worker activation/migration incomplete: '+JSON.stringify(lastState));
+    assert.ok(ready,engine+' V1/V2->V3 worker activation/migration incomplete: '+JSON.stringify(lastState));
     const migrated=await page.evaluate(async()=>{
-      const cache=await caches.open('ai-daily-V2-stable-reading-reports');
+      const cache=await caches.open('ai-daily-V3-novel-reading-reports');
       const history=await cache.match('./reports/2026-10-01.json');
       return {history:history?await history.json():null, publicKeys:(await cache.keys()).map(key=>key.url),
               index:!!await cache.match('./reports/index.json'),keys:await caches.keys()};
     });
     assert.equal(migrated.history?.historicSentinel,true,engine+' lost public V1 history: '+JSON.stringify(migrated));
+    const migratedV2=await page.evaluate(async()=>{
+      const store=await caches.open('ai-daily-V3-novel-reading-reports');
+      const response=await store.match('./reports/2026-10-02.json');
+      return response?await response.json():null;
+    });
+    assert.equal(migratedV2?.v2Sentinel,true,engine+' lost public V2 history');
+    assert.ok(!migrated.keys.includes('ai-daily-V2-stable-reading-reports'),
+      engine+' did not retire V2 cache safely');
     assert.equal(migrated.index,true);
     assert.ok(migrated.keys.includes('unrelated-application'));
     for(const [key,value] of Object.entries(stored))
@@ -114,7 +128,7 @@ async function exercise(engine,type){
       await response.json();
     },{date:LATEST,i});
     const variants=await page.evaluate(async date=>{
-      const cache=await caches.open('ai-daily-V2-stable-reading-reports');
+      const cache=await caches.open('ai-daily-V3-novel-reading-reports');
       return (await cache.keys()).filter(key=>key.url.includes('/'+date+'.json')).map(key=>key.url);
     },LATEST);
     assert.equal(variants.length,1);
@@ -126,9 +140,9 @@ async function exercise(engine,type){
     },LATEST);
     assert.equal(cached.status,200);
     assert.equal(cached.report.date,LATEST);
-    assert.equal(await page.locator('#site-version').innerText(),'V2');
+    assert.equal(await page.locator('#site-version').innerText(),'V3');
     assert.equal(errors.length,0,errors.join('\n'));
-    console.log(engine+' V1 -> V2 PASS: public report migration, unchanged device/account/session/pending data, canonical refreshes, HTTP 503 fallback, subdirectory scope');
+    console.log(engine+' V1/V2 -> V3 PASS: public report migration, unchanged device/account/session/pending data, canonical refreshes, HTTP 503 fallback, subdirectory scope');
   }finally{
     await context.close();await browser.close();
     server.closeAllConnections?.();await new Promise(resolve=>server.close(resolve));
