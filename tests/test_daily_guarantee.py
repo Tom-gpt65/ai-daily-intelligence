@@ -135,8 +135,10 @@ class DailyGuaranteeTests(unittest.TestCase):
         workflow=(ROOT/".github/workflows/daily.yml").read_text(encoding="utf-8")
         app=(ROOT/"site/app.js").read_text(encoding="utf-8")
         self.assertIn("NEWS_GENERATED: ${{ steps.build.outputs.generated }}",workflow)
-        self.assertIn("News NOT published",workflow)
-        self.assertIn("EDUCATIONAL FALLBACK, not current news",workflow)
+        self.assertIn("News generation degraded",workflow)
+        self.assertIn("info.get('news_outcome'",workflow)
+        self.assertIn("python scripts/verify_publication.py --live --require-news",workflow)
+        self.assertLess(workflow.index('uses: actions/deploy-pages@v4'),workflow.index('--live --require-news'))
         self.assertIn("info.state==='incomplete_dictionary'",app)
         self.assertIn("新聞已收集，但新稿未能發布",app)
 

@@ -53,9 +53,11 @@ class FirstReleaseTests(unittest.TestCase):
                     "ai-daily-answers-v1","ai-daily-learning-backup"):
             with self.subTest(key=key):
                 self.assertIn(key,app)
-    def test_current_docs_only_describe_v1_as_formal_version(self):
+    def test_current_docs_describe_s1_and_preserve_legacy_documents(self):
         readme=(ROOT/"README.md").read_text(encoding="utf-8")
-        self.assertIn("第一個完整正式版本",readme)
+        self.assertIn("S1 正式版",readme)
+        self.assertIn("嚴格 <16%",readme)
+        self.assertTrue((ROOT/"docs"/"S1_RELEASE_AUDIT.md").exists())
         self.assertIn("V1",readme)
         self.assertTrue((ROOT/"docs"/"V1_FINAL_AUDIT.md").exists())
         self.assertTrue((ROOT/"docs"/"FINALISE_WEBSITE_V1.md").exists())
