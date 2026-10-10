@@ -323,7 +323,8 @@ def compose_briefing(stories: list[dict], day: str | None = None, variant: int =
         selected_ngrams.update(shingles([winner[3]]))
         return winner[3]
 
-    paragraphs=[select(lead_pool)]
+    paragraphs=[select(lead_pool) +
+                " The accounts below are attributed to their linked publishers, not independently verified."]
     category_occurrences={}
     for i,story in enumerate(entries):
         topic=category(story)
@@ -332,7 +333,13 @@ def compose_briefing(stories: list[dict], day: str | None = None, variant: int =
         # A prior day's category lens is NOT blindly recycled in a new story.
         # Use a distinct genuine editorial perspective whenever possible.
         available_lenses=(LENSES[topic],)+tuple(ALTERNATE_ANGLES)
-        lens=select(available_lenses)
+        if not past_texts and occurrence==0:
+            # Retain the field-specific lens when no archived conflicting
+            # prose is supplied (including baseline factual-alignment tests).
+            lens=LENSES[topic]
+            selected_ngrams.update(shingles([lens]))
+        else:
+            lens=select(available_lenses)
         title=str(story["title"]).strip().replace("\n"," ")
         publisher=str(story.get("publisher") or "the linked publisher").strip()
         anchor=f"[{story['id']}]"
