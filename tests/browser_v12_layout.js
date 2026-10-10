@@ -16,7 +16,7 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      page.on('pageerror',e=>errors.push(e.message));
      await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
-     assert.equal(await page.locator('#site-version').innerText(),'V1');
+     assert.equal(await page.locator('#site-version').innerText(),'V2');
      await page.locator('[data-view="words"]').click();
      if(cloudConfigured){
        await page.locator('#sync-login').waitFor({state:'visible',timeout:15000});
@@ -94,7 +94,7 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      assert.doesNotMatch(inflectedMeaning,/未收錄|待查|無法取得|請查詢/,'Inflection should not be an untranslated placeholder');
      assert.ok(await page.locator('#lookup-online').isHidden(),'Offline meaning must not request a third-party translation');
      await page.locator('#pop-close').click();
-     // Archive regression: missing 8 October entry must open inside V1
+     // Archive regression: missing 8 October entry must open inside V2
      // without overwriting the current dated news report.
      await page.locator('[data-view="archive"]').click();
      const history=page.locator('#archive-list .archive-card').filter({hasText:'8 October 2026'});
@@ -144,7 +144,7 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      }));
      assert.ok(persisted.word?.translation && persisted.quiz && persisted.writing,
        'A reload must not erase saved words or practice answers');
-     assert.equal(await page.locator('#site-version').innerText(),'V1','Routine archive testing must not upgrade site version');
+     assert.equal(await page.locator('#site-version').innerText(),'V2','Routine archive testing must not change published V2 version');
      const ui=await page.evaluate(()=>{
        const reader=document.querySelector('#reader');
        return {font:getComputedStyle(reader).fontFamily,
@@ -160,5 +160,5 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
    }
   }finally{await browser.close();}
  }
- console.log('RESULT:',count,'/ 6 V1 browser layout cases passed');
+ console.log('RESULT:',count,'/ 6 V2 browser layout cases passed');
 })().catch(e=>{console.error(e);process.exit(1)});
