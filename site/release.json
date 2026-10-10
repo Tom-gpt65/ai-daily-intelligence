@@ -1,7 +1,7 @@
 {
   "version": "S1",
-  "asset_revision": "s1-1",
-  "cache_namespace": "ai-daily-S1-1-reading",
+  "asset_revision": "s1-2",
+  "cache_namespace": "ai-daily-S1-2-reading",
   "legacy_editions_through": "2026-10-10",
   "originality": {
     "phrase_words": 5,

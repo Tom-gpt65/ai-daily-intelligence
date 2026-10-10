@@ -14,6 +14,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 import build
 import reading_backup
+import validate_site
 from content_novelty import audit, overlap, recent_articles
 from edition_contract import issues
 from longform import sourced_detail
@@ -29,6 +30,20 @@ def alpha(n):
 
 
 class S1SafetyTests(unittest.TestCase):
+    def test_windows_git_tree_duplicates_block_the_release(self):
+        from subprocess import CompletedProcess
+        result=CompletedProcess(['git'],0,stdout='site/release.json\0site\\release.json\0')
+        with patch.object(validate_site.subprocess,'run',return_value=result):
+            self.assertEqual(validate_site.repository_path_issues(ROOT),
+                             ['Non-canonical Git release path: site\\release.json'])
+            self.assertIn('Non-canonical Git release path: site\\release.json',validate_site.validate())
+
+    def test_nested_posix_release_paths_remain_valid(self):
+        from subprocess import CompletedProcess
+        result=CompletedProcess(['git'],0,stdout='site/release.json\0docs/Reading guide.md\0tests/test_s1_safety.py\0')
+        with patch.object(validate_site.subprocess,'run',return_value=result):
+            self.assertEqual(validate_site.repository_path_issues(ROOT),[])
+
     def test_exact_16_percent_is_rejected_without_rounding(self):
         left=[alpha(n) for n in range(2504)]
         below=left[:403]+[alpha(n) for n in range(3000,5101)]
