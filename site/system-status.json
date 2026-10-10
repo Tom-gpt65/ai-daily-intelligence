@@ -1,9 +1,23 @@
 {
   "schema": 1,
-  "checked_at": "2026-10-10T07:20:34.781878+08:00",
-  "state": "published",
-  "latest_date": "2026-10-10",
-  "mode": "reading_feature",
-  "source_count": 0,
-  "fallback_reason": "No verified current-news passage was available"
+  "checked_at": "2026-10-10T13:39:16.307950+08:00",
+  "state": "incomplete_dictionary",
+  "source_count": 5,
+  "missing_count": 2,
+  "missing_examples": [
+    "openai",
+    "openproblembench"
+  ],
+  "feeds_total": 6,
+  "feeds_ok": 6,
+  "feeds_failed": 0,
+  "entries_seen": 145,
+  "entries_relevant": 64,
+  "feed_failures": [],
+  "event_clusters": 60,
+  "multi_source_events": 0,
+  "rss_duration_seconds": 0.958,
+  "stories_selected": 5,
+  "metadata_checked": 5,
+  "metadata_enriched": 0
 }
