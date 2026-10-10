@@ -80,6 +80,9 @@
     if(state.view==='words')renderWords();
   }
   function cloudSignedIn(user){
+    // Identity becomes visible before background sync completes. Clear the
+    // password now so a slow/offline sync cannot leave it in the hidden form.
+    $('sync-password').value='';
     const previous=safeStorage.get(ACTIVE_CLOUD_USER,null);
     if(previous!==user.id){
       // Save the user's original device-only vocabulary before switching
