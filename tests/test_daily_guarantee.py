@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 from reading_backup import build_reading
+from morning_canary import assert_valid_reserve, test_future_publication as verify_future_publication
 from edition_guarantee import article_words,fill_dictionary,complete
 
 class DailyGuaranteeTests(unittest.TestCase):
@@ -74,6 +75,41 @@ class DailyGuaranteeTests(unittest.TestCase):
         self.assertIn("reading_backup.py --if-missing",daily)
         self.assertIn("reading_backup.py --if-missing",morning)
         self.assertIn("cron: '5 7 * * *'",morning)
+
+    def test_first_attempt_canary_simulates_actual_future_publication(self):
+        # Critical incident regression: the day after a published news digest,
+        # the very first item is legitimately a reading_feature. Test the
+        # exact same validator used by the 07:40 news pipeline.
+        days=verify_future_publication("2026-10-10")
+        self.assertEqual(days,["2026-10-10","2026-10-11","2026-10-12",
+                               "2026-10-17","2026-11-09"])
+
+    def test_first_attempt_canary_never_fakes_news(self):
+        day="2026-10-11"
+        valid=build_reading(day)
+        assert_valid_reserve(valid,day)
+        with self.assertRaises(ValueError):
+            assert_valid_reserve({**valid,"mode":"source_digest"},day)
+        with self.assertRaises(ValueError):
+            assert_valid_reserve({**valid,"stories":[{"id":"S1"}]},day)
+        with self.assertRaises(ValueError):
+            assert_valid_reserve({**valid,"subtitle":"Breaking AI news"},day)
+        with self.assertRaises(ValueError):
+            assert_valid_reserve({**valid,"dictionary":{}},day)
+
+    def test_first_run_uses_safe_fallback_after_transient_external_failures(self):
+        daily=(ROOT/".github/workflows/daily.yml").read_text(encoding="utf-8")
+        early=(ROOT/".github/workflows/early-reading.yml").read_text(encoding="utf-8")
+        morning=(ROOT/".github/workflows/first-attempt-canary.yml").read_text(encoding="utf-8")
+        self.assertIn("cron: '25 6 * * *'",morning)
+        self.assertIn("timezone: 'Asia/Hong_Kong'",morning)
+        self.assertIn("python scripts/morning_canary.py",morning)
+        self.assertEqual(daily.count("continue-on-error: true"),2,
+                         "External feed/build failures must not prevent the reserve")
+        self.assertIn("always() && github.event_name != 'push' && steps.site-preflight.outcome == 'success'",daily)
+        self.assertIn("Validate FINAL dated article before publishing",daily)
+        self.assertIn("python scripts/validate_site.py",daily)
+        self.assertIn("Re-validate actual morning edition before publication",early)
 
     def test_publication_checks_validate_real_articles_not_mutable_unit_fixtures(self):
         # Production is a runtime pipeline, not a CI runner. A 07:05 reserve
