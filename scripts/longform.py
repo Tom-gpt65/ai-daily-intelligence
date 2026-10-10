@@ -325,10 +325,12 @@ def compose_briefing(stories: list[dict], day: str | None = None, variant: int =
     areas={"investment":"commercial financing","security":"software security","robotics":"practical robotics","research":"scientific evaluation",
            "hardware":"computing devices","governance":"policy and accountability",
            "bioscience":"biological research","technology":"technological development"}
-    # Three-source reading needs two extra analytical sections to reach
-    # 1,000+ words. Those supplements MUST rotate too: V2 copied EXTRA[0]
-    # and EXTRA[1] in every such edition.
-    comparison_count=3+max(0,5-len(entries))
+    # Different narrative designs use different numbers of comparisons,
+    # visibly varying the paragraph structure (not just the style label).
+    # Three-source editions get more analysis to preserve the 1,000-word
+    # reading threshold. None uses V2's fixed EXTRA paragraphs.
+    layout_delta=(-1,0,1,0)[(ordinal+variant)%len(WRITING_STYLES)]
+    comparison_count=3+max(0,5-len(entries))+layout_delta
     for i in range(comparison_count):
         block=bridge_pool[(seed*comparison_count+i)%len(bridge_pool)]
         context=(f"In the reports [{first['id']}] and [{second['id']}], "
