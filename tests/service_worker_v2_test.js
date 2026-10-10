@@ -48,7 +48,7 @@ async function emit(type,request){
   }
   await old.put('./system-status.json?check=1',new Response('{"state":"feed_error"}'));
   const v2=await cacheAPI.open('ai-daily-V2-stable-reading-reports');
-  await v2.put('./reports/2026-07-15.json?rev=old',
+  await v2.put('./reports/2026-09-15.json?rev=old',
     new Response('{"fromV2":true}'));
   await old.put('https://private.supabase.co/rest/v1/vocabulary_events',new Response('NEVER_COPY'));
   await cacheAPI.open('unrelated-application');
@@ -63,7 +63,7 @@ async function emit(type,request){
   assert.ok(cachesMap.has('unrelated-application'));
   assert.ok(!cachesMap.has('ai-daily-V1-paper-calm-reading-reports'));
   assert.ok(!cachesMap.has('ai-daily-V2-stable-reading-reports'));
-  const historic=await data.match('./reports/2026-07-15.json');
+  const historic=await data.match('./reports/2026-09-15.json');
   assert.equal(await historic?.text(),'{"fromV2":true}');
   for(let i=0;i<100;i++)await emit('fetch',new Request(BASE+'reports/'+newest+'.json?rev='+i));
   assert.equal((await data.keys()).filter(key=>key.url.includes(newest+'.json')).length,1);
