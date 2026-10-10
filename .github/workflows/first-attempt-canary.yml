@@ -1,4 +1,4 @@
-name: V1 morning first-attempt publication canary
+name: V2 morning first-attempt publication canary
 
 on:
   # Run BEFORE the 07:05 fallback and 07:40 live news window.
@@ -7,6 +7,8 @@ on:
     - cron: '25 6 * * *'
       timezone: 'Asia/Hong_Kong'
   workflow_dispatch:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
     paths:
@@ -16,11 +18,51 @@ on:
       - 'scripts/morning_canary.py'
       - 'scripts/reading_backup.py'
       - 'scripts/validate_site.py'
+      - 'scripts/build.py'
+      - 'scripts/edition_guarantee.py'
+      - 'scripts/publish_reports.py'
+      - 'scripts/verify_publication.py'
+      - 'scripts/recover_daily.py'
+      - 'requirements.txt'
+      - 'scripts/longform.py'
+      - 'site/*glossary.json'
+      - 'site/release.json'
+      - 'site/sw.js'
+      - 'site/index.html'
 
 permissions:
   contents: read
 
 jobs:
+  rss-readiness:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check actual public RSS availability without publishing
+        run: |
+          python - <<'PY'
+          import os,sys
+          from datetime import datetime,timezone
+          sys.path.insert(0,'scripts')
+          from build import collect,source_evidence_metrics,recent_report_stories,TZ
+          now=datetime.now(timezone.utc)
+          health={}
+          stories=collect(now,recent=recent_report_stories(now.astimezone(TZ).date().isoformat()),diagnostics=health)
+          evidence=source_evidence_metrics(stories)
+          line=f"RSS readiness: {health['feeds_ok']}/{health['feeds_total']} feeds; {len(stories)} fresh unissued stories; sufficient evidence={evidence['sufficient']}"
+          print(line)
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as output:
+              output.write('### V2 live RSS readiness\n'+line+'\nThis is a point-in-time public-source check, not a guarantee for 07:40.\n')
+          if not evidence['sufficient']:
+              print('::warning title=News evidence not ready yet::Keep the offline educational reserve; do not fabricate current news. Recheck during the scheduled news window.')
+          if health['feeds_ok']==0:
+              print('::error title=RSS providers unavailable::No public feed could be read in this pre-news check.')
+              raise SystemExit(1)
+          PY
   first-attempt:
     runs-on: ubuntu-24.04
     timeout-minutes: 6
@@ -29,19 +71,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Simulate valid 07:05 reserve before FIRST 07:40 news attempt
+      - name: Simulate reserve, RSS outage, FIRST sourced-news attempt and safe recovery
         run: |
           python scripts/morning_canary.py
           {
-            echo '### V1 morning first-attempt readiness'
-            echo '- Simulated 07:05 backup as newest public article, then ran the actual publication validator.'
-            echo '- Also checked future HK dates with no network, user data, or publication.'
+            echo '### V2 morning first-attempt readiness'
+            echo '- Isolated dates: 07:05 reserve -> RSS outage -> actual 07:40 source-digest builder -> no downgrade.'
+            echo '- Uses synthetic RSS fixtures, bundled Chinese meanings and the actual publication validator.'
+            echo '- No network, user data, production publication or model download.'
             echo '- PASS is a deterministic software-readiness result; it is not a guarantee that external RSS or GitHub are available.'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Provide pre-news diagnosis if the canary fails
         if: failure()
         run: |
-          echo '::error title=V1 Morning Canary Failed::The earliest fallback/news transition is invalid. Review this before the 07:40 news generation.'
+          echo '::error title=V2 Morning Canary Failed::The earliest fallback/news transition is invalid. Review this before the 07:40 news generation.'
           {
             echo '### PRE-NEWS SOFTWARE REGRESSION DETECTED'
             echo '- The first scheduled run may be blocked by a predictable software fault.'

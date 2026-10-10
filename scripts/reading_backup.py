@@ -51,7 +51,7 @@ def build_reading(date,now=None):
         raise ValueError("Reading topic headings and paragraphs are inconsistent")
     featured=labels[selected[(ordinal//3)%len(selected)]]
     report={
-        "schema":4,"date":date,
+        "schema":4,"validation_profile":"v2","date":date,
         "updated_at":now.astimezone(HK).isoformat(),
         "headline":"AI literacy: "+featured,
         "subtitle":"Original extended English reading · Not today's AI news",
@@ -86,9 +86,27 @@ def main():
             pass
     if today!=datetime.now(HK).date().isoformat() and not args.date:
         raise ValueError("A past date requires an explicit date argument")
+    previous_status={}
+    try:
+        from build import STATUS_PATH
+        previous_status=json.loads(STATUS_PATH.read_text(encoding="utf-8"))
+        checked=datetime.fromisoformat(previous_status.get("checked_at", ""))
+        if checked.astimezone(HK).date().isoformat()!=today:previous_status={}
+    except (OSError,ValueError,TypeError,AttributeError):
+        previous_status={}
     report=build_reading(today)
     put_report(report)
-    put_status("published",datetime.now(timezone.utc),latest_date=today,
+    # Preserve the real failed NEWS attempt when publishing the first reserve.
+    # Otherwise a new-day RSS/dictionary failure disappears behind "published".
+    failed_state=previous_status.get("state") in {
+        "feed_error","no_new_stories","insufficient_evidence",
+        "incomplete_dictionary","editorial_quality_rejected","build_failed"}
+    if failed_state:
+        from build import atomic_json, STATUS_PATH
+        atomic_json(STATUS_PATH,{**previous_status,"latest_date":today,
+                    "mode":"reading_feature","published_reading_at":report["updated_at"]})
+    else:
+        put_status("published",datetime.now(timezone.utc),latest_date=today,
                mode="reading_feature",source_count=0,
                fallback_reason="No verified current-news passage was available")
     print(f"[daily] Published clearly labelled educational fallback for {today}; "

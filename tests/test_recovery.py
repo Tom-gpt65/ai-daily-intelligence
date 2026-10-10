@@ -68,6 +68,7 @@ class RecoveryTests(unittest.TestCase):
                 "dictionary":{w:{"translation":"中文字義"} for w in ("editorial","evidence","analysis")}}
         index={"date":date,"word_count":count,"stories":3}
         self.assertTrue(recover_daily.edition_is_readable(index,report))
+        self.assertTrue(recover_daily.current_news_is_readable(index,report))
         self.assertFalse(recover_daily.edition_is_readable(index,{**report,"essay":["too short"]}))
         self.assertFalse(recover_daily.edition_is_readable(index,{**report,"practice":{"items":[]}}))
         self.assertFalse(recover_daily.edition_is_readable({**index,"stories":4},report))
@@ -78,6 +79,20 @@ class RecoveryTests(unittest.TestCase):
         self.assertTrue(recover_daily.edition_is_readable(row,report))
         report['dictionary'].pop(next(iter(report['dictionary'])))
         self.assertFalse(recover_daily.edition_is_readable(row,report))
+    def test_late_educational_reserve_does_not_suppress_news_recovery(self):
+        from reading_backup import build_reading
+        report=build_reading(recover_daily.TODAY)
+        row={'date':report['date'],'word_count':report['word_count'],'stories':0}
+        quality=recover_daily.current_news_is_readable(row,report)
+        self.assertFalse(quality)
+        allowed,_=recover_daily.should_dispatch(recover_daily.TODAY,[],
+            recover_daily.TODAY+"T08:10:00+08:00",quality_ok=quality)
+        self.assertTrue(allowed)
+        run={"status":"completed","event":"workflow_dispatch",
+             "created_at":recover_daily.TODAY+"T08:20:00+08:00"}
+        allowed,_=recover_daily.should_dispatch(recover_daily.TODAY,[run,run],
+            recover_daily.TODAY+"T08:10:00+08:00",quality_ok=quality)
+        self.assertFalse(allowed)
     def test_retry_schedule_only_twice(self):
         yaml=(ROOT/".github/workflows/recovery.yml").read_text(encoding="utf-8")
         self.assertIn("cron: '20 8 * * *'",yaml)

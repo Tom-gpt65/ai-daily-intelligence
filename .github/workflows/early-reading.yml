@@ -39,6 +39,7 @@ jobs:
         # Only OpenCC enrichment is optional; baseline dictionary is bundled.
         # A temporary package index outage must not prevent the FIRST run.
         continue-on-error: true
+        timeout-minutes: 2
         run: python -m pip install -r requirements.txt
       # CI executes the full test suite on PR/push. Publication itself must
       # validate the shipped article and assets, not run mutable-content tests.
@@ -69,3 +70,5 @@ jobs:
       - name: Deploy site
         id: deploy
         uses: actions/deploy-pages@v4
+      - name: Verify the accepted reading is actually public
+        run: python scripts/verify_publication.py --live

@@ -47,6 +47,12 @@ def edition_is_readable(index_row, report, expected=TODAY):
     return count >= 1000 and report.get("word_count") == count and index_row.get("word_count") == count and index_row.get("stories") == len(sources)
 
 
+def current_news_is_readable(index_row, report, expected=TODAY):
+    """A complete educational reserve must not suppress bounded news recovery."""
+    return (isinstance(report, dict) and report.get("mode") in {"editorial", "source_digest"}
+            and edition_is_readable(index_row, report, expected))
+
+
 def should_dispatch(latest_date,runs,updated_at=None,quality_ok=True):
     # A report dated today might have been published during the night, well
     # before the 07:40 scheduled generation. Check publication time as well.
@@ -97,7 +103,7 @@ def main():
         try:
             report=get_json("https://tom-gpt65.github.io/ai-daily-intelligence/reports/"+TODAY+".json"+suffix)
             updated_at=report.get("updated_at") if isinstance(report,dict) else None
-            quality_ok=edition_is_readable(index[0],report) if isinstance(index,list) and index else False
+            quality_ok=current_news_is_readable(index[0],report) if isinstance(index,list) and index else False
         except (OSError,ValueError,KeyError) as exc:
             print("Could not confirm latest article timestamp:",exc)
     if not TOKEN:
@@ -106,7 +112,7 @@ def main():
     results=get_json(BASE+"/actions/workflows/daily.yml/runs?per_page=100",authorised=True)
     workflow=[r for r in results.get("workflow_runs",[]) if r.get("path")==".github/workflows/daily.yml"]
     retry,reason=should_dispatch(date,workflow,updated_at,quality_ok=quality_ok)
-    print(f"HK date={TODAY}; public latest={date}; updated_at={updated_at}; valid_passage={quality_ok}; decision={reason}")
+    print(f"HK date={TODAY}; public latest={date}; updated_at={updated_at}; valid_current_news={quality_ok}; decision={reason}")
     if not retry:return 0
     data=json.dumps({"ref":"main"}).encode("utf-8")
     req=Request(BASE+"/actions/workflows/daily.yml/dispatches",

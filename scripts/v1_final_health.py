@@ -1,4 +1,4 @@
-"""Read-only late-day health check for the installed V1 PWA and cloud privacy.
+"""Read-only late-day health check for the installed V2 PWA and cloud privacy.
 
 Checks PUBLIC site contents only. Does not log keys, authenticate a user, modify
 a Supabase table, dispatch recovery jobs, or rewrite published articles.
@@ -21,12 +21,13 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = (
     "index.html", "app.js", "cloud-sync.js", "sw.js", "manifest.webmanifest",
     "style.css", "v1.css", "reading-theme-v1.css", "icon-192.png",
-    "icon-512.png", "offline-glossary.json", "reports/index.json",
+    "icon-512.png", "offline-glossary.json", "reading-glossary.json",
+    "news-glossary.json", "news-template-glossary.json", "release.json", "reports/index.json",
 )
 
 def public_get(url: str, headers: dict | None = None) -> tuple[int, bytes]:
     """Return status/body (including expected 401/403 responses) with size caps."""
-    h = {"User-Agent": "V1-Final-Autopilot/1", "Cache-Control": "no-cache"}
+    h = {"User-Agent": "V2-Final-Autopilot/2", "Cache-Control": "no-cache"}
     if headers:
         h.update(headers)
     req = Request(url, headers=h)
@@ -63,6 +64,9 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
         theme = assets["reading-theme-v1.css"][1].decode("utf-8")
         manifest = read_json(assets["manifest.webmanifest"][1])
         index = read_json(assets["reports/index.json"][1])
+        release=read_json(assets["release.json"][1])
+        if release!=json.loads((ROOT/"site/release.json").read_text("utf-8")):
+            errors.append("Public release metadata differs from repository")
         if not isinstance(manifest, dict):
             raise ValueError("App manifest is not an object")
         if (manifest.get("display") != "standalone" or
@@ -76,9 +80,9 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
         else:
             checks.append("iPhone/iPad standalone manifest and icons")
 
-        if ('id="site-version"' not in html or '>V1<' not in html or
-            "./reading-theme-v1.css?v=1" not in html or
-            "ai-daily-V1-paper-calm-reading" not in worker or
+        if ('id="site-version"' not in html or '>V2<' not in html or
+            "./reading-theme-v1.css?v=2" not in html or
+            "ai-daily-V2-stable-reading" not in worker or
             "const SHELL=" not in worker or
             "'./reports/index.json'" not in worker or
             "'./reading-theme-v1.css'" not in worker or
@@ -88,7 +92,7 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
             "ai-daily-saved-v2" not in app):
             errors.append("Public reading app, offline cache, theme or login is out of date")
         else:
-            checks.append("V1 code, paper/night themes and offline shell")
+            checks.append("V2 code, paper/night themes and offline shell")
 
         if not isinstance(index, list) or not index or not isinstance(index[0], dict):
             errors.append("Public daily article index is missing or invalid")
@@ -197,7 +201,7 @@ def run() -> int:
         time.sleep(8)
     errors, warnings, checks = outcome
     lines = [
-        "### V1 final maintenance health (Hong Kong)",
+        "### V2 maintenance health (Hong Kong)",
         f"- Expected article date: {today}",
         f"- Public site: {BASE}",
         f"- Outcome: {'PASS' if not errors else 'FAIL'}",

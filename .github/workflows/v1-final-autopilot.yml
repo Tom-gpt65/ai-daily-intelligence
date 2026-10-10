@@ -1,4 +1,4 @@
-name: V1 final autopilot — public PWA and cloud safety
+name: V2 maintenance — public PWA and cloud safety
 
 on:
   schedule:
@@ -7,17 +7,16 @@ on:
     - cron: '35 14 * * *'
       timezone: 'Asia/Hong_Kong'
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/v1-final-autopilot.yml'
-      - 'scripts/v1_final_health.py'
+  workflow_run:
+    workflows: ['AI Daily Intelligence — free daily briefing', 'Early daily English reading safety net']
+    types: [completed]
 
 permissions:
   contents: read
 
 jobs:
   live-pwa-safety:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
@@ -31,8 +30,8 @@ jobs:
         if: failure()
         run: |
           {
-            echo '### V1 health check failed'
-            echo '- Follow the read-only troubleshooting steps in docs/V1_FINAL_AUTOPILOT.md.'
+            echo '### V2 health check failed'
+            echo '- Follow the read-only troubleshooting steps in docs/V2_STABILITY.md.'
             echo '- Check the morning audit and recovery workflow runs.'
             echo '- Do not delete Supabase users, overwrite the database, or clear iOS app storage.'
             echo '- The scheduled check does not contain any user passwords or private learning backups.'
