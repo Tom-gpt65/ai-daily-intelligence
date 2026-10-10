@@ -81,8 +81,8 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
             checks.append("iPhone/iPad standalone manifest and icons")
 
         if ('id="site-version"' not in html or '>S1<' not in html or
-            "./reading-theme-v1.css?v=s1-1" not in html or
-            "ai-daily-S1-1-reading" not in worker or
+            "./reading-theme-v1.css?v=s1-2" not in html or
+            "ai-daily-S1-2-reading" not in worker or
             "const SHELL=" not in worker or
             "'./reports/index.json'" not in worker or
             "'./reading-theme-v1.css'" not in worker or

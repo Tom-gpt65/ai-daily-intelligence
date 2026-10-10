@@ -55,10 +55,12 @@ async function emit(type,request){
   await v2.put('./reports/2026-09-15.json?rev=old',
     json(report('2026-09-15',{fromV2:true})));
   await old.put('https://private.supabase.co/rest/v1/vocabulary_events',new Response('NEVER_COPY'));
+  const previousS1=await cacheAPI.open('ai-daily-S1-1-reading-reports');
+  await previousS1.put('./reports/2026-09-20.json?rev=phase1',json(report('2026-09-20',{fromS1:true})));
   await cacheAPI.open('unrelated-application');
   await emit('install');
   await emit('activate');
-  const data=await cacheAPI.open('ai-daily-S1-1-reading-reports');
+  const data=await cacheAPI.open('ai-daily-S1-2-reading-reports');
   const keys=await data.keys();
   assert.equal(keys.filter(key=>/\/reports\/\d{4}-/.test(key.url)).length,42);
   assert.ok(await data.match('./reports/index.json'),'Index was pruned');
@@ -70,6 +72,8 @@ async function emit(type,request){
   assert.ok(!cachesMap.has('ai-daily-V2-stable-reading-reports'));
   const historic=await data.match('./reports/2026-09-15.json');
   assert.equal((await historic?.json()).fromV2,true);
+  assert.equal((await (await data.match('./reports/2026-09-20.json')).json()).fromS1,true);
+  assert.ok(!cachesMap.has('ai-daily-S1-1-reading-reports'));
   for(let i=0;i<100;i++)await emit('fetch',new Request(BASE+'reports/'+newest+'.json?rev='+i));
   assert.equal((await data.keys()).filter(key=>key.url.includes(newest+'.json')).length,1);
   assert.ok(await data.match('./reports/index.json'));

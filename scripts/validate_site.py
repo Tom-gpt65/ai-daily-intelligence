@@ -1,6 +1,7 @@
 """Site release preflight: no network and no paid services."""
 import json
 import re
+import subprocess
 from datetime import date as calendar_date
 from pathlib import Path
 from edition_guarantee import complete
@@ -10,14 +11,28 @@ from edition_contract import issues as edition_issues
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 
+def repository_path_issues(root=ROOT) -> list[str]:
+    """Git tree names are POSIX paths even when changes originate on Windows."""
+    try:
+        result = subprocess.run(['git', 'ls-files', '-z'], cwd=root,
+                                capture_output=True, text=True, encoding='utf-8',
+                                timeout=10)
+    except (OSError, subprocess.TimeoutExpired):
+        return ['Cannot inspect tracked release paths'] if (root / '.git').exists() else []
+    if result.returncode:
+        return ['Cannot inspect tracked release paths'] if (root / '.git').exists() else []
+    return ['Non-canonical Git release path: ' + path
+            for path in result.stdout.split('\0') if path and
+            ('\\' in path or path.startswith('/') or '..' in path.split('/'))]
+
 def validate() -> list[str]:
-    errors = []
+    errors = repository_path_issues(ROOT)
     markup = (SITE / "index.html").read_text(encoding="utf-8")
     app = (SITE / "app.js").read_text(encoding="utf-8")
     worker = (SITE / "sw.js").read_text(encoding="utf-8")
     release=json.loads((SITE/"release.json").read_text(encoding="utf-8"))
     if (release.get("version")!="S1" or ">S1<" not in markup
-            or release.get("cache_namespace")!="ai-daily-S1-1-reading"
+            or release.get("cache_namespace")!="ai-daily-S1-2-reading"
             or release["cache_namespace"] not in worker):
         errors.append("Public release and PWA cache version disagree")
     for name in ("app.js","cloud-sync.js","v1.css","reading-theme-v1.css"):

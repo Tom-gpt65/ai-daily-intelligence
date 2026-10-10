@@ -83,10 +83,10 @@ async function exercise(engine,type,legacyVersion){
     for(let attempt=0;attempt<100;attempt++){
       lastState=await page.evaluate(async()=>{
         const keys=await caches.keys();
-        const v2=keys.includes('ai-daily-S1-1-reading-reports');
+        const v2=keys.includes('ai-daily-S1-2-reading-reports');
         let foundIndex=false,foundHistory=false;
         if(v2){
-          const store=await caches.open('ai-daily-S1-1-reading-reports');
+          const store=await caches.open('ai-daily-S1-2-reading-reports');
           const index=await store.match('./reports/index.json');
           const history=await store.match('./reports/2026-10-01.json');
           foundIndex=!!index;
@@ -106,14 +106,14 @@ async function exercise(engine,type,legacyVersion){
     }
     assert.ok(ready,engine+' V1/V2->S1 worker activation/migration incomplete: '+JSON.stringify(lastState));
     const migrated=await page.evaluate(async()=>{
-      const cache=await caches.open('ai-daily-S1-1-reading-reports');
+      const cache=await caches.open('ai-daily-S1-2-reading-reports');
       const history=await cache.match('./reports/2026-10-01.json');
       return {history:history?await history.json():null, publicKeys:(await cache.keys()).map(key=>key.url),
               index:!!await cache.match('./reports/index.json'),keys:await caches.keys()};
     });
     assert.equal(migrated.history?.historicSentinel,true,engine+' lost public V1 history: '+JSON.stringify(migrated));
     const migratedV2=await page.evaluate(async()=>{
-      const store=await caches.open('ai-daily-S1-1-reading-reports');
+      const store=await caches.open('ai-daily-S1-2-reading-reports');
       const response=await store.match('./reports/2026-10-02.json');
       return response?await response.json():null;
     });
@@ -130,7 +130,7 @@ async function exercise(engine,type,legacyVersion){
       await response.json();
     },{date:LATEST,i});
     const variants=await page.evaluate(async date=>{
-      const cache=await caches.open('ai-daily-S1-1-reading-reports');
+      const cache=await caches.open('ai-daily-S1-2-reading-reports');
       return (await cache.keys()).filter(key=>key.url.includes('/'+date+'.json')).map(key=>key.url);
     },LATEST);
     assert.equal(variants.length,1);
