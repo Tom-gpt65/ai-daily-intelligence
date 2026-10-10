@@ -85,6 +85,7 @@ async function dictionaryGateDiagnostic(engine,browser){
   await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded',timeout:20000});
   const alert=page.locator('#pipeline-alert');
   await page.waitForFunction(()=>document.querySelector('#pipeline-alert')?.textContent?.includes('新聞已收集，但新稿未能發布'),null,{timeout:15000});
+  assert.ok(await alert.isVisible(),engine+' missing dictionary alert must be visible above reading overview');
   const label=await alert.innerText();
   assert.match(label,/openai/);
   assert.match(label,/openproblembench/);
