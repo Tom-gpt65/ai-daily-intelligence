@@ -189,9 +189,9 @@ jobs:
           summary=os.environ.get("GITHUB_STEP_SUMMARY")
           if summary:
               with open(summary,"a",encoding="utf-8") as stream:
-                  stream.write("\\n### News publication outcome: EDUCATIONAL FALLBACK, not current news\\n")
-                  stream.write(f"- Reason: \`{reason}\`{detail}\\n")
-                  stream.write("- A green GitHub Actions run confirms a valid deployment, not a sourced-news publication.\\n")
+                  stream.write("\n### News publication outcome: EDUCATIONAL FALLBACK, not current news\n")
+                  stream.write(f"- Reason: {reason}{detail}\n")
+                  stream.write("- A green GitHub Actions run confirms a valid deployment, not a sourced-news publication.\n")
           PY
           fi
           if [ "$DEPENDENCY_OUTCOME" = "failure" ]; then
