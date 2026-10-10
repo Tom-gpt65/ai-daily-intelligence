@@ -19,5 +19,13 @@
   "rss_duration_seconds": 0.886,
   "stories_selected": 5,
   "metadata_checked": 5,
-  "metadata_enriched": 0
+  "metadata_enriched": 0,
+  "publication": {
+    "date": "2026-10-10",
+    "mode": "source_digest",
+    "updated_at": "2026-10-10T20:48:21.064155+08:00",
+    "news": true,
+    "offline_dictionary_complete": true
+  },
+  "news_outcome": "current_news_available"
 }
