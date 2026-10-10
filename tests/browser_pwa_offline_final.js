@@ -180,7 +180,11 @@ async function exercise(browserType,engine,width){
     await page.locator('#reader .essay-paragraph .word').first().click();
     const translation=await page.locator('#lookup-translation').innerText();
     assert.ok(translation.trim().length>0,engine+' offline dictionary lookup failed');
-    await page.locator('#pop-close').click();
+    // Teardown only: WebKit can reposition the offline popover while the
+    // disconnected page recalculates layout, making Playwright's visible
+    // pointer click wait indefinitely. The lookup itself was already tested.
+    await page.locator('#pop-close').evaluate(button=>button.click());
+    await page.waitForFunction(()=>document.querySelector('#dictionary-popover')?.classList.contains('hidden'));
     await beginServing(server,port);
     // Verify the saved backup and cache survived reconnection.
     await page.reload({waitUntil:'domcontentloaded',timeout:25000});

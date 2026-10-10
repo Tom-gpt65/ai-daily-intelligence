@@ -22,10 +22,10 @@ class V1FinalHealthTests(unittest.TestCase):
         site=ROOT/"site"
         assets={name:(200,b"ok") for name in ASSETS}
         assets["index.html"]=(200,b'<link rel="manifest"><link rel="apple-touch-icon">'
-                            b'<span id="site-version">V2</span> ./reading-theme-v1.css?v=2')
+                            b'<span id="site-version">V3</span> ./reading-theme-v1.css?v=3')
         assets["app.js"]=(200,b"ai-daily-saved-v2")
         assets["cloud-sync.js"]=(200,b"async signInWithPassword")
-        assets["sw.js"]=(200,b"ai-daily-V2-stable-reading const SHELL="
+        assets["sw.js"]=(200,b"ai-daily-V3-novel-reading const SHELL="
                         b" './reports/index.json' './reading-theme-v1.css'")
         assets["reading-theme-v1.css"]=(200,b"--reader-paper: #FFFDF8\n"
                                          b"--reader-paper: #22292A")

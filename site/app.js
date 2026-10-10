@@ -434,6 +434,9 @@
       } else if(info.state==='insufficient_evidence'){
         el.textContent='⚠ 本日可核實來源不足，或新稿未達 1,000 個英文單字的最低篇幅；沒有冒充合格長篇，網站暫時保留上一份文章。';
         el.classList.remove('hidden');el.classList.remove('pipeline-success');
+      } else if(info.state==='repetitive_content'){
+        el.textContent='⚠ 新聞來源已收集，但新文章與近期內容、開首、結論或寫作方式過於相似；V3 已拒絕重複稿件，保留明確標示的教育備援。';
+        el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='incomplete_dictionary'){
         // A green Actions workflow can mean only that the dated reading
         // safety-net was deployed; do not claim current news was published.
@@ -860,7 +863,11 @@
     const r = state.report; if (!r) return;
     $('report-headline').textContent = r.headline || 'AI Daily Briefing';
     $('report-subtitle').textContent = r.subtitle || '';
-    $('report-metadata').textContent = `${formatDate(r.date)} · ${r.word_count || 0} words · ${r.mode==='reading_feature'?'延伸閱讀':(r.stories||[]).length+' sources'}`;
+    $('report-metadata').textContent = `${formatDate(r.date)} · ${r.word_count || 0} words · ${r.mode==='reading_feature'?'延伸閱讀':(r.stories||[]).length+' sources'}`+
+      (r.writing_style_label ? ' · '+r.writing_style_label : '');
+    const styleTag=$('reading-style-indicator');
+    if(styleTag) styleTag.textContent=r.writing_style_label
+      ? 'DAILY EDITION · '+r.writing_style_label.toUpperCase() : 'DAILY EDITION';
     $('overview-stories').textContent=r.mode==='reading_feature'?'非即時新聞':(r.stories||[]).length+' 則';
     $('overview-vocab').textContent=(r.advanced_vocabulary||[]).length+' 個';
     $('reading-quality').textContent=r.quality_note||'資料可能有誤；請核實來源。';

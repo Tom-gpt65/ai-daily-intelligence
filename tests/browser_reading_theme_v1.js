@@ -67,7 +67,7 @@ async function inspect(page,label,mode,width){
   assert.ok(reader.lineHeight/reader.fontSize>=1.6,label+' inadequate body line spacing');
   assert.ok(line.width<=reader.width+2,label+' paragraph overflows reader');
   assert.ok(width<650||line.width<=760,label+' reading measure unexpectedly broad');
-  assert.equal(await page.locator('#site-version').innerText(),'V2',label+' release version changed');
+  assert.equal(await page.locator('#site-version').innerText(),'V3',label+' release version changed');
   const dimensions=await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,
     clientWidth:document.documentElement.clientWidth}));
   assert.ok(dimensions.scrollWidth<=dimensions.clientWidth+2,

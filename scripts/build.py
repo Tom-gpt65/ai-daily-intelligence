@@ -21,6 +21,8 @@ import hashlib
 from zoneinfo import ZoneInfo
 from learning_editorial import is_promotional
 from dse_editorial import compose_briefing
+from longform import WRITING_STYLES, category as story_category
+from content_novelty import audit_history
 from dse_assessment_v7 import make_exam
 from editorial_quality import inspect as inspect_editorial_quality
 from source_context import enrich as enrich_source_metadata
@@ -379,9 +381,9 @@ def recent_report_stories(today: str, days: int = 2) -> list[dict]:
     return out
 
 
-def essay_fallback(stories: list[dict]) -> list[str]:
-    """Educational source-based analysis, not a verified news feature."""
-    return compose_briefing(stories)
+def essay_fallback(stories: list[dict], day: str | None = None, variant: int = 0) -> list[str]:
+    """Sourced educational analysis with a date-specific V3 writing design."""
+    return compose_briefing(stories, day=day, variant=variant)
 
 
 def model_request(prompt: str, timeout=520) -> str:
@@ -682,32 +684,56 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
               "or too little attributed information; retaining previous edition.", file=sys.stderr)
         return False
     model_started = time.perf_counter()
-    essay = generate_essay(sources) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "0") == "1" else None
+    model_draft = generate_essay(sources) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "0") == "1" else None
     model_seconds = round(time.perf_counter() - model_started, 3) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "0") == "1" else 0
-    good = essay is not None
     if len(sources) < 3:
         put_status("insufficient_evidence", now, source_count=len(sources), evidence_word_count=total_evidence_words, **diagnostics)
         print("[no new long-form] Fewer than three reliable story anchors; retaining previous edition.", file=sys.stderr)
         return False
-    essay = essay or essay_fallback(sources)
-    # Hard editorial failures cannot be disguised by a successful LLM request.
-    # If the LLM repeats prose or drops sources, try the explicitly labelled
-    # evidence-limited educational fallback. Never publish it as model-written.
+    # V3: reject copied long paragraphs, repeated headlines or excessive
+    # cross-day prose overlap before touching the public article history.
+    from datetime import date as CalendarDate
+    ordinal = CalendarDate.fromisoformat(date).toordinal()
     critical = {"article_length_outside_training_target", "near_duplicate_paragraph_padding",
                 "insufficient_explicit_source_attribution", "insufficient_event_specific_paragraphs",
                 "machine_text_artifact"}
-    quality = inspect_editorial_quality(essay, sources)
-    if good and critical.intersection(quality["issues"]):
-        print("[quality warning] Model draft failed structural evidence gate: "
-              + ", ".join(quality["issues"]) + "; using labelled fallback", file=sys.stderr)
-        good = False
-        essay = essay_fallback(sources)
-        quality = inspect_editorial_quality(essay, sources)
-    if critical.intersection(quality["issues"]):
-        put_status("editorial_quality_rejected", now, source_count=len(sources),
-                   quality_issues=quality["issues"], **diagnostics)
-        print("[quality failure] Refusing new article with unsupported length, "
-              "missing source citations or recycled paragraphs.", file=sys.stderr)
+    candidates = ([(model_draft, True, 0)] if model_draft else [])
+    candidates += [(essay_fallback(sources,date,variant), False, variant) for variant in range(12)]
+    essay = None
+    good = False
+    quality = None
+    novelty = None
+    headline = None
+    subtitle = None
+    writing_style = None
+    style_label = None
+    focus_category = None
+    last_reasons = []
+    for candidate, model_written, variant in candidates:
+        this_quality = inspect_editorial_quality(candidate, sources)
+        if critical.intersection(this_quality["issues"]):
+            last_reasons = this_quality["issues"]
+            continue
+        writing_style, style_label = WRITING_STYLES[(ordinal+variant)%len(WRITING_STYLES)]
+        lead = sources[(ordinal+variant)%min(3,len(sources))]
+        focus_category = story_category(lead)
+        lead_title = str(lead.get("title","")).strip().replace("\n"," ")
+        headline = "AI "+focus_category.capitalize()+": "+lead_title[:100]
+        subtitle = style_label+" · "+str(len(sources))+" linked RSS reports · Critical English reading"
+        preview = {"date":date, "mode":"editorial" if model_written else "source_digest",
+                   "headline":headline, "essay":candidate, "stories":sources,
+                   "writing_style":writing_style}
+        candidate_novelty = audit_history(preview, REPORTS)
+        if not candidate_novelty["pass"]:
+            last_reasons = candidate_novelty["issues"]
+            continue
+        essay, good, quality, novelty = candidate, model_written, this_quality, candidate_novelty
+        break
+    if essay is None:
+        put_status("repetitive_content",now,source_count=len(sources),
+                   novelty_issues=last_reasons[:12], **diagnostics)
+        print("[originality gate] No sufficiently new source-grounded article; "
+              "retaining clearly labelled educational reading.",file=sys.stderr)
         return False
     # Full-article translation is OFF by default to avoid a second lengthy
     # CPU-only LLM invocation; tap-to-translate dictionary stays available.
@@ -733,11 +759,15 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         return False
     report = {
         "schema": 4,
-        "validation_profile": "v2",
+        "validation_profile": "v3",
         "date": date,
         "updated_at": now.astimezone(TZ).isoformat(),
-        "headline": "AI developments: today's essential context",
-        "subtitle": "Global artificial intelligence — evidence, innovation and implications",
+        "headline": headline,
+        "subtitle": subtitle,
+        "writing_style": writing_style,
+        "writing_style_label": style_label,
+        "focus_category": focus_category,
+        "novelty": novelty,
         "mode": "editorial" if good else "source_digest",
         "editorial_notice": "AI-generated feature from attributed headlines and summaries; not independently fact-checked." if good else "Original educational analysis of sourced RSS summaries; full articles not independently checked.",
         "demo": False,

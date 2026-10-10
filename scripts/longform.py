@@ -137,6 +137,110 @@ ENDING=(
  "Ultimately, the value of a daily AI briefing lies not in the number of confident claims it repeats, but in the quality of the questions it enables readers to ask. A useful judgement identifies a stated development, names the evidence on which it rests and clarifies the uncertainties that could alter its significance. Consulting the linked original reports is indispensable because an RSS summary cannot establish everything about a story. The intellectual habit worth cultivating is neither automatic enthusiasm nor reflexive suspicion, but proportionate confidence: say what the source supports, explain why it matters, and remain prepared to revise the conclusion."
 )
 
+# V3 source-bound editorial designs. No invented events or experiments: every
+# daily report still cites the original RSS stories. Variation is structural,
+# not a cosmetic replacement of the source name or the calendar date.
+WRITING_STYLES = (
+    ("evidence_audit", "Evidence audit"),
+    ("comparative_study", "Comparative study"),
+    ("consequence_map", "Consequences and trade-offs"),
+    ("question_driven_review", "Questions and counterarguments"),
+)
+
+MORE_LEADS = (
+    "A question of trust connects the reports in this edition, but trust is not the same as agreement. "
+    "A reader must notice what each source actually describes before deciding which wider conclusion deserves confidence. "
+    "A technology announcement and a research abstract can both be informative while leaving very different questions unanswered. "
+    "Today the useful approach is to examine the available evidence, compare what has been reported and distinguish a stated goal from a measured result. "
+    "The point is not to dismiss a promising idea, but to ask what kind of information would make a judgement stronger.",
+    "Consider how difficult it can be to compare several reports about artificial intelligence. "
+    "A product story may concern practical use, while research and public policy involve different standards of proof. "
+    "The sources gathered today offer a chance to practise that distinction. "
+    "Rather than assuming that every development is a victory or a threat, this reading considers the purpose of each claim and the people who may be affected by it. "
+    "Its central question is what we can reasonably infer from the material available and what must remain a question.",
+    "When a headline describes a change, it also invites a choice about the way that change should be judged. "
+    "Readers can focus on promised benefits, possible costs, or the strength of the evidence itself. "
+    "Each approach reveals something different, and no single headline answers them all. "
+    "This edition therefore treats the linked reports as material for comparison and careful reasoning. "
+    "It separates the event described by a publisher from the reader's interpretation, while showing why different fields of AI deserve different questions.",
+    "An important part of reading the news is knowing where a reported fact ends and a possible explanation begins. "
+    "Today several developments involve AI, yet they differ in purpose, evidence and likely audience. "
+    "A responsible account cannot turn a short RSS description into proof of a wider outcome. "
+    "Instead, it can compare the reports, identify useful questions and explain what further information would help. "
+    "The aim is a reading that is specific about the source while remaining open about its limits.",
+)
+
+MORE_BRIDGES = (
+    "The reports marked [{first}] and [{second}] illustrate the difficulty of judging different kinds of progress. "
+    "The first concerns {area_first}, while the second addresses {area_second}. "
+    "A good comparison must ask whether both sources are making the same sort of claim before placing them on a common scale. "
+    "A promise, a test and a public decision should not be treated as equivalent results. "
+    "The details provided by each source guide what may be inferred, while details left out of the report identify the limits of that inference. "
+    "Readers who keep those distinctions visible can reach a more useful conclusion without adding facts that were not reported.",
+    "A practical reader might approach [{first}] by asking what could be tested, but approach [{second}] by asking what decision is being described. "
+    "Those questions depend on the subjects: {area_first} and {area_second}. "
+    "Neither question assumes that an announcement succeeds or fails. "
+    "Instead, each directs attention towards the evidence needed for a fair assessment. "
+    "When a source offers an abbreviated account, the responsible response is to recognise the missing context. "
+    "That habit makes the reading more exact because it prevents a broad judgement from resting on a narrow description.",
+    "Imagine having to explain the distinction between [{first}] and [{second}] to a reader who has not seen the headlines. "
+    "A helpful answer would first name the different areas, {area_first} and {area_second}, then explain why their evidence should be examined separately. "
+    "It would not assume that all AI systems share a purpose or that public interest proves practical success. "
+    "Clear comparison requires attention to what is known, what is merely expected and what each publisher has chosen to emphasise. "
+    "The resulting explanation should remain faithful to the source rather than become a general argument about technology.",
+    "Another approach is to consider the interests of different audiences. "
+    "A reader concerned with {area_first} may place particular value on the information in [{first}], whereas someone concerned with {area_second} may focus on [{second}]. "
+    "These priorities shape the questions each person asks, but they do not change the underlying evidence. "
+    "A useful reading can acknowledge more than one perspective without treating every claim as equally supported. "
+    "It should state where a source is informative, identify a relevant limitation and leave unresolved matters open to further reporting.",
+    "The strength of an argument depends partly on its ability to handle a reasonable objection. "
+    "Consider [{first}] in relation to [{second}]: {area_first} and {area_second} may invite different expectations about use and responsibility. "
+    "Someone might argue that a promising development deserves immediate attention; another reader might ask for stronger evidence before accepting its broader significance. "
+    "Both concerns can be examined without pretending to know the future. "
+    "A careful answer explains exactly which source supports each point and why a conclusion must remain open where reporting is incomplete.",
+    "The most useful comparison may concern the information that the sources do not provide. "
+    "In [{first}], a report about {area_first} leaves some questions to be answered by later evidence. "
+    "In [{second}], the focus on {area_second} creates a different set of questions. "
+    "This does not prove that either account is misleading. "
+    "A summary is necessarily selective, and readers should distinguish that limitation from a claim about the publisher's intentions. "
+    "The purpose of this exercise is to identify what is reported, formulate a fair question and resist replacing missing evidence with speculation.",
+    "To evaluate a development responsibly, the reader must separate an immediate statement from its possible consequences. "
+    "The reports [{first}] and [{second}] involve {area_first} and {area_second}, and neither field permits every future effect to be established from one short source extract. "
+    "An announced change may matter even when its lasting value remains uncertain. "
+    "The challenge is to explain why it matters now without assuming that early expectations will automatically become outcomes. "
+    "That distinction helps a reader form a clear conclusion while remaining prepared to revise it when better evidence appears.",
+)
+
+MORE_ENDINGS = (
+    "In conclusion, these linked reports are most useful when their differences remain visible. "
+    "One source may raise a question of practical value while another invites closer examination of research or responsibility. "
+    "Neither the language of progress nor the language of concern is a substitute for supporting evidence. "
+    "Readers should therefore compare the actual claims, explain the limits of the available summaries and return to the original links when a conclusion requires more detail. "
+    "The lesson is a habit of measured judgement: pay attention to an important change without pretending that every consequence has already been established.",
+    "The reports considered today do not offer a single verdict about artificial intelligence. "
+    "They concern different developments and different kinds of evidence. "
+    "A strong reading should preserve that variety rather than force every source into the same argument. "
+    "Where the available reporting gives a specific fact, it deserves careful attention; where it leaves a question unresolved, that limit should be stated openly. "
+    "The reader who can make both moves will be better prepared to examine future technology claims and distinguish useful information from unwarranted certainty.",
+    "The final judgement should be proportionate to what the sources actually support. "
+    "An announcement may be significant, a research question may deserve attention and a public decision may have consequences, but none should be treated as proof of an outcome that has not been reported. "
+    "This is why cross-source comparison matters: it gives readers a way to test the strength of an interpretation against different kinds of evidence. "
+    "The most valuable result is not a confident prediction, but a clear explanation of the current claim and the questions still worth asking.",
+    "What remains after comparing the reports is a method rather than a simple answer. "
+    "Begin with the publisher's stated subject, consider the evidence described and identify the assumptions needed for a broader conclusion. "
+    "Then ask how a reader with another purpose might interpret the same information. "
+    "Such questions do not weaken a report; they make its meaning more precise. "
+    "When a development is genuinely important, it will still be worth examining after the excitement of the headline has passed. "
+    "A careful reader should leave room for that further examination.",
+    "The value of this edition is found in the distinctions between its sources. "
+    "Reports about different fields may share the words artificial intelligence while describing very different events. "
+    "Comparing them demands more than a common label. "
+    "It requires attention to the purpose of each account, the strength of its stated evidence and the uncertainty that remains. "
+    "A conclusion should be clear enough to be useful but limited enough to remain accurate. "
+    "This combination of precision and openness is the reading skill that matters most.",
+)
+
+
 def sourced_detail(story: dict) -> str:
     """Paraphrase only details explicitly present in the RSS summary.
 
@@ -183,48 +287,55 @@ def attributed_excerpt(story: dict, variant: int = 0) -> str:
     )
     return openers[variant%len(openers)]+"“"+quoted+incomplete+"”. "
 
-def compose_briefing(stories: list[dict]) -> list[str]:
+def compose_briefing(stories: list[dict], day: str | None = None, variant: int = 0) -> list[str]:
+    """Sourced, evidence-limited daily narrative with alternating structures.
+
+    The selected RSS story paragraphs always keep their citation IDs; each
+    edition then uses a different lead, set of comparisons and conclusion.
+    Four declared designs rotate with the Hong Kong calendar, and an
+    optional variant lets the publisher retry a rejected near-duplicate.
+    """
+    from datetime import date as CalendarDate
     entries=[s for s in stories if s.get("id") and s.get("title")][:5]
     if len(entries)<3:
-        return []  # Do not pad two headlines into a fake long-form feature.
+        return []  # Do not fabricate a 1,000-word article from two titles.
     digest=hashlib.sha256("|".join(str(s["title"]) for s in entries).encode("utf-8")).digest()
-    paragraphs=[LEADS[digest[0]%len(LEADS)]]
+    ordinal=CalendarDate.fromisoformat(day).toordinal() if day else int.from_bytes(digest[:4],"big")
+    lead_pool=tuple(LEADS)+MORE_LEADS
+    bridge_pool=tuple(CROSS)+MORE_BRIDGES
+    ending_pool=(ENDING,)+MORE_ENDINGS
+    seed=(ordinal+variant)
+    paragraphs=[lead_pool[seed%len(lead_pool)]]
     category_occurrences={}
     for i,story in enumerate(entries):
         topic=category(story)
         occurrence=category_occurrences.get(topic,0)
         category_occurrences[topic]=occurrence+1
-        analytical_lens=LENSES[topic] if occurrence==0 else ALTERNATE_ANGLES[(occurrence-1)%len(ALTERNATE_ANGLES)]
+        analytical_lens=LENSES[topic] if occurrence==0 else ALTERNATE_ANGLES[(occurrence-1+variant)%len(ALTERNATE_ANGLES)]
         title=str(story["title"]).strip().replace("\n"," ")
         publisher=str(story.get("publisher") or "the linked publisher").strip()
         anchor=f"[{story['id']}]"
         paragraphs.append(
-            f"{INTROS[i]} {publisher}'s account, ‘{title}’ {anchor}. "
-            +FACT_NOTE[i]+(sourced_detail(story) or attributed_excerpt(story,i))+analytical_lens
+            f"{INTROS[(i+seed)%len(INTROS)]} {publisher}'s account, ‘{title}’ {anchor}. "
+            +FACT_NOTE[(i+seed)%len(FACT_NOTE)]
+            +(sourced_detail(story) or attributed_excerpt(story,i+seed))
+            +analytical_lens
         )
     first,second=entries[0],entries[1]
     areas={"investment":"commercial financing","security":"software security","robotics":"practical robotics","research":"scientific evaluation",
            "hardware":"computing devices","governance":"policy and accountability",
            "bioscience":"biological research","technology":"technological development"}
-    for idx,tmpl in enumerate(CROSS):
-        if idx==0 and category(first)==category(second):
-            paragraphs.append(
-                f"The first two accounts, [{first['id']}] and [{second['id']}], both address "
-                f"{areas[category(first)]}, but that common label does not make them equivalent. "
-                "Each is a separate claim, and the details by which it might be tested need to be "
-                "identified rather than assumed. Readers should compare what each headline "
-                "specifically emphasises, which information its short extract supplies and how "
-                "any missing context could affect interpretation. An apparently shared topic "
-                "is therefore a starting point for comparison, not proof of identical methods, "
-                "achievements or consequences. The comparison becomes meaningful only when "
-                "it preserves those differences."
-            )
-        else:
-            paragraphs.append(tmpl.format(first=first["id"],second=second["id"],
-                                          area_first=areas[category(first)],area_second=areas[category(second)]))
-    if len(entries)<5:
-        paragraphs.append(EXTRA[0].format(first=first["id"],second=second["id"]))
-    if len(entries)<4:
-        paragraphs.append(EXTRA[1])
-    paragraphs.append(ENDING)
+    # Different narrative designs use different numbers of comparisons,
+    # visibly varying the paragraph structure (not just the style label).
+    # Three-source editions get more analysis to preserve the 1,000-word
+    # reading threshold. None uses V2's fixed EXTRA paragraphs.
+    layout_delta=(-1,0,1,0)[(ordinal+variant)%len(WRITING_STYLES)]
+    comparison_count=3+max(0,5-len(entries))+layout_delta
+    for i in range(comparison_count):
+        block=bridge_pool[(seed*comparison_count+i)%len(bridge_pool)]
+        context=(f"In the reports [{first['id']}] and [{second['id']}], "
+                 f"the questions concern {areas[category(first)]} and {areas[category(second)]}. ")
+        paragraphs.append(context+block.format(first=first["id"],second=second["id"],
+                       area_first=areas[category(first)],area_second=areas[category(second)]))
+    paragraphs.append(ending_pool[seed%len(ending_pool)])
     return paragraphs

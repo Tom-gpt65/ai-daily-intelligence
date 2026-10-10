@@ -15,8 +15,8 @@ def validate() -> list[str]:
     app = (SITE / "app.js").read_text(encoding="utf-8")
     worker = (SITE / "sw.js").read_text(encoding="utf-8")
     release=json.loads((SITE/"release.json").read_text(encoding="utf-8"))
-    if (release.get("version")!="V2" or ">V2<" not in markup
-            or release.get("cache_namespace")!="ai-daily-V2-stable-reading"
+    if (release.get("version")!="V3" or ">V3<" not in markup
+            or release.get("cache_namespace")!="ai-daily-V3-novel-reading"
             or release["cache_namespace"] not in worker):
         errors.append("Public release and PWA cache version disagree")
     for name in ("app.js","cloud-sync.js","v1.css","reading-theme-v1.css"):
@@ -89,7 +89,7 @@ def validate() -> list[str]:
                 if any(not isinstance(q,dict) or not isinstance(q.get('paragraph'),int)
                        or not 1<=q['paragraph']<=len(paragraphs) or not q.get('evidence_quote') for q in items):
                     errors.append('Broken reading question or evidence pointer: '+date)
-                elif article.get('validation_profile')=='v2':
+                elif article.get('validation_profile') in ('v2','v3'):
                     for question in items:
                         locations=[int(n)-1 for n in re.findall(r"Paragraph (\d+)",str(question.get('evidence','')))]
                         locations=locations or [question['paragraph']-1]
@@ -114,6 +114,14 @@ def validate() -> list[str]:
                           'insufficient_explicit_source_attribution','insufficient_event_specific_paragraphs','machine_text_artifact'}
                 if critical.intersection(inspect(paragraphs,sources)['issues']):
                     errors.append('Current-news prose failed structural evidence gate: '+date)
+            if article.get('validation_profile')=='v3' and article.get('mode') in ('source_digest','editorial'):
+                from content_novelty import audit_history
+                novelty=audit_history(article,SITE/'reports')
+                if not novelty['pass']:
+                    errors.append('V3 news reuses past prose, theme or structure: '+date+
+                                  ' '+', '.join(novelty['issues'][:4]))
+                if article.get('novelty',{}).get('pass') is not True:
+                    errors.append('V3 publication is missing a successful originality audit: '+date)
             if i==0 and item.get('updated_at')!=article.get('updated_at'):
                 errors.append('Latest report revision differs from index: '+date)
         except (OSError, KeyError, ValueError, TypeError) as exc:
