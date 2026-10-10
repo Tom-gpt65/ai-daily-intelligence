@@ -1,4 +1,4 @@
-name: Verify live V1 cloud configuration and anonymous isolation
+name: Verify live V2 cloud configuration and anonymous isolation
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
           assert expected['supabase_url'].startswith('https://') and expected['anon_key'].startswith('sb_publishable_')
           base='https://tom-gpt65.github.io/ai-daily-intelligence/'
           def get(url,headers=None):
-              request=urllib.request.Request(url,headers={'User-Agent':'V1-Cloud-Readiness/1','Cache-Control':'no-cache',**(headers or {})})
+              request=urllib.request.Request(url,headers={'User-Agent':'V2-Cloud-Readiness/2','Cache-Control':'no-cache',**(headers or {})})
               try:
                   with urllib.request.urlopen(request,timeout=20) as response:
                       return response.status,response.read().decode('utf-8')
@@ -56,7 +56,7 @@ jobs:
                   assert '--nav-border: #737E73' in theme and '--focus-ring: #2B6378' in theme,'Accessible navigation or focus tokens missing'
                   status,worker=get(base+'sw.js')
                   assert status==200 and 'ai-daily-V2-stable-reading' in worker,'Public offline shell outdated'
-                  print('LIVE V1 CLOUD CONFIG, PAPER CALM, SOFT GRAPHITE AND AUTH VERIFIED')
+                  print('LIVE V2 CLOUD CONFIG, PAPER CALM, SOFT GRAPHITE AND AUTH VERIFIED')
                   break
               except (OSError,ValueError,AssertionError) as error:
                   if attempt==11: raise

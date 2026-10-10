@@ -116,5 +116,5 @@ jobs:
           assert 'ai-daily-V2-stable-reading' in worker,'Updated iPhone cache version missing'
           assert './reading-theme-v1.css?v=2' in markup,'Reading colour stylesheet not deployed'
           assert "fetch(event.request,{cache:'no-cache'})" in worker,'Reader shell not network-first'
-          print('V1 content, offline dictionary and responsive reading VERIFIED')
+          print('V2 content, offline dictionary and responsive reading VERIFIED')
           PY

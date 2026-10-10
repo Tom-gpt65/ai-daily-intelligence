@@ -64,6 +64,8 @@ async function exercise(engine,type){
       await caches.open('unrelated-application');
       return snapshot;
     });
+    console.log(engine+' seeded V1 public keys:',await page.evaluate(async()=>
+      (await (await caches.open('ai-daily-V1-paper-calm-reading-reports')).keys()).map(key=>key.url)));
     legacy=false;
     await page.evaluate(async()=>{const registration=await navigator.serviceWorker.getRegistration();await registration.update();});
     await page.waitForFunction(async()=>{
@@ -72,10 +74,11 @@ async function exercise(engine,type){
     },{},{timeout:20000});
     const migrated=await page.evaluate(async()=>{
       const cache=await caches.open('ai-daily-V2-stable-reading-reports');
-      return {history:await (await cache.match('./reports/2026-10-01.json')).json(),
+      const history=await cache.match('./reports/2026-10-01.json');
+      return {history:history?await history.json():null, publicKeys:(await cache.keys()).map(key=>key.url),
               index:!!await cache.match('./reports/index.json'),keys:await caches.keys()};
     });
-    assert.equal(migrated.history.historicSentinel,true);
+    assert.equal(migrated.history?.historicSentinel,true,engine+' lost public V1 history: '+JSON.stringify(migrated));
     assert.equal(migrated.index,true);
     assert.ok(migrated.keys.includes('unrelated-application'));
     for(const [key,value] of Object.entries(stored))

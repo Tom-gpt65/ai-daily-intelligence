@@ -1,4 +1,4 @@
-"""Read-only late-day health check for the installed V1 PWA and cloud privacy.
+"""Read-only late-day health check for the installed V2 PWA and cloud privacy.
 
 Checks PUBLIC site contents only. Does not log keys, authenticate a user, modify
 a Supabase table, dispatch recovery jobs, or rewrite published articles.
@@ -27,7 +27,7 @@ ASSETS = (
 
 def public_get(url: str, headers: dict | None = None) -> tuple[int, bytes]:
     """Return status/body (including expected 401/403 responses) with size caps."""
-    h = {"User-Agent": "V1-Final-Autopilot/1", "Cache-Control": "no-cache"}
+    h = {"User-Agent": "V2-Final-Autopilot/2", "Cache-Control": "no-cache"}
     if headers:
         h.update(headers)
     req = Request(url, headers=h)
