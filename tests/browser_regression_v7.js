@@ -27,10 +27,27 @@ const {chromium,webkit}=require('playwright');
      const count=await page.locator('#reader .essay-paragraph').count();
      assert.ok(count>=5,engine+'/'+width+': paragraphs not loaded');
      const navigation=page.locator('#reader-navigator .reader-nav-link');
-     assert.ok(await navigation.count()>=3,engine+'/'+width+': long-form paragraph navigation missing');
+     const sectionPicker=page.locator('#reader-nav-select');
+     const latestMode=await page.evaluate(async()=>{
+       const response=await fetch('./reports/index.json',{cache:'no-store'});
+       const editions=await response.json();
+       return editions[0]?.mode;
+     });
+     assert.ok(['reading_feature','source_digest','editorial'].includes(latestMode),
+       engine+'/'+width+': unknown article mode '+latestMode);
+     // News has source-specific navigation chips; today's early safety-net
+     // reading has *no news sources* and correctly shows only intro/conclusion.
+     // The paragraph picker still contains every individual reading section.
+     const chipCount=await navigation.count();
+     if(latestMode==='reading_feature'){
+       assert.equal(chipCount,2,engine+'/'+width+': educational reserve must not invent news chips');
+     }else{
+       assert.ok(chipCount>=3,engine+'/'+width+': sourced news navigation missing');
+     }
+     assert.equal(await sectionPicker.locator('option').count(),count,
+       engine+'/'+width+': paragraph dropdown does not include every section');
      assert.equal(await page.locator('#reading-paragraph-0').getAttribute('data-paragraph'),'1',
        engine+'/'+width+': paragraph numbering missing');
-     const sectionPicker=page.locator('#reader-nav-select');
      if(await sectionPicker.isVisible())await sectionPicker.selectOption('1');
      else await navigation.nth(1).click();
      await page.waitForFunction(()=>{
