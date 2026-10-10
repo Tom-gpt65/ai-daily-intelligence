@@ -1,4 +1,4 @@
-name: V2 morning first-attempt publication canary
+name: V3 morning first-attempt publication canary
 
 on:
   # Run BEFORE the 07:05 fallback and 07:40 live news window.
@@ -56,7 +56,7 @@ jobs:
           line=f"RSS readiness: {health['feeds_ok']}/{health['feeds_total']} feeds; {len(stories)} fresh unissued stories; sufficient evidence={evidence['sufficient']}"
           print(line)
           with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as output:
-              output.write('### V2 live RSS readiness\n'+line+'\nThis is a point-in-time public-source check, not a guarantee for 07:40.\n')
+              output.write('### V3 live RSS readiness\n'+line+'\nThis is a point-in-time public-source check, not a guarantee for 07:40.\n')
           if not evidence['sufficient']:
               print('::warning title=News evidence not ready yet::Keep the offline educational reserve; do not fabricate current news. Recheck during the scheduled news window.')
           if health['feeds_ok']==0:
@@ -75,7 +75,7 @@ jobs:
         run: |
           python scripts/morning_canary.py
           {
-            echo '### V2 morning first-attempt readiness'
+            echo '### V3 morning first-attempt readiness'
             echo '- Isolated dates: 07:05 reserve -> RSS outage -> actual 07:40 source-digest builder -> no downgrade.'
             echo '- Uses synthetic RSS fixtures, bundled Chinese meanings and the actual publication validator.'
             echo '- No network, user data, production publication or model download.'
@@ -84,7 +84,7 @@ jobs:
       - name: Provide pre-news diagnosis if the canary fails
         if: failure()
         run: |
-          echo '::error title=V2 Morning Canary Failed::The earliest fallback/news transition is invalid. Review this before the 07:40 news generation.'
+          echo '::error title=V3 Morning Canary Failed::The earliest fallback/news transition is invalid. Review this before the 07:40 news generation.'
           {
             echo '### PRE-NEWS SOFTWARE REGRESSION DETECTED'
             echo '- The first scheduled run may be blocked by a predictable software fault.'
