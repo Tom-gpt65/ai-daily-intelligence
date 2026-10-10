@@ -324,7 +324,7 @@ def compose_briefing(stories: list[dict], day: str | None = None, variant: int =
         return winner[3]
 
     paragraphs=[select(lead_pool) +
-                " The accounts below are attributed to their linked publishers, not independently verified."]
+                " These accounts are attributed to their linked publishers; the short extracts cannot replace independent confirmation."]
     category_occurrences={}
     for i,story in enumerate(entries):
         topic=category(story)
