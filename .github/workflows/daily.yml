@@ -51,6 +51,7 @@ jobs:
       # Scheduled publication must not depend on tests that inspect a mutable
       # latest article: 07:05 intentionally publishes reading_feature first.
       - name: Validate existing public edition before news generation
+        id: site-preflight
         run: |
           python scripts/validate_site.py
           node --check site/app.js
@@ -59,6 +60,9 @@ jobs:
 
       - name: Collect recent RSS headlines
         if: github.event_name != 'push'
+        # RSS network/timeouts must not prevent today's safe reading edition.
+        # The final publication safety gate still rejects malformed content.
+        continue-on-error: true
         id: preflight
         shell: bash
         env:
@@ -113,6 +117,9 @@ jobs:
 
       - name: Generate daily briefing
         if: steps.preflight.outputs.news == 'true'
+        # A provider/model crash is a degraded NEWS attempt, not a reason to
+        # discard the existing offline-complete 07:05 article.
+        continue-on-error: true
         id: build
         env:
           OLLAMA_ENABLED: ${{ steps.ollama.outcome == 'success' && '1' || '0' }}
@@ -132,11 +139,45 @@ jobs:
           PY
 
       - name: Guarantee today's reading passage, even if RSS or the model fails
-        if: github.event_name != 'push'
+        # With an approved site preflight, always try a verified backup after
+        # transient RSS/model failures; do not bypass genuine validation errors.
+        if: ${{ always() && github.event_name != 'push' && steps.site-preflight.outcome == 'success' }}
         id: passage
         run: |
           python scripts/reading_backup.py --if-missing
           echo "generated=true" >> "$GITHUB_OUTPUT"
+
+      - name: Validate FINAL dated article before publishing
+        if: ${{ github.event_name != 'push' && steps.passage.outcome == 'success' }}
+        run: |
+          python scripts/validate_site.py
+          python - <<'PY'
+          from pathlib import Path
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          import json
+          today=datetime.now(ZoneInfo("Asia/Hong_Kong")).date().isoformat()
+          index=json.loads(Path("site/reports/index.json").read_text(encoding="utf-8"))
+          assert index and index[0]["date"]==today,"Daily publication cannot publish a stale article"
+          report=json.loads(Path("site/reports",today+".json").read_text(encoding="utf-8"))
+          assert report.get("mode") in ("source_digest","editorial","reading_feature")
+          print("FINAL PUBLICATION ACCEPTED:",today,report["mode"])
+          PY
+
+      - name: Report degraded external news (without claiming current news)
+        if: ${{ always() && github.event_name != 'push' && steps.passage.outcome == 'success' }}
+        env:
+          FEED_OUTCOME: ${{ steps.preflight.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+        run: |
+          if [ "$FEED_OUTCOME" = "failure" ]; then
+            echo "::warning title=News feed prefetch unavailable::RSS/network collection failed; validated educational reading was preserved."
+            echo "- External RSS collection failed: safe dated reading fallback retained." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ "$BUILD_OUTCOME" = "failure" ]; then
+            echo "::warning title=News generation degraded::Daily news build failed; validated educational reading was preserved."
+            echo "- News generation failed: safe dated reading fallback retained." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Summarise run status
         if: always()
