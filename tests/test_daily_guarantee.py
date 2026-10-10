@@ -131,6 +131,15 @@ class DailyGuaranteeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             assert_valid_reserve({**valid,"dictionary":{}},day)
 
+    def test_successful_deployment_cannot_hide_rejected_news(self):
+        workflow=(ROOT/".github/workflows/daily.yml").read_text(encoding="utf-8")
+        app=(ROOT/"site/app.js").read_text(encoding="utf-8")
+        self.assertIn("NEWS_GENERATED: ${{ steps.build.outputs.generated }}",workflow)
+        self.assertIn("News NOT published",workflow)
+        self.assertIn("EDUCATIONAL FALLBACK, not current news",workflow)
+        self.assertIn("info.state==='incomplete_dictionary'",app)
+        self.assertIn("新聞已收集，但新稿未能發布",app)
+
     def test_first_run_uses_safe_fallback_after_transient_external_failures(self):
         daily=(ROOT/".github/workflows/daily.yml").read_text(encoding="utf-8")
         early=(ROOT/".github/workflows/early-reading.yml").read_text(encoding="utf-8")
