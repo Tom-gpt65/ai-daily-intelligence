@@ -36,7 +36,7 @@ def merge_index(remote, local):
     for row in local if isinstance(local,list) else []:
         if isinstance(row,dict) and isinstance(row.get("date"),str):
             combined[row["date"]]=copy.deepcopy(row)
-    return sorted(combined.values(),key=lambda row:row["date"],reverse=True)[:100]
+    return sorted(combined.values(),key=lambda row:row["date"],reverse=True)[:365]
 
 def utc_instant(value):
     """Normalise mixed Z/+08:00 timestamps; do not compare them as strings."""
@@ -51,6 +51,13 @@ def incoming_is_newer(existing, incoming):
     proposed=utc_instant(incoming.get("updated_at"))
     if previous is None:return proposed is not None
     return proposed is not None and proposed>=previous
+
+
+def select_edition(existing, incoming):
+    """A complete same-day news edition wins over an emergency reserve."""
+    preserve_news=(existing.get("mode") in ("editorial","source_digest")
+                   and incoming.get("mode")=="reading_feature" and complete(existing))
+    return existing if existing and (preserve_news or not incoming_is_newer(existing,incoming)) else incoming
 
 def git(*args):
     return subprocess.run(["git",*args],cwd=ROOT,check=True,
@@ -71,7 +78,6 @@ def publish(max_attempts=5):
             git("fetch","origin","main")
             git("reset","--hard","origin/main")
             remote=read_json(REPORTS/"index.json",[])
-            local=read_json(backup/"reports"/"index.json",[])
             REPORTS.mkdir(parents=True,exist_ok=True)
             # Do not regress a report already published for the same date:
             # last completed generation wins if it has a newer update timestamp.
@@ -80,10 +86,8 @@ def publish(max_attempts=5):
             # An already verified sourced news article outranks a later
             # emergency educational reserve for the same Hong Kong date.
             # Updating content in a slow retry must not downgrade the edition.
-            preserve_news=(existing.get("mode") in ("editorial","source_digest")
-                           and incoming.get("mode")=="reading_feature" and complete(existing))
-            if existing and (preserve_news or not incoming_is_newer(existing,incoming)):
-                chosen=existing
+            chosen=select_edition(existing,incoming)
+            if chosen is existing:
                 preserve_remote_status=True
             else:
                 if not incoming.get("essay"):
@@ -93,9 +97,10 @@ def publish(max_attempts=5):
                 if not complete(incoming):
                     raise RuntimeError("Generated passage has words without offline Chinese meanings")
                 shutil.copy2(backup/"reports"/f"{current_date}.json",REPORTS/f"{current_date}.json")
-                chosen=incoming
                 preserve_remote_status=False
-            combined=merge_index(remote,local)
+            # Only this run's dated edition may override an index row. Replaying
+            # yesterday's stale local rows can invalidate newer remote history.
+            combined=merge_index(remote,[])
             combined=[row for row in combined if row["date"]!=current_date]
             chosen_row={
                 "date":current_date,
@@ -109,6 +114,16 @@ def publish(max_attempts=5):
             (REPORTS/"index.json").write_text(json.dumps(combined,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
             if status_backup and not preserve_remote_status:
                 STATUS.write_bytes(status_backup)
+            # Fetch/reset may have brought new code, assets and glossary rules.
+            # Validate the actual merged deployment, not the pre-fetch snapshot.
+            import validate_site
+            previous_site=validate_site.SITE
+            try:
+                validate_site.SITE=ROOT/"site"
+                issues=validate_site.validate()
+                if issues:raise RuntimeError("Merged publication invalid: "+"; ".join(issues[:6]))
+            finally:
+                validate_site.SITE=previous_site
             git("add","site/reports","site/system-status.json")
             if not git("diff","--cached","--name-only").stdout.strip():
                 print("[publish] Already up to date")

@@ -102,7 +102,7 @@ async function exercise(browserType,engine,width){
     await page.waitForFunction(async()=>{
       if(!navigator.serviceWorker?.controller)return false;
       const keys=await caches.keys();
-      if(!keys.some(k=>k.includes('V1-paper-calm-reading')))return false;
+      if(!keys.some(k=>k.includes('V2-stable-reading')))return false;
       const names=await caches.keys();
       const match=await Promise.all(names.map(async name=>{
         const cache=await caches.open(name);

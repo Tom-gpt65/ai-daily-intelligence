@@ -416,11 +416,15 @@
     }
   }
   async function renderPipelineStatus(){
+    const requestedDate=state.report?.date;
     try{
       const response=await fetch('./system-status.json',{cache:'no-store'});
       if(!response.ok) return;
       const info=await response.json();
+      if(requestedDate&&state.report?.date!==requestedDate)return;
+      if(state.report?.date&&state.index?.[0]?.date!==state.report.date)return;
       const el=$('pipeline-alert');
+      el.classList.remove('pipeline-success');
       if(info.state==='feed_error'){el.textContent='新聞來源目前無法讀取；沒有證據表示今天沒有重要新聞。請檢查網絡或 GitHub Actions。';el.classList.remove('hidden');}
       else if(info.state==='no_new_stories'){
         el.textContent='最後檢查：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。在可讀取的來源中未發現適合發布的新消息，現保留上一份報告。';
@@ -442,13 +446,19 @@
           (examples.length?'（'+examples.join('、')+'）':'')+
           '。現保留今日教育閱讀；GitHub 工作成功只代表備援正常部署。';
         el.classList.remove('hidden','pipeline-success');
+      } else if(info.state==='build_failed'){
+        el.textContent='⚠ 新聞生成工作失敗，現保留已驗證的閱讀文章。請查看工作紀錄；教育備援並非當日新聞。';
+        el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='editorial_quality_rejected'){
         const issues=Array.isArray(info.quality_issues)?info.quality_issues.join('、'):'品質未達標';
         el.textContent='⚠ 本日新稿未通過內容品質檢查（重複段落、篇幅或來源證據可能不足），已保留上一份報告。診斷：'+issues;
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='published'){
-        el.textContent='資料處理最近一次完成：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。此為生成流程時間，不代表網站在該刻已公開發布。';
+        el.textContent=info.mode==='reading_feature'?
+          '今日提供已驗證的教育閱讀備援，並非當日新聞；新聞更新結果請查看工作紀錄。':
+          '資料處理最近一次完成：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。此為生成流程時間，不代表網站在該刻已公開發布。';
         el.classList.remove('hidden');el.classList.add('pipeline-success');
+        if(info.mode==='reading_feature')el.classList.remove('pipeline-success');
       }
       if(!el.classList.contains('hidden')) {
         if(Number(info.feeds_failed)>0){el.textContent+=' ⚠ '+info.feeds_failed+' 個 RSS 來源無法讀取，本次新聞可能不完整。';el.classList.remove('pipeline-success');}
@@ -1094,6 +1104,7 @@
       const r=await response.json();if(!isValidReport(r,date))throw new Error('invalid report');
       if(serial!==requestSerial)return;
       state.report=r;state.showTranslation=false;renderReport();setView('today');
+      if(state.index?.[0]?.date!==r.date)$('pipeline-alert').classList.add('hidden');
       if(state.index?.[0]?.date && state.index[0].date!==r.date){
         renderScheduleHealth();
       }
@@ -1343,7 +1354,7 @@
     updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();initCloudSync();
     await preloadOfflineGlossary();
     $('refresh-schedule').addEventListener('click',()=>refreshLatestReport({force:true}));
-    if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+    if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{});}
     try{
       const response=await fetch('./reports/index.json',{cache:'no-store'});if(!response.ok)throw new Error('No report index');
       state.index=await response.json();if(!Array.isArray(state.index)||state.index.length>400||!state.index.every(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date||'')))throw new Error('Invalid index');

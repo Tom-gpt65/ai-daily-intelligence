@@ -1,9 +1,10 @@
 """Site release preflight: no network and no paid services."""
 import json
 import re
+from datetime import date as calendar_date
 from pathlib import Path
 from edition_guarantee import complete
-from editorial_quality import contains_machine_artifacts
+from editorial_quality import contains_machine_artifacts, inspect
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
@@ -13,6 +14,14 @@ def validate() -> list[str]:
     markup = (SITE / "index.html").read_text(encoding="utf-8")
     app = (SITE / "app.js").read_text(encoding="utf-8")
     worker = (SITE / "sw.js").read_text(encoding="utf-8")
+    release=json.loads((SITE/"release.json").read_text(encoding="utf-8"))
+    if (release.get("version")!="V2" or ">V2<" not in markup
+            or release.get("cache_namespace")!="ai-daily-V2-stable-reading"
+            or release["cache_namespace"] not in worker):
+        errors.append("Public release and PWA cache version disagree")
+    for name in ("app.js","cloud-sync.js","v1.css","reading-theme-v1.css"):
+        if "./"+name+"?v="+release.get("asset_revision","") not in markup:
+            errors.append("Asset revision differs from release: "+name)
     for source in re.findall(r'(?:href|src)="(\./[^"#?]+)"', markup):
         if not (SITE / source[2:]).exists():
             errors.append(f"Missing linked local asset: {source}")
@@ -22,7 +31,7 @@ def validate() -> list[str]:
     missing = sorted(set(re.findall(r"\$\('([a-zA-Z][a-zA-Z0-9-]*)'\)", app)) - set(ids))
     if missing:
         errors.append("Missing JavaScript element ids: " + ", ".join(missing))
-    for src in ('index.html','app.js','cloud-sync.js','style.css','v3.css','v4.css','v5.css','v6.css','v11.css','v12.css','v1.css','offline-glossary.json','reading-glossary.json','news-glossary.json','manifest.webmanifest'):
+    for src in ('index.html','app.js','cloud-sync.js','style.css','v3.css','v4.css','v5.css','v6.css','v11.css','v12.css','v1.css','offline-glossary.json','reading-glossary.json','news-glossary.json','news-template-glossary.json','release.json','manifest.webmanifest'):
         if src not in worker:
             errors.append(f"PWA shell missing {src}")
     cloud=json.loads((SITE/'cloud-config.json').read_text(encoding='utf-8'))
@@ -44,6 +53,12 @@ def validate() -> list[str]:
         errors.append('Report index dates must be unique, newest first')
     for i,item in enumerate(index):
         date=item['date']
+        try:
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",date):raise ValueError("Unsafe date")
+            calendar_date.fromisoformat(date)
+        except (ValueError,TypeError):
+            errors.append('Invalid indexed report date')
+            continue
         try:
             article=json.loads((SITE/'reports'/(date+'.json')).read_text(encoding='utf-8'))
             if article.get('date')!=date:
@@ -74,12 +89,31 @@ def validate() -> list[str]:
                 if any(not isinstance(q,dict) or not isinstance(q.get('paragraph'),int)
                        or not 1<=q['paragraph']<=len(paragraphs) or not q.get('evidence_quote') for q in items):
                     errors.append('Broken reading question or evidence pointer: '+date)
+                elif article.get('validation_profile')=='v2':
+                    for question in items:
+                        locations=[int(n)-1 for n in re.findall(r"Paragraph (\d+)",str(question.get('evidence','')))]
+                        locations=locations or [question['paragraph']-1]
+                        passages=[re.sub(r"\s+"," ",paragraphs[n]) for n in locations if 0<=n<len(paragraphs)]
+                        fragments=str(question['evidence_quote']).split(' / ')
+                        if any(not fragment.strip() or not any(fragment.strip() in p for p in passages) for fragment in fragments):
+                            errors.append('Reading question quotes absent evidence: '+date+' '+str(question.get('id','')))
             sources=article.get('stories',[])
             if article.get('mode')=='reading_feature':
                 if sources or not article.get('subtitle'):
                     errors.append('Educational fallback not labelled correctly: '+date)
             elif not isinstance(sources,list) or len(sources)<3:
                 errors.append('Current-news report missing at least three sources: '+date)
+            else:
+                from build import validate_candidate_sources, source_evidence_metrics
+                if not validate_candidate_sources(sources) or not source_evidence_metrics(sources)['sufficient']:
+                    errors.append('Current-news source records malformed or evidence too thin: '+date)
+                ids={s.get('id') for s in sources if isinstance(s,dict)}
+                if set(re.findall(r'\[(S\d+)\]',body))!=ids:
+                    errors.append('Missing or invented source citations: '+date)
+                critical={'article_length_outside_training_target','near_duplicate_paragraph_padding',
+                          'insufficient_explicit_source_attribution','insufficient_event_specific_paragraphs','machine_text_artifact'}
+                if critical.intersection(inspect(paragraphs,sources)['issues']):
+                    errors.append('Current-news prose failed structural evidence gate: '+date)
             if i==0 and item.get('updated_at')!=article.get('updated_at'):
                 errors.append('Latest report revision differs from index: '+date)
         except (OSError, KeyError, ValueError, TypeError) as exc:

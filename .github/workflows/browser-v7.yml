@@ -4,6 +4,12 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'site/sw.js'
+      - 'site/index.html'
+      - 'site/release.json'
+      - 'site/*glossary.json'
+      - 'tests/browser_v2_upgrade.js'
+      - 'tests/fixtures/legacy-sw-v1.js'
       - '.github/workflows/daily.yml'
       - '.github/workflows/early-reading.yml'
       - 'tests/test_v6.py'
@@ -20,6 +26,10 @@ on:
   push:
     branches: [main]
     paths:
+      - 'site/release.json'
+      - 'site/*glossary.json'
+      - 'tests/browser_v2_upgrade.js'
+      - 'tests/fixtures/legacy-sw-v1.js'
       - '.github/workflows/browser-v7.yml'
       - 'tests/browser_regression_v7.js'
       - 'tests/status_regression_v8.js'
@@ -77,6 +87,8 @@ jobs:
           done
       - name: Verify installed PWA offline reading and safe backup in Chromium/WebKit
         run: node tests/browser_pwa_offline_final.js
+      - name: Verify actual V1 to V2 PWA upgrade preserves private and offline data
+        run: node tests/browser_v2_upgrade.js
       - name: Exercise 320px–430px iPhone-sized screens
         run: node tests/browser_regression_v7.js
       - name: Verify recovered-versus-scheduled status on iPad and desktop-width screens

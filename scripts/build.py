@@ -663,6 +663,13 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         put_status(stage, now, source_count=0, **diagnostics)
         print("[no fresh reporting] Retaining previous report; never invent a new edition.", file=sys.stderr)
         return False
+    if (not validate_candidate_sources(sources) or any(
+            not -1800 <= (now-parse_entry_date({"published":s.get("published","")})).total_seconds() <= 36*3600
+            for s in sources)):
+        put_status("insufficient_evidence",now,source_count=len(sources),
+                   failure_reason="Invalid or expired current-news source snapshot",**diagnostics)
+        print("[source safety] Refusing malformed, future or expired news sources.",file=sys.stderr)
+        return False
     # Disallow a long report built from little more than attractive headlines.
     evidence = source_evidence_metrics(sources)
     total_evidence_words = evidence["word_count"]
@@ -675,8 +682,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
               "or too little attributed information; retaining previous edition.", file=sys.stderr)
         return False
     model_started = time.perf_counter()
-    essay = generate_essay(sources) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "1") == "1" else None
-    model_seconds = round(time.perf_counter() - model_started, 3) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "1") == "1" else 0
+    essay = generate_essay(sources) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "0") == "1" else None
+    model_seconds = round(time.perf_counter() - model_started, 3) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "0") == "1" else 0
     good = essay is not None
     if len(sources) < 3:
         put_status("insufficient_evidence", now, source_count=len(sources), evidence_word_count=total_evidence_words, **diagnostics)
@@ -716,7 +723,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     # form, not merely a partially populated list of advanced vocabulary.
     vocabulary, missing = fill_dictionary(
         essay, vocabulary,
-        translator=model_request if os.environ.get("OLLAMA_ENABLED", "1") == "1" else None)
+        translator=model_request if os.environ.get("OLLAMA_ENABLED", "0") == "1" else None)
     dictionary_seconds = round(time.perf_counter() - dictionary_started, 3)
     if missing:
         put_status("incomplete_dictionary", now, source_count=len(sources),
@@ -726,8 +733,9 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         return False
     report = {
         "schema": 4,
+        "validation_profile": "v2",
         "date": date,
-        "updated_at": datetime.now(timezone.utc).astimezone(TZ).isoformat(),
+        "updated_at": now.astimezone(TZ).isoformat(),
         "headline": "AI developments: today's essential context",
         "subtitle": "Global artificial intelligence — evidence, innovation and implications",
         "mode": "editorial" if good else "source_digest",
@@ -820,7 +828,7 @@ def main():
         try:
             snapshot = json.loads(cache.read_text(encoding="utf-8"))
             at = datetime.fromisoformat(snapshot["at"])
-            if abs((now - at).total_seconds()) > 7200 or now.astimezone(TZ).date() != at.astimezone(TZ).date():
+            if at.tzinfo is None or not 0 <= (now - at).total_seconds() <= 7200 or now.astimezone(TZ).date() != at.astimezone(TZ).date():
                 raise ValueError("Preflight sources have expired")
             sources = snapshot["stories"]
             diagnostics = snapshot.get("diagnostics", {}) if isinstance(snapshot.get("diagnostics", {}), dict) else {}

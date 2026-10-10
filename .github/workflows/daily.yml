@@ -14,6 +14,11 @@ on:
       - '!site/reports/**'
       - '!site/system-status.json'
   workflow_dispatch:
+    inputs:
+      use_model:
+        description: 'Optional local-model draft (slower; sourced digest is the V2 default)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -21,9 +26,9 @@ permissions:
   id-token: write
 
 concurrency:
-  group: ai-daily-${{ github.event_name == 'push' && 'code' || 'news' }}
-  # Discard superseded code-only deploys, but never cancel daily news generation.
-  cancel-in-progress: ${{ github.event_name == 'push' }}
+  # Every Pages publisher shares this lock; code deploys cannot race the news.
+  group: ai-daily-news
+  cancel-in-progress: false
 
 jobs:
   daily:
@@ -37,6 +42,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: true
+          ref: ${{ github.event_name == 'push' && 'main' || github.ref }}
 
       - name: Configure Python
         uses: actions/setup-python@v5
@@ -49,6 +55,7 @@ jobs:
         # Only OpenCC enrichment is optional; baseline dictionary is bundled.
         # A temporary package index outage must not prevent the FIRST run.
         continue-on-error: true
+        timeout-minutes: 2
         run: python -m pip install -r requirements.txt
 
       # Full Python/Node/browser regressions run in CI on every change.
@@ -94,22 +101,25 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cache/ecdict.csv
-          key: ecdict-2026-v1
+          key: ecdict-bc015ed2e24a7abef49fc6dbbb7fe32c1dadaf8b
 
       - name: Download optional dictionary
         if: steps.preflight.outputs.news == 'true'
+        continue-on-error: true
+        timeout-minutes: 4
         run: |
           mkdir -p .cache
           if ! test -s .cache/ecdict.csv; then
-            curl --fail --location --retry 2 --max-time 180 \
-              https://raw.githubusercontent.com/skywind3000/ECDICT/master/ecdict.csv \
+            curl --fail --location --retry 2 --max-time 60 \
+              https://raw.githubusercontent.com/skywind3000/ECDICT/bc015ed2e24a7abef49fc6dbbb7fe32c1dadaf8b/ecdict.csv \
               -o .cache/ecdict.csv || echo "Dictionary unavailable: using built-in vocabulary"
           fi
 
       - name: Install free local model when relevant
-        if: steps.preflight.outputs.enough == 'true'
+        if: steps.preflight.outputs.enough == 'true' && inputs.use_model == true
         id: ollama
         continue-on-error: true
+        timeout-minutes: 10
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
           (ollama serve > /tmp/ollama.log 2>&1 &)
@@ -138,7 +148,7 @@ jobs:
           from pathlib import Path
           status=json.loads(Path("site/system-status.json").read_text(encoding="utf-8"))
           today=datetime.now(ZoneInfo("Asia/Hong_Kong")).date().isoformat()
-          generated=(status.get("state")=="published" and status.get("latest_date")==today)
+          generated=(status.get("state")=="published" and status.get("latest_date")==today and status.get("mode") in ("editorial","source_digest"))
           print("generated="+str(generated).lower())
           PY
 
@@ -150,6 +160,13 @@ jobs:
         run: |
           python scripts/reading_backup.py --if-missing
           echo "generated=true" >> "$GITHUB_OUTPUT"
+
+      - name: Preserve the actual news attempt and accepted reading outcome
+        if: ${{ github.event_name != 'push' && steps.passage.outcome == 'success' }}
+        env:
+          FEED_OUTCOME: ${{ steps.preflight.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+        run: python scripts/verify_publication.py --record-attempt
 
       - name: Validate FINAL dated article before publishing
         if: ${{ github.event_name != 'push' && steps.passage.outcome == 'success' }}
@@ -185,13 +202,13 @@ jobs:
           reason=info.get("state","unavailable")
           missing=info.get("missing_examples",[])
           detail="; missing words: "+", ".join(str(w) for w in missing[:12]) if missing else ""
-          print(f"::warning title=News NOT published::The workflow can succeed while only an educational fallback is published. Reason: {reason}{detail}")
+          print(f"::warning title=News NOT published::Safe educational reading will be deployed; the final current-news acceptance will fail visibly. Reason: {reason}{detail}")
           summary=os.environ.get("GITHUB_STEP_SUMMARY")
           if summary:
               with open(summary,"a",encoding="utf-8") as stream:
                   stream.write("\n### News publication outcome: EDUCATIONAL FALLBACK, not current news\n")
                   stream.write(f"- Reason: {reason}{detail}\n")
-                  stream.write("- A green GitHub Actions run confirms a valid deployment, not a sourced-news publication.\n")
+                  stream.write("- Safe reading is deployed first; the final news acceptance fails if no current-news edition is available.\n")
           PY
           fi
           if [ "$DEPENDENCY_OUTCOME" = "failure" ]; then
@@ -232,3 +249,15 @@ jobs:
       - name: Deploy website
         id: publish
         uses: actions/deploy-pages@v4
+
+      # A failed news job still leaves the safe dated reading publicly deployed.
+      # The final failure enables normal GitHub Actions failure notifications.
+      - name: Verify public V2 deployment and require current news for news runs
+        env:
+          PUBLICATION_EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$PUBLICATION_EVENT" = "push" ]; then
+            python scripts/verify_publication.py --live
+          else
+            python scripts/verify_publication.py --live --require-news
+          fi

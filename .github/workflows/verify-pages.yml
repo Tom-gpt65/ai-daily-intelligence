@@ -17,6 +17,9 @@ jobs:
     steps:
 
       - name: Check free whole-passage translation provider (external dependency)
+        id: optional-translation
+        continue-on-error: true
+        timeout-minutes: 2
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -35,6 +38,9 @@ jobs:
           else
             echo "::warning::No CORS response header found; browsers may block direct full-passage translation"
           fi
+      - name: Disclose optional translation failure
+        if: steps.optional-translation.outcome == 'failure'
+        run: echo '::warning title=Optional full translation unavailable::Public reading and offline vocabulary are verified independently of this external service.'
       - name: Check GitHub Pages public access and asset responses
         shell: bash
         run: |
@@ -102,13 +108,13 @@ jobs:
           assert 'refreshLatestReport' in javascript,'Cross-day revalidation logic not deployed'
           with urllib.request.urlopen(base+'index.html',timeout=20) as response:
               markup=response.read().decode('utf-8')
-          assert './v1.css?v=1' in markup,'Newest responsive stylesheet missing from HTML'
-          assert './app.js?v=1' in markup,'Version-busted reader code missing from HTML'
-          assert './cloud-sync.js?v=1' in markup,'Cloud synchronization module not included'
+          assert './v1.css?v=2' in markup,'Newest responsive stylesheet missing from HTML'
+          assert './app.js?v=2' in markup,'Version-busted reader code missing from HTML'
+          assert './cloud-sync.js?v=2' in markup,'Cloud synchronization module not included'
           with urllib.request.urlopen(base+'sw.js',timeout=20) as response:
               worker=response.read().decode('utf-8')
-          assert 'ai-daily-V1-paper-calm-reading' in worker,'Updated iPhone cache version missing'
-          assert './reading-theme-v1.css?v=1' in markup,'Reading colour stylesheet not deployed'
+          assert 'ai-daily-V2-stable-reading' in worker,'Updated iPhone cache version missing'
+          assert './reading-theme-v1.css?v=2' in markup,'Reading colour stylesheet not deployed'
           assert "fetch(event.request,{cache:'no-cache'})" in worker,'Reader shell not network-first'
           print('V1 content, offline dictionary and responsive reading VERIFIED')
           PY
