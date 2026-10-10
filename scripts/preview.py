@@ -10,7 +10,7 @@ if __name__ == '__main__':
     url=f'http://127.0.0.1:{server.server_port}/'
     print('AI Daily Intelligence — local preview')
     print('Open:',url)
-    print('This is the fictional sample, NOT live news. Press Ctrl+C to stop.')
+    print('Local snapshot only; check each article date and source/backup label. Press Ctrl+C to stop.')
     try:
         webbrowser.open(url)
         server.serve_forever()

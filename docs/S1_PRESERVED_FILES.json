@@ -1,0 +1,11 @@
+{
+  "baseline_commit": "bf4dfe51ae69a4dbeddc3df60accbf341418bd2b",
+  "sha256": {
+    "site/reports/2026-10-08.json": "abc39c967febec6175d46a67f43f31352fcbc8544472317d34e9dcd908b2f69a",
+    "site/reports/2026-10-09.json": "f0b9b791f3643de53b5c9994218b11477d27713f773722ac78e9e0e5b0478053",
+    "site/reports/2026-10-10.json": "6bab80754dbab2b831c6f4756da3f0b80da02cd903200169716f0fa8aa8dd6d3",
+    "site/cloud-config.json": "4ee705abfc1fcc1721fc84dc2f50e0073afac6908422a907536dae7c67e53259",
+    "site/manifest.webmanifest": "96d258709c1fa908066f8d7b4c02f15539ceff22739bd21ebf32ff5fdb9ed472",
+    "docs/SUPABASE_VOCABULARY.sql": "eadeb17d7ef79106e85fc99e0c121cf20218156638c3162e6f802c9a500fe8e2"
+  }
+}

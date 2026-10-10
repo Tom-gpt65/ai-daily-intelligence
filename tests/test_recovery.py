@@ -59,14 +59,13 @@ class RecoveryTests(unittest.TestCase):
     def test_public_passage_validation(self):
         import re
         date=recover_daily.TODAY
-        paragraphs=["Editorial evidence [S1] [S2] [S3] " + "analysis "*200]*5
-        count=len(re.findall(r"\b[A-Za-z]+(?:['’-][A-Za-z]+)*\b"," ".join(paragraphs)))
-        sources=[{"id":f"S{i}","title":"Research","url":f"https://example.com/{i}"} for i in range(1,4)]
-        report={"date":date,"mode":"source_digest","word_count":count,
-                "essay":paragraphs,"stories":sources,
-                "practice":{"items":[{"stem":"Question"}]*7},
-                "dictionary":{w:{"translation":"中文字義"} for w in ("editorial","evidence","analysis")}}
-        index={"date":date,"word_count":count,"stories":3}
+        import json
+        report=json.loads((ROOT/'site/reports/2026-10-10.json').read_text(encoding='utf-8'))
+        report.update(date=date,updated_at=date+'T08:10:00+08:00',validation_profile='s1',historical_rebuild=False)
+        report['novelty']={'pass':True,'max_overlap':0,'threshold':0.16}
+        for story in report['stories']:story['published']=date+'T07:00:00+08:00'
+        index={key:report[key] for key in ('date','mode','word_count','updated_at')}
+        index['stories']=len(report['stories'])
         self.assertTrue(recover_daily.edition_is_readable(index,report))
         self.assertTrue(recover_daily.current_news_is_readable(index,report))
         self.assertFalse(recover_daily.edition_is_readable(index,{**report,"essay":["too short"]}))
@@ -75,14 +74,17 @@ class RecoveryTests(unittest.TestCase):
     def test_educational_backup_accepted_when_entire_dictionary_exists(self):
         from reading_backup import build_reading
         report=build_reading(recover_daily.TODAY)
-        row={'date':report['date'],'word_count':report['word_count'],'stories':0}
+        row={key:report[key] for key in ('date','mode','updated_at','word_count')}
+        row['stories']=0
         self.assertTrue(recover_daily.edition_is_readable(row,report))
-        report['dictionary'].pop(next(iter(report['dictionary'])))
+        from edition_guarantee import article_words
+        report['dictionary'].pop(next(iter(article_words(report['essay']))))
         self.assertFalse(recover_daily.edition_is_readable(row,report))
     def test_late_educational_reserve_does_not_suppress_news_recovery(self):
         from reading_backup import build_reading
         report=build_reading(recover_daily.TODAY)
-        row={'date':report['date'],'word_count':report['word_count'],'stories':0}
+        row={key:report[key] for key in ('date','mode','updated_at','word_count')}
+        row['stories']=0
         quality=recover_daily.current_news_is_readable(row,report)
         self.assertFalse(quality)
         allowed,_=recover_daily.should_dispatch(recover_daily.TODAY,[],

@@ -1,0 +1,7 @@
+{
+  "name": "ai-daily-intelligence",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {"test": "node tests/run_js_tests.js", "test:browser": "node tests/run_js_tests.js --browser"},
+  "devDependencies": {"playwright": "1.55.0"}
+}

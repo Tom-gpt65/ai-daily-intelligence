@@ -9,29 +9,31 @@ from learning_editorial import deepen_digest,is_promotional,_word_count
 
 class AuditTests(unittest.TestCase):
     def setUp(self):
-        self.edition={'date':'2026-10-09','mode':'editorial','demo':False,'updated_at':'2026-10-09T08:04:00+08:00',
-                      'essay':['English news '*515+' [S1] [S2] [S3]'],
-                      'stories':[{'id':f'S{i}','url':'https://example.com','title':'AI research'} for i in range(1,4)],
-                      'word_count':1030,'reading_metrics':{'word_count':1030}}
-        self.edition['dictionary']={'english':{'translation':'英文'},'news':{'translation':'新聞'}}
-        self.index=[{'date':'2026-10-09'}]
+        import json
+        self.edition=json.loads((ROOT/'site/reports/2026-10-10.json').read_text(encoding='utf-8'))
+        self.edition.update(date='2026-10-09',updated_at='2026-10-09T08:04:00+08:00')
+        self.index=[{key:self.edition[key] for key in ('date','mode','updated_at','word_count')}]
+        self.index[0]['stories']=len(self.edition['stories'])
     def test_educational_backup_is_accepted_with_warning(self):
         from reading_backup import build_reading
         from datetime import datetime
         from zoneinfo import ZoneInfo
         edition=build_reading("2026-10-10",datetime(2026,10,10,8,0,tzinfo=ZoneInfo("Asia/Hong_Kong")))
-        index=[{'date':'2026-10-10','word_count':edition['word_count'],'stories':0}]
+        index=[{key:edition[key] for key in ('date','mode','updated_at','word_count')}]
+        index[0]['stories']=0
         errs,warnings=assess_public(index,edition,"2026-10-10")
         self.assertEqual(errs,[])
         self.assertTrue(any("educational" in warning.lower() for warning in warnings))
     def test_current_news_missing_word_translation_is_rejected(self):
-        self.edition['dictionary']['english']={'translation':''}
+        from edition_guarantee import article_words
+        word=next(iter(article_words(self.edition['essay'])))
+        self.edition['dictionary'][word]={'translation':''}
         errors,_=assess_public(self.index,self.edition,'2026-10-09')
         self.assertTrue(any("offline Chinese" in e for e in errors))
     def test_fresh_article(self):
         errs,_=assess_public(self.index,self.edition,'2026-10-09');self.assertEqual(errs,[])
     def test_essay_word_count_mismatch_is_detected(self):
-        self.edition['word_count']=1038
+        self.edition['word_count']+=8
         errors,_=assess_public(self.index,self.edition,'2026-10-09')
         self.assertTrue(any('word count' in e.lower() for e in errors))
     def test_invalid_source_reference_is_detected(self):

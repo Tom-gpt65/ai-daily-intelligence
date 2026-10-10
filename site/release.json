@@ -1,5 +1,11 @@
 {
-  "version": "V3",
-  "asset_revision": "3",
-  "cache_namespace": "ai-daily-V3-novel-reading"
+  "version": "S1",
+  "asset_revision": "s1-1",
+  "cache_namespace": "ai-daily-S1-1-reading",
+  "legacy_editions_through": "2026-10-10",
+  "originality": {
+    "phrase_words": 5,
+    "lookback_days": 60,
+    "max_overlap_exclusive": 0.16
+  }
 }

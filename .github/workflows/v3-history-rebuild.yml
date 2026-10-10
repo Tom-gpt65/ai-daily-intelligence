@@ -1,61 +1,26 @@
-name: V3 8–10 October automatic article reconstruction
-# Replay after acceptance-test correction: similar sources may be safely rejected.
+name: Historical reconstruction preview (preserves published articles)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/v3-history-rebuild.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: ai-daily-news
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  regenerate:
+  preview:
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
-    environment:
-      name: github-pages
-      url: ${{ steps.publish.outputs.page_url }}
+    timeout-minutes: 15
     steps:
-      - name: Checkout and retain GitHub push permission
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          persist-credentials: true
-      - name: Python 3.12
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install offline dictionary dependencies
-        run: python -m pip install -r requirements.txt
-      - name: Regenerate all three historical articles with the actual V3 app
+      - name: Reconstruct only in a disposable preview copy
         run: python scripts/rebuild_v3_history.py
-      - name: Validate reconstructed public site
-        run: |
-          python scripts/validate_site.py
-          python -m unittest tests.test_v3_novelty tests.test_archive_backfill -v
-      - name: Commit ONLY program-generated and verified articles
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/reports/2026-10-08.json site/reports/2026-10-09.json site/reports/2026-10-10.json site/reports/index.json docs/V3_THREE_DAY_REBUILD_AUDIT.md
-          git diff --cached --quiet && { echo 'No generated changes.'; exit 1; }
-          git commit -m "content: V3 auto-generate 8–10 October news and reading below 16% overlap"
-          git push origin HEAD:main
-      - name: Set up Pages
-        uses: actions/configure-pages@v5
-      - name: Upload validated site
-        uses: actions/upload-pages-artifact@v4
+      - name: Retain generated preview for review
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          path: site
-      - name: Publish reconstructed articles to English News App
-        id: publish
-        uses: actions/deploy-pages@v4
+          name: historical-preview
+          path: .cache/history-preview/
+          if-no-files-found: warn

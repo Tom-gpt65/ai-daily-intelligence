@@ -40,6 +40,11 @@
   let translationBusy=false;
   let quizSelections=safeStorage.get('ai-daily-quiz-v6',{});
   let toastTimeout;
+  async function fetchPublic(url,options={}){
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+    try{return await fetch(url,{...options,signal:controller.signal});}
+    finally{clearTimeout(timer);}
+  }
   function toast(message) { const el = $('toast'); el.textContent = message; el.classList.remove('hidden'); clearTimeout(toastTimeout); toastTimeout = setTimeout(() => el.classList.add('hidden'), 2800); }
   // Account data is separate from legacy localStorage words. The device words
   // are never uploaded until the user explicitly chooses to import them.
@@ -168,7 +173,7 @@
   offlineGlossary.concern={translation:'關乎；涉及（動詞）；憂慮；關切（名詞）',phonetic:'',part_of_speech:'',definition:''};
   async function preloadOfflineGlossary(){
     try{
-      const response=await fetch('./offline-glossary.json',{cache:'force-cache'});
+      const response=await fetchPublic('./offline-glossary.json',{cache:'force-cache'});
       if(!response.ok)return;
       const words=await response.json();
       if(!words||typeof words!=='object'||Array.isArray(words))return;
@@ -418,7 +423,7 @@
   async function renderPipelineStatus(){
     const requestedDate=state.report?.date;
     try{
-      const response=await fetch('./system-status.json',{cache:'no-store'});
+      const response=await fetchPublic('./system-status.json',{cache:'no-store'});
       if(!response.ok) return;
       const info=await response.json();
       if(requestedDate&&state.report?.date!==requestedDate)return;
@@ -434,8 +439,11 @@
       } else if(info.state==='insufficient_evidence'){
         el.textContent='⚠ 本日可核實來源不足，或新稿未達 1,000 個英文單字的最低篇幅；沒有冒充合格長篇，網站暫時保留上一份文章。';
         el.classList.remove('hidden');el.classList.remove('pipeline-success');
+      } else if(info.state==='reading_reserve_reused'||info.state==='history_unavailable'){
+        el.textContent='⚠ 今日新閱讀未能通過嚴格原創性驗證，或歷史資料無法完整核對。現提供 '+(info.backup?.date||state.report?.date||'既有')+' 的留存閱讀，並非今日新聞或今日新稿。';
+        el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='repetitive_content'){
-        el.textContent='⚠ 新聞來源已收集，但新文章與近期內容、開首、結論或寫作方式過於相似；V3 已拒絕重複稿件，保留明確標示的教育備援。';
+        el.textContent='⚠ 新聞來源已收集，但新文章與近期內容、開首、結論或寫作方式過於相似；S1 已拒絕重複稿件，保留明確標示的教育備援。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='incomplete_dictionary'){
         // A green Actions workflow can mean only that the dated reading
@@ -464,6 +472,7 @@
         if(info.mode==='reading_feature')el.classList.remove('pipeline-success');
       }
       if(!el.classList.contains('hidden')) {
+        if(info.backup?.kind==='archived_reading'){el.textContent+=' 備援為 '+info.backup.date+' 的留存文章，沒有重新標示成今日新稿。';el.classList.remove('pipeline-success');}
         if(Number(info.feeds_failed)>0){el.textContent+=' ⚠ '+info.feeds_failed+' 個 RSS 來源無法讀取，本次新聞可能不完整。';el.classList.remove('pipeline-success');}
         const age=(Date.now()-Date.parse(info.checked_at||''))/3_600_000;
         if(Number.isFinite(age)&&age>48){el.textContent+=' ⚠ 最近一次檢查距今超過 48 小時，請確認排程是否仍在執行。';el.classList.remove('pipeline-success');}
@@ -474,7 +483,7 @@
     const root=$('story-cards');root.replaceChildren();
     if(r.mode==='reading_feature'){
       const p=document.createElement('p');p.className='demo-explainer';
-      p.textContent='今日提供經預先準備的 AI 素養英文閱讀，並非當日新聞；原定新聞更新仍可能稍後發布。';
+      p.textContent='這是 '+r.date+' 的 AI 素養英文閱讀，並非當日新聞；新聞更新結果請查看狀態。';
       root.appendChild(p);return;
     }
     if(r.mode==='demo'){
@@ -1106,8 +1115,9 @@
     const serial=++requestSerial;
     if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return;
     try{
-      const response=await fetch(`./reports/${date}.json?rev=${Date.now()}`,{cache:'no-store'});
+      const response=await fetchPublic(`./reports/${date}.json?rev=${Date.now()}`,{cache:'no-store'});
       if(!response.ok) throw new Error('missing report');
+      if(response.headers.get('X-AI-Daily-Cache')==='offline')showConnectivity(true);
       const r=await response.json();if(!isValidReport(r,date))throw new Error('invalid report');
       if(serial!==requestSerial)return;
       state.report=r;state.showTranslation=false;renderReport();setView('today');
@@ -1175,11 +1185,13 @@
   async function refreshLatestReport({force=false,quiet=false}={}){
     if(latestRefreshBusy)return;
     latestRefreshBusy=true;
+    const startingSerial=requestSerial;
     const button=$('refresh-schedule');
     button.disabled=true;button.setAttribute('aria-busy','true');
     try{
-      const res=await fetch('./reports/index.json?check='+Date.now(),{cache:'no-store'});
+      const res=await fetchPublic('./reports/index.json?check='+Date.now(),{cache:'no-store'});
       if(!res.ok)throw Error('HTTP '+res.status);
+      if(res.headers.get('X-AI-Daily-Cache')==='offline')showConnectivity(true);
       const idx=await res.json();
       if(!Array.isArray(idx)||!idx.length||!/^\d{4}-\d{2}-\d{2}$/.test(idx[0].date||''))throw Error('日期索引無效');
       const next=idx[0].date;
@@ -1192,12 +1204,12 @@
         Number(top.stories||0)!==Number(state.report?.stories?.length||0) ||
         (Boolean(top.updated_at) && String(top.updated_at)!==String(state.report?.updated_at||''));
       state.index=idx;
-      const shouldOpenLatest=!quiet || (state.view==='today'&&!isHistorical);
+      const shouldOpenLatest=requestSerial===startingSerial&&(!quiet || (state.view==='today'&&!isHistorical));
       if((changed||force)&&shouldOpenLatest)await loadReport(next);
       if(!shouldOpenLatest || (!changed&&!force))renderFreshness();
       $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
       await Promise.allSettled([renderPipelineStatus(),renderScheduleHealth()]);
-      if(!quiet)toast(changed?'新一期文章已載入，學習紀錄保留。':'已重新核對今日報告與排程。');
+      if(!quiet)toast(changed&&shouldOpenLatest?'新一期文章已載入，學習紀錄保留。':'已重新核對報告與排程，保留目前選擇。');
     }catch(error){
       if(!quiet)toast('更新失敗：'+String(error.message||error).slice(0,50));
       await renderScheduleHealth();
@@ -1359,11 +1371,17 @@
     showConnectivity();
     $('today-label').textContent=new Date().toLocaleDateString('en-GB',{timeZone:'Asia/Hong_Kong',day:'numeric',month:'short',year:'numeric'});
     updateSavedCount();refreshDashboard();initEvents();renderPipelineStatus();initCloudSync();
-    await preloadOfflineGlossary();
+    preloadOfflineGlossary();
     $('refresh-schedule').addEventListener('click',()=>refreshLatestReport({force:true}));
-    if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{});}
+    if('serviceWorker' in navigator && location.protocol==='https:'){
+      navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{
+        const alert=$('connection-alert');alert.classList.remove('hidden');
+        alert.textContent='離線快取安裝未完成，請保持連線並稍後更新網站。既有學習資料仍保留。';
+      });
+    }
     try{
-      const response=await fetch('./reports/index.json',{cache:'no-store'});if(!response.ok)throw new Error('No report index');
+      const response=await fetchPublic('./reports/index.json',{cache:'no-store'});if(!response.ok)throw new Error('No report index');
+      if(response.headers.get('X-AI-Daily-Cache')==='offline')showConnectivity(true);
       state.index=await response.json();if(!Array.isArray(state.index)||state.index.length>400||!state.index.every(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date||'')))throw new Error('Invalid index');
       if(!state.index.length)throw new Error('Empty index');
       await loadReport(state.index[0].date);

@@ -31,7 +31,8 @@ def shingles(paragraphs: list[str], n: int = 5) -> set[tuple[str, ...]]:
 
 def overlap(left: list[str], right: list[str]) -> float:
     a, b = shingles(left), shingles(right)
-    return round(len(a & b) / max(1, min(len(a), len(b))), 3)
+    # Never round before acceptance: 15.999% is below 16%, 16% is not.
+    return len(a & b) / max(1, min(len(a), len(b)))
 
 
 def long_repeats(left: list[str], right: list[str]) -> int:
@@ -43,24 +44,27 @@ def long_repeats(left: list[str], right: list[str]) -> int:
 
 def recent_articles(reports: Path, today: str, window: int = LOOKBACK_DAYS):
     index_path = reports / "index.json"
-    if not index_path.exists():
-        return []
     current = Date.fromisoformat(today)
-    rows = json.loads(index_path.read_text(encoding="utf-8"))
+    rows = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else []
+    if not isinstance(rows, list):
+        raise ValueError("Originality history index is malformed")
+    # Include dated files omitted from the index; a stale index must never
+    # silently shrink the 60-day comparison corpus.
+    names = {row["date"] for row in rows}
+    names.update(p.stem for p in reports.glob("????-??-??.json"))
     output = []
-    for row in rows:
+    for name in sorted(names):
         try:
-            day = Date.fromisoformat(row["date"])
+            day = Date.fromisoformat(name)
             delta = (current - day).days
             if delta <= 0 or delta > window:
                 continue
-            article = json.loads((reports / (row["date"] + ".json")).read_text(encoding="utf-8"))
-            if isinstance(article.get("essay"), list):
-                output.append(article)
-        except (OSError, ValueError, TypeError, KeyError):
-            # Historical damage must be rejected by validate_site; never
-            # fabricate a history entry or hide it as successful publishing.
-            continue
+            article = json.loads((reports / (name + ".json")).read_text(encoding="utf-8"))
+            if article.get("date") != name or not isinstance(article.get("essay"), list):
+                raise ValueError("Invalid archived article")
+            output.append(article)
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            raise ValueError("Originality history unavailable: " + str(name)) from exc
     return output
 
 
@@ -72,7 +76,7 @@ def audit(report: dict, archive: list[dict]) -> dict:
     if not isinstance(essay, list) or len(essay) < 5:
         return {"pass": False, "issues": ["invalid_prose"], "max_overlap": 1.0}
     style = report.get("writing_style")
-    if style not in STYLES:
+    if report.get("mode") != "reading_feature" and style not in STYLES:
         issues.append("missing_or_unknown_writing_style")
     title = normal(report.get("headline", ""))
     if len(title.split()) < 4:
@@ -88,7 +92,7 @@ def audit(report: dict, archive: list[dict]) -> dict:
         if not isinstance(old_essay, list) or not old_essay:
             continue
         other_date = Date.fromisoformat(prior["date"])
-        if other_date >= today:
+        if not 0 < (today - other_date).days <= LOOKBACK_DAYS:
             continue
         comparisons += 1
         common = overlap(essay, old_essay)
@@ -102,7 +106,7 @@ def audit(report: dict, archive: list[dict]) -> dict:
             issues.append("repeated_conclusion_from_" + prior["date"])
         # The same two adjacent days must have different perspectives, not
         # simply swap the RSS titles in a fixed format.
-        if (today - other_date).days <= 3 and style == prior.get("writing_style"):
+        if style and (today - other_date).days <= 3 and style == prior.get("writing_style"):
             issues.append("recently_reused_writing_style")
         if title == normal(prior.get("headline", "")):
             issues.append("repeated_headline_from_" + prior["date"])

@@ -90,18 +90,16 @@ class V2PipelineTests(unittest.TestCase):
             self.assertFalse((build.REPORTS/(self.day+".json")).exists())
 
     def test_required_news_fails_after_fallback_was_publicly_verified(self):
-        article=reading_backup.build_reading(self.day,self.now)
-        build.put_report(article)
+        article=reading_backup.ensure_reading(self.day,self.now)
         with patch.object(verify_publication,"SITE",self.site),patch.object(verify_publication,"datetime") as clock,patch.object(sys,"argv",["verify_publication.py","--live","--require-news"]),patch.object(verify_publication,"get_public",side_effect=lambda path,getter=None:(self.site/path).read_bytes()) as public_reads,patch.object(verify_publication.time,"sleep",side_effect=AssertionError('Public fixture must verify on the first attempt')):
             clock.now.return_value=self.now
             self.assertEqual(verify_publication.main(),1)
             self.assertIn('release.json',[call.args[0] for call in public_reads.call_args_list])
 
     def test_education_is_not_classified_as_current_news(self):
-        article=reading_backup.build_reading(self.day,self.now)
-        build.put_report(article)
+        article=reading_backup.ensure_reading(self.day,self.now)
         index=read(build.REPORTS/"index.json")
-        self.assertFalse(publication_outcome(index,article,self.day)["news"])
+        self.assertFalse(publication_outcome(index,article,self.day,allow_archived=True)["news"])
 
     def test_first_fallback_retains_new_day_rss_failure_diagnosis(self):
         build.put_status("feed_error",self.now,feeds_ok=0,feeds_total=6)
@@ -109,22 +107,21 @@ class V2PipelineTests(unittest.TestCase):
             self.assertEqual(reading_backup.main(),0)
         status=read(build.STATUS_PATH)
         self.assertEqual(status["state"],"feed_error")
-        self.assertEqual(status["mode"],"reading_feature")
+        self.assertEqual(status["backup"]["kind"],"archived_reading")
         self.assertEqual(status["feeds_ok"],0)
 
     def test_model_crash_is_reported_separately_from_safe_reading(self):
-        article=reading_backup.build_reading(self.day,self.now)
-        build.put_report(article)
-        accepted=publication_outcome(read(build.REPORTS/"index.json"),article,self.day)
+        article=reading_backup.ensure_reading(self.day,self.now)
+        accepted=publication_outcome(read(build.REPORTS/"index.json"),article,self.day,allow_archived=True)
         status=record_attempt({"state":"new_stories_found"},accepted,"failure","success",self.now)
         self.assertEqual(status["state"],"build_failed")
-        self.assertEqual(status["news_outcome"],"educational_fallback")
+        self.assertEqual(status["news_outcome"],"archived_reading")
         self.assertFalse(status["publication"]["news"])
 
     def test_live_checker_rejects_old_cdn_revision(self):
         article=self.generate()
         index=read(build.REPORTS/"index.json")
-        accepted=publication_outcome(index,article,self.day)
+        accepted=publication_outcome(index,article,self.day,allow_archived=True)
         release=read(self.site/"release.json")
         def get(path):
             if path=="reports/"+self.day+".json":
@@ -135,7 +132,7 @@ class V2PipelineTests(unittest.TestCase):
 
     def test_live_checker_accepts_matching_release_and_news(self):
         article=self.generate()
-        accepted=publication_outcome(read(build.REPORTS/"index.json"),article,self.day)
+        accepted=publication_outcome(read(build.REPORTS/"index.json"),article,self.day,allow_archived=True)
         result=verify_live(accepted,read(self.site/"release.json"),lambda path:(self.site/path).read_bytes())
         self.assertTrue(result["news"])
 
@@ -207,7 +204,7 @@ class V2LocalGitAcceptanceTests(unittest.TestCase):
             day="2026-10-11"
             now=datetime.fromisoformat(day+"T07:40:00+08:00")
             with patch.object(build,"REPORTS",worker/"site/reports"),patch.object(build,"STATUS_PATH",worker/"site/system-status.json"),patch.object(publish_reports,"ROOT",worker),patch.object(publish_reports,"REPORTS",worker/"site/reports"),patch.object(publish_reports,"STATUS",worker/"site/system-status.json"),patch.dict(os.environ,{"OLLAMA_ENABLED":"0"}):
-                build.put_report(reading_backup.build_reading(day,now.replace(hour=7,minute=5)))
+                reading_backup.ensure_reading(day,now.replace(hour=7,minute=5))
                 publish_reports.publish()
                 self.assertEqual(read(worker/"site/reports/2026-10-10.json")["word_count"],prior["word_count"])
                 self.assertEqual((worker/"concurrent-code.txt").read_text(),"new main code\n")

@@ -171,8 +171,10 @@ class DailyGuaranteeTests(unittest.TestCase):
                 self.assertIn("python scripts/validate_site.py",workflow)
                 self.assertIn("node --check site/app.js",workflow)
                 self.assertIn("node --check site/sw.js",workflow)
-                self.assertNotIn("python -m unittest discover",workflow,
-                    "Full regression tests must not block daily publishing")
+                for step in workflow.split('\n      - '):
+                    if 'python -m unittest discover' in step:
+                        self.assertIn("if: github.event_name == 'push'",step,
+                            "Regression suites may gate code deployment but must not block scheduled reading")
         ci=(ROOT/".github/workflows/longform-validation.yml").read_text(encoding="utf-8")
         self.assertIn("python -m unittest discover -s tests -v",ci)
         self.assertIn(".github/workflows/daily.yml",ci)

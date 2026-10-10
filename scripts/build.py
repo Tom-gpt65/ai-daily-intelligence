@@ -11,6 +11,7 @@ import os
 import re
 import sys
 import time
+import tempfile
 from datetime import datetime, timedelta, timezone
 from concurrent.futures import ThreadPoolExecutor
 from difflib import SequenceMatcher
@@ -22,7 +23,7 @@ from zoneinfo import ZoneInfo
 from learning_editorial import is_promotional
 from dse_editorial import compose_briefing
 from longform import WRITING_STYLES, category as story_category
-from content_novelty import audit_history, recent_articles
+from content_novelty import audit_history, recent_articles, audit as audit_novelty
 from dse_assessment_v7 import make_exam
 from editorial_quality import inspect as inspect_editorial_quality
 from source_context import enrich as enrich_source_metadata
@@ -599,9 +600,17 @@ def choose_vocab(dictionary: dict) -> list[str]:
 def atomic_json(path: Path, value: object):
     """Avoid a truncated index or report if the builder is interrupted mid-write."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    temp = path.with_suffix(path.suffix + ".tmp")
-    temp.write_text(json.dumps(value, indent=2, ensure_ascii=False), encoding="utf-8")
-    temp.replace(path)
+    # Distinct temporary names prevent parallel writers from sharing .tmp.
+    fd, name = tempfile.mkstemp(prefix=path.name+".", suffix=".tmp", dir=path.parent)
+    temp = Path(name)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            json.dump(value, stream, indent=2, ensure_ascii=False)
+            stream.flush()
+            os.fsync(stream.fileno())
+        temp.replace(path)
+    finally:
+        temp.unlink(missing_ok=True)
 
 
 def put_status(stage: str, now: datetime | None = None, **details):
@@ -613,21 +622,27 @@ def put_status(stage: str, now: datetime | None = None, **details):
 
 
 def put_report(report: dict):
-    REPORTS.mkdir(parents=True, exist_ok=True)
-    target = REPORTS / (report["date"] + ".json")
-    atomic_json(target, report)
-    index_path = REPORTS / "index.json"
-    try:
-        existing = json.loads(index_path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        existing = []
-    existing = [x for x in existing if x.get("date") != report["date"] and x.get("mode") != "demo"]
-    new_index = [{"date": report["date"], "headline": report["headline"], "mode": report["mode"],
-                  "word_count": report["word_count"], "stories": len(report["stories"]),
-                  "updated_at": report.get("updated_at", "")}] + existing
-    new_index.sort(key=lambda x: x["date"], reverse=True)
-    atomic_json(index_path, new_index[:365])
-    print(f"[success] {target} | {report['word_count']} words | {report['mode']}")
+    from report_lock import lock
+    with lock(REPORTS):
+        REPORTS.mkdir(parents=True, exist_ok=True)
+        target = REPORTS / (report["date"] + ".json")
+        index_path = REPORTS / "index.json"
+        try:
+            existing = json.loads(index_path.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            existing = []
+        except (OSError, ValueError) as exc:
+            raise ValueError("Report index is damaged; refusing to discard history") from exc
+        if not isinstance(existing,list) or any(not isinstance(x,dict) or not isinstance(x.get('date'),str) for x in existing):
+            raise ValueError("Report index is malformed; refusing to discard history")
+        existing = [x for x in existing if x.get("date") != report["date"] and x.get("mode") != "demo"]
+        new_index = [{"date": report["date"], "headline": report["headline"], "mode": report["mode"],
+                      "word_count": report["word_count"], "stories": len(report["stories"]),
+                      "updated_at": report.get("updated_at", "")}] + existing
+        new_index.sort(key=lambda x: x["date"], reverse=True)
+        atomic_json(target, report)
+        atomic_json(index_path, new_index[:365])
+        print(f"[success] {target} | {report['word_count']} words | {report['mode']}")
 
 
 def make_questions(stories: list[dict]) -> list[str]:
@@ -698,10 +713,20 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     critical = {"article_length_outside_training_target", "near_duplicate_paragraph_padding",
                 "insufficient_explicit_source_attribution", "insufficient_event_specific_paragraphs",
                 "machine_text_artifact"}
-    candidates = ([(model_draft, True, 0)] if model_draft else [])
-    recent_prose = [r["essay"] for r in recent_articles(REPORTS,date)]
-    candidates += [(essay_fallback(sources,date,variant,recent_prose), False, variant)
-                   for variant in range(48)]
+    try:
+        archive = recent_articles(REPORTS,date)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        put_status('history_unavailable',now,failure_reason=str(exc),source_count=len(sources),**diagnostics)
+        return False
+    recent_prose = [r["essay"] for r in archive]
+    # Numerical/name checks cannot prove that a model invented no other fact.
+    # Keep optional model output as a PRIVATE runner preview; formal S1 uses
+    # attributed extracts and conditional educational analysis only.
+    if model_draft:
+        atomic_json(ROOT/'.cache/model-draft.json',{'date':date,'essay':model_draft,
+                    'published':False,'reason':'Unverified model factual claims cannot enter the formal release'})
+    candidates = ((essay_fallback(sources,date,variant,recent_prose), False, variant)
+                  for variant in range(48))
     essay = None
     good = False
     quality = None
@@ -726,7 +751,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         preview = {"date":date, "mode":"editorial" if model_written else "source_digest",
                    "headline":headline, "essay":candidate, "stories":sources,
                    "writing_style":writing_style}
-        candidate_novelty = audit_history(preview, REPORTS)
+        candidate_novelty = audit_novelty(preview, archive)
         if not candidate_novelty["pass"]:
             last_reasons = candidate_novelty["issues"]
             continue
@@ -762,7 +787,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         return False
     report = {
         "schema": 4,
-        "validation_profile": "v3",
+        "validation_profile": "s1",
         "date": date,
         "updated_at": now.astimezone(TZ).isoformat(),
         "headline": headline,
@@ -782,6 +807,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
                        "evidence_sufficient_for_draft": evidence_adequate,
                        "multi_source_events": sum(s.get("coverage_count", 1) > 1 for s in sources),
                        "translation_enabled": bool(translations),
+                       "model_draft_available": bool(model_draft),
+                       "model_draft_published": False,
                        "model_seconds": model_seconds, "translation_seconds": translation_seconds,
                        "dictionary_seconds": dictionary_seconds},
         "quality_note": "來源引文及篇幅已通過結構檢查；尚未完成逐項事實核查，跨媒體重複報道亦不代表已證實。" if good else "新聞線索來自RSS，並未獲獨立事實核查；英文論證及DSE式題目屬原創練習，不能視為原始報道。",
@@ -796,6 +823,11 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     report["advanced_vocabulary"] = choose_vocab(report["dictionary"])
     if not complete(report):
         raise RuntimeError("Full offline dictionary gate failed unexpectedly")
+    from edition_contract import issues as edition_issues
+    contract_errors=edition_issues(report,reports=REPORTS)
+    if contract_errors:
+        put_status('editorial_quality_rejected',now,source_count=len(sources),quality_issues=contract_errors,**diagnostics)
+        return False
     put_report(report)
     put_status("published", now, latest_date=date, mode=report["mode"], source_count=len(sources),
                model_seconds=model_seconds, translation_seconds=translation_seconds,
@@ -807,11 +839,20 @@ def validate_candidate_sources(stories: object) -> bool:
     """Reject malformed/tampered preflight snapshots before model use and publication."""
     if not isinstance(stories, list) or not 1 <= len(stories) <= 5:
         return False
+    urls, titles = set(), set()
     for i, story in enumerate(stories, 1):
         if not isinstance(story, dict) or story.get("id") != f"S{i}":
             return False
+        if any(not isinstance(story.get(key),str) for key in ('url','title','excerpt','published','publisher')):
+            return False
         if not safe_url(story.get("url", "")) or len(str(story.get("title", ""))) > 180:
             return False
+        canonical = safe_url(story.get("url", ""))
+        title = title_signature(str(story.get("title", "")))
+        if canonical in urls or title in titles:
+            return False
+        urls.add(canonical)
+        titles.add(title)
         if not (0 < len(str(story.get("title", ""))) and len(str(story.get("excerpt", ""))) <= MAX_STORY_EXCERPT):
             return False
         if not parse_entry_date({"published": story.get("published", "")}):
