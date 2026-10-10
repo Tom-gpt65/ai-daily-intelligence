@@ -301,8 +301,8 @@ def compose_briefing(stories: list[dict], day: str | None = None, variant: int =
         return []  # Do not fabricate a 1,000-word article from two titles.
     digest=hashlib.sha256("|".join(str(s["title"]) for s in entries).encode("utf-8")).digest()
     ordinal=CalendarDate.fromisoformat(day).toordinal() if day else int.from_bytes(digest[:4],"big")
-    lead_pool=LEADS+MORE_LEADS
-    bridge_pool=CROSS+EXTRA+MORE_BRIDGES
+    lead_pool=tuple(LEADS)+MORE_LEADS
+    bridge_pool=tuple(CROSS)+tuple(EXTRA)+MORE_BRIDGES
     ending_pool=(ENDING,)+MORE_ENDINGS
     seed=(ordinal+variant)
     paragraphs=[lead_pool[seed%len(lead_pool)]]
