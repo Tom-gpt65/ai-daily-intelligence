@@ -68,10 +68,22 @@ async function exercise(engine,type){
       (await (await caches.open('ai-daily-V1-paper-calm-reading-reports')).keys()).map(key=>key.url)));
     legacy=false;
     await page.evaluate(async()=>{const registration=await navigator.serviceWorker.getRegistration();await registration.update();});
+    // A new reports cache is created during INSTALL, *before* migration
+    // and ACTIVATE complete. Cache-name presence is not a readiness signal:
+    // Chromium can observe V2's empty cache while both V1 caches still exist.
+    // Wait for the actual historical payload, current index and old-cache
+    // cleanup instead of racing activate's asynchronous waitUntil().
     await page.waitForFunction(async()=>{
       const keys=await caches.keys();
-      return keys.includes('ai-daily-V2-stable-reading-reports')&&!keys.includes('ai-daily-V1-paper-calm-reading-reports');
-    },{},{timeout:20000});
+      if(!keys.includes('ai-daily-V2-stable-reading-reports'))return false;
+      if(keys.includes('ai-daily-V1-paper-calm-reading-reports'))return false;
+      const target=await caches.open('ai-daily-V2-stable-reading-reports');
+      const old=await target.match('./reports/2026-10-01.json');
+      const index=await target.match('./reports/index.json');
+      if(!old||!index)return false;
+      try{return (await old.clone().json()).historicSentinel===true;}
+      catch{return false;}
+    },null,{timeout:30000});
     const migrated=await page.evaluate(async()=>{
       const cache=await caches.open('ai-daily-V2-stable-reading-reports');
       const history=await cache.match('./reports/2026-10-01.json');
