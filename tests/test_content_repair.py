@@ -1,5 +1,7 @@
 """Actual S1 repetition incident and regression of every acceptance boundary."""
 import copy
+import contextlib
+import io
 import hashlib
 import json
 from pathlib import Path
@@ -146,6 +148,17 @@ class ContentRepairTests(unittest.TestCase):
         result,missing=fill_dictionary(["organisation's mysteryentity's"],glossary)
         self.assertIn('所有格',result["organisation's"]['translation'])
         self.assertEqual(missing,["mysteryentity's"])
+
+    def test_code_deploy_after_midnight_cannot_claim_historical_news_is_current(self):
+        import verify_publication
+        report=current('2026-10-10')
+        rows=json.loads((ROOT/'site/reports/index.json').read_text('utf-8'))
+        output=io.StringIO()
+        with patch.object(verify_publication,'read_local',return_value=(rows,report)),patch.object(verify_publication,'datetime') as clock,patch.object(sys,'argv',['verify_publication.py']),contextlib.redirect_stdout(output):
+            clock.now.return_value=datetime.fromisoformat('2026-10-11T00:01:00+08:00')
+            self.assertEqual(verify_publication.main(),0)
+        self.assertIn("ARCHIVED READING, not today's news",output.getvalue())
+        self.assertNotIn('CURRENT NEWS',output.getvalue())
 
     def test_failed_repair_leaves_all_published_bytes_intact(self):
         with tempfile.TemporaryDirectory() as folder:

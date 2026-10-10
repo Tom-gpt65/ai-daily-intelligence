@@ -113,7 +113,9 @@ def main():
     parser.add_argument("--record-attempt",action="store_true")
     args=parser.parse_args()
     index,report=read_local()
-    day=datetime.now(HK).date().isoformat() if args.require_news or args.record_attempt else index[0]["date"]
+    # A code-only deployment may retain yesterday's accepted article. Its
+    # latest index date must never become the definition of current news.
+    day=datetime.now(HK).date().isoformat()
     accepted=publication_outcome(index,report,day,allow_archived=True)
     if args.record_attempt:
         path=SITE/"system-status.json"
