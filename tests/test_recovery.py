@@ -1,11 +1,21 @@
 """Missed-report recovery checks, without requiring network or GitHub secrets."""
-import pathlib,sys,unittest
+import pathlib,sys,unittest,tempfile
 from unittest.mock import patch
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 import recover_daily
 
 class RecoveryTests(unittest.TestCase):
+    def accepted_educational_fixture(self,date):
+        from reading_backup import build_reading
+        from content_novelty import audit_history
+        from datetime import datetime
+        report=build_reading(date,now=datetime.fromisoformat(date+'T07:05:00+08:00'))
+        with tempfile.TemporaryDirectory(prefix='recovery-novelty-') as directory:
+            novelty=audit_history(report,pathlib.Path(directory))
+        self.assertTrue(novelty['pass'])
+        report.update(validation_profile='s1',novelty=novelty)
+        return report
     def test_fresh_report_does_not_dispatch(self):
         decision,_=recover_daily.should_dispatch(recover_daily.TODAY,[],recover_daily.TODAY+"T07:50:00+08:00")
         self.assertFalse(decision)
@@ -72,17 +82,18 @@ class RecoveryTests(unittest.TestCase):
         self.assertFalse(recover_daily.edition_is_readable(index,{**report,"practice":{"items":[]}}))
         self.assertFalse(recover_daily.edition_is_readable({**index,"stories":4},report))
     def test_educational_backup_accepted_when_entire_dictionary_exists(self):
-        from reading_backup import build_reading
-        report=build_reading(recover_daily.TODAY)
-        row={key:report[key] for key in ('date','mode','updated_at','word_count')}
-        row['stories']=0
-        self.assertTrue(recover_daily.edition_is_readable(row,report))
         from edition_guarantee import article_words
-        report['dictionary'].pop(next(iter(article_words(report['essay']))))
-        self.assertFalse(recover_daily.edition_is_readable(row,report))
+        for day in ('2026-10-11','2027-01-01'):
+            with self.subTest(date=day):
+                report=self.accepted_educational_fixture(day)
+                row={key:report[key] for key in ('date','mode','updated_at','word_count')}
+                row['stories']=0
+                self.assertTrue(recover_daily.edition_is_readable(row,report,expected=day))
+                self.assertFalse(recover_daily.edition_is_readable(row,{**report,'validation_profile':'v2'},expected=day))
+                report['dictionary'].pop(next(iter(article_words(report['essay']))))
+                self.assertFalse(recover_daily.edition_is_readable(row,report,expected=day))
     def test_late_educational_reserve_does_not_suppress_news_recovery(self):
-        from reading_backup import build_reading
-        report=build_reading(recover_daily.TODAY)
+        report=self.accepted_educational_fixture(recover_daily.TODAY)
         row={key:report[key] for key in ('date','mode','updated_at','word_count')}
         row['stories']=0
         quality=recover_daily.current_news_is_readable(row,report)
