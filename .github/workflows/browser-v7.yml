@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - '.github/workflows/daily.yml'
+      - '.github/workflows/early-reading.yml'
+      - 'tests/test_v6.py'
+      - 'tests/test_daily_guarantee.py'
       - 'site/cloud-sync.js'
       - 'site/reading-theme-v1.css'
       - 'tests/browser_reading_theme_v1.js'
