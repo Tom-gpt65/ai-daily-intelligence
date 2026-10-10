@@ -9,7 +9,7 @@ class FirstReleaseTests(unittest.TestCase):
     def test_public_version_and_asset_cache(self):
         html=(SITE/"index.html").read_text(encoding="utf-8")
         worker=(SITE/"sw.js").read_text(encoding="utf-8")
-        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">V2',html)
+        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">V3',html)
         self.assertIn('./v1.css?v=3',html)
         self.assertIn('./app.js?v=3',html)
         self.assertNotIn('v16.css',html)
