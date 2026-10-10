@@ -92,6 +92,7 @@ Github Actions 的通知取決於你的 GitHub 通知設定與平台能否運行
 
 - `tests/test_v6.py` 明確允許已標示為「Not today's AI news」、零來源、擁有七道非官方理解題及完整離線字義的合法備援，亦嚴格要求新聞模式有至少三條可追溯來源，防止把備援偽裝成新聞。
 - `tests/browser_regression_v7.js` 同時修正了另一個跨日測試假設：有來源的新聞版需要多個新聞章節捷徑，但教育備援只有「引言／結論」兩個快捷鍵、下拉選單仍提供每一段；因此不得把合法備援誤判為「手機導覽消失」。
+- `site/app.js` 的每日狀態列現會**同時說明「教育文章已提供」與「新聞更新工作失敗」**，不會像 10 月 10 日的舊版本一樣，在讀到 `reading_feature` 時立即顯示綠色狀態並跳過 GitHub 排程失敗檢查。新增 Chromium／WebKit 狀態測試，分開模擬「新聞正常／失敗」與「教育備援存在／不存在」。
 - `test_morning_fallback_does_not_block_later_news_generation` 使用不同日期的**合成備援**，即使 PR 當時最新文章是新聞，仍會測試下一日先有備援的情境；另有反例測試阻止不當來源標籤。
 - `daily.yml`／`early-reading.yml` 的執行期門檻只使用 `scripts/validate_site.py` 驗證真實公開文章與本機 JS 語法。**所有單元及瀏覽器回歸測試繼續於 PR／CI 執行**，但不再讓測試程式對動態最新文章的假設阻斷每日發布。
 - `test_daily_guarantee.py` 定期檢查上述 CI／發布職責分離，並要求 PR CI 在文章產生程式及早上 workflow 異動時啟動，防止往後把完整單元測試重新放回每天出稿的前置硬門檻。
