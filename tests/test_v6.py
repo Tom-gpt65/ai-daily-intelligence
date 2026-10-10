@@ -7,6 +7,8 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 import dse_editorial
+from edition_guarantee import complete
+from reading_backup import build_reading
 
 class DseStudentTests(unittest.TestCase):
     def setUp(self):
@@ -42,16 +44,57 @@ class DseStudentTests(unittest.TestCase):
                 self.assertLess(question["answer"],len(question["options"]))
                 self.assertTrue(question["explanation"])
             else:self.assertTrue(question["guidance"])
+    def assert_valid_educational_article(self,report):
+        """Validate both genuine news and clearly labelled early reading.
+
+        The 07:05 safety net intentionally publishes reading_feature BEFORE
+        the 07:40 news upgrade. Rejecting that valid intermediate state
+        deadlocks daily.yml's pre-publication test gate every morning.
+        """
+        self.assertIn(report.get("mode"),("source_digest","editorial","reading_feature"))
+        self.assertIs(report.get("demo"),False)
+        self.assertTrue(complete(report),"Public text must retain offline dictionary coverage")
+        practice=report.get("practice",{})
+        self.assertIs(practice.get("official"),False)
+        self.assertGreaterEqual(len(practice.get("items",[])),7)
+        sources=report.get("stories")
+        self.assertIsInstance(sources,list)
+        if report["mode"]=="reading_feature":
+            self.assertEqual(sources,[],"Fallback may not imply current source reporting")
+            self.assertIn("Not today's AI news",report.get("subtitle",""))
+            self.assertTrue(report.get("processing",{}).get("backup_reading"),
+                            "Fallback must be identified as an educational reserve")
+        else:
+            self.assertGreaterEqual(len(sources),3,
+                                    "Current-news modes require at least three stories")
+            self.assertTrue(all(isinstance(s,dict) and s.get("id") and s.get("title")
+                                for s in sources),"News sources must be traceable")
+
     def test_public_article_is_educational_not_certified(self):
         index=json.loads((ROOT/"site/reports/index.json").read_text(encoding="utf-8"))
         report=json.loads((ROOT/"site/reports"/(index[0]["date"]+".json")).read_text(encoding="utf-8"))
-        self.assertIn(report["mode"],("source_digest","editorial"))
-        self.assertFalse(report["demo"])
-        self.assertTrue(report.get("practice"))
-        self.assertGreaterEqual(len(report["practice"]["items"]),3)
-        if report["mode"]=="source_digest":
-            self.assertEqual(7,len(report["practice"]["items"]))
-        self.assertTrue(report["stories"])
+        self.assertEqual(report["date"],index[0]["date"])
+        self.assertEqual(report["mode"],index[0]["mode"])
+        self.assert_valid_educational_article(report)
+
+    def test_morning_fallback_does_not_block_later_news_generation(self):
+        # Test possible next-day content even while today's latest edition is
+        # a news digest. This caught the 2026-10-10 scheduled run deadlock.
+        for day in ("2026-10-10","2026-10-11","2026-11-01"):
+            with self.subTest(day=day):
+                self.assert_valid_educational_article(build_reading(day))
+
+    def test_educational_fallback_cannot_masquerade_as_sourced_news(self):
+        fallback=build_reading("2026-10-10")
+        fallback["stories"]=[{"id":"S1","title":"Unverified headline"}]
+        with self.assertRaises(AssertionError):
+            self.assert_valid_educational_article(fallback)
+
+    def test_news_mode_still_requires_multiple_sources(self):
+        article=build_reading("2026-10-10")
+        article["mode"]="source_digest"
+        with self.assertRaises(AssertionError):
+            self.assert_valid_educational_article(article)
     def test_iphone_support_present(self):
         html=(ROOT/"site/index.html").read_text(encoding="utf-8")
         css=(ROOT/"site/v6.css").read_text(encoding="utf-8")
