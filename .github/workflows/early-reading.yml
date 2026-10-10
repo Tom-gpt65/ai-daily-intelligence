@@ -46,6 +46,10 @@ jobs:
           node --check site/sw.js
       - name: Ensure dated offline-complete educational passage
         run: python scripts/reading_backup.py --if-missing
+      # Validate today's ACTUAL newly generated reserve, not just yesterday's
+      # archive: prevents handing an invalid 07:05 state to the 07:40 job.
+      - name: Re-validate actual morning edition before publication
+        run: python scripts/validate_site.py
       - name: Conflict-safe publish without deleting previous reading history
         run: |
           git config user.name "github-actions[bot]"
