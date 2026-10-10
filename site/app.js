@@ -443,7 +443,7 @@
         el.textContent='⚠ 今日新閱讀未能通過嚴格原創性驗證，或歷史資料無法完整核對。現提供 '+(info.backup?.date||state.report?.date||'既有')+' 的留存閱讀，並非今日新聞或今日新稿。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='repetitive_content'){
-        el.textContent='⚠ 新聞來源已收集，但新文章與近期內容、開首、結論或寫作方式過於相似；S1 已拒絕重複稿件，保留明確標示的教育備援。';
+        el.textContent='⚠ 新聞來源已收集，但新文章與近期內容、開首、結論或寫作方式過於相似；S1 已拒絕重複稿件，保留已驗證的閱讀文章。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='incomplete_dictionary'){
         // A green Actions workflow can mean only that the dated reading
@@ -455,7 +455,7 @@
           (Number.isFinite(count)?'有 '+count+' 個':'有')+
           '英文詞缺乏離線繁體中文解釋'+
           (examples.length?'（'+examples.join('、')+'）':'')+
-          '。現保留今日教育閱讀；GitHub 工作成功只代表備援正常部署。';
+          '。現提供 '+(state.report?.date||info.latest_date||'既有')+' 的已驗證閱讀；部署成功不代表本輪產生了新新聞。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='build_failed'){
         el.textContent='⚠ 新聞生成工作失敗，現保留已驗證的閱讀文章。請查看工作紀錄；教育備援並非當日新聞。';
@@ -466,7 +466,7 @@
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='published'){
         el.textContent=info.mode==='reading_feature'?
-          '今日提供已驗證的教育閱讀備援，並非當日新聞；新聞更新結果請查看工作紀錄。':
+          '現提供 '+(state.report?.date||info.latest_date||'既有')+' 的教育閱讀，並非當日新聞；新聞更新結果請查看工作紀錄。':
           '資料處理最近一次完成：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。此為生成流程時間，不代表網站在該刻已公開發布。';
         el.classList.remove('hidden');el.classList.add('pipeline-success');
         if(info.mode==='reading_feature')el.classList.remove('pipeline-success');

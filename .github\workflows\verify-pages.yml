@@ -1,0 +1,120 @@
+name: Verify public AI Daily website
+
+on:
+  workflow_run:
+    workflows: ['AI Daily Intelligence — free daily briefing', 'Early daily English reading safety net']
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+
+      - name: Check free whole-passage translation provider (external dependency)
+        id: optional-translation
+        continue-on-error: true
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          url='https://api.mymemory.translated.net/get?langpair=en%7Czh-TW&q=Evidence%20must%20be%20evaluated'
+          curl --fail --location --silent --show-error --retry 2 --max-time 25 \
+            -D /tmp/translation-headers -o /tmp/translation-response "$url"
+          python - <<'PY'
+          import json
+          data=json.load(open('/tmp/translation-response',encoding='utf-8'))
+          value=str(data.get('responseData',{}).get('translatedText',''))
+          assert any('\u3400' <= c <= '\u9fff' for c in value), 'Provider did not return Chinese text'
+          print('Free translation API returned Chinese text')
+          PY
+          if grep -iq '^access-control-allow-origin:' /tmp/translation-headers; then
+            grep -i '^access-control-allow-origin:' /tmp/translation-headers
+          else
+            echo "::warning::No CORS response header found; browsers may block direct full-passage translation"
+          fi
+      - name: Disclose optional translation failure
+        if: steps.optional-translation.outcome == 'failure'
+        run: echo '::warning title=Optional full translation unavailable::Public reading and offline vocabulary are verified independently of this external service.'
+      - name: Check GitHub Pages public access and asset responses
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          base="https://tom-gpt65.github.io/ai-daily-intelligence/"
+          for path in "" "index.html" "app.js" "cloud-sync.js" "cloud-config.json" "offline-glossary.json" "reading-glossary.json" "news-glossary.json" "style.css" "v6.css" "v11.css" "v12.css" "v1.css" "reading-theme-v1.css" "sw.js" "reports/index.json"; do
+            url="${base}${path}"
+            status=$(curl --location --silent --show-error --retry 5 --retry-delay 6 --retry-connrefused --max-time 30 --output /tmp/ai-response --write-out "%{http_code}" "$url")
+            echo "Public URL check: ${url} => HTTP ${status}"
+            if [ "$status" != 200 ]; then
+              echo "::error::Website resource returned HTTP ${status}: ${url}"
+              exit 1
+            fi
+            if [ "$path" = "index.html" ] || [ -z "$path" ]; then
+              grep -q 'AI Daily Intelligence' /tmp/ai-response || { echo "::error::Unexpected home page content"; exit 1; }
+            fi
+          done
+          echo "PUBLIC_SITE_VERIFIED=true" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://tom-gpt65.github.io/ai-daily-intelligence/" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Verify published article and original HKDSE-style exercise schema
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python - <<'PY'
+          import json,urllib.request
+          base='https://tom-gpt65.github.io/ai-daily-intelligence/'
+          def load(url):
+              with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'AI-Daily-Public-Schema-Audit'}),timeout=20) as response:
+                  return json.load(response)
+          index=load(base+'reports/index.json')
+          assert index and index[0].get('date'), 'Missing latest article'
+          date=index[0]['date']
+          report=load(base+'reports/'+date+'.json')
+          assert not report.get('demo'), 'Latest report must not be a fictional demo'
+          assert report.get('mode') in ('editorial','source_digest','reading_feature'),'Unknown report mode'
+          if report['mode'] != 'reading_feature':
+              assert len(report.get('stories',[]))>=3,'Current-news source links missing'
+          assert len(report.get('essay',[]))>=5,'Reading text incomplete'
+          assert 1000<=report.get('word_count',0)<=1550,'English practice must contain 1000–1550 English words'
+          questions=report.get('practice',{}).get('items',[])
+          assert len(questions)>=7,'Daily HKDSE-style exercise incomplete'
+          assert all(isinstance(q.get('paragraph'),int) and 1<=q['paragraph']<=len(report['essay']) for q in questions),'DSE evidence paragraph pointers invalid'
+          assert all(q.get('evidence_quote') for q in questions),'DSE text quotations missing'
+          assert all(q.get('evidence') for q in questions),'Answer evidence pointers missing'
+          import re
+          tokens={w.lower() for p in report['essay'] for w in re.findall(r"\b[A-Za-z]+(?:['’\-][A-Za-z]+)*\b",p)}
+          glossary=report.get('dictionary',{})
+          missing=[w for w in tokens if not isinstance(glossary.get(w),dict) or
+                   not re.search(r'[\u3400-\u9fff]',str(glossary[w].get('translation','')))]
+          assert not missing,'Every word must have offline Chinese meaning: '+str(missing[:10])
+          if report.get('mode')=='reading_feature':
+              assert not report.get('stories'),'Educational backup cannot masquerade as news'
+              assert ('not today' in report.get('subtitle','').lower() or
+                      'not a historical news' in report.get('subtitle','').lower()),"Educational reading must be labelled not current news"
+          print('Offline dictionary covered:',len(tokens),'unique clickable word forms')
+          print('Published edition:',date)
+          print('Words:',report['word_count'],'DSE-style questions:',len(questions))
+          print('Mode:',report['mode'],'Official HKEAA endorsement: not claimed')
+          with urllib.request.urlopen(base+'app.js',timeout=20) as response:
+              javascript=response.read().decode('utf-8')
+          assert 'renderScheduleHealth' in javascript,'Scheduled-workflow status display not deployed'
+          assert 'translationProgress' in javascript,'Resumable translation code not deployed'
+          assert 'resetReadingLayout' in javascript,'Non-destructive reading layout reset not deployed'
+          assert 'refreshLatestReport' in javascript,'Cross-day revalidation logic not deployed'
+          with urllib.request.urlopen(base+'index.html',timeout=20) as response:
+              markup=response.read().decode('utf-8')
+          assert './v1.css?v=s1-2' in markup,'Newest responsive stylesheet missing from HTML'
+          assert './app.js?v=s1-2' in markup,'Version-busted reader code missing from HTML'
+          assert './cloud-sync.js?v=s1-2' in markup,'Cloud synchronization module not included'
+          with urllib.request.urlopen(base+'sw.js',timeout=20) as response:
+              worker=response.read().decode('utf-8')
+          assert 'ai-daily-S1-2-reading' in worker,'Updated iPhone cache version missing'
+          assert './reading-theme-v1.css?v=s1-2' in markup,'Reading colour stylesheet not deployed'
+          assert "boundedFetch(event.request,{cache:'no-cache'})" in worker,'Reader shell not network-first'
+          print('S1 content, offline dictionary and responsive reading VERIFIED')
+          PY

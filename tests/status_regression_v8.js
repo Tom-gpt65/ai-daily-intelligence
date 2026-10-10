@@ -77,11 +77,15 @@ async function dictionaryGateDiagnostic(engine,browser){
   const context=await instance.newContext({viewport:{width:1024,height:768}});
   const page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
+  const archivedRow=index[1];
+  await page.route(url=>url.pathname.endsWith('/reports/index.json'),route=>
+    route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([archivedRow])}));
   await page.route(url=>url.pathname.endsWith('/system-status.json'),route=>
     route.fulfill({status:200,contentType:'application/json',
       body:JSON.stringify({state:'incomplete_dictionary',missing_count:2,
         missing_examples:['openai','openproblembench'],
-        checked_at:new Date().toISOString(),feeds_failed:0})}));
+        checked_at:new Date().toISOString(),feeds_failed:0,
+        backup:{kind:'archived_reading',date:archivedRow.date,requested_date:hkToday}})}));
   await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded',timeout:20000});
   const alert=page.locator('#pipeline-alert');
   await page.waitForFunction(()=>document.querySelector('#pipeline-alert')?.textContent?.includes('新聞已收集，但新稿未能發布'),null,{timeout:15000});
@@ -89,7 +93,9 @@ async function dictionaryGateDiagnostic(engine,browser){
   const label=await alert.innerText();
   assert.match(label,/openai/);
   assert.match(label,/openproblembench/);
-  assert.match(label,/備援正常部署/);
+  assert.match(label,/部署成功不代表本輪產生了新新聞/);
+  assert.ok(label.includes(archivedRow.date),'Original archive date is missing');
+  assert.ok(!label.includes('今日教育閱讀'),'Archived sourced news falsely labelled today\'s educational reading');
   assert.ok(!await alert.evaluate(el=>el.classList.contains('pipeline-success')),
     engine+' a rejected-news article must not display green publication success');
   assert.deepEqual(errors,[],engine+' dictionary alert JavaScript errors');
