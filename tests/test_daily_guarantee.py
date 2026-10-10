@@ -104,8 +104,10 @@ class DailyGuaranteeTests(unittest.TestCase):
         self.assertIn("cron: '25 6 * * *'",morning)
         self.assertIn("timezone: 'Asia/Hong_Kong'",morning)
         self.assertIn("python scripts/morning_canary.py",morning)
-        self.assertEqual(daily.count("continue-on-error: true"),2,
-                         "External feed/build failures must not prevent the reserve")
+        self.assertEqual(daily.count("continue-on-error: true"),3,
+                         "Optional dependencies, RSS and generation must not block the first reading")
+        self.assertIn("continue-on-error: true",early,
+                      "Optional converter must not block the 07:05 daily reserve")
         self.assertIn("always() && github.event_name != 'push' && steps.site-preflight.outcome == 'success'",daily)
         self.assertIn("Validate FINAL dated article before publishing",daily)
         self.assertIn("python scripts/validate_site.py",daily)
