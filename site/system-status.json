@@ -1,31 +1,41 @@
 {
   "schema": 1,
-  "checked_at": "2026-10-10T14:45:08.056705+08:00",
-  "state": "published",
-  "latest_date": "2026-10-10",
-  "mode": "source_digest",
+  "checked_at": "2026-10-11T00:14:46.509691+08:00",
+  "state": "insufficient_evidence",
   "source_count": 5,
-  "model_seconds": 320.744,
-  "translation_seconds": 0,
-  "dictionary_seconds": 22.623,
+  "failure_reason": "No coherent source-specific outline: unsupported or repeated analytical contexts",
+  "generation_issues": [
+    "unsupported_or_repeated_analytical_context"
+  ],
   "feeds_total": 6,
   "feeds_ok": 6,
   "feeds_failed": 0,
   "entries_seen": 145,
-  "entries_relevant": 56,
+  "entries_relevant": 55,
   "feed_failures": [],
-  "event_clusters": 53,
+  "event_clusters": 48,
   "multi_source_events": 0,
-  "rss_duration_seconds": 0.886,
+  "rss_duration_seconds": 4.332,
   "stories_selected": 5,
   "metadata_checked": 5,
   "metadata_enriched": 0,
+  "latest_date": "2026-10-10",
+  "mode": "source_digest",
+  "backup": {
+    "kind": "archived_reading",
+    "date": "2026-10-10",
+    "requested_date": "2026-10-11",
+    "reason": "No reserve passed the strict 60-day <16% originality gate"
+  },
   "publication": {
     "date": "2026-10-10",
     "mode": "source_digest",
-    "updated_at": "2026-10-10T20:48:21.064155+08:00",
-    "news": true,
-    "offline_dictionary_complete": true
+    "updated_at": "2026-10-10T23:41:50.492761+08:00",
+    "news": false,
+    "offline_dictionary_complete": true,
+    "backup": "archived_reading",
+    "requested_date": "2026-10-11"
   },
-  "news_outcome": "current_news_available"
+  "news_outcome": "archived_reading",
+  "workflow_run_url": "https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38066748474"
 }
