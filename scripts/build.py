@@ -22,7 +22,7 @@ from zoneinfo import ZoneInfo
 from learning_editorial import is_promotional
 from dse_editorial import compose_briefing
 from longform import WRITING_STYLES, category as story_category
-from content_novelty import audit_history
+from content_novelty import audit_history, recent_articles
 from dse_assessment_v7 import make_exam
 from editorial_quality import inspect as inspect_editorial_quality
 from source_context import enrich as enrich_source_metadata
@@ -381,9 +381,10 @@ def recent_report_stories(today: str, days: int = 2) -> list[dict]:
     return out
 
 
-def essay_fallback(stories: list[dict], day: str | None = None, variant: int = 0) -> list[str]:
-    """Sourced educational analysis with a date-specific V3 writing design."""
-    return compose_briefing(stories, day=day, variant=variant)
+def essay_fallback(stories: list[dict], day: str | None = None, variant: int = 0,
+                   avoid_essays: list[list[str]] | None = None) -> list[str]:
+    """Sourced educational analysis, selected against actually published prose."""
+    return compose_briefing(stories, day=day, variant=variant, avoid_essays=avoid_essays)
 
 
 def model_request(prompt: str, timeout=520) -> str:
@@ -698,7 +699,9 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
                 "insufficient_explicit_source_attribution", "insufficient_event_specific_paragraphs",
                 "machine_text_artifact"}
     candidates = ([(model_draft, True, 0)] if model_draft else [])
-    candidates += [(essay_fallback(sources,date,variant), False, variant) for variant in range(48)]
+    recent_prose = [r["essay"] for r in recent_articles(REPORTS,date)]
+    candidates += [(essay_fallback(sources,date,variant,recent_prose), False, variant)
+                   for variant in range(48)]
     essay = None
     good = False
     quality = None
