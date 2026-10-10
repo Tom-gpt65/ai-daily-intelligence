@@ -107,8 +107,10 @@ class V3OriginalityTests(unittest.TestCase):
                             )[i]
                             parts=row["excerpt"].split(". ")
                             row["excerpt"]=". ".join(parts[1:]+parts[:1])
-                    self.assertTrue(build.build_live(now,None,sources=rows),
-                        "New morning should not be rejected merely because previous V3 exists")
+                    result=build.build_live(now,None,sources=rows)
+                    self.assertTrue(result,
+                        "New morning should not be rejected merely because previous V3 exists: "+
+                        build.STATUS_PATH.read_text(encoding="utf-8"))
                     report=json.loads((build.REPORTS/(day+".json")).read_text("utf-8"))
                     self.assertEqual(report.get("validation_profile"),"v3")
                     self.assertTrue(report.get("novelty",{}).get("pass"))
