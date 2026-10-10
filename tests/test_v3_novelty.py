@@ -54,8 +54,10 @@ class V3OriginalityTests(unittest.TestCase):
         second=compose_briefing(news,day="2026-10-12")
         self.assertNotEqual(first[0],second[0])
         self.assertNotEqual(first[-1],second[-1])
-        self.assertEqual(len(first),len(second))
+        self.assertNotEqual(len(first),len(second),
+                            "Two consecutive V3 narrative designs need genuinely different paragraph counts")
         self.assertGreaterEqual(len(first),8)
+        self.assertGreaterEqual(len(second),8)
         for essay in (first,second):
             for source in news:
                 self.assertIn("["+source["id"]+"]"," ".join(essay))
