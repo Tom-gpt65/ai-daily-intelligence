@@ -84,7 +84,7 @@ async function dictionaryGateDiagnostic(engine,browser){
         checked_at:new Date().toISOString(),feeds_failed:0})}));
   await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded',timeout:20000});
   const alert=page.locator('#pipeline-alert');
-  await alert.getByText(/新聞已收集，但新稿未能發布/).waitFor({timeout:15000});
+  await page.waitForFunction(()=>document.querySelector('#pipeline-alert')?.textContent?.includes('新聞已收集，但新稿未能發布'),null,{timeout:15000});
   const label=await alert.innerText();
   assert.match(label,/openai/);
   assert.match(label,/openproblembench/);
