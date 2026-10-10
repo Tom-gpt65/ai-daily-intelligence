@@ -37,7 +37,7 @@
 ## 驗證紀錄（本機與 GitHub 正式驗收）
 
 - 基線：原程式 Python 171 項，Windows 臨時目錄改到工作區後 OK、skipped=1；首次預設 temp 執行因 sandbox 權限失敗，沒有把該輪列作通過。
-- 本機 Python **186 項，185 passed、1 skipped**；Windows MSYS bare Git 限制導致跳過。GitHub Linux **186 項全通過、零跳過**，已實際核對並行 Git 修改、純留存備援不重放舊稿及晚到備援不能降級新聞。
+- 最終本機 Python **188 項，187 passed、1 skipped**；Windows MSYS bare Git 限制導致跳過。GitHub Linux **188 項全通過、零跳過**，已實際核對並行 Git 修改、純留存備援不重放舊稿、晚到備援不能降級新聞與錯誤 Git 路徑拒絕發布。
 - Node：6 組實際測試及全部 site／test JS 語法檢查通過，包含帳戶 race、快取失敗、私人成員隔離與詞庫相容。
 - 靜態站點驗收：PASS。歷史重製預覽：PASS，最高 pairwise 五詞片語約 **13.4%**；未修改正式三日文章。
 - 連續未來日期與年末跨日由同一臨時 archive 依序執行，包含 +1／2／3／4／5／7／30／59／60／61 日。重複來源不產生新新聞；RSS 中斷及無詞義輸入拒稿；原稿保留，備援名稱與日期明確。
@@ -46,6 +46,17 @@
 - [正式 S1 Pages 發布與公開核對](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057962972)：PASS；[公開 PWA／Auth／匿名隔離健康](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38058121217)：PASS。本機亦執行 verify_publication --live，完整 report、release、核心資源與 status 一致。網站保留 10 月 10 日既有 V3 來源閱讀；這次 code release 沒有宣稱重新生成新聞。
 - 即時來源測試：6/6 RSS 可讀，取得 5 則候選。在完整 ECDICT＋OpenCC 下仍缺 devday、ma、medbenchagent、vision-language、year's，程式拒稿（incomplete_dictionary），臨時站點通過驗收，正式資料未改。不把「安全拒稿測試成功」稱作「當日新聞生成成功」。
 - 初次 Linux 驗收曾失敗：兩個舊版文字斷言、六項 CRLF／LF 雜湊差異與一個純備援重放舊稿問題；修正後重跑全通過。首次 main 發布的兩個公開驗證先於部署讀到 V3 而失敗；觸發改為兩個發布 workflow completed 後執行，並重跑確認。後續驗證詳見發布後工作紀錄。
+- 第二批修正的完整 Git tree 比對又發現 14 個 Windows backslash 檔名；先前綠色檢查實際驗證的是 canonical 的 s1-1。此輪不列作 s1-2 部署成功。已提交 [路徑修正 PR #13](https://github.com/Tom-gpt65/ai-daily-intelligence/pull/13)，使用 POSIX 正式檔名，移除誤建副本，134 個正式檔案與預期 blob 全部相符。
+- [最終 Linux 完整驗收](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060012571)：188 項全通過，Node／站點／連續跨日模擬亦通過；[合約與故障模擬](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060012384)、[首發 canary](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060012298) 通過。本機公開核對對尚未部署的 s1-2 正確拒絕；更新到最後 main 的實際 status 後才進行最終公開比對。
+- 已實際執行 [獨立巡檢](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38059508286) 與 [補救狀態檢查](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057962912)，均通過。手動巡檢使用 --skip-schedule，不把手動執行冒稱為未來排程已成功。
+
+## 正式 s1-2 發布後驗證
+
+- [最後 Pages 部署](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060286450)、[main 長篇驗收](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060286499)、[main 瀏覽器](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060286529)、[main 首發 canary](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060286503)、[main 故障模擬](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060286485) 全部 PASS。
+- [第一個備援發布](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060351246) 實際等待主部署完成後執行；[第二個備援發布](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060476607) 亦成功，沒有取消前一個工作。它們是手動測試 07:05 流程，不冒稱翌日 cron 已執行。
+- [部署後公開網站](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060433421)、[部署後雲端匿名隔離](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060433394)、[部署後 PWA 健康](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060433392) 全部 PASS；公開核對現在等待發布完成才啟動。
+- 本機 verify_publication --live：PASS。14 個公開檔案逐一比較：PASS，包含 s1-2 release、SW、HTML、JS、status、index 與既有三日文章；只有文字檔正規化 CRLF／LF，原始公開三日 JSON SHA256 仍與基線相同。
+- [程式自動歷史預覽](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38060493111)：PASS，產出 historical-preview artifact；沒有寫入正式文章或重新部署。
 
 ## 路徑審查與有限責任
 
