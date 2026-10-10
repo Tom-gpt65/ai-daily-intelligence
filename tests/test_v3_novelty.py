@@ -18,10 +18,16 @@ def prior(day):
     return json.loads((ROOT/"site/reports"/(day+".json")).read_text(encoding="utf-8"))
 
 
+def legacy_duplicate(day):
+    """Immutable evidence from V2, independent of subsequently rebuilt live reports."""
+    fixture=json.loads((ROOT/"tests/fixtures/v2-repeated-2026-10-09-10.json").read_text(encoding="utf-8"))
+    return fixture["previous" if day=="2026-10-09" else "following"]
+
+
 class V3OriginalityTests(unittest.TestCase):
     def test_identifies_actual_october_9_10_recycled_copy(self):
-        before=prior("2026-10-09")
-        after=copy.deepcopy(prior("2026-10-10"))
+        before=legacy_duplicate("2026-10-09")
+        after=copy.deepcopy(legacy_duplicate("2026-10-10"))
         self.assertEqual(before["headline"],after["headline"])
         self.assertEqual(long_repeats(before["essay"],after["essay"]),3)
         self.assertGreater(overlap(before["essay"],after["essay"]),0.60)
@@ -122,7 +128,7 @@ class V3OriginalityTests(unittest.TestCase):
                 self.assertNotEqual(reports[0]["essay"][0],reports[1]["essay"][0])
                 self.assertNotEqual(reports[0]["essay"][-1],reports[1]["essay"][-1])
                 self.assertNotEqual(reports[0]["writing_style"],reports[1]["writing_style"])
-                self.assertLess(overlap(reports[0]["essay"],reports[1]["essay"]),0.48)
+                self.assertLess(overlap(reports[0]["essay"],reports[1]["essay"]),0.16)
             finally:
                 build.REPORTS,build.STATUS_PATH,validate_site.SITE=saved
 
