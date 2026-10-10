@@ -104,8 +104,14 @@ class DailyGuaranteeTests(unittest.TestCase):
         self.assertIn("cron: '25 6 * * *'",morning)
         self.assertIn("timezone: 'Asia/Hong_Kong'",morning)
         self.assertIn("python scripts/morning_canary.py",morning)
-        self.assertEqual(daily.count("continue-on-error: true"),3,
-                         "Optional dependencies, RSS and generation must not block the first reading")
+        self.assertGreaterEqual(daily.count("continue-on-error: true"),4,
+                                "Optional OpenCC, RSS, Ollama and generation must not block the first reading")
+        for label in ("Install free dependencies", "Collect recent RSS headlines",
+                      "Install free local model when relevant", "Generate daily briefing"):
+            with self.subTest(label=label):
+                segment=daily.split("- name: "+label,1)[1].split("\n      - name: ",1)[0]
+                self.assertIn("continue-on-error: true",segment,
+                    label+" must not skip the safe first reading after external failure")
         self.assertIn("continue-on-error: true",early,
                       "Optional converter must not block the 07:05 daily reserve")
         self.assertIn("always() && github.event_name != 'push' && steps.site-preflight.outcome == 'success'",daily)
