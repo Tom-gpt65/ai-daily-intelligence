@@ -17,6 +17,9 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/longform-validation.yml'
+      - '.github/workflows/daily.yml'
+      - '.github/workflows/early-reading.yml'
+      - '.github/workflows/recovery.yml'
       - 'scripts/**'
       - 'tests/**'
       - 'site/reports/**'
