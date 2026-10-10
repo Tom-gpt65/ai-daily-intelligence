@@ -1,0 +1,50 @@
+name: V1 morning first-attempt publication canary
+
+on:
+  # Run BEFORE the 07:05 fallback and 07:40 live news window.
+  # GitHub-hosted schedules can start late, so CI also runs this on edits.
+  schedule:
+    - cron: '25 6 * * *'
+      timezone: 'Asia/Hong_Kong'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/first-attempt-canary.yml'
+      - '.github/workflows/daily.yml'
+      - '.github/workflows/early-reading.yml'
+      - 'scripts/morning_canary.py'
+      - 'scripts/reading_backup.py'
+      - 'scripts/validate_site.py'
+
+permissions:
+  contents: read
+
+jobs:
+  first-attempt:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Simulate valid 07:05 reserve before FIRST 07:40 news attempt
+        run: |
+          python scripts/morning_canary.py
+          {
+            echo '### V1 morning first-attempt readiness'
+            echo '- Simulated 07:05 backup as newest public article, then ran the actual publication validator.'
+            echo '- Also checked future HK dates with no network, user data, or publication.'
+            echo '- PASS is a deterministic software-readiness result; it is not a guarantee that external RSS or GitHub are available.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Provide pre-news diagnosis if the canary fails
+        if: failure()
+        run: |
+          echo '::error title=V1 Morning Canary Failed::The earliest fallback/news transition is invalid. Review this before the 07:40 news generation.'
+          {
+            echo '### PRE-NEWS SOFTWARE REGRESSION DETECTED'
+            echo '- The first scheduled run may be blocked by a predictable software fault.'
+            echo '- Check this workflow log and validate today’s 07:05 reserve before diagnosing RSS/LLM providers.'
+            echo '- Never delete private learning records, Supabase users, or cached iOS PWA storage.'
+          } >> "$GITHUB_STEP_SUMMARY"
