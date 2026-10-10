@@ -698,7 +698,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
                 "insufficient_explicit_source_attribution", "insufficient_event_specific_paragraphs",
                 "machine_text_artifact"}
     candidates = ([(model_draft, True, 0)] if model_draft else [])
-    candidates += [(essay_fallback(sources,date,variant), False, variant) for variant in range(12)]
+    candidates += [(essay_fallback(sources,date,variant), False, variant) for variant in range(48)]
     essay = None
     good = False
     quality = None
