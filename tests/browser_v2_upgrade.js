@@ -68,22 +68,35 @@ async function exercise(engine,type){
       (await (await caches.open('ai-daily-V1-paper-calm-reading-reports')).keys()).map(key=>key.url)));
     legacy=false;
     await page.evaluate(async()=>{const registration=await navigator.serviceWorker.getRegistration();await registration.update();});
-    // A new reports cache is created during INSTALL, *before* migration
-    // and ACTIVATE complete. Cache-name presence is not a readiness signal:
-    // Chromium can observe V2's empty cache while both V1 caches still exist.
-    // Wait for the actual historical payload, current index and old-cache
-    // cleanup instead of racing activate's asynchronous waitUntil().
-    await page.waitForFunction(async()=>{
-      const keys=await caches.keys();
-      if(!keys.includes('ai-daily-V2-stable-reading-reports'))return false;
-      if(keys.includes('ai-daily-V1-paper-calm-reading-reports'))return false;
-      const target=await caches.open('ai-daily-V2-stable-reading-reports');
-      const old=await target.match('./reports/2026-10-01.json');
-      const index=await target.match('./reports/index.json');
-      if(!old||!index)return false;
-      try{return (await old.clone().json()).historicSentinel===true;}
-      catch{return false;}
-    },null,{timeout:30000});
+    // Poll the ACTUAL cache contents from Node. In some browser engines,
+    // passing an async predicate to waitForFunction can incorrectly resolve
+    // before the service worker's waitUntil(activate) migration completes.
+    // A V2 cache name may exist while it is still EMPTY during install.
+    let ready=false,lastState;
+    for(let attempt=0;attempt<100;attempt++){
+      lastState=await page.evaluate(async()=>{
+        const keys=await caches.keys();
+        const v2=keys.includes('ai-daily-V2-stable-reading-reports');
+        let foundIndex=false,foundHistory=false;
+        if(v2){
+          const store=await caches.open('ai-daily-V2-stable-reading-reports');
+          const index=await store.match('./reports/index.json');
+          const history=await store.match('./reports/2026-10-01.json');
+          foundIndex=!!index;
+          if(history){
+            try{foundHistory=(await history.clone().json()).historicSentinel===true;}
+            catch{/* A corrupted migration is a failed acceptance. */}
+          }
+        }
+        return {keys,foundIndex,foundHistory};
+      });
+      if(lastState.foundIndex&&lastState.foundHistory&&
+         !lastState.keys.includes('ai-daily-V1-paper-calm-reading-reports')){
+        ready=true;break;
+      }
+      await new Promise(resolve=>setTimeout(resolve,200));
+    }
+    assert.ok(ready,engine+' V1->V2 worker activation/migration incomplete: '+JSON.stringify(lastState));
     const migrated=await page.evaluate(async()=>{
       const cache=await caches.open('ai-daily-V2-stable-reading-reports');
       const history=await cache.match('./reports/2026-10-01.json');
