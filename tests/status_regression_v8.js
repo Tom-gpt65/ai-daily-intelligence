@@ -23,15 +23,27 @@ const recovered={id:71002,event:'workflow_dispatch',status:'completed',conclusio
 const succeeded={...scheduled,id:71003,conclusion:'success',
   html_url:'https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/71003'};
 
-async function scenario(engine,browser,scenarioName,scheduledRuns,manualRuns,reportedTime,expectedClass,expectedText,expectedLink){
+async function scenario(engine,browser,scenarioName,scheduledRuns,manualRuns,reportedTime,expectedClass,expectedText,expectedLink,mode='source_digest'){
  const instance=await browser.launch({headless:true});
  try{
   const context=await instance.newContext({viewport:{width:1024,height:768},deviceScaleFactor:2});
   const page=await context.newPage();
   const errors=[];
   page.on('pageerror',err=>errors.push(err.message));
-  const edition={...original,date:hkToday,updated_at:new Date(hkToday+'T'+reportedTime+'+08:00').toISOString()};
-  const reportIndex=[{...index[0],date:hkToday}];
+  // Explicit fixture mode: tests must not silently change based on the
+  // mutable latest article (early reading at 07:05, news later at 07:40).
+  const edition={...original,mode,date:hkToday,
+    updated_at:new Date(hkToday+'T'+reportedTime+'+08:00').toISOString()};
+  if(mode==='source_digest'){
+    edition.stories=[1,2,3].map(id=>({id:'S'+id,title:'Test source '+id,
+      publisher:'Synthetic source',url:'https://example.com/source-'+id}));
+    edition.subtitle='Simulated sourced news for status testing';
+  }else{
+    assert.equal(mode,'reading_feature');
+    edition.stories=[];
+    edition.subtitle="Original extended English reading · Not today's AI news";
+  }
+  const reportIndex=[{...index[0],mode,date:hkToday}];
   await page.route(u=>u.href.includes('/reports/index.json'),route=>
     route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(reportIndex)}));
   await page.route(u=>u.href.includes('/reports/'+hkToday+'.json'),route=>
@@ -94,7 +106,15 @@ async function historicalRace(engine,browser){
     '07:35:00','schedule-failed','尚未確認更新','71001');
   await scenario(engine,browser,'scheduled succeeds',[succeeded],[],
     '07:58:00','schedule-success','原定排程正常','71003');
+  await scenario(engine,browser,'scheduled fails but educational reserve is ready',[scheduled],[],
+    '07:20:00','schedule-failed','新聞更新工作失敗','71001','reading_feature');
+  await scenario(engine,browser,'scheduled and recovery fail but educational reserve is ready',
+    [scheduled],[{...recovered,conclusion:'failure'}],
+    '07:20:00','schedule-failed','新聞更新工作失敗','71002','reading_feature');
+  await scenario(engine,browser,'scheduled succeeds but article remains educational',
+    [succeeded],[],
+    '07:20:00','schedule-recovered','未有達標即時新聞','71003','reading_feature');
   await historicalRace(engine,browser);
  }
- console.log('RESULT: 6 schedule/tablet cases and 2 delayed historical status cases passed');
+ console.log('RESULT: 12 schedule/tablet cases and 2 delayed historical status cases passed');
 })().catch(err=>{console.error(err);process.exit(1);});
