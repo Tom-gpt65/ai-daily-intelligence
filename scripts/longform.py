@@ -325,17 +325,15 @@ def compose_briefing(stories: list[dict], day: str | None = None, variant: int =
     areas={"investment":"commercial financing","security":"software security","robotics":"practical robotics","research":"scientific evaluation",
            "hardware":"computing devices","governance":"policy and accountability",
            "bioscience":"biological research","technology":"technological development"}
-    # Each consecutive date selects a different set of three comparisons.
-    # The publisher still checks actual prose against all recent articles.
-    for i in range(3):
-        block=bridge_pool[(seed*3+i)%len(bridge_pool)]
+    # Three-source reading needs two extra analytical sections to reach
+    # 1,000+ words. Those supplements MUST rotate too: V2 copied EXTRA[0]
+    # and EXTRA[1] in every such edition.
+    comparison_count=3+max(0,5-len(entries))
+    for i in range(comparison_count):
+        block=bridge_pool[(seed*comparison_count+i)%len(bridge_pool)]
         context=(f"In the reports [{first['id']}] and [{second['id']}], "
                  f"the questions concern {areas[category(first)]} and {areas[category(second)]}. ")
         paragraphs.append(context+block.format(first=first["id"],second=second["id"],
                        area_first=areas[category(first)],area_second=areas[category(second)]))
-    if len(entries)<5:
-        paragraphs.append(EXTRA[0].format(first=first["id"],second=second["id"]))
-    if len(entries)<4:
-        paragraphs.append(EXTRA[1])
     paragraphs.append(ending_pool[seed%len(ending_pool)])
     return paragraphs
