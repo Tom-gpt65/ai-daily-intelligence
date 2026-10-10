@@ -174,7 +174,26 @@ jobs:
           DEPENDENCY_OUTCOME: ${{ steps.optional-dependencies.outcome }}
           FEED_OUTCOME: ${{ steps.preflight.outcome }}
           BUILD_OUTCOME: ${{ steps.build.outcome }}
+          NEWS_GENERATED: ${{ steps.build.outputs.generated }}
         run: |
+          if [ "$NEWS_GENERATED" != "true" ]; then
+            python - <<'PY'
+          import json,os
+          from pathlib import Path
+          status_path=Path("site/system-status.json")
+          info=json.loads(status_path.read_text(encoding="utf-8")) if status_path.exists() else {}
+          reason=info.get("state","unavailable")
+          missing=info.get("missing_examples",[])
+          detail="; missing words: "+", ".join(str(w) for w in missing[:12]) if missing else ""
+          print(f"::warning title=News NOT published::The workflow can succeed while only an educational fallback is published. Reason: {reason}{detail}")
+          summary=os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary:
+              with open(summary,"a",encoding="utf-8") as stream:
+                  stream.write("\n### News publication outcome: EDUCATIONAL FALLBACK, not current news\n")
+                  stream.write(f"- Reason: {reason}{detail}\n")
+                  stream.write("- A green GitHub Actions run confirms a valid deployment, not a sourced-news publication.\n")
+          PY
+          fi
           if [ "$DEPENDENCY_OUTCOME" = "failure" ]; then
             echo "::warning title=Optional conversion unavailable::OpenCC installation failed; bundled offline Chinese glossary remains in use."
             echo "- Optional OpenCC install failed: bundled offline meanings retained." >> "$GITHUB_STEP_SUMMARY"

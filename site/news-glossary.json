@@ -297,5 +297,9 @@
   "immediately": "立即；馬上",
   "daily": "每日的",
   "life": "生活；生命",
-  "routine": "日常的；例行的"
+  "routine": "日常的；例行的",
+  "openai": "OpenAI：從事人工智能研究與產品開發的機構",
+  "openai's": "OpenAI 公司的；屬於 OpenAI 的",
+  "openproblembench": "OpenProblemBench：用來評估人工智能處理數學與理論物理未解難題的研究基準測試",
+  "openproblembench's": "OpenProblemBench 這項研究基準測試的"
 }

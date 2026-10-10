@@ -23,6 +23,40 @@ class DailyGuaranteeTests(unittest.TestCase):
         self.assertIn("inventedwordthatdoesnotexist",missing)
         self.assertNotIn("inventedwordthatdoesnotexist",vocab)
 
+    def test_real_news_brand_and_benchmark_terms_are_offline_complete(self):
+        # Regression for the actual Oct 10 manual dispatch 38028172551:
+        # five sourced stories passed RSS selection but OpenAI and
+        # OpenProblemBench were rejected as untranslated tokens.
+        from edition_guarantee import actual_meaning
+        article=["OpenAI evaluated OpenProblemBench with cited evidence."]
+        seed={"evaluated":{"translation":"評估；評測"},
+              "with":{"translation":"與；具有"},
+              "cited":{"translation":"引用的"},
+              "evidence":{"translation":"證據"}}
+        dictionary,missing=fill_dictionary(article,seed,translator=None)
+        self.assertEqual(missing,[])
+        self.assertTrue(complete({"essay":article,"dictionary":dictionary}))
+        for word in ("openai","openproblembench"):
+            self.assertTrue(actual_meaning(dictionary.get(word)))
+            self.assertIn(word if word!="openai" else "OpenAI",
+                          dictionary[word]["translation"].lower()
+                          if word!="openai" else dictionary[word]["translation"])
+            self.assertNotIn("待查",dictionary[word]["translation"])
+
+    def test_proper_noun_dictionary_does_not_allow_unknown_terms(self):
+        # Do not convert all CamelCase words to meaningless placeholders.
+        article=["MysteryUnverifiedBench and CompletelyUnknownProvider report."]
+        dictionary,missing=fill_dictionary(article,{})
+        self.assertIn("mysteryunverifiedbench",missing)
+        self.assertIn("completelyunknownprovider",missing)
+        self.assertFalse(complete({"essay":article,"dictionary":dictionary}))
+
+    def test_article_glossary_is_valid_json_and_curated(self):
+        glossary=json.loads((ROOT/"site"/"news-glossary.json").read_text(encoding="utf-8"))
+        for word in ("openai","openproblembench"):
+            self.assertIn(word,glossary)
+            self.assertGreaterEqual(len(glossary[word]),10)
+
     def test_all_possible_reserve_topics_have_chinese_meanings(self):
         bank=json.loads((ROOT/"site"/"reading-library.json").read_text(encoding="utf-8"))
         paragraphs=[bank["intro"],*bank["topics"],bank["conclusion"]]
@@ -96,6 +130,15 @@ class DailyGuaranteeTests(unittest.TestCase):
             assert_valid_reserve({**valid,"subtitle":"Breaking AI news"},day)
         with self.assertRaises(ValueError):
             assert_valid_reserve({**valid,"dictionary":{}},day)
+
+    def test_successful_deployment_cannot_hide_rejected_news(self):
+        workflow=(ROOT/".github/workflows/daily.yml").read_text(encoding="utf-8")
+        app=(ROOT/"site/app.js").read_text(encoding="utf-8")
+        self.assertIn("NEWS_GENERATED: ${{ steps.build.outputs.generated }}",workflow)
+        self.assertIn("News NOT published",workflow)
+        self.assertIn("EDUCATIONAL FALLBACK, not current news",workflow)
+        self.assertIn("info.state==='incomplete_dictionary'",app)
+        self.assertIn("新聞已收集，但新稿未能發布",app)
 
     def test_first_run_uses_safe_fallback_after_transient_external_failures(self):
         daily=(ROOT/".github/workflows/daily.yml").read_text(encoding="utf-8")

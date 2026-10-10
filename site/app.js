@@ -430,6 +430,18 @@
       } else if(info.state==='insufficient_evidence'){
         el.textContent='⚠ 本日可核實來源不足，或新稿未達 1,000 個英文單字的最低篇幅；沒有冒充合格長篇，網站暫時保留上一份文章。';
         el.classList.remove('hidden');el.classList.remove('pipeline-success');
+      } else if(info.state==='incomplete_dictionary'){
+        // A green Actions workflow can mean only that the dated reading
+        // safety-net was deployed; do not claim current news was published.
+        const count=Number(info.missing_count);
+        const examples=Array.isArray(info.missing_examples)?
+          info.missing_examples.filter(word=>typeof word==='string').slice(0,4):[];
+        el.textContent='⚠ 新聞已收集，但新稿未能發布：'+
+          (Number.isFinite(count)?'有 '+count+' 個':'有')+
+          '英文詞缺乏離線繁體中文解釋'+
+          (examples.length?'（'+examples.join('、')+'）':'')+
+          '。現保留今日教育閱讀；GitHub 工作成功只代表備援正常部署。';
+        el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='editorial_quality_rejected'){
         const issues=Array.isArray(info.quality_issues)?info.quality_issues.join('、'):'品質未達標';
         el.textContent='⚠ 本日新稿未通過內容品質檢查（重複段落、篇幅或來源證據可能不足），已保留上一份報告。診斷：'+issues;
