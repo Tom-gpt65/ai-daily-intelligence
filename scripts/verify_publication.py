@@ -101,7 +101,7 @@ def verify_live(expected, release, getter=None, expected_report=None, expected_s
         if './'+name+'?v='+release['asset_revision'] not in html:
             raise ValueError('Public resource revision is stale: '+name)
     for name in ('app.js','cloud-sync.js','sw.js','v1.css','reading-theme-v1.css'):
-        if get_public(name,getter) != (SITE/name).read_bytes():
+        if get_public(name,getter).replace(b'\r\n',b'\n') != (SITE/name).read_bytes().replace(b'\r\n',b'\n'):
             raise ValueError('Public resource bytes are stale: '+name)
     return actual
 

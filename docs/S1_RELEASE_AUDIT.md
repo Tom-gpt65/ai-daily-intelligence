@@ -7,7 +7,7 @@
 ## 版本與保護範圍
 
 前端 S1、asset_revision `s1-1`、SW `ai-daily-S1-1-reading`，release.json 記載五詞、60 日、嚴格 <0.16。
-保留 manifest id／scope／start_url、cloud-config、Supabase SQL、2026-10-08／09／10 的原始 SHA256，清單見 S1_PRESERVED_FILES.json。既有第三日最高 pairwise 五詞片語重複率為約 13.181%；原文不重寫。
+保留 manifest id／scope／start_url、cloud-config、Supabase SQL、2026-10-08／09／10 的原始 Git blob SHA256，清單見 S1_PRESERVED_FILES.json。Windows checkout 的 CRLF 只在測試時正規化為原始 LF，不修改受保護檔案。既有第三日最高 pairwise 五詞片語重複率為約 13.181%；原文不重寫。
 
 本次工程在獨立 checkout 執行。原工作目錄已有未提交的 V2 變更，已備份，沒有覆蓋。工程前的本機快照與 GitHub main 三日文章皆保存於工作區 s1-evidence；私人瀏覽器資料未讀取、未搬移、未上傳。
 
@@ -23,9 +23,9 @@
 | optional model | 模型的數字／名字檢查不能證明所有敘述。手動模型草稿只保留在 ignored runner 預覽，正式 S1 使用來源歸屬分析 |
 | dse_assessment | 跨段落答案合併後截斷可丟失第二項證據。兩項各自截斷，再合併並核對各段落 |
 | atomic writes | 固定 tmp 檔與並行索引修改可互相覆蓋。唯一 tmp＋fsync／replace，加 OS 鎖；損壞索引不被當空索引重建 |
-| publish_reports | 遲到教育稿可能覆蓋新聞，或保留原文時丟掉新故障狀態。合格新聞優先；最新故障依 checked_at 合併；只合併本輪日期及遠端最新索引，不 force push |
+| publish_reports | 遲到教育稿可能覆蓋新聞，或保留原文時丟掉新故障狀態。合格新聞優先；最新故障依 checked_at 合併；只合併本輪實際有變更的 dated JSON，純留存備援不重放舊稿；合併狀態重新核對遠端實際閱讀，不 force push |
 | fetched code | reset 到新 main 後，舊 Python 模組仍留在記憶體。合併後亦啟動新的驗證程序，套用實際最新程式規則 |
-| public verification | 同日期不代表同內容。核對完整 report、release、核心資源位元組與狀態；公開備援驗證後，新聞不足的 daily 才以失敗結束 |
+| public verification | 同日期不代表同內容。核對完整 report、release、核心資源內容（只正規化換行）與狀態；公開備援驗證後，新聞不足的 daily 才以失敗結束 |
 | workflow | 多個 Pages 發布可互相干擾，預設 concurrency 會取消舊 pending。共同 queue:max，cancel-in-progress:false，開工 checkout main；歷史重製改為只讀預覽 |
 | app | 背景刷新可覆蓋使用者正在選擇的歷史文章。以請求序號保留後來的選擇；詞庫預載不阻塞閱讀；逾時與 SW 註冊失敗可見 |
 | SW | 帶查詢參數的文章無限增長、42 筆上限可能丟掉索引、HTTP 503 無備援。改為 canonical key、保護索引／狀態、網絡逾時與損壞 JSON 回退、快取額滿不阻擋線上回應 |

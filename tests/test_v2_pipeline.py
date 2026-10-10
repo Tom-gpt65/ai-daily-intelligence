@@ -207,6 +207,7 @@ class V2LocalGitAcceptanceTests(unittest.TestCase):
                 reading_backup.ensure_reading(day,now.replace(hour=7,minute=5))
                 publish_reports.publish()
                 self.assertEqual(read(worker/"site/reports/2026-10-10.json")["word_count"],prior["word_count"])
+                self.assertEqual(read(worker/"site/system-status.json")['publication']['mode'],prior['mode'])
                 self.assertEqual((worker/"concurrent-code.txt").read_text(),"new main code\n")
                 self.assertEqual((worker/"site/reports/2026-10-08.json").read_bytes(),original_history)
                 self.assertTrue(build.build_live(now,None,sources=canary_sources(now)))

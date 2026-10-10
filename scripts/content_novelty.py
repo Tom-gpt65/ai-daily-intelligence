@@ -60,7 +60,9 @@ def recent_articles(reports: Path, today: str, window: int = LOOKBACK_DAYS):
             if delta <= 0 or delta > window:
                 continue
             article = json.loads((reports / (name + ".json")).read_text(encoding="utf-8"))
-            if article.get("date") != name or not isinstance(article.get("essay"), list):
+            if (not isinstance(article,dict) or article.get("date") != name or
+                    not isinstance(article.get("essay"), list) or not article['essay'] or
+                    not all(isinstance(p,str) and p.strip() for p in article['essay'])):
                 raise ValueError("Invalid archived article")
             output.append(article)
         except (OSError, ValueError, TypeError, KeyError) as exc:

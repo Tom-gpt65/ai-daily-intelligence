@@ -55,6 +55,10 @@ class S1SafetyTests(unittest.TestCase):
             (reports/'2026-10-10.json').write_text('{damaged',encoding='utf-8')
             with self.assertRaisesRegex(ValueError,'history unavailable'):
                 recent_articles(reports,'2026-10-11')
+            for value in ([],{'date':'2026-10-10','essay':[]},{'date':'2026-10-10','essay':[42]}):
+                build.atomic_json(reports/'2026-10-10.json',value)
+                with self.assertRaisesRegex(ValueError,'history unavailable'):
+                    recent_articles(reports,'2026-10-11')
 
     def test_parallel_atomic_files_and_index_writes_remain_complete(self):
         with tempfile.TemporaryDirectory() as name:
@@ -124,7 +128,9 @@ class S1SafetyTests(unittest.TestCase):
         manifest=json.loads((ROOT/'docs/S1_PRESERVED_FILES.json').read_text(encoding='utf-8'))
         for name,digest in manifest['sha256'].items():
             with self.subTest(path=name):
-                self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),digest)
+                # Windows Git checkout may expand LF into CRLF; compare the
+                # canonical Git text bytes without changing the protected file.
+                self.assertEqual(hashlib.sha256((ROOT/name).read_bytes().replace(b'\r\n',b'\n')).hexdigest(),digest)
 
     def test_release_cache_and_strict_novelty_policy_agree(self):
         release=json.loads((ROOT/'site/release.json').read_text(encoding='utf-8'))
