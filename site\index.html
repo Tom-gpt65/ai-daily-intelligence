@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F2EEE6">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="description" content="Free, source-linked AI briefings for advanced DSE English reading. Tap any word for a Chinese translation.">
+  <title>AI Daily Intelligence — Read deeper, every day</title>
+  <script>
+    /* Apply the saved theme BEFORE styles paint; never transmit this preference. */
+    (function(){
+      var paper=true;
+      try {
+        var preference=localStorage.getItem('ai-daily-light');
+        if(preference==='false')paper=false;
+      }catch(error){/* Restricted local storage: use readable paper default. */}
+      document.documentElement.classList.toggle('light',paper);
+      document.querySelector('meta[name="theme-color"]').setAttribute('content',paper?'#F2EEE6':'#171C1E');
+    })();
+  </script>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./v3.css">
+  <link rel="stylesheet" href="./v4.css">
+  <link rel="stylesheet" href="./v5.css">
+  <link rel="stylesheet" href="./v6.css">
+  <link rel="stylesheet" href="./v11.css?v=1">
+  <link rel="stylesheet" href="./v12.css?v=1">
+  <link rel="stylesheet" href="./v1.css?v=s1-2&feature=cloud">
+  <link rel="stylesheet" href="./reading-theme-v1.css?v=s1-2">
+</head>
+<body>
+  <a class="skip-link" href="#reader">跳到英文閱讀文章</a>
+  <div class="layout">
+    <aside class="sidebar">
+      <a class="brand" href="./" aria-label="AI Daily Intelligence home">
+        <div class="brand-glyph">◈</div>
+        <div><div class="brand-name">AI <span>Daily</span></div><div class="brand-sub">INTELLIGENCE</div></div>
+      </a>
+      <div class="side-label">閱讀空間 <span>MY SPACE</span></div>
+      <nav class="navigation" aria-label="主要導覽">
+        <button type="button" class="nav-item selected" data-view="today"><span class="nav-icon">▣</span><span>每日簡報</span></button>
+        <button type="button" class="nav-item" data-view="archive"><span class="nav-icon">▤</span><span>過往報告</span></button>
+        <button type="button" class="nav-item" data-view="words"><span class="nav-icon">✧</span><span>我的生字庫</span><span id="saved-count" class="count">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="brief-info"><span class="live-dot"></span> 香港時間 07:05 閱讀備援 · 07:40 新聞更新</div>
+        
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>LEARNING DASHBOARD</span><span class="slash">/</span><span id="crumb">DAILY BRIEFING</span></div>
+        <div class="top-actions"><span id="today-label" class="date-label"></span><button type="button" id="reload-latest" class="small-button refresh-content" aria-label="更新網站及今日文章" title="重新載入最新文章">↻ 更新</button><span id="site-version" class="site-version" aria-label="網站版本">S1</span><button type="button" id="theme-button" class="icon-button" aria-label="切換至夜間閱讀配色" aria-pressed="true" title="切換日間／夜間閱讀配色">☼</button></div>
+      </header>
+      <div class="page" id="view-today">
+        <div id="connection-alert" class="connection-alert hidden" role="status"></div>
+        <section class="intro">
+          <div class="eyebrow"><span class="star">✦</span> AI NEWS & ENGLISH READING</div>
+          <h1>每日 AI<br><em>英文深度閱讀</em></h1>
+          
+        </section>
+        <a class="jump-to-reader" href="#reader">直接閱讀今日英文文章 <span aria-hidden="true">↓</span></a>
+        <div class="status-row"><span id="status-banner" class="status-pill hidden">載入中…</span><div id="report-metadata" class="report-metadata"></div></div>
+        <div class="schedule-live" id="schedule-live" role="status"><span id="schedule-text">正在查核今日文章及排程…</span><a id="schedule-run-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml" target="_blank" rel="noopener noreferrer">工作紀錄</a><button type="button" id="refresh-schedule" aria-label="重新核對最新文章與定時狀態">↻</button></div>
+        <div id="pipeline-alert" class="pipeline-alert hidden" role="status" aria-live="polite"></div>
+        <div id="freshness-note" class="freshness-note hidden" role="status"></div>
+        <section class="edition-overview" aria-label="本日閱讀概況">
+          <div class="overview-stat"><span class="overview-label">新聞線索</span><strong id="overview-stories">—</strong><small>附原文與日期</small></div>
+          <div class="overview-stat"><span class="overview-label">今日生字</span><strong id="overview-vocab">—</strong><small>點擊立即查字</small></div>
+          <div class="overview-stat"><span class="overview-label">本機學習紀錄</span><strong id="overview-read">0 篇</strong><small id="overview-due">0 個待複習</small></div>
+        </section>
+        <section class="story-overview" aria-label="本日新聞重點">
+          <div class="story-heading"><div><span class="section-overline">THE DAILY RADAR</span><h2>今日重點一覽</h2></div></div>
+          <div id="story-cards" class="story-cards"></div>
+        </section>
+        <section class="briefing-card" aria-label="AI briefing">
+          <div class="card-header"><div><div id="reading-style-indicator" class="section-overline">DAILY EDITION</div><h2 id="report-headline">正在載入每日簡報</h2><p id="report-subtitle">新聞來源會列於文章下方。</p><div class="reading-reset-banner hidden" id="zoom-notice" role="status">偵測到 Safari 頁面被放大。若文字超出畫面，請用雙指縮小或在 Safari「大小」控制重設至 100%。<button type="button" id="zoom-dismiss" aria-label="隱藏提示">知道了</button></div></div><div class="edition-symbol">AI<span>↗</span></div></div>
+          <div class="reading-bar"><span class="bar-track"><span id="progress-bar" class="bar-fill"></span></span><span id="progress-percent" aria-live="off">0%</span></div>
+          <div class="reader-toolbar"><span class="helper"><span class="mini-spark">✧</span> 點擊任何英文生字即可查詢中文意思</span><div class="toolbar-right"><button class="small-button reader-tools-more" type="button" id="tools-toggle" aria-expanded="false">更多閱讀工具 ▾</button><button class="small-button" type="button" id="resume-reading">接續閱讀</button><button class="small-button" type="button" id="focus-toggle" aria-pressed="false">專注閱讀</button><button class="small-button" type="button" id="translate-toggle">顯示中文譯文</button><button class="small-button" type="button" id="font-button" aria-label="調整英文字體大小；目前為標準" title="點擊切換標準、放大和特大字體">A<span class="font-bigger">A</span><span class="font-size-state">標準</span></button><button class="small-button reset-reading" type="button" id="reset-reading" aria-label="重設閱讀版面及字體（保留生字與進度）">↺ 重設版面</button><button class="small-button" type="button" id="export-report">匯出文章</button><button class="small-button" type="button" id="print-report">列印</button></div></div>
+          <nav id="reader-navigator" class="reader-navigator" aria-label="文章段落導航"></nav>
+          <details class="translation-disclosure"><summary>全文翻譯及私隱說明</summary><p id="translation-policy" class="translation-policy">全文翻譯需連接第三方服務，使用前會要求同意傳送公開英文文章；譯文可能不準確。離線單字詞典不受影響。</p></details><div id="reader" class="reader" lang="en" tabindex="-1"></div>
+          <details class="quality-disclosure"><summary>本文內容與來源說明</summary><div class="reading-quality" id="reading-quality"></div></details>
+          <div class="reading-end"><span>✦</span> END OF BRIEFING <span id="reading-state" class="reading-state"></span><button type="button" id="mark-read" class="small-button read-button">標記為已讀</button></div>
+        </section>
+        <section class="vocab-panel panel">
+          <div class="panel-top"><span class="section-overline">ADVANCED VOCABULARY</span><span class="panel-icon">✧</span></div>
+          <h3>重點詞彙</h3><p class="panel-copy">點擊詞語即可離線查閱字義或加入生字庫。</p><div id="vocab-spotlight" class="vocab-spotlight"></div>
+        </section>
+        <section class="lower-grid">
+          <div class="panel"><div class="panel-top"><span class="section-overline">SOURCES & VERIFICATION</span><span class="panel-icon">↗</span></div><h3>新聞來源</h3><p class="panel-copy">查看原始報道與資料日期。</p><div id="source-list" class="source-list"></div></div>
+          <div class="panel"><div class="panel-top"><span class="section-overline">ENGLISH DEVELOPMENT</span><span class="panel-icon">◇</span></div><h3>英文閱讀理解</h3><p class="panel-copy">練習推論、語境詞義、作者態度與跨來源比較；並非官方試題。</p><div id="practice-meta" class="dse-practice-label"></div><div id="question-list" class="question-list"></div></div>
+        </section>
+        <details class="technical-status operational-details" id="technical-status"><summary>系統更新與驗證詳情</summary><a class="audit-link" href="https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml" target="_blank" rel="noopener noreferrer">↗ 查看每日發布驗證（香港時間 08:05、09:17 及 13:17 預定檢查）</a></details>
+        <div class="footer-note" id="legal-note">新聞分析取材自公開資訊，可能包含未經獨立核實的內容；延伸閱讀則為原創教材，並非當日新聞。請核對原始來源。</div>
+      </div>
+      <div class="page alternate hidden" id="view-archive"><div class="eyebrow">YOUR READING HISTORY</div><h1 class="secondary-title">Past <em>editions.</em></h1><p class="alternate-subtitle">選取過往報告，回顧 AI 發展脈絡。</p><div class="archive-tools"><input type="search" id="archive-search" placeholder="搜尋標題或日期…" aria-label="搜尋歷史報告"><select id="archive-mode" aria-label="報告類型"><option value="all">全部類型</option><option value="editorial">AI 英文改寫</option><option value="source_digest">來源摘要</option><option value="reading_feature">AI 延伸閱讀</option><option value="demo">示範文章</option></select></div><div id="archive-list" class="archive-list"></div></div>
+      <div class="page alternate hidden" id="view-words"><div class="eyebrow">YOUR PERSONAL LEXICON</div><h1 class="secondary-title">Vocabulary <em>bank.</em></h1><p class="alternate-subtitle">儲存生字、複習並選擇是否使用跨裝置雲端同步。離線時仍可使用。</p><div class="word-tools"><input id="word-search" type="search" placeholder="搜尋已儲存的生字…" aria-label="搜尋生字"><button type="button" id="start-review" class="small-button review-cta">開始生字複習 <span id="review-count"></span></button><button type="button" id="export-vocab" class="small-button">匯出生字庫</button><button type="button" id="import-vocab" class="small-button">匯入生字庫</button><button type="button" id="export-all" class="small-button">備份全部學習進度</button><button type="button" id="import-all" class="small-button">還原學習進度</button><input id="import-all-file" type="file" accept=".json,application/json" class="hidden" aria-label="選擇學習進度備份"><input id="import-file" type="file" accept=".json,application/json" class="hidden" aria-label="選擇生字備份"></div><p class="small-explanation">JSON 匯出及備份檔案只會下載到你的裝置，不會因備份操作上傳。只有登入並啟用雲端同步時，生字與複習資料才會傳送至你的私人帳戶。</p>
+      <section class="cloud-sync-panel" id="cloud-sync-panel" aria-label="跨裝置生字同步">
+        <div class="cloud-sync-head"><h2>跨裝置同步</h2><span id="sync-indicator" class="cloud-sync-indicator">本機模式</span></div>
+        <p id="sync-status" class="cloud-sync-status" role="status" aria-live="polite">正在檢查雲端同步設定…</p>
+        <div id="sync-unavailable" class="cloud-sync-unavailable hidden">雲端服務尚未設定，生字仍會安全保存在此裝置。啟用方法請參閱 <a href="https://github.com/Tom-gpt65/ai-daily-intelligence/blob/main/docs/CLOUD_SYNC_SETUP.md" target="_blank" rel="noopener noreferrer">雲端設定說明</a>。</div>
+        <div id="sync-password-panel" class="hidden">
+          <p class="cloud-sync-help">推薦：電郵＋密碼登入，不需要收取郵件，亦不受 Magic Link 郵件額度限制。首次使用請先到 Supabase → Authentication → Users → Add user → Create new user，為自己建立已確認的私人帳戶（不要選擇 Send invitation）。</p>
+          <form id="sync-password-login" class="cloud-sync-actions">
+            <label for="sync-password-email">帳戶電郵</label>
+            <input id="sync-password-email" type="email" autocomplete="username" inputmode="email" required placeholder="name@example.com">
+            <label for="sync-password">帳戶密碼</label>
+            <input id="sync-password" type="password" autocomplete="current-password" minlength="8" maxlength="256" required placeholder="在 Supabase Users 建立的密碼">
+            <button class="small-button" type="submit" id="sync-password-submit">使用密碼登入（毋須收電郵）</button>
+            <p id="sync-password-feedback" class="cloud-sync-feedback hidden" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+        <p id="sync-email-alternative" class="cloud-sync-help hidden">其他登入方式：Magic Link（需要寄送電郵，可能受到 Supabase 免費郵件限額限制）。</p>
+        <form id="sync-login" class="cloud-sync-actions hidden">
+          <label for="sync-email">登入電郵</label>
+          <input id="sync-email" type="email" autocomplete="email" inputmode="email" required placeholder="name@example.com">
+          <button class="small-button" type="submit" id="sync-email-submit">寄送安全登入連結</button>
+          <p id="sync-email-feedback" class="cloud-sync-feedback hidden" role="status" aria-live="polite"></p>
+        </form>
+        <div id="sync-account" class="cloud-sync-actions hidden">
+          <p id="sync-account-email" class="cloud-sync-account"></p>
+          <div class="cloud-sync-buttons">
+            <button type="button" id="sync-now" class="small-button">立即同步</button>
+            <button type="button" id="sync-import-local" class="small-button">將原有本機生字加入雲端</button>
+            <button type="button" id="sync-logout" class="small-button">登出雲端</button>
+          </div>
+          <p class="cloud-sync-warning">只有按下「將原有本機生字加入雲端」，才會上傳登入前的本機生字。刪除詞語會同步至其他已登入裝置；離線時將排隊等待連線。</p>
+        </div>
+      </section><section id="review-panel" class="review-panel hidden" aria-label="間隔複習卡片"><div class="section-overline">SPACED VOCABULARY REVIEW</div><div id="review-position" class="review-position"></div><h2 id="review-front" class="review-front"></h2><p id="review-back" class="review-back hidden"></p><div class="review-actions"><button type="button" id="review-show" class="small-button">顯示中文意思</button><button type="button" id="review-again" class="small-button hidden">忘記了</button><button type="button" id="review-hard" class="small-button hidden">有點難</button><button type="button" id="review-remember" class="small-button hidden">記得</button><button type="button" id="review-easy" class="small-button hidden">非常熟悉</button><button type="button" id="review-stop" class="small-button">結束複習</button></div><p class="review-disclaimer">此為輕量化間隔複習：記得的單字會延後出現；忘記的單字翌日再練習。未登入雲端時，複習進度只保存在此瀏覽器；登入後可同步生字複習資料。閱讀及答題進度仍只存在此裝置。</p></section><div id="word-list" class="word-list"></div></div>
+    </main>
+  </div>
+  <div id="dictionary-popover" class="dictionary-popover hidden" role="region" aria-label="英文生字解釋">
+    <button type="button" class="popover-close" id="pop-close" aria-label="關閉">×</button>
+    <div class="dictionary-tag">QUICK DICTIONARY</div>
+    <div class="lookup-title"><strong id="lookup-word"></strong><button type="button" id="speak-button" aria-label="播放英文讀音">◖))</button></div>
+    <div id="lookup-ipa" class="lookup-ipa"></div>
+    <div id="lookup-pos" class="lookup-pos"></div>
+    <div id="lookup-translation" class="lookup-translation"></div>
+    <div id="lookup-definition" class="lookup-definition"></div>
+    <div id="lookup-context" class="lookup-context"></div>
+    <div id="lookup-note" class="lookup-note"></div>
+    <button type="button" id="save-word" class="save-button">＋ 儲存生字</button><button type="button" id="lookup-online" class="small-button online-lookup hidden">查詢線上免費詞典（只傳送此單字）</button>
+  </div>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="./cloud-sync.js?v=s1-2&feature=password-login" defer></script>
+  <script src="./app.js?v=s1-2&feature=password-login" defer></script>
+</body>
+</html>

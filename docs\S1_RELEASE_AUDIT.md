@@ -6,7 +6,7 @@
 
 ## 版本與保護範圍
 
-前端 S1、asset_revision `s1-1`、SW `ai-daily-S1-1-reading`，release.json 記載五詞、60 日、嚴格 <0.16。
+前端 S1、asset_revision `s1-2`、SW `ai-daily-S1-2-reading`，release.json 記載五詞、60 日、嚴格 <0.16。
 保留 manifest id／scope／start_url、cloud-config、Supabase SQL、2026-10-08／09／10 的原始 Git blob SHA256，清單見 S1_PRESERVED_FILES.json。Windows checkout 的 CRLF 只在測試時正規化為原始 LF，不修改受保護檔案。既有第三日最高 pairwise 五詞片語重複率為約 13.181%；原文不重寫。
 
 本次工程在獨立 checkout 執行。原工作目錄已有未提交的 V2 變更，已備份，沒有覆蓋。工程前的本機快照與 GitHub main 三日文章皆保存於工作區 s1-evidence；私人瀏覽器資料未讀取、未搬移、未上傳。
@@ -43,7 +43,7 @@
 - [S1 PR #11](https://github.com/Tom-gpt65/ai-daily-intelligence/pull/11) 四組 workflow 全通過後合併；[Linux 合約與跨日](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057406598)、[瀏覽器](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057406596)、[完整長篇驗收](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057406587)、[首發 canary](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057406619)。
 - [正式 S1 Pages 發布與公開核對](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057962972)：PASS；[公開 PWA／Auth／匿名隔離健康](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38058121217)：PASS。本機亦執行 verify_publication --live，完整 report、release、核心資源與 status 一致。網站保留 10 月 10 日既有 V3 來源閱讀；這次 code release 沒有宣稱重新生成新聞。
 - 即時來源測試：6/6 RSS 可讀，取得 5 則候選。在完整 ECDICT＋OpenCC 下仍缺 devday、ma、medbenchagent、vision-language、year's，程式拒稿（incomplete_dictionary），臨時站點通過驗收，正式資料未改。不把「安全拒稿測試成功」稱作「當日新聞生成成功」。
-- 初次 Linux 驗收曾失敗：兩個旧版文字斷言、六項 CRLF／LF 雜湊差異與一個純備援重放舊稿問題；修正後重跑全通過。首次 main 發布的兩個公開驗證先於部署讀到 V3 而失敗；觸發改為兩個發布 workflow completed 後執行，並重跑確認。後續驗證詳見發布後工作紀錄。
+- 初次 Linux 驗收曾失敗：兩個舊版文字斷言、六項 CRLF／LF 雜湊差異與一個純備援重放舊稿問題；修正後重跑全通過。首次 main 發布的兩個公開驗證先於部署讀到 V3 而失敗；觸發改為兩個發布 workflow completed 後執行，並重跑確認。後續驗證詳見發布後工作紀錄。
 
 ## 路徑審查與有限責任
 
