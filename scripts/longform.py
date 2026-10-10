@@ -287,55 +287,80 @@ def attributed_excerpt(story: dict, variant: int = 0) -> str:
     )
     return openers[variant%len(openers)]+"“"+quoted+incomplete+"”. "
 
-def compose_briefing(stories: list[dict], day: str | None = None, variant: int = 0) -> list[str]:
-    """Sourced, evidence-limited daily narrative with alternating structures.
+def compose_briefing(stories: list[dict], day: str | None = None, variant: int = 0,
+                     avoid_essays: list[list[str]] | None = None) -> list[str]:
+    """Programmatic V3 narrative selection, minimising reused meaningful prose.
 
-    The selected RSS story paragraphs always keep their citation IDs; each
-    edition then uses a different lead, set of comparisons and conclusion.
-    Four declared designs rotate with the Hong Kong calendar, and an
-    optional variant lets the publisher retry a rejected near-duplicate.
+    Source details remain attributed to the ORIGINAL dated RSS snapshots. The
+    anti-repetition selector chooses the least reused available editorial lens
+    and structural comparisons; no artificial claims or factual rewrites.
     """
     from datetime import date as CalendarDate
+    from content_novelty import shingles
+
     entries=[s for s in stories if s.get("id") and s.get("title")][:5]
     if len(entries)<3:
-        return []  # Do not fabricate a 1,000-word article from two titles.
+        return []
     digest=hashlib.sha256("|".join(str(s["title"]) for s in entries).encode("utf-8")).digest()
     ordinal=CalendarDate.fromisoformat(day).toordinal() if day else int.from_bytes(digest[:4],"big")
     lead_pool=tuple(LEADS)+MORE_LEADS
     bridge_pool=tuple(CROSS)+MORE_BRIDGES
     ending_pool=(ENDING,)+MORE_ENDINGS
-    seed=(ordinal+variant)
-    paragraphs=[lead_pool[seed%len(lead_pool)]]
+    seed=ordinal+variant
+    past_texts=[p for article in (avoid_essays or []) for p in article]
+    past_ngrams=shingles(past_texts)
+    selected_ngrams=set()
+
+    def select(candidates):
+        # Compare five-word fragments against archived publications AND the
+        # developing article; do not just rotate fixed paragraph indices.
+        scored=[]
+        for i,text in enumerate(candidates):
+            parts=shingles([text])
+            duplication=len(parts & (past_ngrams | selected_ngrams))/max(1,len(parts))
+            scored.append((duplication,(i-seed)%len(candidates),i,text))
+        winner=min(scored)
+        selected_ngrams.update(shingles([winner[3]]))
+        return winner[3]
+
+    paragraphs=[select(lead_pool)]
     category_occurrences={}
     for i,story in enumerate(entries):
         topic=category(story)
         occurrence=category_occurrences.get(topic,0)
         category_occurrences[topic]=occurrence+1
-        analytical_lens=LENSES[topic] if occurrence==0 else ALTERNATE_ANGLES[(occurrence-1+variant)%len(ALTERNATE_ANGLES)]
+        # A prior day's category lens is NOT blindly recycled in a new story.
+        # Use a distinct genuine editorial perspective whenever possible.
+        available_lenses=(LENSES[topic],)+tuple(ALTERNATE_ANGLES)
+        lens=select(available_lenses)
         title=str(story["title"]).strip().replace("\n"," ")
         publisher=str(story.get("publisher") or "the linked publisher").strip()
         anchor=f"[{story['id']}]"
+        # For five well sourced reports, skip the old fixed evidence-disclaimer
+        # paragraphs: they caused high word-level overlap while adding no facts.
+        # Shorter, three-story editions retain them to reach teaching length.
+        evidence_note=FACT_NOTE[(i+seed)%len(FACT_NOTE)] if len(entries)<=3 else ""
         paragraphs.append(
             f"{INTROS[(i+seed)%len(INTROS)]} {publisher}'s account, ‘{title}’ {anchor}. "
-            +FACT_NOTE[(i+seed)%len(FACT_NOTE)]
+            +evidence_note
             +(sourced_detail(story) or attributed_excerpt(story,i+seed))
-            +analytical_lens
+            +lens
         )
     first,second=entries[0],entries[1]
     areas={"investment":"commercial financing","security":"software security","robotics":"practical robotics","research":"scientific evaluation",
            "hardware":"computing devices","governance":"policy and accountability",
            "bioscience":"biological research","technology":"technological development"}
-    # Different narrative designs use different numbers of comparisons,
-    # visibly varying the paragraph structure (not just the style label).
-    # Three-source editions get more analysis to preserve the 1,000-word
-    # reading threshold. None uses V2's fixed EXTRA paragraphs.
     layout_delta=(-1,0,1,0)[(ordinal+variant)%len(WRITING_STYLES)]
     comparison_count=3+max(0,5-len(entries))+layout_delta
+    choices=[block.format(first=first["id"],second=second["id"],
+                    area_first=areas[category(first)],area_second=areas[category(second)])
+             for block in bridge_pool]
     for i in range(comparison_count):
-        block=bridge_pool[(seed*comparison_count+i)%len(bridge_pool)]
         context=(f"In the reports [{first['id']}] and [{second['id']}], "
                  f"the questions concern {areas[category(first)]} and {areas[category(second)]}. ")
-        paragraphs.append(context+block.format(first=first["id"],second=second["id"],
-                       area_first=areas[category(first)],area_second=areas[category(second)]))
-    paragraphs.append(ending_pool[seed%len(ending_pool)])
+        # If the archive already contains this template, prefer unused ones.
+        chosen=select(choices)
+        choices.remove(chosen)
+        paragraphs.append(context+chosen)
+    paragraphs.append(select(ending_pool))
     return paragraphs
