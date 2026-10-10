@@ -32,14 +32,18 @@
 | SW migration | 保留本網站 V1／V2／V3 公開歷史，不複製私人端點或其他 scope。新安裝稿優先；僅移除本 scope 的已遷移舊項目 |
 | cloud-sync | 帳戶切換、登出、refresh、未完成同步可發生舊回應回寫。加入帳戶 epoch、登入意圖序號、單次 refresh 與逾時；不同帳戶 pending queue 保持原儲存鍵 |
 
-## 驗證紀錄（當前提交前）
+## 驗證紀錄（本機與 GitHub 正式驗收）
 
 - 基線：原程式 Python 171 項，Windows 臨時目錄改到工作區後 OK、skipped=1；首次預設 temp 執行因 sandbox 權限失敗，沒有把該輪列作通過。
-- S1：Python **186 項，185 passed、1 skipped**。跳過的是 Windows MSYS bare Git 整合，必須在 GitHub Linux 補跑，不能稱本機已驗證 Git 部署。
+- 本機 Python **186 項，185 passed、1 skipped**；Windows MSYS bare Git 限制導致跳過。GitHub Linux **186 項全通過、零跳過**，已實際核對並行 Git 修改、純留存備援不重放舊稿及晚到備援不能降級新聞。
 - Node：6 組實際測試及全部 site／test JS 語法檢查通過，包含帳戶 race、快取失敗、私人成員隔離與詞庫相容。
 - 靜態站點驗收：PASS。歷史重製預覽：PASS，最高 pairwise 五詞片語約 **13.4%**；未修改正式三日文章。
 - 連續未來日期與年末跨日由同一臨時 archive 依序執行，包含 +1／2／3／4／5／7／30／59／60／61 日。重複來源不產生新新聞；RSS 中斷及無詞義輸入拒稿；原稿保留，備援名稱與日期明確。
-- 瀏覽器：十組測試全部通過，包括 Chromium／WebKit 的 V1／V2／V3 六次真實 worker 升級、離線詞義、版面、備份與模擬登入。GitHub Actions／正式 Pages 發布與公開驗證在提交前仍待執行；最終結果及連結見 PR／Actions 與補充驗收紀錄。此行不代表未跑項目通過。
+- 瀏覽器：十組測試全部通過，包括 Chromium／WebKit 的 V1／V2／V3 六次真實 worker 升級、離線詞義、版面、備份與模擬登入。本機與 GitHub 均執行完成。
+- [S1 PR #11](https://github.com/Tom-gpt65/ai-daily-intelligence/pull/11) 四組 workflow 全通過後合併；[Linux 合約與跨日](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057406598)、[瀏覽器](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057406596)、[完整長篇驗收](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057406587)、[首發 canary](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057406619)。
+- [正式 S1 Pages 發布與公開核對](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38057962972)：PASS；[公開 PWA／Auth／匿名隔離健康](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38058121217)：PASS。本機亦執行 verify_publication --live，完整 report、release、核心資源與 status 一致。網站保留 10 月 10 日既有 V3 來源閱讀；這次 code release 沒有宣稱重新生成新聞。
+- 即時來源測試：6/6 RSS 可讀，取得 5 則候選。在完整 ECDICT＋OpenCC 下仍缺 devday、ma、medbenchagent、vision-language、year's，程式拒稿（incomplete_dictionary），臨時站點通過驗收，正式資料未改。不把「安全拒稿測試成功」稱作「當日新聞生成成功」。
+- 初次 Linux 驗收曾失敗：兩個旧版文字斷言、六項 CRLF／LF 雜湊差異與一個純備援重放舊稿問題；修正後重跑全通過。首次 main 發布的兩個公開驗證先於部署讀到 V3 而失敗；觸發改為兩個發布 workflow completed 後執行，並重跑確認。後續驗證詳見發布後工作紀錄。
 
 ## 路徑審查與有限責任
 

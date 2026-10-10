@@ -1,15 +1,9 @@
 name: Verify live S1 cloud configuration and anonymous isolation
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/cloud-live-check.yml'
-      - 'site/cloud-config.json'
-      - 'site/cloud-sync.js'
-      - 'site/reading-theme-v1.css'
-      - 'site/index.html'
-      - 'site/sw.js'
+  workflow_run:
+    workflows: ['AI Daily Intelligence — free daily briefing', 'Early daily English reading safety net']
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -17,6 +11,7 @@ permissions:
 
 jobs:
   public-cloud:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:

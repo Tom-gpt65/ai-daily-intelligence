@@ -141,6 +141,11 @@ class S1SafetyTests(unittest.TestCase):
         self.assertIn('>S1<',html);self.assertIn(release['cache_namespace'],worker)
 
     def test_publishing_workflows_queue_and_history_is_read_only(self):
+        for name in ('verify-pages.yml','cloud-live-check.yml'):
+            verification=(ROOT/'.github/workflows'/name).read_text(encoding='utf-8')
+            self.assertIn('workflow_run:',verification)
+            self.assertIn('types: [completed]',verification)
+            self.assertNotIn('\n  push:',verification)
         for name in ('daily.yml','early-reading.yml'):
             content=(ROOT/'.github/workflows'/name).read_text(encoding='utf-8')
             self.assertIn('group: ai-daily-news\n  queue: max',content)
