@@ -78,6 +78,46 @@ class V3OriginalityTests(unittest.TestCase):
         self.assertIn("recently_reused_writing_style",result["issues"])
         self.assertIn("reused_news_sources_from_2026-10-11",result["issues"])
 
+    def test_two_consecutive_days_generate_different_newspaper_articles(self):
+        # Real builder + local, offline synthetic RSS; the second morning
+        # compares its first V3 edition against the PREVIOUS V3 edition.
+        import shutil
+        import tempfile
+        import build
+        import validate_site
+        with tempfile.TemporaryDirectory(prefix="v3-cross-day-") as name:
+            dest=Path(name)/"site"
+            shutil.copytree(ROOT/"site",dest)
+            saved=(build.REPORTS,build.STATUS_PATH,validate_site.SITE)
+            try:
+                build.REPORTS=dest/"reports"
+                build.STATUS_PATH=dest/"system-status.json"
+                validate_site.SITE=dest
+                reports=[]
+                for number,day in enumerate(("2026-10-11","2026-10-12")):
+                    now=datetime.fromisoformat(day+"T07:40:00+08:00")
+                    rows=canary_sources(now)
+                    if number:
+                        for i,row in enumerate(rows):
+                            row["url"]+="?edition=2026-10-12-"+str(i)
+                            row["title"]+=" — independent evaluation "+str(i+1)
+                            parts=row["excerpt"].split(". ")
+                            row["excerpt"]=". ".join(parts[1:]+parts[:1])
+                    self.assertTrue(build.build_live(now,None,sources=rows),
+                        "New morning should not be rejected merely because previous V3 exists")
+                    report=json.loads((build.REPORTS/(day+".json")).read_text("utf-8"))
+                    self.assertEqual(report.get("validation_profile"),"v3")
+                    self.assertTrue(report.get("novelty",{}).get("pass"))
+                    self.assertEqual(validate_site.validate(),[])
+                    reports.append(report)
+                self.assertNotEqual(reports[0]["headline"],reports[1]["headline"])
+                self.assertNotEqual(reports[0]["essay"][0],reports[1]["essay"][0])
+                self.assertNotEqual(reports[0]["essay"][-1],reports[1]["essay"][-1])
+                self.assertNotEqual(reports[0]["writing_style"],reports[1]["writing_style"])
+                self.assertLess(overlap(reports[0]["essay"],reports[1]["essay"]),0.48)
+            finally:
+                build.REPORTS,build.STATUS_PATH,validate_site.SITE=saved
+
     def test_identical_five_word_fragments_without_full_paragraph_are_measured(self):
         first=["Evidence and practical reports are important for informed judgement."]*8
         second=["Evidence and practical reports are important for informed judgement today."]*8
