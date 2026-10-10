@@ -1,4 +1,5 @@
 name: V3 8–10 October automatic article reconstruction
+# Retrigger after dictionary repair; never publish when one word or novelty check fails.
 
 on:
   push:
