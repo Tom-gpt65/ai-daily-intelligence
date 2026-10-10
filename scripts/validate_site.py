@@ -15,8 +15,8 @@ def validate() -> list[str]:
     app = (SITE / "app.js").read_text(encoding="utf-8")
     worker = (SITE / "sw.js").read_text(encoding="utf-8")
     release=json.loads((SITE/"release.json").read_text(encoding="utf-8"))
-    if (release.get("version")!="V2" or ">V2<" not in markup
-            or release.get("cache_namespace")!="ai-daily-V2-stable-reading"
+    if (release.get("version")!="V3" or ">V3<" not in markup
+            or release.get("cache_namespace")!="ai-daily-V3-novel-reading"
             or release["cache_namespace"] not in worker):
         errors.append("Public release and PWA cache version disagree")
     for name in ("app.js","cloud-sync.js","v1.css","reading-theme-v1.css"):
