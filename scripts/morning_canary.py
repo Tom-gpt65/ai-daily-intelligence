@@ -50,14 +50,22 @@ def canary_sources(now: datetime) -> list[dict]:
     They exercise evidence, citations and the real generator; they are never
     claimed to be real events or written to the repository/public website.
     """
-    titles=("AI safety research tests evidence", "AI governance rules and responsibility",
+    titles=("AI safety research tests evidence", "AI funding and business expectations",
             "AI technology research and independent evaluation")
     publishers=("Google Research","TechCrunch AI","MIT Technology Review")
-    excerpt=("The research report describes an AI system and the evidence available for evaluation. "
-             "It explains the method and limitations and asks readers to compare claims with independent research. "
-             "The results require careful interpretation before conclusions about practical use.")
+    excerpts=(
+        "The safety study describes tests of model behaviour under different input conditions. "
+        "Its authors explain the limits of the test collection and discuss how further examples could affect their assessment. "
+        "They distinguish observations made during evaluation from conclusions about other situations.",
+        "The commercial report discusses financing for a business and the intended use of those resources. "
+        "It distinguishes support from investors from evidence about later business outcomes. "
+        "The account identifies questions about costs, customer needs and progress that would require further observations.",
+        "The research description presents a framework for comparing methods on specified tasks. "
+        "It identifies the evaluation conditions and the measurements used to examine a response. "
+        "The authors note that interpreting a comparison requires attention to assumptions, resources and the limits of the procedure."
+    )
     return [{"id":f"S{i}","title":title,"publisher":publisher,
-             "url":f"https://example.com/canary-fixture/{i}","excerpt":excerpt,
+             "url":f"https://example.com/canary-fixture/{i}","excerpt":excerpts[i-1],
              "published":now.isoformat(),"topic":"Research"}
             for i,(title,publisher) in enumerate(zip(titles,publishers),1)]
 

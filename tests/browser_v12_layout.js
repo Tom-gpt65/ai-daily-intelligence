@@ -32,7 +32,7 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      await page.locator('[data-view="today"]').click();
      assert.equal(await page.locator('.intro p').count(),0,'Unnecessary intro copy still displayed');
      const warning=await page.locator('#freshness-note').innerText();
-     if(await page.locator('#freshness-note').isVisible())assert.match(warning,/舊文章|示範文章|1,000 字|晚於/,'Visible warning must explain a genuine issue');
+     if(await page.locator('#freshness-note').isVisible())assert.match(warning,/舊文章|示範文章|1,000 字|晚於|^最新一期仍是 \d{1,2} [A-Za-z]+ \d{4}；今日文章尚未更新。$/,'Visible warning must explain a genuine issue');
      const detailPlace=await page.evaluate(()=>document.querySelector('#technical-status').compareDocumentPosition(document.querySelector('#question-list')) & Node.DOCUMENT_POSITION_PRECEDING);
      assert.ok(detailPlace,'Technical details must follow reading content');
      const measures=await page.evaluate(()=>{

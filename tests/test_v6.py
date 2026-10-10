@@ -12,10 +12,7 @@ from reading_backup import build_reading
 
 class DseStudentTests(unittest.TestCase):
     def setUp(self):
-        self.sources=[dict(id=f"S{i}",publisher=f"Publisher {i}",
-                           title="AI policy and practical safeguards",
-                           excerpt="A short report describes the announced development and its limitations")
-                      for i in range(1,6)]
+        self.sources=json.loads((ROOT/'site/reports/2026-10-09.json').read_text('utf-8'))['stories']
     def test_fallback_has_no_repetitive_attribution_openings(self):
         paragraphs=dse_editorial.compose_briefing(self.sources)
         self.assertFalse(any(p.startswith("According to") for p in paragraphs))
@@ -28,7 +25,9 @@ class DseStudentTests(unittest.TestCase):
         for story in self.sources:
             self.assertIn("["+story["id"]+"]"," ".join(paragraphs))
     def test_three_source_mode_still_has_substantive_paper(self):
-        text=" ".join(dse_editorial.compose_briefing(self.sources[:3]))
+        from morning_canary import canary_sources
+        from datetime import datetime
+        text=" ".join(dse_editorial.compose_briefing(canary_sources(datetime.fromisoformat('2026-10-11T07:40:00+08:00'))))
         self.assertGreaterEqual(dse_editorial.word_count(text),1000)
         self.assertIn("evidence",text)
     def test_dse_mc_answer_keys_and_written_marking(self):

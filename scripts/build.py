@@ -24,7 +24,7 @@ from learning_editorial import is_promotional
 from dse_editorial import compose_briefing
 from longform import WRITING_STYLES, category as story_category
 from content_novelty import audit_history, recent_articles, audit as audit_novelty
-from dse_assessment_v7 import make_exam
+from dse_assessment_v7 import make_exam, assessment_revision
 from editorial_quality import inspect as inspect_editorial_quality
 from source_context import enrich as enrich_source_metadata
 from edition_guarantee import fill_dictionary,complete
@@ -518,6 +518,8 @@ def translate_essay(paragraphs: list[str]) -> list[str]:
 def word_forms(word: str) -> set[str]:
     """Conservative English suffix forms; dictionary decides whether a candidate is real."""
     forms = {word}
+    if word.endswith(("'s",'’s')):
+        forms.add(word[:-2])
     if len(word) >= 5:
         if word.endswith("ies"): forms.add(word[:-3] + "y")
         if word.endswith("ing"):
@@ -712,13 +714,34 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     ordinal = CalendarDate.fromisoformat(date).toordinal()
     critical = {"article_length_outside_training_target", "near_duplicate_paragraph_padding",
                 "insufficient_explicit_source_attribution", "insufficient_event_specific_paragraphs",
-                "machine_text_artifact"}
+                "machine_text_artifact", "repeated_meaningful_sentence",
+                "repeated_content_fragment", "premature_concluding_transition"}
     try:
         archive = recent_articles(REPORTS,date)
     except (OSError, ValueError, KeyError, TypeError) as exc:
         put_status('history_unavailable',now,failure_reason=str(exc),source_count=len(sources),**diagnostics)
         return False
     recent_prose = [r["essay"] for r in archive]
+    # Source identity does not become fresh merely because 60 days elapse or
+    # a query parameter/timestamp is changed. The 60-day prose gate remains
+    # separate; source reuse is checked against the full dated archive.
+    def identity(s):
+        url=urlsplit(safe_url(s.get('url','')))
+        return (url.netloc.lower(),url.path,title_signature(str(s.get('title',''))))
+    incoming={identity(s) for s in sources}
+    try:
+        all_paths=list(REPORTS.glob('????-??-??.json'))+list((REPORTS/'archive-revisions').glob('*/*.json'))
+        for path in all_paths:
+            if path.stem>=date:
+                continue
+            old=json.loads(path.read_text(encoding='utf-8'))
+            known={identity(s) for s in old.get('stories',[]) if isinstance(s,dict)}
+            if len(incoming & known)>=3:
+                put_status('repetitive_content',now,source_count=len(sources),novelty_issues=['reissued_existing_source_snapshots'],**diagnostics)
+                return False
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        put_status('history_unavailable',now,failure_reason=str(exc),source_count=len(sources),**diagnostics)
+        return False
     # Numerical/name checks cannot prove that a model invented no other fact.
     # Keep optional model output as a PRIVATE runner preview; formal S1 uses
     # attributed extracts and conditional educational analysis only.
@@ -726,7 +749,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         atomic_json(ROOT/'.cache/model-draft.json',{'date':date,'essay':model_draft,
                     'published':False,'reason':'Unverified model factual claims cannot enter the formal release'})
     candidates = ((essay_fallback(sources,date,variant,recent_prose), False, variant)
-                  for variant in range(48))
+                  for variant in range(1))
     essay = None
     good = False
     quality = None
@@ -738,15 +761,23 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     focus_category = None
     last_reasons = []
     for candidate, model_written, variant in candidates:
+        if not candidate:
+            put_status('insufficient_evidence',now,source_count=len(sources),
+                       failure_reason='No coherent source-specific outline: unsupported or repeated analytical contexts',
+                       generation_issues=['unsupported_or_repeated_analytical_context'],**diagnostics)
+            return False
         this_quality = inspect_editorial_quality(candidate, sources)
         if critical.intersection(this_quality["issues"]):
             last_reasons = this_quality["issues"]
             continue
-        writing_style, style_label = WRITING_STYLES[(ordinal+variant)%len(WRITING_STYLES)]
-        lead = sources[(ordinal+variant)%min(3,len(sources))]
+        writing_style, style_label = 'evidence_audit', 'Source-by-source evidence review'
+        lead = sources[0]
         focus_category = story_category(lead)
         lead_title = str(lead.get("title","")).strip().replace("\n"," ")
-        headline = "AI "+focus_category.capitalize()+": "+lead_title[:100]
+        from source_outline import RULES, context_key
+        first_focus=RULES[context_key(sources[0])][1].split(':')[0].lower()
+        last_focus=RULES[context_key(sources[-1])][1].split(':')[0].lower()
+        headline = 'AI evidence review: from '+first_focus+' to '+last_focus
         subtitle = style_label+" · "+str(len(sources))+" linked RSS reports · Critical English reading"
         preview = {"date":date, "mode":"editorial" if model_written else "source_digest",
                    "headline":headline, "essay":candidate, "stories":sources,
@@ -788,6 +819,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     report = {
         "schema": 4,
         "validation_profile": "s1",
+        "content_generation_profile": "source_outline_v2",
         "date": date,
         "updated_at": now.astimezone(TZ).isoformat(),
         "headline": headline,
@@ -817,6 +849,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         "questions": make_questions(sources),
         "practice": make_exam(essay, sources, date),
     }
+    report['practice_revision']=assessment_revision(report['practice']['items'])
     report["editorial_quality"] = quality
     if not report["editorial_quality"]["training_structure_pass"]:
         report["quality_note"] += " 檢測到閱讀訓練品質警告；詳情見下方品質提示。"

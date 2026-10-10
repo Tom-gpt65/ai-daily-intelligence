@@ -49,12 +49,13 @@ async function exercise(engine,type,legacyVersion){
       await navigator.serviceWorker.ready;
     });
     await page.waitForFunction(async()=>navigator.serviceWorker.controller&&
-      (await caches.keys()).some(key=>key.startsWith('ai-daily-V')&&key.endsWith('-reports')));
+      (await caches.keys()).some(key=>(key.startsWith('ai-daily-V')||key.startsWith('ai-daily-S1-2-'))&&key.endsWith('-reports')));
     const stored=await page.evaluate(async fixture=>{
       const snapshot={
         'ai-daily-saved-v2':JSON.stringify({evidence:{word:'evidence',translation:'證據'}}),
         'ai-daily-reading-progress-v1':JSON.stringify({'2026-10-09':48}),
-        'ai-daily-answers-v1':JSON.stringify({'2026-10-09':{Q1:'my answer'}}),
+        'ai-daily-answers-v1':JSON.stringify({'2026-10-09':{Q1:'my answer'},[fixture.date+'-v7-Q4']:'Original question response'}),
+        'ai-daily-quiz-v6':JSON.stringify({[fixture.date+'-v7-Q1']:{selected:0,correct:true,submittedAt:'2026-10-09T08:00:00+08:00'}}),
         'ai-daily-cloud-cache-v1-user-a':JSON.stringify({privateA:{translation:'帳戶甲'}}),
         'ai-daily-cloud-cache-v1-user-b':JSON.stringify({privateB:{translation:'帳戶乙'}}),
         'ai-daily-cloud-pending-v1-user-a':JSON.stringify([{event_id:'unsent-event'}]),
@@ -62,6 +63,7 @@ async function exercise(engine,type,legacyVersion){
       };
       for(const [key,value] of Object.entries(snapshot))localStorage.setItem(key,value);
       const cache=await caches.open('ai-daily-V1-paper-calm-reading-reports');
+      await cache.put('./reports/2026-10-09.json?rev=bad',new Response(JSON.stringify({...fixture,date:'2026-10-09',content_generation_profile:'old_repetitive',practice_revision:undefined})));
       await cache.put('./reports/2026-10-01.json?rev=old',new Response(JSON.stringify({...fixture,date:'2026-10-01',historicSentinel:true})));
       // Some existing tablets have V2 as their most recent installation.
       // Its visited report must survive the S1 upgrade too.
@@ -83,10 +85,10 @@ async function exercise(engine,type,legacyVersion){
     for(let attempt=0;attempt<100;attempt++){
       lastState=await page.evaluate(async()=>{
         const keys=await caches.keys();
-        const v2=keys.includes('ai-daily-S1-2-reading-reports');
+        const v2=keys.includes('ai-daily-S1-3-reading-reports');
         let foundIndex=false,foundHistory=false;
         if(v2){
-          const store=await caches.open('ai-daily-S1-2-reading-reports');
+          const store=await caches.open('ai-daily-S1-3-reading-reports');
           const index=await store.match('./reports/index.json');
           const history=await store.match('./reports/2026-10-01.json');
           foundIndex=!!index;
@@ -106,18 +108,24 @@ async function exercise(engine,type,legacyVersion){
     }
     assert.ok(ready,engine+' V1/V2->S1 worker activation/migration incomplete: '+JSON.stringify(lastState));
     const migrated=await page.evaluate(async()=>{
-      const cache=await caches.open('ai-daily-S1-2-reading-reports');
+      const cache=await caches.open('ai-daily-S1-3-reading-reports');
       const history=await cache.match('./reports/2026-10-01.json');
       return {history:history?await history.json():null, publicKeys:(await cache.keys()).map(key=>key.url),
               index:!!await cache.match('./reports/index.json'),keys:await caches.keys()};
     });
     assert.equal(migrated.history?.historicSentinel,true,engine+' lost public V1 history: '+JSON.stringify(migrated));
     const migratedV2=await page.evaluate(async()=>{
-      const store=await caches.open('ai-daily-S1-2-reading-reports');
+      const store=await caches.open('ai-daily-S1-3-reading-reports');
       const response=await store.match('./reports/2026-10-02.json');
       return response?await response.json():null;
     });
     assert.equal(migratedV2?.v2Sentinel,true,engine+' lost public V2 history');
+    const repairedNine=await page.evaluate(async()=>{
+      const store=await caches.open('ai-daily-S1-3-reading-reports');
+      const response=await store.match('./reports/2026-10-09.json');
+      return response?await response.json():null;
+    });
+    assert.equal(repairedNine?.content_generation_profile,'source_outline_v2',engine+' retained old Oct9 repetition after upgrade');
     assert.ok(!migrated.keys.includes('ai-daily-V2-stable-reading-reports'),
       engine+' did not retire V2 cache safely');
     assert.equal(migrated.index,true);
@@ -130,7 +138,7 @@ async function exercise(engine,type,legacyVersion){
       await response.json();
     },{date:LATEST,i});
     const variants=await page.evaluate(async date=>{
-      const cache=await caches.open('ai-daily-S1-2-reading-reports');
+      const cache=await caches.open('ai-daily-S1-3-reading-reports');
       return (await cache.keys()).filter(key=>key.url.includes('/'+date+'.json')).map(key=>key.url);
     },LATEST);
     assert.equal(variants.length,1);
@@ -142,6 +150,22 @@ async function exercise(engine,type,legacyVersion){
     },LATEST);
     assert.equal(cached.status,200);
     assert.equal(cached.report.date,LATEST);
+    const offlineNine=await page.evaluate(async()=>{
+      const response=await fetch('./reports/2026-10-09.json?rev=offline');
+      return {status:response.status,report:await response.json()};
+    });
+    assert.equal(offlineNine.status,200);
+    assert.equal(offlineNine.report.content_generation_profile,'source_outline_v2');
+    if(CACHE_FIXTURE.practice_revision){
+      await page.reload({waitUntil:'domcontentloaded'});
+      await page.locator('#reader .word').first().waitFor();
+      assert.equal(await page.locator('#question-list input[type=radio]').first().isDisabled(),false,
+        engine+' regraded or locked the new question with an original answer');
+      assert.equal(await page.locator('#question-list textarea').first().inputValue(),'',
+        engine+' copied the original written answer into a changed question');
+      for(const key of ['ai-daily-answers-v1','ai-daily-quiz-v6'])
+        assert.equal(await page.evaluate(key=>localStorage.getItem(key),key),stored[key],engine+' discarded original answers');
+    }
     assert.equal(await page.locator('#site-version').innerText(),'S1');
     assert.equal(errors.length,0,errors.join('\n'));
     console.log(engine+' V1/V2 -> S1 PASS: public report migration, unchanged device/account/session/pending data, canonical refreshes, HTTP 503 fallback, subdirectory scope');
@@ -150,5 +174,5 @@ async function exercise(engine,type,legacyVersion){
     server.closeAllConnections?.();await new Promise(resolve=>server.close(resolve));
   }
 }
-(async()=>{for(const legacy of ['v1','v2','v3']){await exercise('Chromium '+legacy,chromium,legacy);await exercise('WebKit '+legacy,webkit,legacy);}})()
+(async()=>{for(const legacy of ['v1','v2','v3','s1-2']){await exercise('Chromium '+legacy,chromium,legacy);await exercise('WebKit '+legacy,webkit,legacy);}})()
   .catch(error=>{console.error(error);process.exitCode=1;});

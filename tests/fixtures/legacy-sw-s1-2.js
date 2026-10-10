@@ -1,8 +1,7 @@
 /* Same-origin cache only. Network-first news never silently masquerades as fresh. */
-const VERSION='ai-daily-S1-3-reading';
+const VERSION='ai-daily-S1-2-reading';
 const SHELL=['./','./index.html','./style.css','./v3.css','./v4.css','./v5.css','./v6.css','./v11.css','./v12.css','./v1.css','./reading-theme-v1.css','./cloud-sync.js','./app.js','./offline-glossary.json','./reading-glossary.json','./news-glossary.json','./news-template-glossary.json','./release.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 const PAGE_CACHE=VERSION+'-shell',DATA_CACHE=VERSION+'-reports';
-const REPAIRED_DATES=new Set(['2026-10-09','2026-10-10']);
 const SCOPE=new URL('./',self.location.href);
 const SHELL_URLS=new Set(SHELL.map(path=>new URL(path,SCOPE).href));
 const ownedLegacy=name=>/^ai-daily-(?:V[123]-|S1-)/.test(name);
@@ -25,7 +24,6 @@ async function validPublicResponse(request,response){
     if(path.endsWith('/reports/index.json'))return Array.isArray(value)&&value.length>0&&value.every(row=>row&&/^\d{4}-\d{2}-\d{2}$/.test(row.date));
     if(path.endsWith('/system-status.json'))return value&&typeof value.state==='string';
     const date=path.match(/\/reports\/(\d{4}-\d{2}-\d{2})\.json$/)?.[1];
-    if(REPAIRED_DATES.has(date)&&!(value?.content_generation_profile==='source_outline_v2'&&/^[a-f0-9]{64}$/.test(value.practice_revision||'')))return false;
     return value?.date===date&&Array.isArray(value.essay)&&value.essay.length>=5&&value.essay.every(p=>typeof p==='string')&&
       value.dictionary&&typeof value.dictionary==='object'&&Array.isArray(value.practice?.items)&&value.practice.items.length>=7;
   }catch{return false;}
@@ -46,14 +44,12 @@ self.addEventListener('install',event=>{
       if(response.ok&&await validPublicResponse('./reports/index.json',response)){
         const index=await response.clone().json();
         await data.put('./reports/index.json',response);
-        const dates=new Set([...REPAIRED_DATES,index?.[0]?.date]);
-        await Promise.all([...dates].filter(date=>/^\d{4}-\d{2}-\d{2}$/.test(date)).map(async date=>{
-          const path='./reports/'+date+'.json';
-          try{
-            const report=await boundedFetch(new URL(path,SCOPE).href,{cache:'no-store'});
-            if(report.ok&&await validPublicResponse(path,report))await data.put(path,report);
-          }catch{/* Each repaired date is independent of other fetch failures. */}
-        }));
+        const latest=index?.[0]?.date;
+        if(/^\d{4}-\d{2}-\d{2}$/.test(latest)){
+          const path='./reports/'+latest+'.json';
+          const report=await boundedFetch(new URL(path,SCOPE).href,{cache:'no-store'});
+          if(report.ok&&await validPublicResponse(path,report))await data.put(path,report);
+        }
       }
     }catch{/* Offline install keeps usable shell, no fabricated news. */}
     await self.skipWaiting();
@@ -106,13 +102,8 @@ self.addEventListener('fetch',event=>{
           if(cache)try{await cache.put(key,res.clone());await prune(cache,42);}catch{/* A full cache must not block a valid online reading. */}
           return res;
         }
-        const previous=await cache?.match(key);
-        if(previous&&await validPublicResponse(key,previous))return offlineResponse(previous);
-        return new Response('Public reading unavailable or invalid',{status:503});
-      }catch{
-        const previous=await cache?.match(key);
-        return offlineResponse(previous&&await validPublicResponse(key,previous)?previous:null);
-      }
+        const previous=await cache?.match(key);return previous?offlineResponse(previous):res;
+      }catch{return offlineResponse(await cache?.match(key));}
     })());return;
   }
   if(event.request.mode==='navigate'){

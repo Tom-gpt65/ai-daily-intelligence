@@ -91,6 +91,31 @@ async function exercise(browserType,engine,width){
       assert.ok(data[key]&&typeof data[key]==='object',engine+' backup missing '+key);
     assert.ok(!plain.includes('SECRET_NEVER_EXPORT')&&!plain.includes('REFRESH_NEVER_EXPORT'),
       engine+' backup leaked authentication tokens');
+    // Add both an old bank and the current repaired bank to a real exported
+    // backup, import it through the UI, then export again. Nothing is dropped
+    // and old answers must never lock or overwrite a changed question.
+    const latest=JSON.parse(fs.readFileSync(path.join(ROOT,'reports/index.json'),'utf8'))[0].date;
+    const edition=JSON.parse(fs.readFileSync(path.join(ROOT,'reports/'+latest+'.json'),'utf8'));
+    if(edition.practice_revision){
+      const legacy=latest+'-v7-',current=latest+'-s1-'+edition.practice_revision+'-';
+      data.writtenAnswers[legacy+'Q4']='Retained original written answer';
+      data.writtenAnswers[current+'Q4']='Answer to the repaired question';
+      data.quizSelections[legacy+'Q1']={selected:0,correct:true,submittedAt:'2026-10-09T08:00:00+08:00'};
+      data.quizSelections[current+'Q1']={selected:1,correct:false,submittedAt:'2026-10-10T23:40:00+08:00'};
+      const imported=path.join(path.dirname(localFile),'repaired-question-backup.json');
+      fs.writeFileSync(imported,JSON.stringify(data));
+      await page.locator('#import-all-file').setInputFiles(imported);
+      await page.waitForFunction(key=>JSON.parse(localStorage.getItem('ai-daily-answers-v1')||'{}')[key]==='Answer to the repaired question',current+'Q4');
+      const [roundTrip]=await Promise.all([page.waitForEvent('download'),page.locator('#export-all').click()]);
+      const restored=JSON.parse(fs.readFileSync(await roundTrip.path(),'utf8'));
+      for(const key of [legacy+'Q4',current+'Q4'])assert.equal(restored.writtenAnswers[key],data.writtenAnswers[key]);
+      for(const key of [legacy+'Q1',current+'Q1'])assert.deepEqual(restored.quizSelections[key],data.quizSelections[key]);
+      await page.locator('[data-view="today"]').click();
+      assert.equal(await page.locator('#question-list textarea').first().inputValue(),'Answer to the repaired question');
+      assert.equal(await page.locator('#question-list input[type=radio]').nth(1).isChecked(),true);
+      await page.locator('[data-view="words"]').click();
+      console.log('PASS',engine,'old/new question banks survive private backup round-trip independently');
+    }
 
     // The production app auto-registers on HTTPS. The local HTTP loopback test
     // explicitly registers the same SW to avoid changing production behaviour.
@@ -102,7 +127,7 @@ async function exercise(browserType,engine,width){
     await page.waitForFunction(async()=>{
       if(!navigator.serviceWorker?.controller)return false;
       const keys=await caches.keys();
-      if(!keys.some(k=>k.includes('V2-stable-reading')))return false;
+      if(!keys.includes('ai-daily-S1-3-reading-reports'))return false;
       const names=await caches.keys();
       const match=await Promise.all(names.map(async name=>{
         const cache=await caches.open(name);

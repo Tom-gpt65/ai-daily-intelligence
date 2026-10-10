@@ -20,7 +20,7 @@ const cacheAPI={
   async keys(){return [...cachesMap.keys()];},async delete(name){return cachesMap.delete(name);},
   async match(key){for(const cache of cachesMap.values()){const res=await cache.match(key);if(res)return res;}}
 };
-let failure=false,malformed=false,lastNetworkOptions;
+let failure=false,malformed=false,unrepaired=false,lastNetworkOptions;
 const newest='2026-10-10';
 const report=(date,extra={})=>({date,essay:Array(5).fill('Cached public passage'),dictionary:{},practice:{items:Array(7).fill({})},...extra});
 const json=value=>new Response(JSON.stringify(value),{headers:{'Content-Type':'application/json'}});
@@ -33,7 +33,9 @@ const sandbox={
     if(failure)return new Response('unavailable',{status:503});
     if(malformed)return new Response('<html>Temporary error</html>',{headers:{'Content-Type':'text/html'}});
     const path=new URL(normal(key)).pathname;
-    const body=path.endsWith('/index.json')?[{date:newest}]:report(newest,{revision:'S1-fresh'});
+    const date=path.match(/\/reports\/(\d{4}-\d{2}-\d{2})\.json$/)?.[1]||newest;
+    const repaired=unrepaired?{}:{content_generation_profile:'source_outline_v2',practice_revision:'a'.repeat(64)};
+    const body=path.endsWith('/index.json')?[{date:newest}]:report(date,{revision:'S1-fresh',...repaired});
     return json(body);
   }
 };
@@ -46,6 +48,7 @@ async function emit(type,request){
 (async()=>{
   const old=await cacheAPI.open('ai-daily-V1-paper-calm-reading-reports');
   await old.put('./reports/'+newest+'.json?rev=old',json(report(newest,{revision:'old'})));
+  await old.put('./reports/2026-10-09.json?rev=bad',json(report('2026-10-09',{revision:'old-repetitive'})));
   for(let i=1;i<=44;i++){
     const day=new Date(Date.UTC(2026,7,i)).toISOString().slice(0,10);
     await old.put('./reports/'+day+'.json?rev=1',json(report(day)));
@@ -60,11 +63,12 @@ async function emit(type,request){
   await cacheAPI.open('unrelated-application');
   await emit('install');
   await emit('activate');
-  const data=await cacheAPI.open('ai-daily-S1-2-reading-reports');
+  const data=await cacheAPI.open('ai-daily-S1-3-reading-reports');
   const keys=await data.keys();
   assert.equal(keys.filter(key=>/\/reports\/\d{4}-/.test(key.url)).length,42);
   assert.ok(await data.match('./reports/index.json'),'Index was pruned');
   assert.equal((await (await data.match('./reports/'+newest+'.json')).json()).revision,'S1-fresh');
+  assert.equal((await (await data.match('./reports/2026-10-09.json')).json()).content_generation_profile,'source_outline_v2','Old Oct9 prose survived migration');
   assert.ok(keys.every(key=>key.url.startsWith(BASE)&&!new URL(key.url).search));
   assert.ok(cachesMap.has('unrelated-application'));
   assert.ok(!(await old.keys()).some(key=>key.url.startsWith(BASE)), 'Legacy in-scope data remained after migration');
@@ -92,6 +96,20 @@ async function emit(type,request){
   assert.equal(online.headers.get('X-AI-Daily-Cache'),null);
   assert.equal((await online.json()).revision,'S1-fresh','A full cache blocked valid network content');
   data.put=put;
+  unrepaired=true;
+  const rejectedNetwork=await emit('fetch',new Request(BASE+'reports/2026-10-09.json'));
+  assert.equal((await rejectedNetwork.json()).content_generation_profile,'source_outline_v2','Unrepaired HTTP 200 resurrected old prose');
+  await data.put('./reports/2026-10-09.json',json(report('2026-10-09',{revision:'old-repetitive'})));
+  assert.equal((await emit('fetch',new Request(BASE+'reports/2026-10-09.json'))).status,503,'Corrupt repaired-date cache escaped validation');
+  failure=true;
+  assert.equal((await emit('fetch',new Request(BASE+'reports/2026-10-09.json'))).status,503);
+  failure=false;unrepaired=false;
+  // Failed install downloads cannot migrate known bad revisions later.
+  const badLegacy=await cacheAPI.open('ai-daily-S1-2-reading-reports');
+  await badLegacy.put('./reports/2026-10-09.json',json(report('2026-10-09')));
+  await data.delete('./reports/2026-10-09.json');
+  await emit('activate');
+  assert.equal(await data.match('./reports/2026-10-09.json'),undefined);
   assert.equal(await emit('fetch',new Request('https://private.supabase.co/rest/v1/vocabulary_events')),undefined);
   assert.equal(await emit('fetch',new Request(BASE+'cloud-config.json')),undefined);
   assert.equal(await emit('fetch',new Request(BASE+'../another-project/app.js')),undefined);

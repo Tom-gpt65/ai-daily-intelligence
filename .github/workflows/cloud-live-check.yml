@@ -44,13 +44,13 @@ jobs:
                   status,html=get(base+'index.html')
                   assert status==200 and 'id="sync-email-feedback"' in html,'Live email feedback element missing'
                   assert 'id="sync-password-login"' in html and 'id="sync-password"' in html,'Live password UI missing'
-                  assert './reading-theme-v1.css?v=s1-2' in html,'Paper Calm stylesheet not referenced'
+                  assert './reading-theme-v1.css?v=s1-3' in html,'Paper Calm stylesheet not referenced'
                   assert "preference==='false'" in html,'First-paint saved theme bootstrap missing'
                   status,theme=get(base+'reading-theme-v1.css')
                   assert status==200 and '--reader-paper: #FFFDF8' in theme and '--reader-paper: #22292A' in theme,'Public theme tokens outdated'
                   assert '--nav-border: #737E73' in theme and '--focus-ring: #2B6378' in theme,'Accessible navigation or focus tokens missing'
                   status,worker=get(base+'sw.js')
-                  assert status==200 and 'ai-daily-S1-2-reading' in worker,'Public offline shell outdated'
+                  assert status==200 and 'ai-daily-S1-3-reading' in worker,'Public offline shell outdated'
                   print('LIVE S1 CLOUD CONFIG, PAPER CALM, SOFT GRAPHITE AND AUTH VERIFIED')
                   break
               except (OSError,ValueError,AssertionError) as error:

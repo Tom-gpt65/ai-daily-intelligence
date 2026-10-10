@@ -6,7 +6,12 @@ always disclose that human judgement is needed.
 """
 from __future__ import annotations
 import hashlib
+import json
 import re
+
+def assessment_revision(items: list[dict]) -> str:
+    """A changed question/options/evidence bank must not reuse old answers."""
+    return hashlib.sha256(json.dumps(items,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode('utf-8')).hexdigest()
 
 VOCAB = {
     "provisional": ("subject to revision", ("officially authorised", "already conclusive", "irrelevant to the debate")),

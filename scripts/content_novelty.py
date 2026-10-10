@@ -41,6 +41,14 @@ def long_repeats(left: list[str], right: list[str]) -> int:
     b = {normal(s) for s in right if len(TOKEN.findall(s)) >= 55}
     return len(a & b)
 
+def reused_analysis_fragments(left: list[str], right: list[str]) -> int:
+    # A changed headline or citation must not hide a reused analysis block.
+    # The introductory scope notice is allowed to be standard wording; all
+    # subsequent substantive paragraphs, including the conclusion, count.
+    def fragments(article):
+        return set().union(*(shingles([p],n=24) for p in article[1:]))
+    return len(fragments(left) & fragments(right))
+
 
 def recent_articles(reports: Path, today: str, window: int = LOOKBACK_DAYS):
     index_path = reports / "index.json"
@@ -67,6 +75,18 @@ def recent_articles(reports: Path, today: str, window: int = LOOKBACK_DAYS):
             output.append(article)
         except (OSError, ValueError, TypeError, KeyError) as exc:
             raise ValueError("Originality history unavailable: " + str(name)) from exc
+    # Replacing a public edition must not erase its prose from the comparison
+    # corpus. Preserved revisions count for their original publication date.
+    for path in sorted((reports/'archive-revisions').glob('*/*.json')):
+        try:
+            article=json.loads(path.read_text(encoding='utf-8'))
+            delta=(current-Date.fromisoformat(article['date'])).days
+            if 0<delta<=window:
+                if not isinstance(article.get('essay'),list) or not article['essay'] or not all(isinstance(p,str) and p.strip() for p in article['essay']):
+                    raise ValueError('Invalid preserved prose')
+                output.append(article)
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            raise ValueError('Originality preserved history unavailable: '+str(path)) from exc
     return output
 
 
@@ -102,14 +122,14 @@ def audit(report: dict, archive: list[dict]) -> dict:
             max_overlap, most_similar = common, prior["date"]
         if long_repeats(essay, old_essay) > 0:
             issues.append("copied_long_paragraph_from_" + prior["date"])
+        if reused_analysis_fragments(essay,old_essay)>0:
+            issues.append('reused_long_analysis_fragment_from_'+prior['date'])
         if normal(essay[0]) == normal(old_essay[0]):
             issues.append("repeated_introduction_from_" + prior["date"])
         if normal(essay[-1]) == normal(old_essay[-1]):
             issues.append("repeated_conclusion_from_" + prior["date"])
-        # The same two adjacent days must have different perspectives, not
-        # simply swap the RSS titles in a fixed format.
-        if style and (today - other_date).days <= 3 and style == prior.get("writing_style"):
-            issues.append("recently_reused_writing_style")
+        # A style label is metadata, not proof of originality. Reject actual
+        # reused prose and source identity; never demand cosmetic style cycles.
         if title == normal(prior.get("headline", "")):
             issues.append("repeated_headline_from_" + prior["date"])
         old_urls = {s.get("url") for s in prior.get("stories", []) if isinstance(s, dict)}
