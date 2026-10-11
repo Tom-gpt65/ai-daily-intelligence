@@ -38,6 +38,10 @@ SUBJECT_STARTS='a an the this these those one such readers users researchers con
 # lookahead. A transition still requires a subject before the modal.
 START_PATTERN='('+'|'.join(w for w in SENTENCE_STARTS if w not in CONNECTORS)+'|('+'|'.join(CONNECTORS)+'),? ('+'|'.join(SUBJECT_STARTS)+'))'
 SENTENCE_PATTERN=r"^"+START_PATTERN+r"("+TOKEN_PATTERN+r"){0,24} (could|would|might|should)("+TOKEN_PATTERN+r"){0,30}\.$"
+# Guide only the prefix and one terminal full stop in native decoding. Do not
+# force a modal position or a bounded word grammar, which distorted real text.
+# The original complete sentence contract remains the acceptance gate.
+NATIVE_SENTENCE_PATTERN=r"^"+START_PATTERN+r"[ a-zA-Z,'’;:–—-]*\.$"
 NARRATIVE_TERMS=set('says saying promising makers deliver taking down response here live need needs top quietly new latest your'.split())
 
 
@@ -239,7 +243,9 @@ def compose(stories, plan):
 
 def decoding_schema(value):
     """Preserve JSON structure/counts; perform English safety checks afterwards."""
-    if isinstance(value,dict):return {k:decoding_schema(v) for k,v in value.items() if k!='pattern'}
+    if isinstance(value,dict):
+        return {k:NATIVE_SENTENCE_PATTERN if k=='pattern' and v==SENTENCE_PATTERN else decoding_schema(v)
+                for k,v in value.items()}
     if isinstance(value,list):return [decoding_schema(v) for v in value]
     return value
 
@@ -300,8 +306,12 @@ Every sentence must contain could, would, might or should and end with a full st
         low,high=(count,count+2) if 'analysis' in output['properties'] else (3,3)
         if any(not isinstance(row,list) or not low<=len(row)<=high for row in arrays):
             raise AnalysisResponseError('invalid_analysis_sentence_structure',json.dumps(result,ensure_ascii=False))
-        if any(not isinstance(s,str) or not 12<=len(WORDS.findall(s))<=45 or not re.fullmatch(SENTENCE_PATTERN,s)
-               for row in arrays for s in row):
+        invalid=[{'words':len(WORDS.findall(s)) if isinstance(s,str) else None,
+                  'sentence_shape_valid':isinstance(s,str) and bool(re.fullmatch(SENTENCE_PATTERN,s))}
+                 for row in arrays for s in row
+                 if not isinstance(s,str) or not 12<=len(WORDS.findall(s))<=45 or not re.fullmatch(SENTENCE_PATTERN,s)]
+        if invalid:
+            print('[analysis sentence diagnostics] '+json.dumps(invalid),flush=True)
             raise AnalysisResponseError('invalid_analysis_sentence_length',json.dumps(result,ensure_ascii=False))
         if any(reporting_sentence(s) for row in arrays for s in row):
             raise AnalysisResponseError('non_hypothetical_analysis_sentence',json.dumps(result,ensure_ascii=False))
