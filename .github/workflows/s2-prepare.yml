@@ -1,6 +1,9 @@
 name: S2 automatic reading preparation
 
 on:
+  schedule:
+    - cron: '0 14,20 * * *'
+      timezone: 'Asia/Hong_Kong'
   pull_request:
     branches: [main]
     paths: ['scripts/s2_reading.py', '.github/workflows/s2-prepare.yml']
@@ -14,7 +17,7 @@ on:
         default: '3'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: s2-preparation-${{ github.event.pull_request.number || github.ref }}
@@ -47,12 +50,19 @@ jobs:
           mkdir -p .cache
           curl --fail --location --retry 2 --max-time 120 https://raw.githubusercontent.com/skywind3000/ECDICT/bc015ed2e24a7abef49fc6dbbb7fe32c1dadaf8b/ecdict.csv -o .cache/ecdict.csv
       - name: Automatically generate and review complete future readings
+        id: prepare
         env:
           START: ${{ inputs.start }}
           DAYS: ${{ inputs.days || '3' }}
         run: |
           if [ -z "$START" ]; then START=$(TZ=Asia/Hong_Kong date -d tomorrow +%F); fi
           python scripts/s2_reading.py --start "$START" --days "$DAYS"
+      - name: Publish accepted reserves against the latest main branch
+        if: always() && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python scripts/s2_reserve.py --publish .cache/s2-preparation
       - name: Preserve accepted readings and exact rejection evidence
         if: always()
         uses: actions/upload-artifact@v4

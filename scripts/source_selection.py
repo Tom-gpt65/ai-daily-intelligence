@@ -17,9 +17,12 @@ def select(pool,now,reports,diagnostics):
         p=urlsplit(safe_url(s['url']))
         return {('url',p.netloc.lower(),p.path),('title',title_signature(s['title']))}
     used=set()
-    for path in list(reports.glob('????-??-??.json'))+list((reports/'archive-revisions').glob('*/*.json')):
-        if path.stem<day:
-            for s in json.loads(path.read_text('utf-8')).get('stories',[]):used.update(identity_keys(s))
+    history_paths=(list(reports.glob('????-??-??.json'))+list((reports/'archive-revisions').glob('*/*.json'))
+                   +list((reports.parent.parent/'content-history/retired').glob('*.json')))
+    for path in history_paths:
+        previous=json.loads(path.read_text('utf-8'))
+        if previous.get('date','')<day:
+            for s in previous.get('stories',[]):used.update(identity_keys(s))
     valid=[];rejected=[];seen=set();unused=[];keys=set()
     for s in pool:
         candidate={**s,'id':'S1'}

@@ -93,7 +93,12 @@ def recent_articles(reports: Path, today: str, window: int = LOOKBACK_DAYS):
                 output.append(article)
         except (OSError, ValueError, TypeError, KeyError) as exc:
             raise ValueError('Originality preserved history unavailable: '+str(path)) from exc
-    return output
+    # A copied backup is the same revision, not an extra edition. Distinct
+    # original/rebuilt prose still both count and face the identical gates.
+    unique = {}
+    for article in output:
+        unique.setdefault((article['date'], json.dumps(article['essay'], ensure_ascii=False)), article)
+    return list(unique.values())
 
 
 def audit(report: dict, archive: list[dict]) -> dict:

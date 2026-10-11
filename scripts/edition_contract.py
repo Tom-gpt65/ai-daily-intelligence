@@ -64,6 +64,8 @@ def issues(report, row=None, reports=None):
             try:
                 base=Path(reports) if reports is not None else ROOT/'site/reports'
                 preserved=base/'archive-revisions/s1-original'/(day.isoformat()+'.json')
+                if not preserved.is_file():
+                    preserved=base.parent.parent/'content-history/retired'/(day.isoformat()+'-original.json')
                 raw=preserved.read_bytes().replace(b'\r\n',b'\n')
                 original=json.loads(raw)
                 source_clock=datetime.fromisoformat(report['historical_source_reference_at'])
