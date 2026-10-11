@@ -19,8 +19,9 @@ class SourceGenerationTests(unittest.TestCase):
 
     def plan(self):
         sources=canary_sources(self.now)
-        p='A reader could compare the relevant assumptions before choosing a response. Such an inquiry might distinguish alternative explanations through a carefully specified hypothetical observation. A provisional judgement would depend on the particular purpose, the cost of uncertainty and the limits of the comparison.'
-        return sources,{'introduction':p,'conclusion':p,'sections':[{'id':s['id'],'question':p+' A test could examine '+ ' and '.join(sorted(source_analysis.topical_words(s))[:3])+'.','test':p} for s in sources]}
+        p='A reader could compare the relevant assumptions before choosing a response, while a specified hypothetical observation might distinguish competing interpretations through evidence about purposes, costs and uncertainties.'
+        count=source_analysis.sentence_count(len(sources))
+        return sources,{'introduction':[p]*3,'conclusion':[p]*3,'sections':[{'id':s['id'],'question':[p[:-1]+' involving '+ ' and '.join(sorted(source_analysis.topical_words(s))[:3])+'.']+[p]*(count-1),'test':[p]*count} for s in sources]}
 
     def test_actual_capture_reproduces_unsupported_batch_without_rss_failure(self):
         self.assertEqual(self.snapshot['diagnostics']['feeds_ok'],6)
@@ -67,17 +68,33 @@ class SourceGenerationTests(unittest.TestCase):
 
     def test_hidden_fact_after_modal_sentence_is_rejected(self):
         sources,plan=self.plan()
-        plan['sections'][0]['question']+=' The company confirmed a new product.'
+        plan['sections'][0]['question'][0]+=' The company confirmed a new product.'
         self.assertIn('non_hypothetical_analysis_sentence',source_analysis.plan_issues(plan,sources))
 
     def test_unsupported_names_figures_and_copied_source_sentences_are_rejected(self):
         sources,plan=self.plan()
-        plan['sections'][0]['test']+=' Readers could compare a secret purchase by FictionalCorp for 999 dollars.'
+        plan['sections'][0]['test'][0]+=' Readers could compare a secret purchase by FictionalCorp for 999 dollars.'
         errors=source_analysis.plan_issues(plan,sources)
         self.assertIn('unsafe_analysis_text',errors);self.assertIn('unsupported_analysis_name',errors)
         sources,plan=self.plan()
-        plan['sections'][0]['question']+=' '+sources[0]['excerpt']
+        plan['sections'][0]['question'][0]+=' '+sources[0]['excerpt']
         self.assertIn('copied_source_analysis:S1',source_analysis.plan_issues(plan,sources))
+
+    def test_sentence_initial_company_name_cannot_bypass_name_validation(self):
+        sources,plan=self.plan()
+        plan['introduction'][0]=plan['introduction'][0].replace('A reader','FictionalCorp')
+        self.assertIn('unsupported_analysis_name',source_analysis.plan_issues(plan,sources))
+
+    def test_actual_question_wall_and_overlong_plan_cannot_be_published(self):
+        sources,plan=self.plan()
+        plan['introduction'][0]=plan['introduction'][0].replace('A reader could','Could a reader')
+        self.assertIn('interrogative_analysis_sentence',source_analysis.plan_issues(plan,sources))
+        sources,plan=self.plan()
+        plan['introduction'].append(plan['introduction'][0])
+        self.assertIn('invalid_analysis_sentence_structure',source_analysis.plan_issues(plan,sources))
+        sources,plan=self.plan()
+        plan['sections'][0]['question'][0]+=' '+plan['sections'][0]['question'][0]
+        self.assertIn('invalid_analysis_sentence_length',source_analysis.plan_issues(plan,sources))
 
     def test_no_paid_or_remote_model_endpoint_is_allowed(self):
         with patch.dict('os.environ',{'OLLAMA_URL':'https://external-model.example.com'}),patch.object(source_analysis,'urlopen',side_effect=AssertionError('Must reject before request')):
@@ -92,5 +109,18 @@ class SourceGenerationTests(unittest.TestCase):
             self.assertIn('analysis_model_unavailable:OSError',state['generation_issues'])
             self.assertGreaterEqual(len(state['selected_source_contexts']),3)
         self.assertEqual(before,{str(p.relative_to(self.reports)):p.read_bytes() for p in self.reports.rglob('*.json')})
+
+    def test_newer_attempt_does_not_keep_obsolete_publication_after_remote_edit(self):
+        import publish_reports,reading_backup
+        report=reading_backup.build_reading('2026-10-10',datetime.fromisoformat('2026-10-10T16:00:00+08:00'))
+        row={k:report[k] for k in ('date','headline','mode','word_count','updated_at')};row['stories']=0
+        current={'checked_at':'2026-10-11T08:46:00+08:00','state':'insufficient_evidence','failure_reason':'newest attempt failed','publication':{'mode':'source_digest'}}
+        proposed={'checked_at':'2026-10-11T07:05:00+08:00','state':'reading_reserve_reused'}
+        actual=publish_reports.reconcile_status(current,proposed,[row],report)
+        self.assertEqual(actual['checked_at'],current['checked_at'])
+        self.assertEqual(actual['failure_reason'],current['failure_reason'])
+        self.assertEqual(actual['publication']['mode'],'reading_feature')
+        self.assertFalse(actual['publication']['news'])
+        self.assertEqual(actual['backup']['requested_date'],'2026-10-11')
 
 if __name__=='__main__':unittest.main()

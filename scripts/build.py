@@ -852,7 +852,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     dictionary_seconds = round(time.perf_counter() - dictionary_started, 3)
     if missing:
         put_status("incomplete_dictionary", now, source_count=len(sources),
-                   missing_count=len(missing), missing_examples=missing[:16], **diagnostics)
+                   missing_count=len(missing), missing_examples=missing[:16],
+                   analysis_attempts=analysis_attempts, **diagnostics)
         print("[offline dictionary] Refusing incomplete current-news article: "
               + ", ".join(missing[:16]) + ". Educational fallback will be used.",file=sys.stderr)
         return False
@@ -863,7 +864,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
                 for s in sources):
             put_status('insufficient_evidence',finished,source_count=len(sources),
                        failure_reason='Source snapshot expired or crossed Hong Kong midnight during analysis',
-                       generation_issues=['analysis_completed_after_snapshot_expiry'],**diagnostics)
+                       generation_issues=['analysis_completed_after_snapshot_expiry'],
+                       analysis_attempts=analysis_attempts,**diagnostics)
             return False
         now=finished
     report = {
@@ -885,6 +887,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         "essay": essay, "translations": translations,
         "reading_metrics": metrics,
         "processing": {"source_count": len(sources), "attribution_only": True,
+                       "hypothetical_analysis_generated": analysis_plan is not None,
+                       "factual_anchors_assembled_from_sources": True,
                        "evidence_word_count": total_evidence_words,
                        "evidence_sufficient_for_draft": evidence_adequate,
                        "multi_source_events": sum(s.get("coverage_count", 1) > 1 for s in sources),
@@ -914,12 +918,13 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     from edition_contract import issues as edition_issues
     contract_errors=edition_issues(report,reports=REPORTS)
     if contract_errors:
-        put_status('editorial_quality_rejected',now,source_count=len(sources),quality_issues=contract_errors,**diagnostics)
+        put_status('editorial_quality_rejected',now,source_count=len(sources),quality_issues=contract_errors,
+                   analysis_attempts=analysis_attempts,**diagnostics)
         return False
     put_report(report)
     put_status("published", now, latest_date=date, mode=report["mode"], source_count=len(sources),
                model_seconds=model_seconds, translation_seconds=translation_seconds,
-               dictionary_seconds=dictionary_seconds, **diagnostics)
+               dictionary_seconds=dictionary_seconds, analysis_attempts=analysis_attempts, **diagnostics)
     return True
 
 

@@ -70,6 +70,30 @@ def select_edition(existing, incoming):
                    and incoming.get("mode")=="reading_feature" and usable)
     return existing if usable and (preserve_news or not incoming_is_newer(existing,incoming)) else incoming
 
+
+def reconcile_status(current,proposed,index,actual_report):
+    """Keep the newest attempt diagnosis but always describe the chosen bytes.
+
+    A remote report can change independently of its status. Preserving a newer
+    attempt must not preserve an obsolete publication mode/date alongside it.
+    """
+    from verify_publication import publication_outcome,HK
+    previous_check=utc_instant(current.get('checked_at'))
+    proposed_check=utc_instant(proposed.get('checked_at'))
+    use_proposed=proposed_check and (previous_check is None or proposed_check>=previous_check)
+    info={**(proposed if use_proposed else current),'latest_date':index[0]['date'],'mode':index[0]['mode']}
+    checked=(proposed_check if use_proposed else previous_check) or datetime.now(timezone.utc)
+    accepted=publication_outcome(index,actual_report,checked.astimezone(HK).date().isoformat(),allow_archived=True)
+    info['publication']=accepted
+    info['news_outcome']='current_news_available' if accepted['news'] else 'archived_reading' if accepted.get('backup') else 'educational_fallback'
+    if accepted.get('backup'):
+        info['backup']={**info.get('backup',{}),'kind':'archived_reading','date':accepted['date'],'requested_date':accepted['requested_date']}
+        if info.get('state')=='published':info['state']='reading_reserve_reused'
+    else:
+        info.pop('backup',None)
+        if info.get('state')=='reading_reserve_reused':info['state']='published'
+    return info
+
 def git(*args):
     return subprocess.run(["git",*args],cwd=ROOT,check=True,
                           text=True,capture_output=True)
@@ -139,24 +163,9 @@ def publish(max_attempts=5):
             # because the selected reading file did not change.
             proposed_status=json.loads(status_backup) if status_backup else {}
             current_status=read_json(STATUS,{})
-            previous_check=utc_instant(current_status.get('checked_at'))
-            proposed_check=utc_instant(proposed_status.get('checked_at'))
-            if proposed_check and (previous_check is None or proposed_check>=previous_check):
-                info={**proposed_status,'latest_date':combined[0]['date'],'mode':combined[0]['mode']}
-                from verify_publication import publication_outcome, HK
-                actual_report=read_json(REPORTS/(combined[0]['date']+'.json'),{})
-                accepted=publication_outcome(combined,actual_report,proposed_check.astimezone(HK).date().isoformat(),allow_archived=True)
-                info['publication']=accepted
-                info['news_outcome']='current_news_available' if accepted['news'] else 'archived_reading' if accepted.get('backup') else 'educational_fallback'
-                if accepted.get('backup'):
-                    info['backup']={**info.get('backup',{}),'kind':'archived_reading','date':accepted['date'],'requested_date':accepted['requested_date']}
-                    if info.get('state')=='published':info['state']='reading_reserve_reused'
-                else:
-                    info.pop('backup',None)
-                    if info.get('state')=='reading_reserve_reused':info['state']='published'
-                if preserve_remote_status and proposed_status.get('state')=='published' and chosen.get('mode') in ('editorial','source_digest'):
-                    info={**info,'mode':chosen['mode'],'latest_date':combined[0]['date']}
-                STATUS.write_text(json.dumps(info,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+            actual_report=read_json(REPORTS/(combined[0]['date']+'.json'),{})
+            info=reconcile_status(current_status,proposed_status,combined,actual_report)
+            STATUS.write_text(json.dumps(info,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
             # Fetch/reset may have brought new code, assets and glossary rules.
             # Validate the actual merged deployment, not the pre-fetch snapshot.
             import validate_site
