@@ -127,7 +127,7 @@ async function exercise(browserType,engine,width){
     await page.waitForFunction(async()=>{
       if(!navigator.serviceWorker?.controller)return false;
       const keys=await caches.keys();
-      if(!keys.includes('ai-daily-S1-3-reading-reports'))return false;
+      if(!keys.includes('ai-daily-S1-4-reading-reports'))return false;
       const names=await caches.keys();
       const match=await Promise.all(names.map(async name=>{
         const cache=await caches.open(name);

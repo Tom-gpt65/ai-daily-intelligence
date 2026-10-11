@@ -114,8 +114,11 @@ def make_exam(essay: list[str], stories: list[dict], date: str) -> dict:
           "A careful reading distinguishes reported claims from conclusions that are independently supported.",
           cite_location(marker), marker, date, quote_sentence(essay, marker, "evidence")))
 
+    # Word presence cannot establish whether "qualified" describes a
+    # reserved judgement or a trained person. Use reader-marked inference
+    # rather than assigning an unsupported sense automatically.
     available = [(term,meta,paragraph_at(essay,term)) for term,meta in VOCAB.items()
-                 if paragraph_at(essay,term) is not None]
+                 if term != 'qualified' and paragraph_at(essay,term) is not None]
     # Rotate the contextual target only among words demonstrably in this
     # particular passage; a different date should not freeze the same item.
     offset=int(hashlib.sha256((date+full[:200]).encode("utf-8")).hexdigest()[:8],16)

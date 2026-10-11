@@ -103,6 +103,30 @@ async function dictionaryGateDiagnostic(engine,browser){
  }finally{await instance.close();}
 }
 
+async function generationGateDiagnostic(engine,browser){
+ const instance=await browser.launch({headless:true});
+ try{
+  const page=await instance.newPage();
+  const statusRoute=url=>url.pathname.endsWith('/system-status.json');
+  for(const sample of [
+   {state:'insufficient_evidence',generation_issues:['unsupported_or_repeated_analytical_context'],expected:'新聞來源已讀取'},
+   {state:'editorial_quality_rejected',generation_issues:['interrogative_analysis_sentence','invalid_analysis_sentence_length'],expected:'分析變成連續問句'}
+  ]){
+   await page.route(statusRoute,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({...sample,checked_at:new Date().toISOString(),feeds_total:6,feeds_ok:6,feeds_failed:0})}));
+   await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
+   await page.waitForFunction(text=>document.querySelector('#pipeline-alert')?.textContent?.includes(text),sample.expected,{timeout:15000});
+   const alert=page.locator('#pipeline-alert'),label=await alert.innerText();
+   assert.ok(await alert.isVisible());
+   assert.ok(!label.includes('來源目前無法讀取'),'Healthy RSS was falsely labelled unavailable');
+   assert.ok(!label.includes('analysis_'),'Internal issue IDs should not replace a readable explanation');
+   assert.ok(label.includes('最近一輪'),'A failed attempt must not falsely deny another accepted same-day publication');
+   assert.ok(!await alert.evaluate(el=>el.classList.contains('pipeline-success')));
+   await page.unroute(statusRoute);
+  }
+  console.log('PASS',engine,'healthy RSS with rejected analysis displays the actual reason without claiming news success');
+ }finally{await instance.close();}
+}
+
 async function historicalRace(engine,browser){
  const instance=await browser.launch({headless:true});
  try{
@@ -147,6 +171,7 @@ async function historicalRace(engine,browser){
     [succeeded],[],
     '07:20:00','schedule-recovered','未有達標即時新聞','71003','reading_feature');
   await dictionaryGateDiagnostic(engine,browser);
+  await generationGateDiagnostic(engine,browser);
   await historicalRace(engine,browser);
  }
  console.log('RESULT: 12 schedule/tablet cases, 2 dictionary rejection alerts and 2 delayed historical status cases passed');

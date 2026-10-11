@@ -44,6 +44,10 @@ async function check(engine,browser,width){
       const top=document.querySelector('#reading-paragraph-3')?.getBoundingClientRect().top;
       return typeof top==='number'&&top>=80&&top<=Math.min(window.innerHeight*0.75,675);
     },null,{timeout:3000});
+    // A transient correct position is insufficient: native WebKit used to
+    // restore the focused selector after this condition first became true.
+    await page.waitForFunction(()=>document.activeElement?.id==='reading-paragraph-3',null,{timeout:3000});
+    await page.waitForTimeout(350);
     const top=await page.locator('#reading-paragraph-3').evaluate(el=>el.getBoundingClientRect().top);
     assert.ok(top>=80&&top<=675,engine+' '+width+': section jump not visible within the readable viewport: '+top);
     assert.ok(await page.locator('#tools-toggle').isVisible(),engine+' '+width+': compact tools toggle absent');
@@ -67,7 +71,7 @@ async function check(engine,browser,width){
  const sw=fs.readFileSync(path.join(root,'site/sw.js'),'utf8');
  assert.ok(sw.includes("boundedFetch(event.request,{cache:'no-cache'})"),'Service worker still serves stale CSS or JavaScript without first checking the network');
  assert.ok(sw.includes("url.search=''")&&sw.includes('dataKey(event.request)'),'Offline shell cache does not canonicalize version-busting queries');
- assert.ok(fs.readFileSync(path.join(root,'site/index.html'),'utf8').includes('app.js?v=s1-3'),
+ assert.ok(fs.readFileSync(path.join(root,'site/index.html'),'utf8').includes('app.js?v=s1-4'),
    'HTML does not break old iPhone JavaScript URL');
  console.log('RESULT:',passes,'/ 10 responsive browser layouts plus PWA freshness invariants passed');
 })().catch(e=>{console.error(e);process.exit(1)});

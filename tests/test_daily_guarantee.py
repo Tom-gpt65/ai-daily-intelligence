@@ -152,7 +152,7 @@ class DailyGuaranteeTests(unittest.TestCase):
         self.assertGreaterEqual(daily.count("continue-on-error: true"),4,
                                 "Optional OpenCC, RSS, Ollama and generation must not block the first reading")
         for label in ("Install free dependencies", "Collect recent RSS headlines",
-                      "Install free local model when relevant", "Generate daily briefing"):
+                      "Install free local analysis model when fixed outlines are exhausted", "Generate daily briefing"):
             with self.subTest(label=label):
                 segment=daily.split("- name: "+label,1)[1].split("\n      - name: ",1)[0]
                 self.assertIn("continue-on-error: true",segment,

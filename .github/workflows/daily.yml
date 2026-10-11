@@ -16,9 +16,9 @@ on:
   workflow_dispatch:
     inputs:
       use_model:
-        description: 'Optional model draft preview only; formal S1 publishes attributed source analysis'
+        description: 'Allow free local hypothetical analysis when the fixed outline cannot produce a novel reading'
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: write
@@ -99,6 +99,7 @@ jobs:
               data=json.load(stream)
           evidence=source_evidence_metrics(data.get('stories',[]))
           print('enough='+str(evidence['sufficient']).lower())
+          print('analysis='+str(data.get('diagnostics',{}).get('selection_path')=='source_conditioned_analysis').lower())
           PY
           else
             echo "news=false" >> "$GITHUB_OUTPUT"
@@ -124,19 +125,20 @@ jobs:
               -o .cache/ecdict.csv || echo "Dictionary unavailable: using built-in vocabulary"
           fi
 
-      - name: Install free local model when relevant
-        if: steps.preflight.outputs.enough == 'true' && inputs.use_model == true
+      - name: Install free local analysis model when fixed outlines are exhausted
+        if: steps.preflight.outputs.enough == 'true' && steps.preflight.outputs.analysis == 'true' && (github.event_name != 'workflow_dispatch' || inputs.use_model == true)
         id: ollama
         continue-on-error: true
         timeout-minutes: 10
         run: |
-          curl -fsSL https://ollama.com/install.sh | sh
+          curl --fail --location --retry 2 --max-time 120 https://ollama.com/install.sh -o /tmp/install-ollama.sh
+          sh /tmp/install-ollama.sh
           (ollama serve > /tmp/ollama.log 2>&1 &)
           for n in $(seq 1 30); do
             curl -fsS http://localhost:11434/api/tags >/dev/null && break
             sleep 2
           done
-          timeout 480 ollama pull phi3:mini
+          timeout 480 ollama pull qwen2.5:7b-instruct-q4_K_M
 
       - name: Generate daily briefing
         if: steps.preflight.outputs.news == 'true'
@@ -145,8 +147,9 @@ jobs:
         continue-on-error: true
         id: build
         env:
-          OLLAMA_ENABLED: ${{ steps.ollama.outcome == 'success' && '1' || '0' }}
-          OLLAMA_MODEL: phi3:mini
+          ANALYSIS_ENABLED: ${{ steps.ollama.outcome == 'success' && '1' || '0' }}
+          ANALYSIS_MODEL: qwen2.5:7b-instruct-q4_K_M
+          GENERATION_EVIDENCE: '1'
           TRANSLATE_ENABLED: '0'
         run: |
           python scripts/build.py --use-prefetch
@@ -161,7 +164,7 @@ jobs:
           print("generated="+str(generated).lower())
           PY
 
-      - name: Guarantee today's reading passage, even if RSS or the model fails
+      - name: Ensure validated reading or clearly labelled archived backup
         # With an approved site preflight, always try a verified backup after
         # transient RSS/model failures; do not bypass genuine validation errors.
         if: ${{ always() && github.event_name != 'push' && steps.site-preflight.outcome == 'success' }}
@@ -176,6 +179,18 @@ jobs:
           FEED_OUTCOME: ${{ steps.preflight.outcome }}
           BUILD_OUTCOME: ${{ steps.build.outcome }}
         run: python scripts/verify_publication.py --record-attempt
+
+      - name: Preserve public sources and specific generation rejection reasons
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-generation-evidence-${{ github.run_id }}
+          path: |
+            .cache/candidates.json
+            .cache/generation-diagnostics.json
+            .cache/generation-drafts/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Validate FINAL dated article before publishing
         if: ${{ github.event_name != 'push' && steps.passage.outcome == 'success' }}

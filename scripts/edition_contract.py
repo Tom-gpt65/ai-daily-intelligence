@@ -88,6 +88,9 @@ def issues(report, row=None, reports=None):
         errors.extend(sorted(hard.intersection(checked['issues'])))
         if report.get('content_generation_profile')=='source_outline_v2':
             errors.extend(outline_issues(essay,sources if isinstance(sources,list) else []))
+        elif report.get('content_generation_profile')=='source_analysis_v3' and isinstance(sources,list) and len(sources)>=3:
+            from source_analysis import report_issues
+            errors.extend(report_issues(report))
         elif day.isoformat()>'2026-10-10':
             errors.append('new_news_requires_source_outline_v2')
     practice = report.get("practice")
@@ -95,7 +98,7 @@ def issues(report, row=None, reports=None):
     if not isinstance(items, list) or len(items) < 7 or practice.get("official") is True:
         errors.append("missing_practice")
     else:
-        if report.get('content_generation_profile')=='source_outline_v2':
+        if report.get('content_generation_profile') in {'source_outline_v2','source_analysis_v3'}:
             from dse_assessment_v7 import assessment_revision
             if report.get('practice_revision')!=assessment_revision(items):
                 errors.append('question_revision_mismatch')

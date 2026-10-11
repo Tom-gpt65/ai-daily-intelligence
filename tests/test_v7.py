@@ -98,6 +98,12 @@ class DSEV7Tests(unittest.TestCase):
         book=make_exam(report["essay"],report["stories"],report["date"])
         self.assertEqual(7,len(book["items"]))
         self.assertTrue(any(item["type"]=="extended" for item in book["items"]))
+
+    def test_qualified_person_is_not_marked_as_a_reserved_judgement(self):
+        essay=['A qualified engineer could examine the proposed safeguards before advising on a suitable response.']
+        book=make_exam(essay,[],"2026-10-11")
+        question=next(q for q in book['items'] if q['id']=='Q2')
+        self.assertEqual(question['type'],'short')
     def test_v7_reader_supports_question_evidence_and_translation_recovery(self):
         js=(ROOT/"site/app.js").read_text(encoding="utf-8")
         self.assertIn("translationProgress",js)

@@ -49,7 +49,7 @@ async function exercise(engine,type,legacyVersion){
       await navigator.serviceWorker.ready;
     });
     await page.waitForFunction(async()=>navigator.serviceWorker.controller&&
-      (await caches.keys()).some(key=>(key.startsWith('ai-daily-V')||key.startsWith('ai-daily-S1-2-'))&&key.endsWith('-reports')));
+      (await caches.keys()).some(key=>(key.startsWith('ai-daily-V')||key.startsWith('ai-daily-S1-2-')||key.startsWith('ai-daily-S1-3-'))&&key.endsWith('-reports')));
     const stored=await page.evaluate(async fixture=>{
       const snapshot={
         'ai-daily-saved-v2':JSON.stringify({evidence:{word:'evidence',translation:'證據'}}),
@@ -85,10 +85,10 @@ async function exercise(engine,type,legacyVersion){
     for(let attempt=0;attempt<100;attempt++){
       lastState=await page.evaluate(async()=>{
         const keys=await caches.keys();
-        const v2=keys.includes('ai-daily-S1-3-reading-reports');
+        const v2=keys.includes('ai-daily-S1-4-reading-reports');
         let foundIndex=false,foundHistory=false;
         if(v2){
-          const store=await caches.open('ai-daily-S1-3-reading-reports');
+          const store=await caches.open('ai-daily-S1-4-reading-reports');
           const index=await store.match('./reports/index.json');
           const history=await store.match('./reports/2026-10-01.json');
           foundIndex=!!index;
@@ -108,20 +108,20 @@ async function exercise(engine,type,legacyVersion){
     }
     assert.ok(ready,engine+' V1/V2->S1 worker activation/migration incomplete: '+JSON.stringify(lastState));
     const migrated=await page.evaluate(async()=>{
-      const cache=await caches.open('ai-daily-S1-3-reading-reports');
+      const cache=await caches.open('ai-daily-S1-4-reading-reports');
       const history=await cache.match('./reports/2026-10-01.json');
       return {history:history?await history.json():null, publicKeys:(await cache.keys()).map(key=>key.url),
               index:!!await cache.match('./reports/index.json'),keys:await caches.keys()};
     });
     assert.equal(migrated.history?.historicSentinel,true,engine+' lost public V1 history: '+JSON.stringify(migrated));
     const migratedV2=await page.evaluate(async()=>{
-      const store=await caches.open('ai-daily-S1-3-reading-reports');
+      const store=await caches.open('ai-daily-S1-4-reading-reports');
       const response=await store.match('./reports/2026-10-02.json');
       return response?await response.json():null;
     });
     assert.equal(migratedV2?.v2Sentinel,true,engine+' lost public V2 history');
     const repairedNine=await page.evaluate(async()=>{
-      const store=await caches.open('ai-daily-S1-3-reading-reports');
+      const store=await caches.open('ai-daily-S1-4-reading-reports');
       const response=await store.match('./reports/2026-10-09.json');
       return response?await response.json():null;
     });
@@ -138,7 +138,7 @@ async function exercise(engine,type,legacyVersion){
       await response.json();
     },{date:LATEST,i});
     const variants=await page.evaluate(async date=>{
-      const cache=await caches.open('ai-daily-S1-3-reading-reports');
+      const cache=await caches.open('ai-daily-S1-4-reading-reports');
       return (await cache.keys()).filter(key=>key.url.includes('/'+date+'.json')).map(key=>key.url);
     },LATEST);
     assert.equal(variants.length,1);
@@ -174,5 +174,5 @@ async function exercise(engine,type,legacyVersion){
     server.closeAllConnections?.();await new Promise(resolve=>server.close(resolve));
   }
 }
-(async()=>{for(const legacy of ['v1','v2','v3','s1-2']){await exercise('Chromium '+legacy,chromium,legacy);await exercise('WebKit '+legacy,webkit,legacy);}})()
+(async()=>{for(const legacy of ['v1','v2','v3','s1-2','s1-3']){await exercise('Chromium '+legacy,chromium,legacy);await exercise('WebKit '+legacy,webkit,legacy);}})()
   .catch(error=>{console.error(error);process.exitCode=1;});

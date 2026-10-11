@@ -1,0 +1,381 @@
+{
+  "at": "2026-10-11T04:48:02.256475+00:00",
+  "stories": [
+    {
+      "id": "S1",
+      "publisher": "The Verge AI",
+      "title": "AI agent makers are promising privacy — will they deliver?",
+      "excerpt": "At this year's OpenAI DevDay, CEO Sam Altman unveiled the company's new AI agent Dots - and told the crowd that the company wants to \"set a new standard for privacy in frontier AI.\" OpenAI would spend the day taking veiled shots at Meta's Muse, its primary competitor, for failing to keep users' data safe. […]",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1009051/privacy-ai-agent-promises-openai-meta-muse-dots",
+      "published": "2026-10-10T13:00:00+00:00",
+      "topic": "Policy & Society",
+      "source_type": "媒體報道／RSS 公告",
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/1009051/privacy-ai-agent-promises-openai-meta-muse-dots",
+          "title": "AI agent makers are promising privacy — will they deliver?",
+          "published": "2026-10-10T13:00:00+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S2",
+      "publisher": "The Verge AI",
+      "title": "DistroKid has been quietly taking down songs in response to UMG lawsuit",
+      "excerpt": "Artists are taking to social media to complain that DistroKid has unceremoniously removed their work without notice. Now DistroKid has confirmed to The Verge that the takedowns are a direct response to claims made by UMG. The label filed a lawsuit in September claiming that DistroKid has created an \"AI-slop pipeline.\" Artists are saying that […]",
+      "url": "https://www.theverge.com/entertainment/1009309/distrokid-take-down-songs-umg-lawsuit",
+      "published": "2026-10-10T18:52:07+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/entertainment/1009309/distrokid-take-down-songs-umg-lawsuit",
+          "title": "DistroKid has been quietly taking down songs in response to UMG lawsuit",
+          "published": "2026-10-10T18:52:07+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S3",
+      "publisher": "TechCrunch AI",
+      "title": "Apple discloses deal to hire team and license tech from personalized podcast startup Huxe",
+      "excerpt": "Is Apple hoping to get into the AI-generated podcast business?",
+      "url": "https://techcrunch.com/2026/10/10/apple-discloses-deal-to-hire-team-and-license-tech-from-personalized-podcast-startup-huxe/",
+      "published": "2026-10-10T19:50:00+00:00",
+      "topic": "Products & Business",
+      "source_type": "媒體報道／RSS 公告",
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/10/10/apple-discloses-deal-to-hire-team-and-license-tech-from-personalized-podcast-startup-huxe/",
+          "title": "Apple discloses deal to hire team and license tech from personalized podcast startup Huxe",
+          "published": "2026-10-10T19:50:00+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S4",
+      "publisher": "TechCrunch AI",
+      "title": "Microsoft’s Satya Nadella says AI models need an ‘emergency brake’",
+      "excerpt": "In a Saturday morning post, Microsoft's CEO wrote that it’s time “to step back and assess the trust architecture” of AI.",
+      "url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/",
+      "published": "2026-10-10T21:47:51+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/",
+          "title": "Microsoft’s Satya Nadella says AI models need an ‘emergency brake’",
+          "published": "2026-10-10T21:47:51+00:00"
+        }
+      ],
+      "coverage_count": 1
+    }
+  ],
+  "pool": [
+    {
+      "id": "S1",
+      "publisher": "The Verge AI",
+      "title": "AI agent makers are promising privacy — will they deliver?",
+      "excerpt": "At this year's OpenAI DevDay, CEO Sam Altman unveiled the company's new AI agent Dots - and told the crowd that the company wants to \"set a new standard for privacy in frontier AI.\" OpenAI would spend the day taking veiled shots at Meta's Muse, its primary competitor, for failing to keep users' data safe. […]",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1009051/privacy-ai-agent-promises-openai-meta-muse-dots",
+      "published": "2026-10-10T13:00:00+00:00",
+      "topic": "Policy & Society",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 28.73,
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/1009051/privacy-ai-agent-promises-openai-meta-muse-dots",
+          "title": "AI agent makers are promising privacy — will they deliver?",
+          "published": "2026-10-10T13:00:00+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S2",
+      "publisher": "The Verge AI",
+      "title": "DistroKid has been quietly taking down songs in response to UMG lawsuit",
+      "excerpt": "Artists are taking to social media to complain that DistroKid has unceremoniously removed their work without notice. Now DistroKid has confirmed to The Verge that the takedowns are a direct response to claims made by UMG. The label filed a lawsuit in September claiming that DistroKid has created an \"AI-slop pipeline.\" Artists are saying that […]",
+      "url": "https://www.theverge.com/entertainment/1009309/distrokid-take-down-songs-umg-lawsuit",
+      "published": "2026-10-10T18:52:07+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 26.69,
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/entertainment/1009309/distrokid-take-down-songs-umg-lawsuit",
+          "title": "DistroKid has been quietly taking down songs in response to UMG lawsuit",
+          "published": "2026-10-10T18:52:07+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S3",
+      "publisher": "TechCrunch AI",
+      "title": "Apple discloses deal to hire team and license tech from personalized podcast startup Huxe",
+      "excerpt": "Is Apple hoping to get into the AI-generated podcast business?",
+      "url": "https://techcrunch.com/2026/10/10/apple-discloses-deal-to-hire-team-and-license-tech-from-personalized-podcast-startup-huxe/",
+      "published": "2026-10-10T19:50:00+00:00",
+      "topic": "Products & Business",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 18.01,
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/10/10/apple-discloses-deal-to-hire-team-and-license-tech-from-personalized-podcast-startup-huxe/",
+          "title": "Apple discloses deal to hire team and license tech from personalized podcast startup Huxe",
+          "published": "2026-10-10T19:50:00+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S4",
+      "publisher": "The Verge AI",
+      "title": "Satya Nadella says we should assume all AI models are ‘compromised’",
+      "excerpt": "In a lengthy post on X, Microsoft's CEO laid out his views on the dangers posed by highly advanced AI models and how to confront those risks. Nadella says we can no longer accept a world where AI is treated as a \"set of nested black boxes\" whose advice and actions we simply accept or […]",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1009337/satya-nadella-says-we-should-assume-all-ai-models-are-compromised",
+      "published": "2026-10-10T22:10:17+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 17.79,
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/1009337/satya-nadella-says-we-should-assume-all-ai-models-are-compromised",
+          "title": "Satya Nadella says we should assume all AI models are ‘compromised’",
+          "published": "2026-10-10T22:10:17+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S5",
+      "publisher": "TechCrunch AI",
+      "title": "Microsoft’s Satya Nadella says AI models need an ‘emergency brake’",
+      "excerpt": "In a Saturday morning post, Microsoft's CEO wrote that it’s time “to step back and assess the trust architecture” of AI.",
+      "url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/",
+      "published": "2026-10-10T21:47:51+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 17.67,
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/",
+          "title": "Microsoft’s Satya Nadella says AI models need an ‘emergency brake’",
+          "published": "2026-10-10T21:47:51+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S6",
+      "publisher": "The Verge AI",
+      "title": "Anthropic is cutting off its internal evaluations from the internet",
+      "excerpt": "After a recent spate of high-profile incidents in which AI agents escaped containment, Anthropic is cutting off internet access for all internal evaluations. In a report Friday, the company detailed \"unintended model actions,\" including submitting a false tip regarding an unsolved murder, that led to the decision. Although the impact of these behaviors was minimal […]",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1009286/anthropic-is-cutting-off-its-internal-evaluations-from-the-internet",
+      "published": "2026-10-10T14:41:16+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 15.3,
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/1009286/anthropic-is-cutting-off-its-internal-evaluations-from-the-internet",
+          "title": "Anthropic is cutting off its internal evaluations from the internet",
+          "published": "2026-10-10T14:41:16+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S7",
+      "publisher": "TechCrunch AI",
+      "title": "Here are the top AI agents that can live in your text messages",
+      "excerpt": "We created a list of the most notable AI agents that can live in your text messages, from general assistants to agents designed for families, travel, and work.",
+      "url": "https://techcrunch.com/2026/10/10/all-the-ai-agents-that-can-live-in-your-text-messages/",
+      "published": "2026-10-10T14:00:00+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 15.07,
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/10/10/all-the-ai-agents-that-can-live-in-your-text-messages/",
+          "title": "Here are the top AI agents that can live in your text messages",
+          "published": "2026-10-10T14:00:00+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S8",
+      "publisher": "The Verge AI",
+      "title": "Anthropic’s AI gave Philadelphia police a fake tip about an unsolved homicide",
+      "excerpt": "An Anthropic AI model provided false information about an unsolved homicide to a Philadelphia Police Department (PPD) tipline, according to a report from 6abc. In a statement released on Friday, the PPD said the AI model sent the tip through PhillyUnsolvedMurders.com on July 18th, but the investigators never reviewed it because it was marked as […]",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1009090/anthropic-fake-homicide-information-philadelphia-pd-tip",
+      "published": "2026-10-09T21:15:38+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 13.49,
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/1009090/anthropic-fake-homicide-information-philadelphia-pd-tip",
+          "title": "Anthropic’s AI gave Philadelphia police a fake tip about an unsolved homicide",
+          "published": "2026-10-09T21:15:38+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S9",
+      "publisher": "TechCrunch AI",
+      "title": "Anthropic can’t reliably control its AI agents. It’s cutting off its internal evals from the live internet instead",
+      "excerpt": "Anthropic said it \"turned off live internet access\" for \"all our internal evaluations\" until further notice.",
+      "url": "https://techcrunch.com/2026/10/09/anthropic-cant-reliably-control-its-ai-agents-its-cutting-off-its-internal-evals-from-the-live-internet-instead/",
+      "published": "2026-10-10T00:18:32+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 12.5,
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/10/09/anthropic-cant-reliably-control-its-ai-agents-its-cutting-off-its-internal-evals-from-the-live-internet-instead/",
+          "title": "Anthropic can’t reliably control its AI agents. It’s cutting off its internal evals from the live internet instead",
+          "published": "2026-10-10T00:18:32+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S10",
+      "publisher": "The Verge AI",
+      "title": "Nikon microscopic video competition winner disqualified for using generative AI",
+      "excerpt": "Nikon says the video that originally won first place in its Small World in Motion contest \"did not comply with the competition rules regarding generative AI.\" BBC reports that the original first place video from Dr. Ning Xu claimed to show \"tiny, hair-like structures called cilia moving in the airway of a child with the […]",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1008930/nikon-small-world-in-motion-winner-ai",
+      "published": "2026-10-09T18:06:57+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 12.44,
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/1008930/nikon-small-world-in-motion-winner-ai",
+          "title": "Nikon microscopic video competition winner disqualified for using generative AI",
+          "published": "2026-10-09T18:06:57+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S11",
+      "publisher": "TechCrunch AI",
+      "title": "Amazon and others are done keeping data center deals secret. Is it enough to build trust?",
+      "excerpt": "Amazon says it will stop using NDAs when negotiating data center deals with local governments, following a similar move from Microsoft earlier this year. Secrecy has fueled community backlash against AI infrastructure, with opposition leading to hundreds of proposed and enacted moratoriums from New York to San Francisco. Meanwhile, a wave of startups is betting that consumers will hand AI agents access […]",
+      "url": "https://techcrunch.com/video/amazon-and-others-are-done-keeping-data-center-deals-secret-is-it-enough-to-build-trust/",
+      "published": "2026-10-09T16:56:42+00:00",
+      "topic": "Infrastructure",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 11.05,
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/video/amazon-and-others-are-done-keeping-data-center-deals-secret-is-it-enough-to-build-trust/",
+          "title": "Amazon and others are done keeping data center deals secret. Is it enough to build trust?",
+          "published": "2026-10-09T16:56:42+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S12",
+      "publisher": "TechCrunch AI",
+      "title": "An Anthropic AI model sent a false homicide tip to Philadelphia police",
+      "excerpt": "Anthropic did not discover this behavior until over two months after its AI submitted the false tip.",
+      "url": "https://techcrunch.com/2026/10/09/an-anthropic-ai-model-sent-a-false-homicide-tip-to-philadelphia-police/",
+      "published": "2026-10-09T19:36:56+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 10.94,
+      "coverage": [
+        {
+          "publisher": "TechCrunch AI",
+          "url": "https://techcrunch.com/2026/10/09/an-anthropic-ai-model-sent-a-false-homicide-tip-to-philadelphia-police/",
+          "title": "An Anthropic AI model sent a false homicide tip to Philadelphia police",
+          "published": "2026-10-09T19:36:56+00:00"
+        }
+      ],
+      "coverage_count": 1
+    },
+    {
+      "id": "S13",
+      "publisher": "The Verge AI",
+      "title": "‘Pure insanity’: Mathematicians will need years to make sense of OpenAI’s latest drop",
+      "excerpt": "\"Staggering.\" \"Overwhelming.\" \"Unprecedented.\" \"Surreal.\" \"Pure insanity.\" Those were among the descriptions more than three dozen mathematicians reached for in conversations with The Verge as they tried to make sense of the flood of mathematical results OpenAI abruptly dropped on the field this week. Amid the awe, excitement, and uncertainty over the sheer scale of the […]",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1008726/openai-mathematics-solutions-chaos",
+      "published": "2026-10-09T19:09:44+00:00",
+      "topic": "General AI",
+      "source_type": "媒體報道／RSS 公告",
+      "score": 8.79,
+      "coverage": [
+        {
+          "publisher": "The Verge AI",
+          "url": "https://www.theverge.com/ai-artificial-intelligence/1008726/openai-mathematics-solutions-chaos",
+          "title": "‘Pure insanity’: Mathematicians will need years to make sense of OpenAI’s latest drop",
+          "published": "2026-10-09T19:09:44+00:00"
+        }
+      ],
+      "coverage_count": 1
+    }
+  ],
+  "diagnostics": {
+    "feeds_total": 6,
+    "feeds_ok": 6,
+    "feeds_failed": 0,
+    "entries_seen": 110,
+    "entries_relevant": 15,
+    "feed_failures": [],
+    "event_clusters": 13,
+    "multi_source_events": 0,
+    "rss_duration_seconds": 0.693,
+    "stories_selected": 4
+  },
+  "feeds": [
+    [
+      "MIT Technology Review",
+      "https://www.technologyreview.com/feed/"
+    ],
+    [
+      "TechCrunch AI",
+      "https://techcrunch.com/category/artificial-intelligence/feed/"
+    ],
+    [
+      "The Verge AI",
+      "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"
+    ],
+    [
+      "Google Research",
+      "https://research.google/blog/rss/"
+    ],
+    [
+      "arXiv AI",
+      "https://rss.arxiv.org/rss/cs.AI"
+    ],
+    [
+      "Hugging Face",
+      "https://huggingface.co/blog/feed.xml"
+    ]
+  ]
+}

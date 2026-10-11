@@ -442,13 +442,18 @@
       } else if(info.state==='new_stories_found'){
         el.textContent='資料更新正在進行或未完成；這並不代表報告已成功發布。';el.classList.remove('hidden');
       } else if(info.state==='insufficient_evidence'){
-        el.textContent='⚠ 本日可核實來源不足，或新稿未達 1,000 個英文單字的最低篇幅；沒有冒充合格長篇，網站暫時保留上一份文章。';
+        const codes=Array.isArray(info.generation_issues)?info.generation_issues:[];
+        const reason=codes.includes('unsupported_or_repeated_analytical_context')?
+          '新聞來源已讀取，但所選題材未能組成不重複的完整分析':
+          codes.includes('analysis_completed_after_snapshot_expiry')?
+          '生成期間來源已過期或跨過香港午夜':'可用來源資訊不足以支持合格長篇';
+        el.textContent='⚠ '+reason+'；最近一輪新稿未發布，現保留已驗證的閱讀。';
         el.classList.remove('hidden');el.classList.remove('pipeline-success');
       } else if(info.state==='reading_reserve_reused'||info.state==='history_unavailable'){
         el.textContent='⚠ 今日新閱讀未能通過嚴格原創性驗證，或歷史資料無法完整核對。現提供 '+(info.backup?.date||state.report?.date||'既有')+' 的留存閱讀，並非今日新聞或今日新稿。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='repetitive_content'){
-        el.textContent='⚠ 新聞來源已收集，但新文章與近期內容、開首、結論或寫作方式過於相似；S1 已拒絕重複稿件，保留已驗證的閱讀文章。';
+        el.textContent='⚠ 新聞來源已收集，但新文章與近期內容、開首或結論過於相似；S1 已拒絕重複稿件，保留已驗證的閱讀文章。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='incomplete_dictionary'){
         // A green Actions workflow can mean only that the dated reading
@@ -466,8 +471,13 @@
         el.textContent='⚠ 新聞生成工作失敗，現保留已驗證的閱讀文章。請查看工作紀錄；教育備援並非當日新聞。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='editorial_quality_rejected'){
-        const issues=Array.isArray(info.quality_issues)?info.quality_issues.join('、'):'品質未達標';
-        el.textContent='⚠ 本日新稿未通過內容品質檢查（重複段落、篇幅或來源證據可能不足），已保留上一份報告。診斷：'+issues;
+        const codes=[...(Array.isArray(info.generation_issues)?info.generation_issues:[]),...(Array.isArray(info.quality_issues)?info.quality_issues:[])].join(' ');
+        const labels=[[/analysis_sentence|analysis_paragraph|article_length/,'篇幅或句子結構未達標'],
+          [/interrogative_analysis/,'分析變成連續問句'],
+          [/non_hypothetical|unsupported_analysis|analysis_not_source_specific|copied_source_analysis/,'分析未能遵守來源及假設標示'],
+          [/repeated|duplicate|reused/,'內容重複'],[/limited_complex/,'句式深度不足']]
+          .filter(([pattern])=>pattern.test(codes)).map(([,label])=>label);
+        el.textContent='⚠ 最近一輪新稿未通過內容品質檢查：'+(labels.join('、')||'內容未達標')+'。現保留已驗證的閱讀；詳情見工作紀錄。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='published'){
         el.textContent=info.mode==='reading_feature'?
@@ -596,10 +606,17 @@
       const index=Number(dropdown.value);
       if(Number.isInteger(index)&&index>=0&&index<r.essay.length){
         const target=$('reading-paragraph-'+index);
+        // Release the native selector's focus before moving the viewport.
+        // Otherwise WebKit can restore that focused control after an
+        // initially successful jump, including after the second adjustment.
+        dropdown.blur();
+        if(target){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});}
         // Safari may restore the native select position after the change
         // event. Scroll once again after the control has finished settling.
         scrollToReadingTarget(target);
-        requestAnimationFrame(()=>setTimeout(()=>scrollToReadingTarget(target),70));
+        requestAnimationFrame(()=>setTimeout(()=>{
+          if(state.report===r&&target?.isConnected)scrollToReadingTarget(target);
+        },70));
       }
     });
     nav.appendChild(dropdown);

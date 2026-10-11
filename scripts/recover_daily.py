@@ -83,15 +83,20 @@ def should_dispatch(latest_date,runs,updated_at=None,quality_ok=True):
             continue
         try:
             submitted=datetime.fromisoformat(str(run["created_at"]).replace("Z","+00:00"))
-            if submitted.astimezone(ZoneInfo("Asia/Hong_Kong")).date().isoformat()==TODAY:
+            local=submitted.astimezone(ZoneInfo("Asia/Hong_Kong"))
+            if local.date().isoformat()==TODAY and (local.hour,local.minute)>=(7,40):
                 recovery_runs+=1
         except (TypeError,ValueError,KeyError):
             pass
     if recovery_runs>=2:
-        return False,"Recovery limit reached: two manual/automatic dispatches today"
+        return False,"Recovery limit reached: two manual/automatic dispatches after 07:40 today"
     return True,"No refreshed report, no active workflow and retries remain"
 
 def main():
+    local=datetime.now(ZoneInfo('Asia/Hong_Kong'))
+    if (local.hour,local.minute)<(7,40):
+        print('Morning news window has not started; preserving the 07:05 reserve and retry budget')
+        return 0
     suffix="?audit="+str(int(time.time()))
     index=[]
     try:
