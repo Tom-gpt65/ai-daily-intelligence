@@ -1,0 +1,131 @@
+{
+  "verified_at": "2026-10-11T19:38:59.183531+08:00",
+  "commit": "a8a37559e6a7e3ce1827e46adafa0564b7d2343f",
+  "base_url": "https://tom-gpt65.github.io/ai-daily-intelligence/",
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "fa381df723326d53e97fb1c2ea594e7419dcaa7752d7c9411cbcfd8dc7b70146"
+    },
+    {
+      "path": "release.json",
+      "sha256": "7b9ccc6bd26c9fe2dca44606fc2dc5fcce94c8a6fdc4ed940273de25c223328a"
+    },
+    {
+      "path": "sw.js",
+      "sha256": "88b2bb3d6c0239ad43575d15940b8a0b1e5414cb7b60831e975aecf2e87f6dbc"
+    },
+    {
+      "path": "app.js",
+      "sha256": "3a013150123f7dc3a21c5727a24a97d8921ef74ee01876f5e7e316cb79075413"
+    },
+    {
+      "path": "cloud-sync.js",
+      "sha256": "dfb0d4b77274461028ef96560f33e903192ed88740c8ae875187c41a1ecb5d92"
+    },
+    {
+      "path": "v1.css",
+      "sha256": "5f2f8be8325031351674d3f2c4160d16d4d776d7e3b3d38cc402a1d02e5ea711"
+    },
+    {
+      "path": "reading-theme-v1.css",
+      "sha256": "f2a726f3c2540a7da12da75b05defedb458d18c7fb8e1a7aa34913d92ec790b3"
+    },
+    {
+      "path": "cloud-config.json",
+      "sha256": "56d2c96af017b3f4990296214ace80a56edade123d68cdf8c39bcf79bb93c1f2"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "sha256": "b401d00f43337567c2877ff9570d09d3ff02548939e8f33ff97131af4d6f2e57"
+    },
+    {
+      "path": "offline-glossary.json",
+      "sha256": "98b7ebf51dcd3221f3bac2825be3d7fd71ebdfbc5fad8ce35ea56a0736ed7ea4"
+    },
+    {
+      "path": "reading-glossary.json",
+      "sha256": "dfb11156f27254a5be4229cd26d97c14853c4ee3e169f8af4ddd0acab5de414e"
+    },
+    {
+      "path": "news-glossary.json",
+      "sha256": "d9a4f096e01160e1a6a794e87f8c3016ffc22f933fbf8b676a93fa353e659ede"
+    },
+    {
+      "path": "news-template-glossary.json",
+      "sha256": "7ba1b60aeac12dbc99ec0f3296a42aab4973fba8485ec799733f4f174cf1792f"
+    },
+    {
+      "path": "reports/index.json",
+      "sha256": "4505e23417702de29e1c473a0493b8e3c4c4044b062db351ff43851eabc7dd31"
+    },
+    {
+      "path": "system-status.json",
+      "sha256": "7d216c839be5341e6ac94555fad8c2e7b32a414b122009bcd903943ce8c8d5ab"
+    },
+    {
+      "path": "reports/2026-10-08.json",
+      "sha256": "ff908c9a3e23515380b2080e0f6164475316bdf19d0b73baf269d7428db61ade"
+    },
+    {
+      "path": "reports/2026-10-09.json",
+      "sha256": "dfe28a540e1bda64c81ac4be7f6f5689db198e1c12d8dd19e677c572e7c29cf6"
+    },
+    {
+      "path": "reports/2026-10-10.json",
+      "sha256": "ace8dbabeee22ded85a500119029923607686ca5522542c0d9b588dac5b70417"
+    },
+    {
+      "path": "reports/archive-revisions/s1-original/2026-10-09.json",
+      "sha256": "30951062d27a08b6f4760d5284c940f6ef47321e293a12429fee44bb4f3560ec"
+    },
+    {
+      "path": "reports/archive-revisions/s1-original/2026-10-10.json",
+      "sha256": "b5cac5d4bbdcf0db89a58f73abfae6f515cb9e6f77c7c909c37d368e432eee37"
+    }
+  ],
+  "date": "2026-10-10",
+  "word_count": 1219,
+  "paragraphs": 8,
+  "questions": 7,
+  "generation_profile": "source_outline_v2",
+  "novelty": {
+    "pass": true,
+    "issues": [],
+    "max_overlap": 0.09254709254709255,
+    "most_similar_date": "2026-10-09",
+    "compared_editions": 3,
+    "threshold": 0.16,
+    "writing_style": "evidence_audit"
+  },
+  "quality": {
+    "training_structure_pass": true,
+    "diagnostics": {
+      "word_count": 1219,
+      "paragraph_count": 8,
+      "cited_sources": 5,
+      "available_sources": 5,
+      "source_linked_paragraphs": 7,
+      "generic_caution_phrases": 0,
+      "long_sentence_count": 7,
+      "maximum_repeated_paragraph_similarity": 0.006,
+      "machine_text_artifacts": false,
+      "repeated_sentence_count": 0,
+      "repeated_sixteen_word_fragments": 0
+    },
+    "issues": [],
+    "notice": "Heuristic writing checks only; not independent fact-checking or an HKEAA grade."
+  },
+  "offline_dictionary_complete": true,
+  "publication": {
+    "date": "2026-10-10",
+    "mode": "source_digest",
+    "updated_at": "2026-10-10T23:41:50.492761+08:00",
+    "news": false,
+    "offline_dictionary_complete": true,
+    "backup": "archived_reading",
+    "requested_date": "2026-10-11"
+  },
+  "independent_fact_check": false,
+  "physical_ios_offline_cold_start": "not verified"
+}
