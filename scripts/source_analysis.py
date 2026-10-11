@@ -22,7 +22,7 @@ STOP = set('the this that with from into about which what would could should mig
 
 
 def schema(stories):
-    paragraph={'type':'string'}
+    paragraph={'type':'string','minLength':450,'maxLength':1800}
     return {'type':'object','additionalProperties':False,
             'properties':{'introduction':paragraph,'conclusion':paragraph,
                 'sections':{'type':'array','minItems':len(stories),'maxItems':len(stories),
@@ -39,6 +39,9 @@ def topical_words(story):
 
 
 def plan_issues(plan, stories):
+    if (not isinstance(stories,list) or not 3<=len(stories)<=5
+            or any(not isinstance(s,dict) or any(not isinstance(s.get(k),str) for k in ('id','title','excerpt','publisher')) for s in stories)):
+        return ['invalid_analysis_sources']
     if not isinstance(plan,dict) or set(plan)!={'introduction','sections','conclusion'}:
         return ['invalid_analysis_schema']
     sections=plan.get('sections')
@@ -48,9 +51,10 @@ def plan_issues(plan, stories):
         return ['invalid_analysis_source_order']
     paragraphs=[plan['introduction']]+[p[k] for p in sections for k in ('question','test')]+[plan['conclusion']]
     if not all(isinstance(p,str) and 35<=len(WORDS.findall(p))<=220 and len(p)<=2000 for p in paragraphs):
-        return ['invalid_analysis_paragraph_length']
+        counts=','.join(str(i)+'='+str(len(WORDS.findall(p)) if isinstance(p,str) else 'invalid') for i,p in enumerate(paragraphs))
+        return ['invalid_analysis_paragraph_length','analysis_paragraph_word_counts:'+counts]
     errors=[]
-    known_names=set(re.findall(r'\b[A-Z][A-Za-z]+\b',' '.join(s['title']+' '+s['excerpt'] for s in stories)))
+    known_names={'AI','RSS'}|set(re.findall(r'\b[A-Z][A-Za-z]+\b',' '.join(s['title']+' '+s['excerpt'] for s in stories)))
     for p in paragraphs:
         if contains_machine_artifacts(p) or re.search(r'[\d\u4e00-\u9fff]|https?://|\[|[<>`#]',p):
             errors.append('unsafe_analysis_text')
@@ -110,7 +114,7 @@ def request_plan(prompt, output_schema):
 
 def generate(stories, archive, request=None, feedback=''):
     request=request or request_plan
-    target=round(900/(2*len(stories)))
+    target=round(1050/(2*len(stories)))
     data=[{k:s[k] for k in ('id','title','publisher','excerpt')} for s in stories]
     # Recent text guides genuinely new inquiry; acceptance always compares
     # the FULL 60-day corpus, including preserved original revisions.

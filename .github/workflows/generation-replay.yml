@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: generation-replay-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   real-generation:
     runs-on: ubuntu-24.04

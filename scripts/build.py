@@ -750,12 +750,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     except (OSError, ValueError, TypeError, KeyError) as exc:
         put_status('history_unavailable',now,failure_reason=str(exc),source_count=len(sources),**diagnostics)
         return False
-    # Numerical/name checks cannot prove that a model invented no other fact.
-    # Keep optional model output as a PRIVATE runner preview; formal S1 uses
-    # attributed extracts and conditional educational analysis only.
-    if model_draft:
-        atomic_json(ROOT/'.cache/model-draft.json',{'date':date,'essay':model_draft,
-                    'published':False,'reason':'Unverified model factual claims cannot enter the formal release'})
+    # Free-form factual model drafts are never published. Structured analysis
+    # can enter only through the separate hypothetical-plan contract below.
     from source_outline import context_key
     diagnostics['selected_source_contexts']=[{'id':s['id'],'title':s['title'],'url':s['url'],
                                             'context':context_key(s)} for s in sources]
@@ -802,6 +798,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         this_quality = inspect_editorial_quality(candidate, sources)
         if critical.intersection(this_quality["issues"]):
             last_reasons = this_quality["issues"]
+            if analysis_plan is not None: analysis_attempts.append({'attempt':variant,'issues':last_reasons})
             continue
         writing_style, style_label = 'evidence_audit', 'Source-by-source evidence review'
         lead = sources[0]
@@ -827,7 +824,10 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         break
     if essay is None:
         unsupported='unsupported_or_repeated_analytical_context' in last_reasons
-        put_status('insufficient_evidence' if unsupported else 'repetitive_content',now,source_count=len(sources),
+        failed_model=any(s.startswith('analysis_model_unavailable:') for s in last_reasons)
+        originality=any(s.startswith(('reused_','copied_long_','repeated_headline_','repeated_introduction_','repeated_conclusion_','excessive_cross_day_')) for s in last_reasons)
+        state='insufficient_evidence' if unsupported else ('build_failed' if failed_model else ('repetitive_content' if originality else 'editorial_quality_rejected'))
+        put_status(state,now,source_count=len(sources),
                    failure_reason='No candidate passed source analysis, quality and strict originality',
                    generation_issues=last_reasons[:12],novelty_issues=last_reasons[:12],
                    analysis_attempts=analysis_attempts,**diagnostics)
@@ -856,6 +856,16 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         print("[offline dictionary] Refusing incomplete current-news article: "
               + ", ".join(missing[:16]) + ". Educational fallback will be used.",file=sys.stderr)
         return False
+    if analysis_plan is not None:
+        finished=datetime.now(timezone.utc)
+        if finished.astimezone(TZ).date().isoformat()!=date or any(
+                not -1800<=(finished-parse_entry_date({'published':s['published']})).total_seconds()<=36*3600
+                for s in sources):
+            put_status('insufficient_evidence',finished,source_count=len(sources),
+                       failure_reason='Source snapshot expired or crossed Hong Kong midnight during analysis',
+                       generation_issues=['analysis_completed_after_snapshot_expiry'],**diagnostics)
+            return False
+        now=finished
     report = {
         "schema": 4,
         "validation_profile": "s1",
@@ -966,6 +976,11 @@ def main():
         if stories:
             from source_selection import select
             stories=select(pool,now,REPORTS,health)
+            if not stories:
+                cache.unlink(missing_ok=True)
+                put_status('no_new_stories',now,source_count=0,**health)
+                print('[preflight] All candidates were expired or previously published; no new source batch')
+                return 0
             if os.environ.get("ENRICH_ENABLED", "0") == "1":
                 health.update(enrich_source_metadata(stories))
                 enriched={s['url']:s for s in stories}

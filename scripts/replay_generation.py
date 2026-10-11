@@ -8,7 +8,7 @@ import argparse,json,shutil,tempfile
 from datetime import datetime,timezone
 from pathlib import Path
 from unittest.mock import patch
-import build,validate_site
+import build,validate_site,source_analysis
 from source_selection import select
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -23,9 +23,18 @@ def replay(snapshot_path,out):
     with tempfile.TemporaryDirectory(prefix='source-analysis-replay-') as directory:
         site=Path(directory)/'site';shutil.copytree(ROOT/'site',site)
         health={**snapshot['diagnostics'],'source_capture_at':snapshot['at']}
+        original_request=source_analysis.request_plan
+        draft_count=0
+        def captured_request(prompt,output_schema):
+            nonlocal draft_count
+            draft_count+=1
+            plan=original_request(prompt,output_schema)
+            build.atomic_json(out/('analysis-draft-'+str(draft_count)+'.json'),plan)
+            return plan
         with patch.object(build,'REPORTS',site/'reports'),patch.object(build,'STATUS_PATH',site/'system-status.json'),patch.object(validate_site,'SITE',site):
             sources=select(snapshot.get('pool',snapshot['stories']),now,build.REPORTS,health)
-            passed=build.build_live(now,ROOT/'.cache/ecdict.csv',sources=sources,diagnostics=health)
+            with patch.object(source_analysis,'request_plan',captured_request):
+                passed=build.build_live(now,ROOT/'.cache/ecdict.csv',sources=sources,diagnostics=health)
             shutil.copy2(build.STATUS_PATH,out/'system-status.json')
             if not passed:
                 print(build.STATUS_PATH.read_text('utf-8'));return 1

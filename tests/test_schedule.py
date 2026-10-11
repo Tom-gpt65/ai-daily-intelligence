@@ -21,7 +21,8 @@ class ScheduleTests(unittest.TestCase):
 
     def test_free_automated_generation_is_preserved(self):
         text = (ROOT / ".github/workflows/daily.yml").read_text(encoding="utf-8")
-        self.assertIn("ollama pull phi3:mini", text)
+        self.assertIn("ollama pull qwen3:4b-instruct-2507-q4_K_M", text)
+        self.assertIn("ANALYSIS_ENABLED:",text)
         self.assertIn("TRANSLATE_ENABLED: '0'", text)
         self.assertIn("actions/deploy-pages@v4", text)
         self.assertNotIn("OPENAI_API_KEY", text)
