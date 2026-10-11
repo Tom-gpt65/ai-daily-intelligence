@@ -118,6 +118,14 @@ class SourceGenerationTests(unittest.TestCase):
         sources[0]['excerpt']='A label describes a "pipeline." Artists discuss notice.'
         self.assertNotIn('artists',source_analysis.source_names(sources))
 
+    def test_title_case_does_not_make_ordinary_source_terms_names(self):
+        sources,_=self.plan()
+        sources[0]['title']='AI Agent Makers Discuss Privacy'
+        sources[0]['excerpt']='The agent makers discuss privacy in their systems. Nikon describes a camera. Nikon provides detail.'
+        names=source_analysis.source_names(sources)
+        self.assertTrue({'agent','makers','discuss','privacy'}.isdisjoint(names))
+        self.assertIn('nikon',names)
+
     def test_decoder_allows_natural_words_but_not_named_company_or_question(self):
         import re
         sources,plan=self.plan()
@@ -126,6 +134,13 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('A reader','Microsoft')))
         self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('a response','a Microsoft response')))
         self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('A reader could','Could a reader')))
+        self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('could','can').replace('might','may')))
+
+    def test_modal_possession_is_allowed_but_indicative_claim_stays_rejected(self):
+        self.assertFalse(source_analysis.reporting_sentence('The system could have a measurable cost.'))
+        self.assertFalse(source_analysis.reporting_sentence('The users might also have concerns.'))
+        self.assertTrue(source_analysis.reporting_sentence('The providers have information, which could affect users.'))
+        self.assertTrue(source_analysis.reporting_sentence('The provider has a policy that might affect users.'))
 
     def test_incomplete_response_is_identified_and_retained(self):
         from unittest.mock import MagicMock
@@ -153,6 +168,8 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertNotIn('microsoft',text);self.assertNotIn('meta',text)
         self.assertNotIn('shots',text);self.assertNotIn('saturday',text)
         self.assertIn('emergency',text)
+        self.assertNotIn('topic',topic)
+        self.assertNotIn('need',topic['topic_terms'])
 
     def test_semantic_review_cannot_be_missing_rejected_or_attached_to_other_prose(self):
         sources,plan=self.plan();essay=source_analysis.compose(sources,plan)

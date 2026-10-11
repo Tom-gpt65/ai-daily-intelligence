@@ -773,6 +773,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
                     atomic_json(ROOT/'.cache/generation-drafts'/('analysis-draft-'+str(attempt+1)+'.json'),plan)
                 errors=plan_issues(plan,sources)
                 if errors:
+                    print('[analysis rejected] attempt '+str(attempt+1)+': '+', '.join(errors[:8]),file=sys.stderr,flush=True)
                     last_reasons[:]=errors
                     analysis_attempts.append({'attempt':attempt+1,'issues':errors})
                     continue
@@ -837,12 +838,17 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
                     atomic_json(ROOT/'.cache/generation-drafts'/('analysis-review-'+str(variant)+'.json'),judgement)
                 problems=review_issues(judgement)
                 if problems:
+                    print('[semantic review rejected] attempt '+str(variant)+': '+', '.join(problems[:8]),file=sys.stderr,flush=True)
                     last_reasons=problems
                     analysis_attempts.append({'attempt':variant,'issues':problems})
                     continue
                 analysis_review=review_record(sources,analysis_plan,judgement)
             except (OSError,ValueError,TypeError,KeyError) as exc:
                 last_reasons=['semantic_review_unavailable:'+type(exc).__name__]
+                if isinstance(exc,AnalysisResponseError):
+                    last_reasons=['semantic_review_unavailable:'+exc.code]
+                    if os.environ.get('GENERATION_EVIDENCE','0')=='1':
+                        atomic_json(ROOT/'.cache/generation-drafts'/('analysis-review-error-'+str(variant)+'.json'),{'issue':exc.code,'response':exc.response})
                 analysis_attempts.append({'attempt':variant,'issues':last_reasons})
                 continue
         essay, good, quality, novelty = candidate, model_written, this_quality, candidate_novelty
