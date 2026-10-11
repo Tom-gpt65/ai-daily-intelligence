@@ -49,6 +49,14 @@ def issues(report, row=None, reports=None):
     if mode == "reading_feature":
         if sources != [] or not report.get("subtitle") or not report.get("editorial_notice"):
             errors.append("unlabelled_educational_reading")
+        from editorial_quality import inspect
+        checked = inspect(essay, [])
+        hard = {'repeated_meaningful_sentence', 'repeated_content_fragment',
+                'premature_concluding_transition', 'near_duplicate_paragraph_padding'}
+        errors.extend(sorted(hard.intersection(checked['issues'])))
+        if report.get('content_generation_profile') == 'educational_model_s2':
+            from s2_reading import report_issues
+            errors.extend(report_issues(report))
     elif mode in {"source_digest", "editorial"}:
         source_clock=stamp
         historic=False
@@ -56,6 +64,8 @@ def issues(report, row=None, reports=None):
             try:
                 base=Path(reports) if reports is not None else ROOT/'site/reports'
                 preserved=base/'archive-revisions/s1-original'/(day.isoformat()+'.json')
+                if not preserved.is_file():
+                    preserved=base.parent.parent/'content-history/retired'/(day.isoformat()+'-original.json')
                 raw=preserved.read_bytes().replace(b'\r\n',b'\n')
                 original=json.loads(raw)
                 source_clock=datetime.fromisoformat(report['historical_source_reference_at'])

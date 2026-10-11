@@ -29,9 +29,9 @@ OPENERS.update('under distinguishing considering examining'.split())
 OPENERS.update('at artist artists company provider distributor creators new'.split())
 SENTENCE_STARTS='A An The This These Those One Such If When While Although However Nevertheless Conversely Alternatively Comparing Considering Examining Distinguishing Under In By Without Both Neither Readers Users Researchers Confidence Uncertainty Accountability Consent Oversight Privacy Trust Safety Reliability Access Costs Decisions Evidence Therefore Thus Overall'.split()
 TOKEN_PATTERN=r" ([a-z][a-z'’-]{0,23}|AI)[,;:–—]?"
-# Enforce a modal in the actual decoder, including introduction/conclusion.
-# A prompt alone failed in both real Qwen2.5 drafts. Use loose upper bounds,
-# never an exact word count; exact counts previously glued ordinary words.
+# Acceptance still requires a modal, including introduction/conclusion.
+# Keep this regex as a post-generation safety gate. Forcing it inside the
+# decoder distorted real drafts; ordinary JSON strings preserve spelling.
 CONNECTORS='However Nevertheless Conversely Alternatively Therefore Thus Overall'.split()
 SUBJECT_STARTS='a an the this these those one such readers users researchers confidence uncertainty accountability consent oversight privacy trust safety reliability access costs decisions evidence'.split()
 # Use ordinary alternatives supported by the native JSON decoder, without
@@ -234,6 +234,13 @@ def compose(stories, plan):
     return out
 
 
+def decoding_schema(value):
+    """Preserve JSON structure/counts; perform English safety checks afterwards."""
+    if isinstance(value,dict):return {k:decoding_schema(v) for k,v in value.items() if k!='pattern'}
+    if isinstance(value,list):return [decoding_schema(v) for v in value]
+    return value
+
+
 def request_plan(prompt, output_schema, deadline=None):
     base=os.environ.get('OLLAMA_URL','http://127.0.0.1:11434').rstrip('/')
     parsed=urlsplit(base)
@@ -250,7 +257,7 @@ def request_plan(prompt, output_schema, deadline=None):
         remaining=deadline-time.monotonic()
         if remaining<1:raise AnalysisResponseError('analysis_model_unavailable:generation_budget_exhausted')
         timeout=min(timeout,remaining)
-    payload={'model':os.environ.get('ANALYSIS_MODEL',MODEL),'prompt':prompt,'stream':False,'format':output_schema,
+    payload={'model':os.environ.get('ANALYSIS_MODEL',MODEL),'prompt':prompt,'stream':False,'format':decoding_schema(output_schema),
              'options':{'temperature':0.3,'num_predict':limit,'num_ctx':8192}}
     req=Request(base+'/api/generate',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'},method='POST')
     with urlopen(req,timeout=timeout) as response:
