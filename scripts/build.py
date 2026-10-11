@@ -756,6 +756,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     diagnostics['selected_source_contexts']=[{'id':s['id'],'title':s['title'],'url':s['url'],
                                             'context':context_key(s)} for s in sources]
     analysis_plan=None
+    analysis_review=None
     analysis_attempts=[]
     def candidates():
         nonlocal analysis_plan,model_seconds
@@ -768,6 +769,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
             started=time.perf_counter()
             try:
                 plan=generate(sources,archive,feedback=', '.join(last_reasons[:10]))
+                if os.environ.get('GENERATION_EVIDENCE','0')=='1':
+                    atomic_json(ROOT/'.cache/generation-drafts'/('analysis-draft-'+str(attempt+1)+'.json'),plan)
                 errors=plan_issues(plan,sources)
                 if errors:
                     last_reasons[:]=errors
@@ -776,6 +779,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
                 analysis_plan=plan
                 yield compose(sources,plan),False,attempt+1
             except AnalysisResponseError as exc:
+                if os.environ.get('GENERATION_EVIDENCE','0')=='1':
+                    atomic_json(ROOT/'.cache/generation-drafts'/('analysis-error-'+str(attempt+1)+'.json'),{'issue':exc.code,'response':exc.response})
                 last_reasons[:]=[exc.code]
                 analysis_attempts.append({'attempt':attempt+1,'issues':last_reasons[:]})
                 continue
@@ -824,11 +829,27 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
             last_reasons = candidate_novelty["issues"]
             if analysis_plan is not None: analysis_attempts.append({'attempt':variant,'issues':last_reasons})
             continue
+        if analysis_plan is not None:
+            from source_analysis import review,review_issues,review_record,AnalysisResponseError
+            try:
+                judgement=review(sources,analysis_plan)
+                if os.environ.get('GENERATION_EVIDENCE','0')=='1':
+                    atomic_json(ROOT/'.cache/generation-drafts'/('analysis-review-'+str(variant)+'.json'),judgement)
+                problems=review_issues(judgement)
+                if problems:
+                    last_reasons=problems
+                    analysis_attempts.append({'attempt':variant,'issues':problems})
+                    continue
+                analysis_review=review_record(sources,analysis_plan,judgement)
+            except (OSError,ValueError,TypeError,KeyError) as exc:
+                last_reasons=['semantic_review_unavailable:'+type(exc).__name__]
+                analysis_attempts.append({'attempt':variant,'issues':last_reasons})
+                continue
         essay, good, quality, novelty = candidate, model_written, this_quality, candidate_novelty
         break
     if essay is None:
         unsupported='unsupported_or_repeated_analytical_context' in last_reasons
-        failed_model=any(s.startswith('analysis_model_unavailable:') for s in last_reasons)
+        failed_model=any(s.startswith(('analysis_model_unavailable:','semantic_review_unavailable:')) for s in last_reasons)
         originality=any(s.startswith(('reused_','copied_long_','repeated_headline_','repeated_introduction_','repeated_conclusion_','excessive_cross_day_')) for s in last_reasons)
         state='insufficient_evidence' if unsupported else ('build_failed' if failed_model else ('repetitive_content' if originality else 'editorial_quality_rejected'))
         put_status(state,now,source_count=len(sources),
@@ -911,8 +932,10 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     }
     if analysis_plan is not None:
         report['analysis_plan']=analysis_plan
-        report['analysis_model']=os.environ.get('ANALYSIS_MODEL','qwen3:4b-instruct-2507-q4_K_M')
-        report['editorial_notice']='Attributed RSS anchors followed by automatically generated hypothetical questions and tests; not additional reporting or independently fact-checked news.'
+        from source_analysis import MODEL
+        report['analysis_model']=os.environ.get('ANALYSIS_MODEL',MODEL)
+        report['analysis_review']=analysis_review
+        report['editorial_notice']='Attributed RSS anchors followed by automatically generated and reviewed hypothetical arguments and comparisons; not additional reporting or independently fact-checked news.'
         report['quality_note']='來源事實僅限明確歸屬的標題及短引文；其餘為程式生成的假設分析與評估方法，並非已發生的事件。機械檢查不能證明語義完全正確。'
     report['practice_revision']=assessment_revision(report['practice']['items'])
     report["editorial_quality"] = quality

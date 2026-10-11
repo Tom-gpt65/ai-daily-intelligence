@@ -60,7 +60,7 @@ class SourceGenerationTests(unittest.TestCase):
         sources,plan=self.plan()
         self.assertEqual(source_analysis.plan_issues(plan,sources),[])
         essay=source_analysis.compose(sources,plan)
-        report={'stories':sources,'analysis_plan':plan,'essay':essay}
+        report={'stories':sources,'analysis_plan':plan,'essay':essay,'analysis_review':source_analysis.review_record(sources,plan,{'approved':True,'issues':[]})}
         self.assertEqual(source_analysis.report_issues(report),[])
         report['essay'][1]+=' An unsupported fact.'
         self.assertIn('source_analysis_mismatch',source_analysis.report_issues(report))
@@ -144,6 +144,27 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertNotIn('secretly bought an unrelated company',prompts[0])
         self.assertNotIn('Past confidential news narrative',prompts[0])
 
+    def test_topic_input_removes_possessive_brand_and_noisy_excerpt_words(self):
+        sources,_=self.plan()
+        sources[0]['title']="Microsoft's AI models need an emergency brake"
+        sources[0]['excerpt']="The company takes shots at Meta's product. Microsoft describes a Saturday post."
+        topic=source_analysis.model_topic(sources[0],source_analysis.source_names(sources))
+        text=json.dumps(topic)
+        self.assertNotIn('microsoft',text);self.assertNotIn('meta',text)
+        self.assertNotIn('shots',text);self.assertNotIn('saturday',text)
+        self.assertIn('emergency',text)
+
+    def test_semantic_review_cannot_be_missing_rejected_or_attached_to_other_prose(self):
+        sources,plan=self.plan();essay=source_analysis.compose(sources,plan)
+        report={'stories':sources,'analysis_plan':plan,'essay':essay}
+        self.assertIn('missing_semantic_review',source_analysis.report_issues(report))
+        self.assertTrue(source_analysis.review_issues({'approved':'true','issues':[]}))
+        self.assertIn('semantic_review_rejected',source_analysis.review_issues({'approved':False,'issues':['The comparison confuses a safety stop with a physical brake.']}))
+        report['analysis_review']=source_analysis.review_record(sources,plan,{'approved':True,'issues':[]})
+        self.assertEqual(source_analysis.report_issues(report),[])
+        report['analysis_review']['content_sha256']='0'*64
+        self.assertIn('semantic_review_content_mismatch',source_analysis.report_issues(report))
+
     def test_current_named_entities_use_reviewed_news_senses_not_acronym_homonyms(self):
         from edition_guarantee import fill_dictionary
         dictionary,missing=fill_dictionary(['UMG Satya Nadella DistroKid Huxe'],
@@ -160,6 +181,17 @@ class SourceGenerationTests(unittest.TestCase):
             state=json.loads(build.STATUS_PATH.read_text('utf-8'))
             self.assertIn('analysis_model_unavailable:OSError',state['generation_issues'])
             self.assertGreaterEqual(len(state['selected_source_contexts']),3)
+        self.assertEqual(before,{str(p.relative_to(self.reports)):p.read_bytes() for p in self.reports.rglob('*.json')})
+
+    def test_rejected_model_output_is_preserved_without_publishing(self):
+        shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
+        before={str(p.relative_to(self.reports)):p.read_bytes() for p in self.reports.rglob('*.json')}
+        rejected={'unqualified':'exact model response'}
+        with patch.object(build,'ROOT',Path(self.temp.name)),patch.object(build,'REPORTS',self.reports),patch.object(build,'STATUS_PATH',Path(self.temp.name)/'status.json'),patch.dict('os.environ',{'ANALYSIS_ENABLED':'1','GENERATION_EVIDENCE':'1'}),patch.object(source_analysis,'request_plan',return_value=rejected):
+            self.assertFalse(build.build_live(self.now,None,sources=self.snapshot['stories']))
+        captured=list((Path(self.temp.name)/'.cache/generation-drafts').glob('analysis-draft-*.json'))
+        self.assertEqual(len(captured),2)
+        self.assertTrue(all(json.loads(p.read_text('utf-8'))==rejected for p in captured))
         self.assertEqual(before,{str(p.relative_to(self.reports)):p.read_bytes() for p in self.reports.rglob('*.json')})
 
     def test_newer_attempt_does_not_keep_obsolete_publication_after_remote_edit(self):

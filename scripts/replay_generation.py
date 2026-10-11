@@ -24,16 +24,16 @@ def replay(snapshot_path,out):
         site=Path(directory)/'site';shutil.copytree(ROOT/'site',site)
         health={**snapshot['diagnostics'],'source_capture_at':snapshot['at']}
         original_request=source_analysis.request_plan
-        draft_count=0
+        counts={'analysis-draft':0,'analysis-review':0}
         def captured_request(prompt,output_schema):
-            nonlocal draft_count
-            draft_count+=1
+            kind='analysis-review' if 'approved' in output_schema.get('properties',{}) else 'analysis-draft'
+            counts[kind]+=1
             try:
                 plan=original_request(prompt,output_schema)
             except source_analysis.AnalysisResponseError as exc:
-                build.atomic_json(out/('analysis-error-'+str(draft_count)+'.json'),{'issue':exc.code,'response':exc.response})
+                build.atomic_json(out/(kind+'-error-'+str(counts[kind])+'.json'),{'issue':exc.code,'response':exc.response})
                 raise
-            build.atomic_json(out/('analysis-draft-'+str(draft_count)+'.json'),plan)
+            build.atomic_json(out/(kind+'-'+str(counts[kind])+'.json'),plan)
             return plan
         with patch.object(build,'REPORTS',site/'reports'),patch.object(build,'STATUS_PATH',site/'system-status.json'),patch.object(validate_site,'SITE',site):
             sources=select(snapshot.get('pool',snapshot['stories']),now,build.REPORTS,health)
