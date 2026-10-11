@@ -77,7 +77,13 @@ def recent_articles(reports: Path, today: str, window: int = LOOKBACK_DAYS):
             raise ValueError("Originality history unavailable: " + str(name)) from exc
     # Replacing a public edition must not erase its prose from the comparison
     # corpus. Preserved revisions count for their original publication date.
-    for path in sorted((reports/'archive-revisions').glob('*/*.json')):
+    preserved = list((reports/'archive-revisions').glob('*/*.json'))
+    # Withdrawal from Pages must not erase the 60-day comparison corpus.
+    # Resolve relative to the supplied repository (also used by simulations),
+    # never silently read another checkout's history.
+    history = reports.parent.parent / 'content-history' / 'retired'
+    preserved.extend(history.glob('*.json'))
+    for path in sorted(preserved):
         try:
             article=json.loads(path.read_text(encoding='utf-8'))
             delta=(current-Date.fromisoformat(article['date'])).days

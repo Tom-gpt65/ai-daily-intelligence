@@ -49,6 +49,14 @@ def issues(report, row=None, reports=None):
     if mode == "reading_feature":
         if sources != [] or not report.get("subtitle") or not report.get("editorial_notice"):
             errors.append("unlabelled_educational_reading")
+        from editorial_quality import inspect
+        checked = inspect(essay, [])
+        hard = {'repeated_meaningful_sentence', 'repeated_content_fragment',
+                'premature_concluding_transition', 'near_duplicate_paragraph_padding'}
+        errors.extend(sorted(hard.intersection(checked['issues'])))
+        if report.get('content_generation_profile') == 'educational_model_s2':
+            from s2_reading import report_issues
+            errors.extend(report_issues(report))
     elif mode in {"source_digest", "editorial"}:
         source_clock=stamp
         historic=False
