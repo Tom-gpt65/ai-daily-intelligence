@@ -167,6 +167,16 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertIsNone(re.fullmatch(pattern,'Alternatively could suggest an approach that might offer sufficient privacy while still producing useful insights for readers.'))
         self.assertIsNotNone(re.fullmatch(pattern,'Alternatively, readers could compare the relevant assumptions before choosing a response, while evidence might distinguish competing interpretations about purposes and costs.'))
 
+    def test_decoder_bounds_run_on_sentences_without_rejecting_natural_short_clause(self):
+        import re
+        sources,plan=self.plan()
+        sentence='An agent should prioritise privacy, yet might struggle with collecting necessary data for functionality.'
+        plan['sections'][0]['analysis'].insert(1,sentence)
+        self.assertEqual(source_analysis.plan_issues(plan,sources),[])
+        pattern=source_analysis.schema(sources)['properties']['introduction']['items']['pattern']
+        self.assertIsNone(re.fullmatch(pattern,'A reader could '+('consider ' * 100)+'evidence.'))
+        self.assertIsNone(re.fullmatch(pattern,'A reader could examine privacytransparencyaccountability through an imaginary comparison of alternative approaches and their measurable consequences.'))
+
     def test_modal_possession_is_allowed_but_indicative_claim_stays_rejected(self):
         self.assertFalse(source_analysis.reporting_sentence('The system could have a measurable cost.'))
         self.assertFalse(source_analysis.reporting_sentence('The users might also have concerns.'))
