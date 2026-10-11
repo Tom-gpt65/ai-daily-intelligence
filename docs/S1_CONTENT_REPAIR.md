@@ -40,4 +40,17 @@
 
 機械檢查不能證明所有語意、來源真實性或教學品質。來源主題規則是有限的；未支援、同主題重複、資訊不足、詞義缺漏或新內容重用分析素材時，新聞生成會被拒絕。可提供已標示的教育／舊日期閱讀，並顯示失敗原因；不能保證每日都有真實新聞，亦不宣稱零故障。
 
-GitHub Actions、部署及公開字節驗證結果於实际完成後補記，未完成者不列為通過。
+## 發布後實際結果（2026-10-11）
+
+最終程式 head `aff0764c129768b8d550d1651a4161fb804a67e1` 的四組驗收全部通過，於 PR #14 合併為 `23966782496c0dbb4831186a1cd0a0d48beadb8c`：
+
+- [Linux 完整測試](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38066463743)：203／203 通過、零略過，含真實 Git 並行發布；Node 六組及站點通過。
+- [Chromium／WebKit 瀏覽器](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38066463728)：十組通過、八次舊版 worker 升級、新舊答案備份往返；iOS 真機冷啟動並未驗證。
+- [發布契約、未來及跨年模擬](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38066463727)、[首發 canary](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38066465921) 通過。
+- [main 正式部署](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38066739674) 通過，包含部署後公開驗證；隨後的公開站點及匿名雲端隔離檢查通過。
+- [新版歷史重製預覽](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38111647625) 實際執行成功，只保存 artifact，8 日及已發布文章不變。
+- 2026-10-11 重新逐位元核對 20 個公開檔案通過（文字只正規化 CRLF），含重製的 9／10 日、兩個原始備份、8 日、完整離線字典、版本、前端與 worker；兩篇再次檢查為 1,225／1,219 詞、8 段、7 題、零重複長句／片段、五詞交叉重複率 9.254709254709255%。詳見 `S1_CONTENT_REPAIR_PUBLIC_EVIDENCE.json`。
+
+11 日真實排程也已執行：07:05 安全閱讀工作成功保留已標示的歷史閱讀；07:40 新聞及 08:20 補救均拒絕資訊不足的新稿（RSS 6／6 可讀，但有限分析規則沒有足夠不同主題）。教育候選無一通過近 60 天嚴格 `<16%`，因此沒有偽造 11 日新文章。新聞工作、要求當日文章的巡檢及維護為失敗狀態，不能列為成功；12:28 左右公開核對時仍提供日期不變的 10 日歷史閱讀。
+
+目前原始 S1 標籤保留，網站顯示 S1，資源及快取為 s1-3。並未證明每日一定有新新聞、真機 iOS 冷啟動離線、實際兩帳戶雙裝置寫入或商業 SLA；主題規則與有限教育庫會令安全降級頻繁發生。

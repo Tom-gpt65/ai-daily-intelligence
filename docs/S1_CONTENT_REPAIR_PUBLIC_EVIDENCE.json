@@ -1,0 +1,108 @@
+{
+  "verified_at": "2026-10-11T12:27:29.372396+08:00",
+  "base_url": "https://tom-gpt65.github.io/ai-daily-intelligence/",
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "b2c55eacbc18d571092fb15ee92fd7c8b93f6b8cf4f595161d0c11fe032ff741"
+    },
+    {
+      "path": "release.json",
+      "sha256": "efade250b10c1eda26be7d4c8c5d17b46f57d3f94a8c97282c3317184dd2f50b"
+    },
+    {
+      "path": "sw.js",
+      "sha256": "075c695a6e601d3f7f13e11d9f0efcb699082a7f405004405ab565898a5bd178"
+    },
+    {
+      "path": "app.js",
+      "sha256": "e61b758f19ae0022a032c1df212b3864bbb525a02e388d04a4bf7a24cfe03c3c"
+    },
+    {
+      "path": "cloud-sync.js",
+      "sha256": "dfb0d4b77274461028ef96560f33e903192ed88740c8ae875187c41a1ecb5d92"
+    },
+    {
+      "path": "v1.css",
+      "sha256": "5f2f8be8325031351674d3f2c4160d16d4d776d7e3b3d38cc402a1d02e5ea711"
+    },
+    {
+      "path": "reading-theme-v1.css",
+      "sha256": "f2a726f3c2540a7da12da75b05defedb458d18c7fb8e1a7aa34913d92ec790b3"
+    },
+    {
+      "path": "cloud-config.json",
+      "sha256": "56d2c96af017b3f4990296214ace80a56edade123d68cdf8c39bcf79bb93c1f2"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "sha256": "b401d00f43337567c2877ff9570d09d3ff02548939e8f33ff97131af4d6f2e57"
+    },
+    {
+      "path": "offline-glossary.json",
+      "sha256": "98b7ebf51dcd3221f3bac2825be3d7fd71ebdfbc5fad8ce35ea56a0736ed7ea4"
+    },
+    {
+      "path": "reading-glossary.json",
+      "sha256": "dfb11156f27254a5be4229cd26d97c14853c4ee3e169f8af4ddd0acab5de414e"
+    },
+    {
+      "path": "news-glossary.json",
+      "sha256": "afa2d89aecb439ded8525639de1565abe1a7029778ed0ad9e6e82294d3766d7b"
+    },
+    {
+      "path": "news-template-glossary.json",
+      "sha256": "7ba1b60aeac12dbc99ec0f3296a42aab4973fba8485ec799733f4f174cf1792f"
+    },
+    {
+      "path": "reports/index.json",
+      "sha256": "4505e23417702de29e1c473a0493b8e3c4c4044b062db351ff43851eabc7dd31"
+    },
+    {
+      "path": "reports/2026-10-08.json",
+      "sha256": "ff908c9a3e23515380b2080e0f6164475316bdf19d0b73baf269d7428db61ade"
+    },
+    {
+      "path": "reports/2026-10-09.json",
+      "sha256": "dfe28a540e1bda64c81ac4be7f6f5689db198e1c12d8dd19e677c572e7c29cf6"
+    },
+    {
+      "path": "reports/2026-10-10.json",
+      "sha256": "ace8dbabeee22ded85a500119029923607686ca5522542c0d9b588dac5b70417"
+    },
+    {
+      "path": "reports/archive-revisions/s1-original/2026-10-09.json",
+      "sha256": "30951062d27a08b6f4760d5284c940f6ef47321e293a12429fee44bb4f3560ec"
+    },
+    {
+      "path": "reports/archive-revisions/s1-original/2026-10-10.json",
+      "sha256": "b5cac5d4bbdcf0db89a58f73abfae6f515cb9e6f77c7c909c37d368e432eee37"
+    },
+    {
+      "path": "system-status.json",
+      "sha256": "99b6f0188e1abe1410be0d560fce398db6cf872339c68850774e9a670cdc338e"
+    }
+  ],
+  "reports": {
+    "2026-10-09": {
+      "word_count": 1225,
+      "paragraphs": 8,
+      "questions": 7,
+      "repeated_sentences": 0,
+      "repeated_fragments": 0,
+      "offline_dictionary_complete": true,
+      "historical_rebuild": true
+    },
+    "2026-10-10": {
+      "word_count": 1219,
+      "paragraphs": 8,
+      "questions": 7,
+      "repeated_sentences": 0,
+      "repeated_fragments": 0,
+      "offline_dictionary_complete": true,
+      "historical_rebuild": true
+    }
+  },
+  "five_word_cross_overlap": 0.09254709254709255,
+  "state": "historical_reconstructed_readings_not_current_news"
+}
