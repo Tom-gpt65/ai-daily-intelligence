@@ -26,11 +26,11 @@ def replay(snapshot_path,out):
         original_request=source_analysis.request_plan
         original_generate=source_analysis.generate
         counts={'analysis-draft':0,'analysis-review':0,'analysis-part':0}
-        def captured_request(prompt,output_schema):
+        def captured_request(prompt,output_schema,**kwargs):
             kind='analysis-review' if 'approved' in output_schema.get('properties',{}) else 'analysis-part'
             counts[kind]+=1
             try:
-                plan=original_request(prompt,output_schema)
+                plan=original_request(prompt,output_schema,**kwargs)
             except source_analysis.AnalysisResponseError as exc:
                 build.atomic_json(out/(kind+'-error-'+str(counts[kind])+'.json'),{'issue':exc.code,'response':exc.response})
                 raise

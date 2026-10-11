@@ -141,6 +141,19 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertFalse(source_analysis.reporting_sentence('The users might also have concerns.'))
         self.assertTrue(source_analysis.reporting_sentence('The providers have information, which could affect users.'))
         self.assertTrue(source_analysis.reporting_sentence('The provider has a policy that might affect users.'))
+        self.assertFalse(source_analysis.reporting_sentence('If imaginary users have preferences, a system could respect them.'))
+        self.assertTrue(source_analysis.reporting_sentence('If users might choose, the provider has already acted.'))
+
+    def test_topic_plurals_and_compounds_are_not_false_source_mismatches(self):
+        self.assertTrue({'brake','agent','text','message','policy'}.issubset(source_analysis.topic_tokens('brakes agent-based text-based messages policies')))
+        from content_novelty import normal
+        self.assertNotEqual(normal('emergency brakes'),normal('emergency brake'))
+
+    def test_author_deadline_rejects_before_starting_another_model_request(self):
+        with patch.object(source_analysis,'urlopen',side_effect=AssertionError('Must not start after budget')):
+            with self.assertRaises(source_analysis.AnalysisResponseError) as caught:
+                source_analysis.request_plan('test',{},deadline=0)
+        self.assertEqual(caught.exception.code,'analysis_model_unavailable:generation_budget_exhausted')
 
     def test_incomplete_response_is_identified_and_retained(self):
         from unittest.mock import MagicMock
