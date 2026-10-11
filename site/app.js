@@ -606,10 +606,17 @@
       const index=Number(dropdown.value);
       if(Number.isInteger(index)&&index>=0&&index<r.essay.length){
         const target=$('reading-paragraph-'+index);
+        // Release the native selector's focus before moving the viewport.
+        // Otherwise WebKit can restore that focused control after an
+        // initially successful jump, including after the second adjustment.
+        dropdown.blur();
+        if(target){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});}
         // Safari may restore the native select position after the change
         // event. Scroll once again after the control has finished settling.
         scrollToReadingTarget(target);
-        requestAnimationFrame(()=>setTimeout(()=>scrollToReadingTarget(target),70));
+        requestAnimationFrame(()=>setTimeout(()=>{
+          if(state.report===r&&target?.isConnected)scrollToReadingTarget(target);
+        },70));
       }
     });
     nav.appendChild(dropdown);

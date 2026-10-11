@@ -44,6 +44,10 @@ async function check(engine,browser,width){
       const top=document.querySelector('#reading-paragraph-3')?.getBoundingClientRect().top;
       return typeof top==='number'&&top>=80&&top<=Math.min(window.innerHeight*0.75,675);
     },null,{timeout:3000});
+    // A transient correct position is insufficient: native WebKit used to
+    // restore the focused selector after this condition first became true.
+    await page.waitForFunction(()=>document.activeElement?.id==='reading-paragraph-3',null,{timeout:3000});
+    await page.waitForTimeout(350);
     const top=await page.locator('#reading-paragraph-3').evaluate(el=>el.getBoundingClientRect().top);
     assert.ok(top>=80&&top<=675,engine+' '+width+': section jump not visible within the readable viewport: '+top);
     assert.ok(await page.locator('#tools-toggle').isVisible(),engine+' '+width+': compact tools toggle absent');

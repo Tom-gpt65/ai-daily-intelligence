@@ -135,6 +135,15 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertEqual(caught.exception.code,'incomplete_analysis_response')
         self.assertEqual(caught.exception.response,'unfinished draft')
 
+    def test_model_receives_topics_without_source_prose_or_past_reporting(self):
+        sources,plan=self.plan()
+        sources[0]['excerpt']+=' ConfidentialBrand secretly bought an unrelated company.'
+        prompts=[]
+        source_analysis.generate(sources,[{'essay':['Past confidential news narrative.']}],request=lambda prompt,schema:prompts.append(prompt) or plan)
+        self.assertNotIn('ConfidentialBrand',prompts[0])
+        self.assertNotIn('secretly bought an unrelated company',prompts[0])
+        self.assertNotIn('Past confidential news narrative',prompts[0])
+
     def test_current_named_entities_use_reviewed_news_senses_not_acronym_homonyms(self):
         from edition_guarantee import fill_dictionary
         dictionary,missing=fill_dictionary(['UMG Satya Nadella DistroKid Huxe'],
