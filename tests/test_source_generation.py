@@ -21,7 +21,8 @@ class SourceGenerationTests(unittest.TestCase):
         sources=canary_sources(self.now)
         p='A reader could compare the relevant assumptions before choosing a response, while a specified hypothetical observation might distinguish competing interpretations through evidence about purposes, costs and uncertainties.'
         count=source_analysis.sentence_count(len(sources))
-        return sources,{'introduction':[p]*3,'conclusion':[p]*3,'sections':[{'id':s['id'],'question':[p[:-1]+' involving '+ ' and '.join(sorted(source_analysis.topical_words(s))[:3])+'.']+[p]*(count-1),'test':[p]*count} for s in sources]}
+        topic=[p[:-1]+' involving '+ ' and '.join(sorted(source_analysis.topical_words(s))[:3])+'.' for s in sources]
+        return sources,{'introduction':topic[:3],'conclusion':topic[:3],'sections':[{'id':s['id'],'analysis':[topic[i]]+[p]*(count-1),'comparison':[p]*count} for i,s in enumerate(sources)]}
 
     def test_actual_capture_reproduces_unsupported_batch_without_rss_failure(self):
         self.assertEqual(self.snapshot['diagnostics']['feeds_ok'],6)
@@ -68,16 +69,16 @@ class SourceGenerationTests(unittest.TestCase):
 
     def test_hidden_fact_after_modal_sentence_is_rejected(self):
         sources,plan=self.plan()
-        plan['sections'][0]['question'][0]+=' The company confirmed a new product.'
+        plan['sections'][0]['analysis'][0]+=' The company confirmed a new product.'
         self.assertIn('non_hypothetical_analysis_sentence',source_analysis.plan_issues(plan,sources))
 
     def test_unsupported_names_figures_and_copied_source_sentences_are_rejected(self):
         sources,plan=self.plan()
-        plan['sections'][0]['test'][0]+=' Readers could compare a secret purchase by FictionalCorp for 999 dollars.'
+        plan['sections'][0]['comparison'][0]+=' Readers could compare a secret purchase by FictionalCorp for 999 dollars.'
         errors=source_analysis.plan_issues(plan,sources)
         self.assertIn('unsafe_analysis_text',errors);self.assertIn('unsupported_analysis_name',errors)
         sources,plan=self.plan()
-        plan['sections'][0]['question'][0]+=' '+sources[0]['excerpt']
+        plan['sections'][0]['analysis'][0]+=' '+sources[0]['excerpt']
         self.assertIn('copied_source_analysis:S1',source_analysis.plan_issues(plan,sources))
 
     def test_sentence_initial_company_name_cannot_bypass_name_validation(self):
@@ -93,12 +94,27 @@ class SourceGenerationTests(unittest.TestCase):
         plan['introduction'].append(plan['introduction'][0])
         self.assertIn('invalid_analysis_sentence_structure',source_analysis.plan_issues(plan,sources))
         sources,plan=self.plan()
-        plan['sections'][0]['question'][0]+=' '+plan['sections'][0]['question'][0]
+        plan['sections'][0]['analysis'][0]+=' '+plan['sections'][0]['analysis'][0]
         self.assertIn('invalid_analysis_sentence_length',source_analysis.plan_issues(plan,sources))
+
+    def test_named_source_cannot_become_a_model_invented_product_relationship(self):
+        sources,plan=self.plan();sources[0]['title']+=' OpenAI'
+        plan['sections'][0]['analysis'][0]=plan['sections'][0]['analysis'][0].replace('A reader','OpenAI')
+        self.assertIn('unsupported_analysis_name',source_analysis.plan_issues(plan,sources))
+        sources,plan=self.plan();plan['introduction']=[plan['sections'][0]['analysis'][0]]*3
+        self.assertIn('analysis_scope_missing_distinct_sources:introduction',source_analysis.plan_issues(plan,sources))
 
     def test_no_paid_or_remote_model_endpoint_is_allowed(self):
         with patch.dict('os.environ',{'OLLAMA_URL':'https://external-model.example.com'}),patch.object(source_analysis,'urlopen',side_effect=AssertionError('Must reject before request')):
             with self.assertRaises(ValueError):source_analysis.request_plan('test',{})
+
+    def test_current_named_entities_use_reviewed_news_senses_not_acronym_homonyms(self):
+        from edition_guarantee import fill_dictionary
+        dictionary,missing=fill_dictionary(['UMG Satya Nadella DistroKid Huxe'],
+            {'umg':{'translation':'高級冶金級'}})
+        self.assertEqual(missing,[])
+        self.assertIn('環球音樂集團',dictionary['umg']['translation'])
+        self.assertIn('姓氏',dictionary['nadella']['translation'])
 
     def test_failed_model_cannot_mutate_published_articles(self):
         shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)

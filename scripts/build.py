@@ -796,7 +796,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
             last_reasons=['unsupported_or_repeated_analytical_context']
             continue
         this_quality = inspect_editorial_quality(candidate, sources)
-        if critical.intersection(this_quality["issues"]):
+        if critical.intersection(this_quality["issues"]) or (analysis_plan is not None and not this_quality['training_structure_pass']):
             last_reasons = this_quality["issues"]
             if analysis_plan is not None: analysis_attempts.append({'attempt':variant,'issues':last_reasons})
             continue
@@ -829,10 +829,12 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         state='insufficient_evidence' if unsupported else ('build_failed' if failed_model else ('repetitive_content' if originality else 'editorial_quality_rejected'))
         put_status(state,now,source_count=len(sources),
                    failure_reason='No candidate passed source analysis, quality and strict originality',
-                   generation_issues=last_reasons[:12],novelty_issues=last_reasons[:12],
+                   generation_issues=last_reasons[:12],
+                   novelty_issues=last_reasons[:12] if originality else [],
+                   quality_issues=last_reasons[:12] if state=='editorial_quality_rejected' else [],
                    analysis_attempts=analysis_attempts,**diagnostics)
-        print("[originality gate] No sufficiently new source-grounded article; "
-              "retaining clearly labelled educational reading.",file=sys.stderr)
+        print("[acceptance gate] No candidate passed the unchanged publication gates; "
+              "retaining the previous reading for explicitly labelled fallback.",file=sys.stderr)
         return False
     # Full-article translation is OFF by default to avoid a second lengthy
     # CPU-only LLM invocation; tap-to-translate dictionary stays available.

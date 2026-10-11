@@ -163,7 +163,7 @@ jobs:
           print("generated="+str(generated).lower())
           PY
 
-      - name: Guarantee today's reading passage, even if RSS or the model fails
+      - name: Ensure validated reading or clearly labelled archived backup
         # With an approved site preflight, always try a verified backup after
         # transient RSS/model failures; do not bypass genuine validation errors.
         if: ${{ always() && github.event_name != 'push' && steps.site-preflight.outcome == 'success' }}
