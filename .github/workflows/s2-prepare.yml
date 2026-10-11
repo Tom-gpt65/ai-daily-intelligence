@@ -21,7 +21,9 @@ permissions:
 
 concurrency:
   group: s2-preparation-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: false
+  # PR runs are disposable acceptance tests for one code revision. Supersede
+  # obsolete revisions; production preparation must finish and publish safely.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   plan:
