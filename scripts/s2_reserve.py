@@ -1,6 +1,6 @@
 """Dated reserve validation and conflict-safe preparation publication."""
 from __future__ import annotations
-import argparse, copy, json, re, shutil, subprocess, tempfile, time
+import argparse, copy, json, subprocess, sys, time
 from datetime import datetime, timezone
 from pathlib import Path
 from build import ROOT, atomic_json
@@ -56,7 +56,7 @@ def publish(directory, attempts=5):
     """
     def git(*args):
         return subprocess.run(['git',*args],cwd=ROOT,capture_output=True,text=True,check=True)
-    changed=git('status','--porcelain','--untracked-files=no').stdout.splitlines()
+    changed=git('status','--porcelain','--untracked-files=all').stdout.splitlines()
     if changed:raise ValueError('Preparation publisher requires a clean disposable checkout')
     staged=[json.loads(p.read_text('utf-8')) for p in sorted(Path(directory).glob('????-??-??.json'))]
     if not staged:raise ValueError('No automatically accepted reserves to publish')
@@ -69,7 +69,7 @@ def publish(directory, attempts=5):
             atomic_json(ROOT/'reading-reserve'/(report['date']+'.json'),report)
             current.append(report)
         # Validate with the just-fetched code, not a stale imported module.
-        subprocess.run(['python','scripts/s2_reserve.py','--validate'],cwd=ROOT,check=True)
+        subprocess.run([sys.executable,'scripts/s2_reserve.py','--validate'],cwd=ROOT,check=True)
         git('add','reading-reserve')
         if not git('diff','--cached','--name-only').stdout.strip():return
         git('commit','-m','Prepare reviewed S2 educational readings')

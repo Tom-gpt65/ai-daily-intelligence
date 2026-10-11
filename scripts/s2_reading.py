@@ -100,9 +100,9 @@ def quality_issues(essay, spec):
         errors.append('missing_imaginary_scope_in_opening')
     return sorted(set(errors))
 
-def paragraph_issues(paragraph, preceding):
+def paragraph_issues(paragraph, preceding, minimum=55, maximum=210):
     """Stop copied continuations immediately, before paying for the whole draft."""
-    if not isinstance(paragraph,str) or not 55<=len(WORDS.findall(paragraph))<=210:
+    if not isinstance(paragraph,str) or not minimum<=len(WORDS.findall(paragraph))<=maximum:
         return ['underdeveloped_or_overlong_paragraph']
     checked=inspect([*preceding,paragraph],[])['issues']
     hard={'repeated_content_fragment','repeated_meaningful_sentence','near_duplicate_paragraph_padding'}
@@ -197,30 +197,36 @@ def generate(day, reports, ecdict=None, output=None, ask=request, extra_history=
             if output:atomic_json(output/f'{day}-outline-{attempt}.json',drafted)
             essay=[]
             target=1200//spec['paragraph_count']
+            minimum=(1100+spec['paragraph_count']-1)//spec['paragraph_count']
+            maximum=1550//spec['paragraph_count']
             for index,brief in enumerate(briefs):
                 context={'topic':spec['topic'],'structure':spec['instruction'],'whole_outline':briefs,
                          'previous_openings':[' '.join(WORDS.findall(p)[:8]) for p in essay],
                          'previous_last_sentence':re.split(r'(?<=[.!?])\s+',essay[-1])[-1] if essay else ''}
                 instruction=(f'Write NEW paragraph {index+1} of a coherent advanced English educational essay. '
-                             f'It must contain {target}–{target+20} English words, in one natural prose paragraph. '
+                             f'It must contain {target}–{min(maximum,target+30)} English words, in one natural prose paragraph. '
+                             f'The actual counted response must have at least {minimum} and at most {maximum} words. '
+                             'Develop five to eight complete, varied sentences with specific reasoning, rather than a brief summary. '
                              'Use varied sentence lengths, not a forced modal in every sentence. '
                              'All actors and concrete events are imaginary; do not add statistics, named real entities or research claims. '
                              'Develop the assigned brief with distinct reasoning and a concrete example. '
                              'Do not repeat ideas or wording already present in the preceding paragraphs. '
                              'Do not write headings or numbers. Return only JSON with a paragraph string. '
-                             +('This opening MUST explicitly say the situation is imaginary, fictional or hypothetical. ' if index==0 else '')
+                             +('This opening MUST explicitly say the situation is imaginary, fictional or hypothetical. ' if index==0 else 'Continue the assigned argument directly; do not introduce the imaginary setting or entire essay again. ')
                              +('This is the final paragraph; draw together the developed argument without merely restating it. ' if index==len(briefs)-1 else 'Do not conclude the whole essay here. ')
-                             +'\nYOUR DISTINCT ASSIGNED BRIEF: '+brief)
+                             +'\nYOUR DISTINCT ASSIGNED BRIEF: '+brief
+                             +'\nForbidden previously used openings: '+json.dumps(context['previous_openings']))
                 for paragraph_attempt in range(1,4):
                     answer=ask('CONTEXT DATA: '+json.dumps(context,ensure_ascii=False)+'\nWRITING INSTRUCTION:\n'+instruction,
                                object_schema({'paragraph':{'type':'string'}}),limit=700,timeout=300)
                     paragraph=answer.get('paragraph')
-                    errors=paragraph_issues(paragraph,essay)
+                    errors=paragraph_issues(paragraph,essay,minimum,maximum)
                     if not errors:break
                     print(f'[S2 paragraph rejected] {day} paragraph {index+1} retry {paragraph_attempt}: '+','.join(errors),flush=True)
                     if output:atomic_json(output/f'{day}-paragraph-rejection-{attempt}-{index+1}-{paragraph_attempt}.json',
                                           {'paragraph':paragraph,'issues':errors})
-                    instruction+='\nPrevious response rejected: '+','.join(errors)+'. Generate a completely new paragraph with a different opening and reasoning.'
+                    actual_count=len(WORDS.findall(paragraph)) if isinstance(paragraph,str) else 0
+                    instruction+=f'\nPrevious response had {actual_count} words; required {minimum}–{maximum}. Rejected: '+','.join(errors)+'. Generate a completely new, developed paragraph with a different opening and reasoning. Avoid every forbidden opening listed above.'
                 else:raise Rejected('paragraph_retries_exhausted:'+','.join(errors))
                 essay.append(paragraph)
                 print(f'[S2 author] {day} attempt {attempt} paragraph {index+1}: {len(WORDS.findall(paragraph))} words',flush=True)

@@ -24,11 +24,36 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      start: ${{ steps.plan.outputs.start }}
+      days: ${{ steps.plan.outputs.days }}
+      offsets: ${{ steps.plan.outputs.offsets }}
+    steps:
+      - id: plan
+        env:
+          START: ${{ inputs.start }}
+          DAYS: ${{ inputs.days || '3' }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import os,json
+          from datetime import datetime,date,timedelta
+          from zoneinfo import ZoneInfo
+          days=int(os.environ['DAYS'])
+          if not 1<=days<=3:raise ValueError('days must be 1 to 3')
+          start=date.fromisoformat(os.environ['START']) if os.environ['START'] else date(2026,10,12) if os.environ['EVENT_NAME']=='pull_request' else datetime.now(ZoneInfo('Asia/Hong_Kong')).date()+timedelta(days=1)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:
+              out.write('start='+start.isoformat()+'\ndays='+str(days)+'\noffsets='+json.dumps(list(range(days)))+'\n')
+          PY
   real-generation:
+    needs: plan
     strategy:
       fail-fast: false
       matrix:
-        offset: [0, 1, 2]
+        offset: ${{ fromJSON(needs.plan.outputs.offsets) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     steps:
@@ -36,8 +61,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Select one immutable reading date and avoid regenerating accepted packs
+        id: selected
+        env:
+          START: ${{ needs.plan.outputs.start }}
+          OFFSET: ${{ matrix.offset }}
+        run: |
+          python - <<'PY'
+          import os,sys,json
+          from datetime import date,timedelta
+          from pathlib import Path
+          sys.path.insert(0,'scripts')
+          from s2_reserve import load
+          day=(date.fromisoformat(os.environ['START'])+timedelta(days=int(os.environ['OFFSET']))).isoformat()
+          existing=load(day,Path('site/reports'))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:
+              out.write('start='+day+'\ngenerate='+str(existing is None).lower()+'\n')
+          PY
       - run: python -m pip install -r requirements.txt
+        if: steps.selected.outputs.generate == 'true' 
       - name: Install free local generation runtime
+        if: steps.selected.outputs.generate == 'true'
         timeout-minutes: 10
         run: |
           curl --fail --location --retry 2 --max-time 120 https://ollama.com/install.sh -o /tmp/install-ollama.sh
@@ -49,6 +93,7 @@ jobs:
           done
           timeout 480 ollama pull qwen2.5:7b-instruct-q4_K_M
       - name: Download pinned offline dictionary
+        if: steps.selected.outputs.generate == 'true'
         timeout-minutes: 3
         run: |
           mkdir -p .cache
@@ -56,17 +101,10 @@ jobs:
       - name: Automatically generate and review complete future readings
         id: prepare
         env:
-          START: ${{ inputs.start }}
-          DAYS: ${{ inputs.days || '3' }}
-          OFFSET: ${{ matrix.offset }}
-        run: |
-          if ! [[ "$DAYS" =~ ^[1-3]$ ]]; then echo 'days must be 1 to 3'; exit 1; fi
-          if [ -z "$START" ]; then START=$(TZ=Asia/Hong_Kong date -d tomorrow +%F); fi
-          if [ "$OFFSET" -ge "$DAYS" ]; then exit 0; fi
-          START=$(date -d "$START + $OFFSET days" +%F)
-          python scripts/s2_reading.py --start "$START" --days 1 --attempts 2
+          START: ${{ steps.selected.outputs.start }}
+        run: python scripts/s2_reading.py --start "$START" --days 1 --attempts 2
       - name: Publish accepted reserves against the latest main branch
-        if: always() && github.ref == 'refs/heads/main' && matrix.offset < fromJSON(inputs.days || '3')
+        if: always() && github.ref == 'refs/heads/main'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
