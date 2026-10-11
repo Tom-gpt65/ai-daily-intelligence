@@ -57,7 +57,9 @@ jobs:
       matrix:
         offset: ${{ fromJSON(needs.plan.outputs.offsets) }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 65
+    # CPU authoring includes real paragraph reviews, complete translation and
+    # strict final verification. Do not kill a progressing retry at 65 minutes.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
