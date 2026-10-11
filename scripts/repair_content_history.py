@@ -26,6 +26,9 @@ HK=ZoneInfo('Asia/Hong_Kong')
 
 def repair(root=ROOT, apply=False):
     root=Path(root)
+    from s2_reserve import release_for
+    if any(day in release_for(root/'site/reports').get('removed_dates',[]) for day in DAYS):
+        raise ValueError('Historical repair cannot restore explicitly withdrawn public editions')
     originals={day:(root/'site/reports/archive-revisions/s1-original'/(day+'.json')).read_bytes().replace(b'\r\n',b'\n') for day in DAYS}
     source_reports={day:json.loads(raw) for day,raw in originals.items()}
     settings=(build.REPORTS,build.STATUS_PATH,validate_site.SITE)

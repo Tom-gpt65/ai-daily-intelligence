@@ -39,7 +39,9 @@ class V2PipelineTests(unittest.TestCase):
         self.folder=Path(self.temp.name)
         self.site=self.folder/"site"
         shutil.copytree(ROOT/"site",self.site)
-        self.day="2026-10-11"
+        shutil.copytree(ROOT/'content-history',self.folder/'content-history')
+        if (ROOT/'reading-reserve').exists():shutil.copytree(ROOT/'reading-reserve',self.folder/'reading-reserve')
+        self.day="2026-10-12"
         self.now=datetime.fromisoformat(self.day+"T07:40:00+08:00")
         self.patches=[patch.object(build,"REPORTS",self.site/"reports"),
                       patch.object(build,"STATUS_PATH",self.site/"system-status.json"),
@@ -91,7 +93,11 @@ class V2PipelineTests(unittest.TestCase):
 
     def test_required_news_fails_after_fallback_was_publicly_verified(self):
         article=reading_backup.ensure_reading(self.day,self.now)
-        with patch.object(verify_publication,"SITE",self.site),patch.object(verify_publication,"datetime") as clock,patch.object(sys,"argv",["verify_publication.py","--live","--require-news"]),patch.object(verify_publication,"get_public",side_effect=lambda path,getter=None:(self.site/path).read_bytes()) as public_reads,patch.object(verify_publication.time,"sleep",side_effect=AssertionError('Public fixture must verify on the first attempt')):
+        def public(path,getter=None):
+            from urllib.error import HTTPError
+            if not (self.site/path).exists():raise HTTPError(path,404,'Withdrawn',None,None)
+            return (self.site/path).read_bytes()
+        with patch.object(verify_publication,"SITE",self.site),patch.object(verify_publication,"datetime") as clock,patch.object(sys,"argv",["verify_publication.py","--live","--require-news"]),patch.object(verify_publication,"get_public",side_effect=public) as public_reads,patch.object(verify_publication.time,"sleep",side_effect=AssertionError('Public fixture must verify on the first attempt')):
             clock.now.return_value=self.now
             self.assertEqual(verify_publication.main(),1)
             self.assertIn('release.json',[call.args[0] for call in public_reads.call_args_list])
@@ -103,11 +109,14 @@ class V2PipelineTests(unittest.TestCase):
 
     def test_first_fallback_retains_new_day_rss_failure_diagnosis(self):
         build.put_status("feed_error",self.now,feeds_ok=0,feeds_total=6)
-        with patch.object(sys,"argv",["reading_backup.py","--date",self.day,"--if-missing"]):
+        with patch.object(sys,"argv",["reading_backup.py","--date",self.day,"--if-missing"]),patch.object(reading_backup,'datetime') as clock:
+            clock.now.return_value=self.now
+            clock.fromisoformat.side_effect=datetime.fromisoformat
             self.assertEqual(reading_backup.main(),0)
         status=read(build.STATUS_PATH)
         self.assertEqual(status["state"],"feed_error")
-        self.assertEqual(status["backup"]["kind"],"archived_reading")
+        self.assertEqual(status['latest_date'],self.day)
+        self.assertEqual(status['mode'],'reading_feature')
         self.assertEqual(status["feeds_ok"],0)
 
     def test_model_crash_is_reported_separately_from_safe_reading(self):
@@ -115,7 +124,7 @@ class V2PipelineTests(unittest.TestCase):
         accepted=publication_outcome(read(build.REPORTS/"index.json"),article,self.day,allow_archived=True)
         status=record_attempt({"state":"new_stories_found"},accepted,"failure","success",self.now)
         self.assertEqual(status["state"],"build_failed")
-        self.assertEqual(status["news_outcome"],"archived_reading")
+        self.assertEqual(status["news_outcome"],"educational_fallback")
         self.assertFalse(status["publication"]["news"])
 
     def test_live_checker_rejects_old_cdn_revision(self):
@@ -188,28 +197,33 @@ class V2LocalGitAcceptanceTests(unittest.TestCase):
             self.git(upstream,"init","--initial-branch=main")
             self.configure(upstream)
             shutil.copytree(ROOT/"site",upstream/"site")
+            shutil.copytree(ROOT/'content-history',upstream/'content-history')
+            # A pre-withdrawal date remains a separate local fixture. No
+            # withdrawn public date is recreated in this Git simulation.
+            with patch.object(build,'REPORTS',upstream/'site/reports'):
+                build.put_report(reading_backup.build_reading('2026-10-07',datetime.fromisoformat('2026-10-07T07:05:00+08:00')))
             self.git(upstream,"add","site");self.git(upstream,"commit","-m","Initial public fixture")
             self.git(upstream,"remote","add","origin",str(origin))
             self.git(upstream,"push","-u","origin","main")
             self.git(lab,"clone",str(origin),str(worker));self.configure(worker)
-            original_history=(upstream/"site/reports/2026-10-08.json").read_bytes()
+            original_history=(upstream/'content-history/retired/2026-10-08.json').read_bytes()
             # A concurrent upstream edit changes the previous day's article
             # and its index. The worker must not replay its stale index row.
             with patch.object(build,"REPORTS",upstream/"site/reports"):
-                prior=reading_backup.build_reading("2026-10-10",datetime.fromisoformat("2026-10-10T16:00:00+08:00"))
+                prior=reading_backup.build_reading("2026-10-07",datetime.fromisoformat("2026-10-07T16:00:00+08:00"))
                 build.put_report(prior)
             (upstream/"concurrent-code.txt").write_text("new main code\n")
             self.git(upstream,"add",".");self.git(upstream,"commit","-m","Concurrent history and code fixture")
             self.git(upstream,"push","origin","main")
-            day="2026-10-11"
+            day="2026-10-12"
             now=datetime.fromisoformat(day+"T07:40:00+08:00")
             with patch.object(build,"REPORTS",worker/"site/reports"),patch.object(build,"STATUS_PATH",worker/"site/system-status.json"),patch.object(publish_reports,"ROOT",worker),patch.object(publish_reports,"REPORTS",worker/"site/reports"),patch.object(publish_reports,"STATUS",worker/"site/system-status.json"),patch.dict(os.environ,{"OLLAMA_ENABLED":"0"}):
                 reading_backup.ensure_reading(day,now.replace(hour=7,minute=5))
                 publish_reports.publish()
-                self.assertEqual(read(worker/"site/reports/2026-10-10.json")["word_count"],prior["word_count"])
+                self.assertEqual(read(worker/"site/reports/2026-10-07.json")["word_count"],prior["word_count"])
                 self.assertEqual(read(worker/"site/system-status.json")['publication']['mode'],prior['mode'])
                 self.assertEqual((worker/"concurrent-code.txt").read_text(),"new main code\n")
-                self.assertEqual((worker/"site/reports/2026-10-08.json").read_bytes(),original_history)
+                self.assertEqual((upstream/'content-history/retired/2026-10-08.json').read_bytes(),original_history)
                 self.assertTrue(build.build_live(now,None,sources=canary_sources(now)))
                 publish_reports.publish()
                 published=(worker/"site/reports"/(day+".json")).read_bytes()

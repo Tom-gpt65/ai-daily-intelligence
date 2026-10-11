@@ -1,11 +1,13 @@
 /* Same-origin cache only. Network-first news never silently masquerades as fresh. */
-const VERSION='ai-daily-S1-4-reading';
+const VERSION='ai-daily-S2-1-reading';
 const SHELL=['./','./index.html','./style.css','./v3.css','./v4.css','./v5.css','./v6.css','./v11.css','./v12.css','./v1.css','./reading-theme-v1.css','./cloud-sync.js','./app.js','./offline-glossary.json','./reading-glossary.json','./news-glossary.json','./news-template-glossary.json','./release.json','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png'];
 const PAGE_CACHE=VERSION+'-shell',DATA_CACHE=VERSION+'-reports';
-const REPAIRED_DATES=new Set(['2026-10-09','2026-10-10']);
+const REMOVED_DATES=new Set(['2026-10-08','2026-10-09','2026-10-10','2026-10-11']);
 const SCOPE=new URL('./',self.location.href);
 const SHELL_URLS=new Set(SHELL.map(path=>new URL(path,SCOPE).href));
-const ownedLegacy=name=>/^ai-daily-(?:V[123]-|S1-)/.test(name);
+const ownedLegacy=name=>/^ai-daily-(?:V[123]-|S[12]-)/.test(name);
+function withdrawn(url){return url.origin===SCOPE.origin&&url.pathname.startsWith(SCOPE.pathname)&&
+  REMOVED_DATES.has(url.pathname.match(/(?:^|\/)(\d{4}-\d{2}-\d{2})\.json$/)?.[1]);}
 function dataKey(value){const url=new URL(typeof value==='string'?value:value.url,SCOPE);url.search='';return url.href;}
 async function boundedFetch(request,options){
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
@@ -22,13 +24,37 @@ function publicData(url){return url.origin===SCOPE.origin&&url.pathname.startsWi
 async function validPublicResponse(request,response){
   try{
     const path=new URL(dataKey(request)).pathname,value=await response.clone().json();
-    if(path.endsWith('/reports/index.json'))return Array.isArray(value)&&value.length>0&&value.every(row=>row&&/^\d{4}-\d{2}-\d{2}$/.test(row.date));
+    if(path.endsWith('/reports/index.json'))return Array.isArray(value)&&value.every(row=>row&&/^\d{4}-\d{2}-\d{2}$/.test(row.date)&&!REMOVED_DATES.has(row.date));
     if(path.endsWith('/system-status.json'))return value&&typeof value.state==='string';
     const date=path.match(/\/reports\/(\d{4}-\d{2}-\d{2})\.json$/)?.[1];
-    if(REPAIRED_DATES.has(date)&&!(value?.content_generation_profile==='source_outline_v2'&&/^[a-f0-9]{64}$/.test(value.practice_revision||'')))return false;
+    if(REMOVED_DATES.has(date))return false;
     return value?.date===date&&Array.isArray(value.essay)&&value.essay.length>=5&&value.essay.every(p=>typeof p==='string')&&
       value.dictionary&&typeof value.dictionary==='object'&&Array.isArray(value.practice?.items)&&value.practice.items.length>=7;
   }catch{return false;}
+}
+async function cacheWarning(){
+  try{
+  const clients=await self.clients.matchAll?.({type:'window',includeUncontrolled:true});
+  for(const client of clients||[])client.postMessage({type:'OFFLINE_CACHE_WARNING'});
+  }catch{/* A unavailable client must not block withdrawal activation. */}
+}
+async function cachedPublic(cache,key){
+  const current=await cache?.match(key);
+  if(current&&await validPublicResponse(key,current))return current;
+  // A quota error may prevent copying a visited report during activation.
+  // Keep and read that original in-scope public entry; private and sibling
+  // requests never enter this lookup, and withdrawals remain hard blocked.
+  try{
+    for(const name of (await caches.keys()).filter(n=>ownedLegacy(n)&&n.endsWith('-reports')&&n!==DATA_CACHE).reverse()){
+      const previous=await caches.open(name);
+      for(const request of (await previous.keys()).reverse()){
+        if(!publicData(new URL(request.url))||dataKey(request)!==key)continue;
+        const response=await previous.match(request);
+        if(response&&await validPublicResponse(key,response))return response;
+      }
+    }
+  }catch{/* No usable public cache; caller reports an unavailable reading. */}
+  return undefined;
 }
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
@@ -46,7 +72,7 @@ self.addEventListener('install',event=>{
       if(response.ok&&await validPublicResponse('./reports/index.json',response)){
         const index=await response.clone().json();
         await data.put('./reports/index.json',response);
-        const dates=new Set([...REPAIRED_DATES,index?.[0]?.date]);
+        const dates=new Set([index?.[0]?.date]);
         await Promise.all([...dates].filter(date=>/^\d{4}-\d{2}-\d{2}$/.test(date)).map(async date=>{
           const path='./reports/'+date+'.json';
           try{
@@ -61,8 +87,14 @@ self.addEventListener('install',event=>{
 });
 self.addEventListener('activate',event=>{
   event.waitUntil((async()=>{
+    try{
     const data=await caches.open(DATA_CACHE);
     const keys=await caches.keys();
+    // Remove withdrawn public bytes even if a previous activation was interrupted.
+    for(const key of keys.filter(ownedLegacy)){
+      const store=await caches.open(key);
+      for(const request of await store.keys())if(withdrawn(new URL(request.url)))await store.delete(request);
+    }
     // Carry visited public reports across the V1/V2/V3 -> S1 shell upgrade. Never
     // touch localStorage, auth sessions, cloud vocabulary or another app cache.
     for(const key of keys.filter(k=>ownedLegacy(k)&&k.endsWith('-reports')&&k!==DATA_CACHE).reverse()){
@@ -87,6 +119,11 @@ self.addEventListener('activate',event=>{
       }
       if(!(await previous.keys()).length)await caches.delete(key);
     }
+    }catch{
+      // Migration may run out of quota. Preserve uncopied legacy entries and
+      // activate withdrawal protection; the public lookup can still use them.
+      await cacheWarning();
+    }
     await self.clients.claim();
   })());
 });
@@ -95,6 +132,10 @@ self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
   const url=new URL(event.request.url);
   if(url.origin!==self.location.origin||!url.pathname.startsWith(SCOPE.pathname))return;
+  if(withdrawn(url)){
+    // A server outage or an old device cache must never resurrect a withdrawal.
+    event.respondWith(Promise.resolve(new Response('This public edition has been withdrawn.',{status:410})));return;
+  }
   const isData=publicData(url);
   if(isData){
     event.respondWith((async()=>{
@@ -106,11 +147,11 @@ self.addEventListener('fetch',event=>{
           if(cache)try{await cache.put(key,res.clone());await prune(cache,42);}catch{/* A full cache must not block a valid online reading. */}
           return res;
         }
-        const previous=await cache?.match(key);
+        const previous=await cachedPublic(cache,key);
         if(previous&&await validPublicResponse(key,previous))return offlineResponse(previous);
         return new Response('Public reading unavailable or invalid',{status:503});
       }catch{
-        const previous=await cache?.match(key);
+        const previous=await cachedPublic(cache,key);
         return offlineResponse(previous&&await validPublicResponse(key,previous)?previous:null);
       }
     })());return;
@@ -139,7 +180,7 @@ self.addEventListener('fetch',event=>{
   }
 });
 async function prune(cache,limit){
-  const reports=(await cache.keys()).filter(k=>/\/reports\/\d{4}-\d{2}-\d{2}\.json$/.test(new URL(k.url).pathname))
+  const reports=(await cache.keys()).filter(k=>publicData(new URL(k.url))&&/\/reports\/\d{4}-\d{2}-\d{2}\.json$/.test(new URL(k.url).pathname))
     .sort((a,b)=>a.url.localeCompare(b.url));
   // Index/status are protected. Query-string refreshes consume one dated slot.
   if(reports.length>limit)await Promise.all(reports.slice(0,reports.length-limit).map(k=>cache.delete(k)));

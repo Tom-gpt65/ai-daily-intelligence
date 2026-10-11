@@ -1,4 +1,5 @@
-/* Actual V1/V2/V3 service worker -> S1 upgrade at the production subdirectory scope.
+const fixture=require('./browser_fixture');
+/* Actual V1/V2/V3 service worker -> S2 upgrade at the production subdirectory scope.
  * Local disposable browser contexts only; cloud configuration is disabled.
  * Real cache migration/network failures; no mocked service worker or private API. */
 'use strict';
@@ -9,8 +10,8 @@ const http=require('node:http');
 const {chromium,webkit}=require('playwright');
 const ROOT=path.resolve(__dirname,'../site');
 const PREFIX='/ai-daily-intelligence/';
-const LATEST=JSON.parse(fs.readFileSync(path.join(ROOT,'reports/index.json'),'utf8'))[0].date;
-const CACHE_FIXTURE=JSON.parse(fs.readFileSync(path.join(ROOT,'reports/'+LATEST+'.json'),'utf8'));
+const LATEST=fixture.clockDay;
+const CACHE_FIXTURE=fixture.latest();
 async function exercise(engine,type,legacyVersion){
   let legacy=true,failedData=false;
   const server=http.createServer((request,response)=>{
@@ -25,6 +26,8 @@ async function exercise(engine,type,legacyVersion){
     let target=path.resolve(ROOT,relative);
     if(!target.startsWith(ROOT+path.sep)){response.writeHead(403).end();return;}
     if(relative==='sw.js'&&legacy)target=path.join(__dirname,'fixtures/legacy-sw-'+legacyVersion+'.js');
+    const virtual=fixture.body(relative);
+    if(virtual!==null){response.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'}).end(virtual);return;}
     const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript',
       '.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json',
       '.png':'image/png','.svg':'image/svg+xml'}[path.extname(target)]||'application/octet-stream';
@@ -40,6 +43,7 @@ async function exercise(engine,type,legacyVersion){
   browser=await type.launch({headless:true});
   context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,
     hasTouch:true,serviceWorkers:'allow'});
+    await fixture.clock(context);
     const page=await context.newPage(),errors=[];
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto(BASE,{waitUntil:'domcontentloaded'});
@@ -49,7 +53,7 @@ async function exercise(engine,type,legacyVersion){
       await navigator.serviceWorker.ready;
     });
     await page.waitForFunction(async()=>navigator.serviceWorker.controller&&
-      (await caches.keys()).some(key=>(key.startsWith('ai-daily-V')||key.startsWith('ai-daily-S1-2-')||key.startsWith('ai-daily-S1-3-'))&&key.endsWith('-reports')));
+      (await caches.keys()).some(key=>(key.startsWith('ai-daily-V')||key.startsWith('ai-daily-S1-2-')||key.startsWith('ai-daily-S1-3-')||key.startsWith('ai-daily-S1-4-'))&&key.endsWith('-reports')));
     const stored=await page.evaluate(async fixture=>{
       const snapshot={
         'ai-daily-saved-v2':JSON.stringify({evidence:{word:'evidence',translation:'證據'}}),
@@ -85,10 +89,10 @@ async function exercise(engine,type,legacyVersion){
     for(let attempt=0;attempt<100;attempt++){
       lastState=await page.evaluate(async()=>{
         const keys=await caches.keys();
-        const v2=keys.includes('ai-daily-S1-4-reading-reports');
+        const v2=keys.includes('ai-daily-S2-1-reading-reports');
         let foundIndex=false,foundHistory=false;
         if(v2){
-          const store=await caches.open('ai-daily-S1-4-reading-reports');
+          const store=await caches.open('ai-daily-S2-1-reading-reports');
           const index=await store.match('./reports/index.json');
           const history=await store.match('./reports/2026-10-01.json');
           foundIndex=!!index;
@@ -106,26 +110,26 @@ async function exercise(engine,type,legacyVersion){
       }
       await new Promise(resolve=>setTimeout(resolve,200));
     }
-    assert.ok(ready,engine+' V1/V2->S1 worker activation/migration incomplete: '+JSON.stringify(lastState));
+    assert.ok(ready,engine+' V1/V2->S2 worker activation/migration incomplete: '+JSON.stringify(lastState));
     const migrated=await page.evaluate(async()=>{
-      const cache=await caches.open('ai-daily-S1-4-reading-reports');
+      const cache=await caches.open('ai-daily-S2-1-reading-reports');
       const history=await cache.match('./reports/2026-10-01.json');
       return {history:history?await history.json():null, publicKeys:(await cache.keys()).map(key=>key.url),
               index:!!await cache.match('./reports/index.json'),keys:await caches.keys()};
     });
     assert.equal(migrated.history?.historicSentinel,true,engine+' lost public V1 history: '+JSON.stringify(migrated));
     const migratedV2=await page.evaluate(async()=>{
-      const store=await caches.open('ai-daily-S1-4-reading-reports');
+      const store=await caches.open('ai-daily-S2-1-reading-reports');
       const response=await store.match('./reports/2026-10-02.json');
       return response?await response.json():null;
     });
     assert.equal(migratedV2?.v2Sentinel,true,engine+' lost public V2 history');
     const repairedNine=await page.evaluate(async()=>{
-      const store=await caches.open('ai-daily-S1-4-reading-reports');
+      const store=await caches.open('ai-daily-S2-1-reading-reports');
       const response=await store.match('./reports/2026-10-09.json');
       return response?await response.json():null;
     });
-    assert.equal(repairedNine?.content_generation_profile,'source_outline_v2',engine+' retained old Oct9 repetition after upgrade');
+    assert.equal(repairedNine,null,engine+' retained a withdrawn Oct9 cache');
     assert.ok(!migrated.keys.includes('ai-daily-V2-stable-reading-reports'),
       engine+' did not retire V2 cache safely');
     assert.equal(migrated.index,true);
@@ -138,7 +142,7 @@ async function exercise(engine,type,legacyVersion){
       await response.json();
     },{date:LATEST,i});
     const variants=await page.evaluate(async date=>{
-      const cache=await caches.open('ai-daily-S1-4-reading-reports');
+      const cache=await caches.open('ai-daily-S2-1-reading-reports');
       return (await cache.keys()).filter(key=>key.url.includes('/'+date+'.json')).map(key=>key.url);
     },LATEST);
     assert.equal(variants.length,1);
@@ -152,27 +156,24 @@ async function exercise(engine,type,legacyVersion){
     assert.equal(cached.report.date,LATEST);
     const offlineNine=await page.evaluate(async()=>{
       const response=await fetch('./reports/2026-10-09.json?rev=offline');
-      return {status:response.status,report:await response.json()};
+      return {status:response.status};
     });
-    assert.equal(offlineNine.status,200);
-    assert.equal(offlineNine.report.content_generation_profile,'source_outline_v2');
+    assert.equal(offlineNine.status,410);
     if(CACHE_FIXTURE.practice_revision){
       await page.reload({waitUntil:'domcontentloaded'});
       await page.locator('#reader .word').first().waitFor();
-      assert.equal(await page.locator('#question-list input[type=radio]').first().isDisabled(),false,
-        engine+' regraded or locked the new question with an original answer');
       assert.equal(await page.locator('#question-list textarea').first().inputValue(),'',
         engine+' copied the original written answer into a changed question');
       for(const key of ['ai-daily-answers-v1','ai-daily-quiz-v6'])
         assert.equal(await page.evaluate(key=>localStorage.getItem(key),key),stored[key],engine+' discarded original answers');
     }
-    assert.equal(await page.locator('#site-version').innerText(),'S1');
+    assert.equal(await page.locator('#site-version').innerText(),'S2');
     assert.equal(errors.length,0,errors.join('\n'));
-    console.log(engine+' V1/V2 -> S1 PASS: public report migration, unchanged device/account/session/pending data, canonical refreshes, HTTP 503 fallback, subdirectory scope');
+    console.log(engine+' V1/V2 -> S2 PASS: public report migration, unchanged device/account/session/pending data, canonical refreshes, HTTP 503 fallback, subdirectory scope');
   }finally{
     await context?.close();await browser?.close();
     server.closeAllConnections?.();await new Promise(resolve=>server.close(resolve));
   }
 }
-(async()=>{for(const legacy of ['v1','v2','v3','s1-2','s1-3']){await exercise('Chromium '+legacy,chromium,legacy);await exercise('WebKit '+legacy,webkit,legacy);}})()
+(async()=>{for(const legacy of ['v1','v2','v3','s1-2','s1-3','s1-4']){await exercise('Chromium '+legacy,chromium,legacy);await exercise('WebKit '+legacy,webkit,legacy);}})()
   .catch(error=>{console.error(error);process.exitCode=1;});

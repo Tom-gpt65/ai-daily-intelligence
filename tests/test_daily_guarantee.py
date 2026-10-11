@@ -65,7 +65,7 @@ class DailyGuaranteeTests(unittest.TestCase):
         self.assertGreaterEqual(len(article_words(paragraphs)),450)
         self.assertTrue(complete({"essay":paragraphs,"dictionary":dictionary}))
 
-    def test_every_day_has_complete_1000_word_education_fallback(self):
+    def test_legacy_reserve_constructor_keeps_24_day_format_compatibility(self):
         first=datetime(2026,10,10,tzinfo=timezone.utc)
         fingerprints=set()
         for i in range(24):
@@ -114,9 +114,9 @@ class DailyGuaranteeTests(unittest.TestCase):
         # Critical incident regression: the day after a published news digest,
         # the very first item is legitimately a reading_feature. Test the
         # exact same validator used by the 07:40 news pipeline.
-        days=verify_future_publication("2026-10-10")
-        self.assertEqual(days,["2026-10-10","2026-10-11","2026-10-12",
-                               "2026-10-17","2026-11-09"])
+        days=verify_future_publication("2026-10-12")
+        self.assertEqual(days,["2026-10-12","2026-10-13","2026-10-14",
+                               "2026-10-19","2026-11-11"])
 
     def test_first_attempt_canary_never_fakes_news(self):
         day="2026-10-11"

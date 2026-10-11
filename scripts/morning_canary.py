@@ -35,7 +35,7 @@ def assert_valid_reserve(article: dict, day: str) -> None:
         raise ValueError("Canary date mismatch: " + day)
     if article.get("mode") != "reading_feature" or article.get("demo") is not False:
         raise ValueError("Canary reserve must be non-demo educational reading: " + day)
-    if article.get("stories") != [] or "Not today's AI news" not in article.get("subtitle", ""):
+    if article.get("stories") != [] or not any(label in article.get('subtitle','') for label in ("Not today's AI news",'Not current news')):
         raise ValueError("Canary reserve falsely presented as current news: " + day)
     items = article.get("practice", {}).get("items", [])
     if len(items) != 7 or article.get("practice", {}).get("official") is not False:
@@ -80,9 +80,16 @@ def test_future_publication(first_day: str) -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--first-day", default=datetime.now(HK).date().isoformat())
+    parser.add_argument("--first-day", default=None)
     args = parser.parse_args()
-    checked = test_future_publication(args.first_day)
+    first_day=args.first_day or max('2026-10-12',datetime.now(HK).date().isoformat())
+    from s1_simulation import simulate
+    rows=simulate(first_day,canary_sources)
+    if args.first_day is None and rows[0]['morning_reading_date'] is None:
+        raise ValueError('Morning readiness failed: no accepted 07:05 reserve or archived reading for '+first_day)
+    origin=datetime.fromisoformat(first_day).date()
+    checked=[r['date'] for r in rows if (datetime.fromisoformat(r['date']).date()-origin).days in {0,1,2,7,30}]
+    print('07:05 simulated reading dates:',[(r['date'],r['morning_reading_date']) for r in rows])
     print("PASS: sequential future days, strict originality and honest archived fallback "
           "-> late recovery without downgrade; no network or production writes.")
     print("PASS: production validator accepted reading states for dates: " + ", ".join(checked))

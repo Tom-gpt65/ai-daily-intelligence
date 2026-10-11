@@ -119,22 +119,22 @@ class S1SafetyTests(unittest.TestCase):
                 self.assertEqual(path.read_text(encoding='utf-8'),body)
 
     def test_public_status_cannot_hide_new_failure(self):
-        report=json.loads((ROOT/'site/reports/2026-10-10.json').read_text(encoding='utf-8'))
-        rows=json.loads((ROOT/'site/reports/index.json').read_text(encoding='utf-8'))
-        accepted=publication_outcome(rows,report,'2026-10-10')
+        report=None
+        rows=[]
+        accepted=publication_outcome(rows,report,'2026-10-11',withdrawn=True)
         release=json.loads((ROOT/'site/release.json').read_text(encoding='utf-8'))
-        get=lambda path:(ROOT/'site'/path).read_bytes()
+        get=lambda path:b'[]' if path=='reports/index.json' else (ROOT/'site'/path).read_bytes()
         with self.assertRaisesRegex(ValueError,'Public failure/backup status'):
             verify_live(accepted,release,get,expected_status={'state':'feed_error'})
 
     def test_broken_news_questions_do_not_block_valid_backup(self):
-        news=json.loads((ROOT/'site/reports/2026-10-10.json').read_text(encoding='utf-8'))
+        news=json.loads((ROOT/'content-history/retired/2026-10-10.json').read_text(encoding='utf-8'))
         news['practice']['items'][0]['evidence_quote']='A claim absent from the source paragraph.'
         backup=reading_backup.build_reading('2026-10-10')
         self.assertIs(select_edition(news,backup),backup)
 
     def test_archived_news_cannot_be_current_news(self):
-        report=json.loads((ROOT/'site/reports/2026-10-10.json').read_text(encoding='utf-8'))
+        report=json.loads((ROOT/'content-history/retired/2026-10-10.json').read_text(encoding='utf-8'))
         row={key:report[key] for key in ('date','mode','word_count','updated_at')};row['stories']=len(report['stories'])
         state=publication_outcome([row],report,'2026-10-11',allow_archived=True)
         self.assertFalse(state['news']);self.assertEqual(state['backup'],'archived_reading')
@@ -145,15 +145,18 @@ class S1SafetyTests(unittest.TestCase):
             with self.subTest(path=name):
                 # Windows Git checkout may expand LF into CRLF; compare the
                 # canonical Git text bytes without changing the protected file.
-                self.assertEqual(hashlib.sha256((ROOT/name).read_bytes().replace(b'\r\n',b'\n')).hexdigest(),digest)
+                relocated={'site/reports/2026-10-08.json':'content-history/retired/2026-10-08.json',
+                           'site/reports/archive-revisions/s1-original/2026-10-09.json':'content-history/retired/2026-10-09-original.json',
+                           'site/reports/archive-revisions/s1-original/2026-10-10.json':'content-history/retired/2026-10-10-original.json'}
+                self.assertEqual(hashlib.sha256((ROOT/relocated.get(name,name)).read_bytes().replace(b'\r\n',b'\n')).hexdigest(),digest)
 
     def test_release_cache_and_strict_novelty_policy_agree(self):
         release=json.loads((ROOT/'site/release.json').read_text(encoding='utf-8'))
-        self.assertEqual(release['version'],'S1')
+        self.assertEqual(release['version'],'S2')
         self.assertEqual(release['originality'],{'phrase_words':5,'lookback_days':60,'max_overlap_exclusive':0.16})
         html=(ROOT/'site/index.html').read_text(encoding='utf-8')
         worker=(ROOT/'site/sw.js').read_text(encoding='utf-8')
-        self.assertIn('>S1<',html);self.assertIn(release['cache_namespace'],worker)
+        self.assertIn('>S2<',html);self.assertIn(release['cache_namespace'],worker)
 
     def test_publishing_workflows_queue_and_history_is_read_only(self):
         for name in ('verify-pages.yml','cloud-live-check.yml'):

@@ -25,11 +25,11 @@ from morning_canary import canary_sources
 
 
 def current(day):
-    return json.loads((ROOT/'site/reports'/(day+'.json')).read_text('utf-8'))
+    return json.loads((ROOT/'content-history/retired'/(day+'.json')).read_text('utf-8'))
 
 
 def original(day):
-    return json.loads((ROOT/'site/reports/archive-revisions/s1-original'/(day+'.json')).read_text('utf-8'))
+    return json.loads((ROOT/'content-history/retired'/(day+'-original.json')).read_text('utf-8'))
 
 
 class ContentRepairTests(unittest.TestCase):
@@ -152,7 +152,8 @@ class ContentRepairTests(unittest.TestCase):
     def test_code_deploy_after_midnight_cannot_claim_historical_news_is_current(self):
         import verify_publication
         report=current('2026-10-10')
-        rows=json.loads((ROOT/'site/reports/index.json').read_text('utf-8'))
+        from history_support import row
+        rows=[row(report)]
         output=io.StringIO()
         with patch.object(verify_publication,'read_local',return_value=(rows,report)),patch.object(verify_publication,'datetime') as clock,patch.object(sys,'argv',['verify_publication.py']),contextlib.redirect_stdout(output):
             clock.now.return_value=datetime.fromisoformat('2026-10-11T00:01:00+08:00')
@@ -164,8 +165,9 @@ class ContentRepairTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             target=Path(folder)
             shutil.copytree(ROOT/'site',target/'site')
+            shutil.copytree(ROOT/'content-history',target/'content-history')
             (target/'docs').mkdir()
-            paths=[target/'site/reports'/(day+'.json') for day in ('2026-10-09','2026-10-10','index')]
+            paths=[target/'content-history/retired'/(day+'.json') for day in ('2026-10-09','2026-10-10')]+[target/'site/reports/index.json']
             before={p:p.read_bytes() for p in paths}
             with patch.object(build,'build_live',return_value=False):
                 with self.assertRaises(ValueError):

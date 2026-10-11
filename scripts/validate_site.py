@@ -31,8 +31,8 @@ def validate() -> list[str]:
     app = (SITE / "app.js").read_text(encoding="utf-8")
     worker = (SITE / "sw.js").read_text(encoding="utf-8")
     release=json.loads((SITE/"release.json").read_text(encoding="utf-8"))
-    if (release.get("version")!="S1" or ">S1<" not in markup
-            or release.get("cache_namespace")!="ai-daily-S1-4-reading"
+    if (release.get("version")!="S2" or ">S2<" not in markup
+            or release.get("cache_namespace")!="ai-daily-S2-1-reading"
             or release["cache_namespace"] not in worker):
         errors.append("Public release and PWA cache version disagree")
     for name in ("app.js","cloud-sync.js","v1.css","reading-theme-v1.css"):
@@ -59,8 +59,24 @@ def validate() -> list[str]:
     if manifest.get('display')!='standalone':
         errors.append("PWA must be standalone")
     index=json.loads((SITE/'reports'/'index.json').read_text(encoding='utf-8'))
-    if not isinstance(index,list) or not index:
+    if not isinstance(index,list):
         return errors+['Missing or invalid reports/index.json']
+    removed = set(release.get('removed_dates', []))
+    from content_novelty import verified_retired_history
+    try:
+        verified_retired_history(SITE/'reports')
+    except (OSError,ValueError,TypeError) as exc:
+        errors.append(str(exc))
+    if removed != {'2026-10-08','2026-10-09','2026-10-10','2026-10-11'}:
+        errors.append('S2 withdrawal manifest differs from the authorised dates')
+    for day in removed:
+        if list((SITE/'reports').rglob(day+'.json')):
+            errors.append('Withdrawn edition remains in public Pages tree: '+day)
+    if not index:
+        status = json.loads((SITE/'system-status.json').read_text('utf-8'))
+        if status.get('withdrawal',{}).get('dates') != sorted(removed):
+            errors.append('Empty public index lacks explicit withdrawal status')
+        return errors
     try:
         dates=[item['date'] for item in index]
     except (KeyError,TypeError):
@@ -69,6 +85,8 @@ def validate() -> list[str]:
         errors.append('Report index dates must be unique, newest first')
     for i,item in enumerate(index):
         date=item['date']
+        if date in removed:
+            errors.append('Withdrawn edition reintroduced in public index: '+date)
         try:
             if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",date):raise ValueError("Unsafe date")
             calendar_date.fromisoformat(date)

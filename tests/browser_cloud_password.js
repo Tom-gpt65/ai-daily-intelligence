@@ -104,7 +104,8 @@ async function awaitCount(page,n){
       // Create a local-only word and ensure explicit migration is still required.
       await a.locator('[data-view="today"]').click();
       await a.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:15000});
-      await a.locator('#reader .word').filter({hasText:/^evidence$/i}).first().click();
+      await a.locator('#reader .word').first().click();
+      const selectedWord=(await a.locator('#lookup-word').innerText()).trim().toLowerCase();
       await a.locator('#save-word').click();
       await a.locator('#pop-close').click();
       await a.locator('[data-view="words"]').click();
@@ -124,7 +125,7 @@ async function awaitCount(page,n){
       await signIn(b,'one@example.com',PASSWORD);
       await b.locator('#sync-account').waitFor({state:'visible',timeout:15000});
       await awaitCount(b,1);
-      await b.locator('#word-list .word-card').filter({hasText:'evidence'}).getByRole('button',{name:'移除'}).click();
+      await b.locator('#word-list .word-card').filter({hasText:selectedWord}).getByRole('button',{name:'移除'}).click();
       await awaitCount(b,0);
       await b.waitForFunction(()=>document.querySelector('#sync-status')?.textContent.includes('同步完成'),null,{timeout:15000});
       await a.locator('#sync-now').click();

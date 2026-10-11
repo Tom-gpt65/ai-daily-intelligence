@@ -1,5 +1,5 @@
 """Regression of the actual Oct11 rejection, alternative events and model safety."""
-import copy,json,shutil,sys,tempfile,unittest
+import copy,json,re,shutil,sys,tempfile,unittest
 from datetime import datetime,timedelta
 from pathlib import Path
 from unittest.mock import patch
@@ -50,7 +50,9 @@ class SourceGenerationTests(unittest.TestCase):
 
     def test_history_reuse_is_excluded_before_generating_more_padding(self):
         shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
-        old=json.loads((self.reports/'2026-10-09.json').read_text('utf-8'))
+        from history_support import seed_corpus
+        seed_corpus(self.reports)
+        old=json.loads((ROOT/'content-history/retired/2026-10-09.json').read_text('utf-8'))
         pool=copy.deepcopy(old['stories'])
         for s in pool:s['published']=self.now.isoformat();s['url']+='?attempt=again'
         health={};chosen=select(pool,self.now,self.reports,health)
@@ -67,7 +69,9 @@ class SourceGenerationTests(unittest.TestCase):
 
     def test_rewritten_headline_cannot_make_an_old_source_url_fresh(self):
         shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
-        old=json.loads((self.reports/'2026-10-09.json').read_text('utf-8'))
+        from history_support import seed_corpus
+        seed_corpus(self.reports)
+        old=json.loads((ROOT/'content-history/retired/2026-10-09.json').read_text('utf-8'))
         pool=copy.deepcopy(old['stories'])
         for i,s in enumerate(pool):
             s['published']=self.now.isoformat()
@@ -79,7 +83,9 @@ class SourceGenerationTests(unittest.TestCase):
 
     def test_identical_title_at_changed_url_is_also_reissued(self):
         shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
-        pool=copy.deepcopy(json.loads((self.reports/'2026-10-09.json').read_text('utf-8'))['stories'])
+        from history_support import seed_corpus
+        seed_corpus(self.reports)
+        pool=copy.deepcopy(json.loads((ROOT/'content-history/retired/2026-10-09.json').read_text('utf-8'))['stories'])
         for i,s in enumerate(pool):
             s['published']=self.now.isoformat();s['url']=f'https://example.com/new-article-{i}'
         health={}
@@ -215,6 +221,24 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertEqual(caught.exception.code,'incomplete_analysis_response')
         self.assertEqual(caught.exception.response,'unfinished draft')
 
+    def test_natural_decoder_does_not_weaken_the_final_safety_contract(self):
+        sources,plan=self.plan()
+        original=source_analysis.schema(sources)
+        native=source_analysis.decoding_schema(original)
+        guided=native['properties']['introduction']['items']['pattern']
+        self.assertEqual(guided,source_analysis.NATIVE_SENTENCE_PATTERN)
+        self.assertNotEqual(guided,source_analysis.SENTENCE_PATTERN)
+        self.assertIsNotNone(re.fullmatch(guided,plan['introduction'][0]))
+        self.assertIsNone(re.fullmatch(guided,'such as a frequency of interactions and the perceived value of the service,'))
+        self.assertIsNone(re.fullmatch(guided,'Alternatively, the company might genuinely aim to protect user information.'))
+        self.assertIsNone(re.fullmatch(guided,plan['introduction'][0].replace('A reader','Artists')))
+        self.assertEqual(native['properties']['sections']['maxItems'],len(sources))
+        self.assertIn('pattern',original['properties']['introduction']['items'])
+        self.assertEqual(source_analysis.plan_issues(plan,sources),[])
+        unsafe=copy.deepcopy(plan);unsafe['sections'][0]['analysis'][0]='Microsoft announced a successful experiment and confirmed its actual outcome for readers.'
+        self.assertIn('non_hypothetical_analysis_sentence',source_analysis.plan_issues(unsafe,sources))
+        self.assertIn('unsupported_analysis_name',source_analysis.plan_issues(unsafe,sources))
+
     def test_model_receives_focused_anonymised_context_without_past_or_other_sources(self):
         sources,plan=self.plan()
         sources[0]['excerpt']+=' ConfidentialBrand secretly bought an unrelated company.'
@@ -278,6 +302,8 @@ class SourceGenerationTests(unittest.TestCase):
 
     def test_failed_model_cannot_mutate_published_articles(self):
         shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
+        from history_support import seed_corpus
+        seed_corpus(self.reports)
         before={str(p.relative_to(self.reports)):p.read_bytes() for p in self.reports.rglob('*.json')}
         with patch.object(build,'REPORTS',self.reports),patch.object(build,'STATUS_PATH',Path(self.temp.name)/'status.json'),patch.dict('os.environ',{'ANALYSIS_ENABLED':'1'}),patch.object(source_analysis,'request_plan',side_effect=OSError('runtime offline')):
             self.assertFalse(build.build_live(self.now,None,sources=self.snapshot['stories']))
@@ -288,6 +314,8 @@ class SourceGenerationTests(unittest.TestCase):
 
     def test_rejected_model_output_is_preserved_without_publishing(self):
         shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
+        from history_support import seed_corpus
+        seed_corpus(self.reports)
         before={str(p.relative_to(self.reports)):p.read_bytes() for p in self.reports.rglob('*.json')}
         rejected={'unqualified':'exact model response'}
         with patch.object(build,'ROOT',Path(self.temp.name)),patch.object(build,'REPORTS',self.reports),patch.object(build,'STATUS_PATH',Path(self.temp.name)/'status.json'),patch.dict('os.environ',{'ANALYSIS_ENABLED':'1','GENERATION_EVIDENCE':'1'}),patch.object(source_analysis,'generate',return_value=rejected):

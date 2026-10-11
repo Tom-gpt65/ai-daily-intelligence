@@ -12,7 +12,7 @@ from reading_backup import build_reading
 
 class DseStudentTests(unittest.TestCase):
     def setUp(self):
-        self.sources=json.loads((ROOT/'site/reports/2026-10-09.json').read_text('utf-8'))['stories']
+        self.sources=json.loads((ROOT/'content-history/retired/2026-10-09.json').read_text('utf-8'))['stories']
     def test_fallback_has_no_repetitive_attribution_openings(self):
         paragraphs=dse_editorial.compose_briefing(self.sources)
         self.assertFalse(any(p.startswith("According to") for p in paragraphs))
@@ -60,7 +60,7 @@ class DseStudentTests(unittest.TestCase):
         self.assertIsInstance(sources,list)
         if report["mode"]=="reading_feature":
             self.assertEqual(sources,[],"Fallback may not imply current source reporting")
-            self.assertIn("Not today's AI news",report.get("subtitle",""))
+            self.assertTrue(any(label in report.get('subtitle','') for label in ("Not today's AI news",'Not current news')))
             self.assertTrue(report.get("processing",{}).get("backup_reading"),
                             "Fallback must be identified as an educational reserve")
         else:
@@ -71,9 +71,11 @@ class DseStudentTests(unittest.TestCase):
 
     def test_public_article_is_educational_not_certified(self):
         index=json.loads((ROOT/"site/reports/index.json").read_text(encoding="utf-8"))
-        report=json.loads((ROOT/"site/reports"/(index[0]["date"]+".json")).read_text(encoding="utf-8"))
-        self.assertEqual(report["date"],index[0]["date"])
-        self.assertEqual(report["mode"],index[0]["mode"])
+        from history_support import all_readings
+        report=all_readings()[0]
+        if index:
+            self.assertEqual(report["date"],index[0]["date"])
+            self.assertEqual(report["mode"],index[0]["mode"])
         self.assert_valid_educational_article(report)
 
     def test_morning_fallback_does_not_block_later_news_generation(self):

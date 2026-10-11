@@ -1,0 +1,32 @@
+{
+  "dates": [
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-10",
+    "2026-10-11"
+  ],
+  "files": {
+    "site/reports/2026-10-08.json": {
+      "backup": "content-history/retired/2026-10-08.json",
+      "sha256": "ff908c9a3e23515380b2080e0f6164475316bdf19d0b73baf269d7428db61ade"
+    },
+    "site/reports/2026-10-09.json": {
+      "backup": "content-history/retired/2026-10-09.json",
+      "sha256": "dfe28a540e1bda64c81ac4be7f6f5689db198e1c12d8dd19e677c572e7c29cf6"
+    },
+    "site/reports/archive-revisions/s1-original/2026-10-09.json": {
+      "backup": "content-history/retired/2026-10-09-original.json",
+      "sha256": "30951062d27a08b6f4760d5284c940f6ef47321e293a12429fee44bb4f3560ec"
+    },
+    "site/reports/2026-10-10.json": {
+      "backup": "content-history/retired/2026-10-10.json",
+      "sha256": "ace8dbabeee22ded85a500119029923607686ca5522542c0d9b588dac5b70417"
+    },
+    "site/reports/archive-revisions/s1-original/2026-10-10.json": {
+      "backup": "content-history/retired/2026-10-10-original.json",
+      "sha256": "b5cac5d4bbdcf0db89a58f73abfae6f515cb9e6f77c7c909c37d368e432eee37"
+    }
+  },
+  "reason": "User requested removal from the public website; original dates and prose retained for strict novelty checks.",
+  "no_published_edition_on_2026_10_11": true
+}

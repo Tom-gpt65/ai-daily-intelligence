@@ -1,129 +1,145 @@
 {
   "schema": 1,
-  "checked_at": "2026-10-11T19:35:52.583676+08:00",
-  "state": "editorial_quality_rejected",
-  "source_count": 3,
-  "failure_reason": "No candidate passed source analysis, quality and strict originality",
-  "generation_issues": [
-    "invalid_analysis_sentence_length"
-  ],
-  "novelty_issues": [],
-  "quality_issues": [
-    "invalid_analysis_sentence_length"
-  ],
-  "analysis_attempts": [
-    {
-      "attempt": 1,
-      "issues": [
-        "invalid_analysis_sentence_length"
-      ]
-    },
-    {
-      "attempt": 2,
-      "issues": [
-        "invalid_analysis_sentence_length"
-      ]
-    }
-  ],
-  "feeds_total": 6,
-  "feeds_ok": 6,
-  "feeds_failed": 0,
-  "entries_seen": 110,
-  "entries_relevant": 9,
-  "feed_failures": [],
-  "event_clusters": 9,
-  "multi_source_events": 0,
-  "rss_duration_seconds": 0.36,
-  "stories_selected": 3,
-  "candidate_pool_count": 9,
-  "selection_rejections": [
-    {
-      "title": "AI agent makers are promising privacy — will they deliver?",
-      "url": "https://www.theverge.com/ai-artificial-intelligence/1009051/privacy-ai-agent-promises-openai-meta-muse-dots",
-      "reason": "unsupported_legacy_context"
-    },
-    {
-      "title": "DistroKid has been quietly taking down songs in response to UMG lawsuit",
-      "url": "https://www.theverge.com/entertainment/1009309/distrokid-take-down-songs-umg-lawsuit",
-      "reason": "unsupported_legacy_context"
-    },
-    {
-      "title": "Learning to use local AI is exciting, overwhelming, and frustrating",
-      "url": "https://www.theverge.com/ai-artificial-intelligence/1008484/learning-local-ai-hermes-qwen-model-mac-studio-testing-diary-progress",
-      "reason": "unsupported_legacy_context"
-    },
-    {
-      "title": "Apple discloses deal to hire team and license tech from personalized podcast startup Huxe",
-      "url": "https://techcrunch.com/2026/10/10/apple-discloses-deal-to-hire-team-and-license-tech-from-personalized-podcast-startup-huxe/",
-      "reason": "unsupported_legacy_context"
-    },
-    {
-      "title": "Satya Nadella says we should assume all AI models are ‘compromised’",
-      "url": "https://www.theverge.com/ai-artificial-intelligence/1009337/satya-nadella-says-we-should-assume-all-ai-models-are-compromised",
-      "reason": "unsupported_legacy_context"
-    },
-    {
-      "title": "Microsoft’s Satya Nadella says AI models need an ‘emergency brake’",
-      "url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/",
-      "reason": "unsupported_legacy_context"
-    },
-    {
-      "title": "Anthropic is cutting off its internal evaluations from the internet",
-      "url": "https://www.theverge.com/ai-artificial-intelligence/1009286/anthropic-is-cutting-off-its-internal-evaluations-from-the-internet",
-      "reason": "unsupported_legacy_context"
-    },
-    {
-      "title": "Here are the top AI agents that can live in your text messages",
-      "url": "https://techcrunch.com/2026/10/10/all-the-ai-agents-that-can-live-in-your-text-messages/",
-      "reason": "unsupported_legacy_context"
-    },
-    {
-      "title": "Anthropic can’t reliably control its AI agents. It’s cutting off its internal evals from the live internet instead",
-      "url": "https://techcrunch.com/2026/10/09/anthropic-cant-reliably-control-its-ai-agents-its-cutting-off-its-internal-evals-from-the-live-internet-instead/",
-      "reason": "unsupported_legacy_context"
-    }
-  ],
-  "selection_path": "source_conditioned_analysis",
-  "selection_subsets_checked": 0,
-  "metadata_checked": 3,
-  "metadata_enriched": 0,
-  "selected_source_contexts": [
-    {
-      "id": "S1",
-      "title": "AI agent makers are promising privacy — will they deliver?",
-      "url": "https://www.theverge.com/ai-artificial-intelligence/1009051/privacy-ai-agent-promises-openai-meta-muse-dots",
-      "context": null
-    },
-    {
-      "id": "S2",
-      "title": "DistroKid has been quietly taking down songs in response to UMG lawsuit",
-      "url": "https://www.theverge.com/entertainment/1009309/distrokid-take-down-songs-umg-lawsuit",
-      "context": null
-    },
-    {
-      "id": "S3",
-      "title": "Here are the top AI agents that can live in your text messages",
-      "url": "https://techcrunch.com/2026/10/10/all-the-ai-agents-that-can-live-in-your-text-messages/",
-      "context": null
-    }
-  ],
-  "latest_date": "2026-10-10",
-  "mode": "source_digest",
-  "backup": {
-    "kind": "archived_reading",
-    "date": "2026-10-10",
-    "requested_date": "2026-10-11",
-    "reason": "No reserve passed the strict 60-day <16% originality gate"
+  "checked_at": "2026-10-11T12:37:17.239511+00:00",
+  "state": "editions_withdrawn",
+  "latest_date": null,
+  "mode": "unavailable",
+  "withdrawal": {
+    "dates": [
+      "2026-10-08",
+      "2026-10-09",
+      "2026-10-10",
+      "2026-10-11"
+    ]
   },
-  "publication": {
-    "date": "2026-10-10",
+  "previous_failure": {
+    "schema": 1,
+    "checked_at": "2026-10-11T19:35:52.583676+08:00",
+    "state": "editorial_quality_rejected",
+    "source_count": 3,
+    "failure_reason": "No candidate passed source analysis, quality and strict originality",
+    "generation_issues": [
+      "invalid_analysis_sentence_length"
+    ],
+    "novelty_issues": [],
+    "quality_issues": [
+      "invalid_analysis_sentence_length"
+    ],
+    "analysis_attempts": [
+      {
+        "attempt": 1,
+        "issues": [
+          "invalid_analysis_sentence_length"
+        ]
+      },
+      {
+        "attempt": 2,
+        "issues": [
+          "invalid_analysis_sentence_length"
+        ]
+      }
+    ],
+    "feeds_total": 6,
+    "feeds_ok": 6,
+    "feeds_failed": 0,
+    "entries_seen": 110,
+    "entries_relevant": 9,
+    "feed_failures": [],
+    "event_clusters": 9,
+    "multi_source_events": 0,
+    "rss_duration_seconds": 0.36,
+    "stories_selected": 3,
+    "candidate_pool_count": 9,
+    "selection_rejections": [
+      {
+        "title": "AI agent makers are promising privacy — will they deliver?",
+        "url": "https://www.theverge.com/ai-artificial-intelligence/1009051/privacy-ai-agent-promises-openai-meta-muse-dots",
+        "reason": "unsupported_legacy_context"
+      },
+      {
+        "title": "DistroKid has been quietly taking down songs in response to UMG lawsuit",
+        "url": "https://www.theverge.com/entertainment/1009309/distrokid-take-down-songs-umg-lawsuit",
+        "reason": "unsupported_legacy_context"
+      },
+      {
+        "title": "Learning to use local AI is exciting, overwhelming, and frustrating",
+        "url": "https://www.theverge.com/ai-artificial-intelligence/1008484/learning-local-ai-hermes-qwen-model-mac-studio-testing-diary-progress",
+        "reason": "unsupported_legacy_context"
+      },
+      {
+        "title": "Apple discloses deal to hire team and license tech from personalized podcast startup Huxe",
+        "url": "https://techcrunch.com/2026/10/10/apple-discloses-deal-to-hire-team-and-license-tech-from-personalized-podcast-startup-huxe/",
+        "reason": "unsupported_legacy_context"
+      },
+      {
+        "title": "Satya Nadella says we should assume all AI models are ‘compromised’",
+        "url": "https://www.theverge.com/ai-artificial-intelligence/1009337/satya-nadella-says-we-should-assume-all-ai-models-are-compromised",
+        "reason": "unsupported_legacy_context"
+      },
+      {
+        "title": "Microsoft’s Satya Nadella says AI models need an ‘emergency brake’",
+        "url": "https://techcrunch.com/2026/10/10/microsofts-satya-nadella-says-ai-models-need-an-emergency-brake/",
+        "reason": "unsupported_legacy_context"
+      },
+      {
+        "title": "Anthropic is cutting off its internal evaluations from the internet",
+        "url": "https://www.theverge.com/ai-artificial-intelligence/1009286/anthropic-is-cutting-off-its-internal-evaluations-from-the-internet",
+        "reason": "unsupported_legacy_context"
+      },
+      {
+        "title": "Here are the top AI agents that can live in your text messages",
+        "url": "https://techcrunch.com/2026/10/10/all-the-ai-agents-that-can-live-in-your-text-messages/",
+        "reason": "unsupported_legacy_context"
+      },
+      {
+        "title": "Anthropic can’t reliably control its AI agents. It’s cutting off its internal evals from the live internet instead",
+        "url": "https://techcrunch.com/2026/10/09/anthropic-cant-reliably-control-its-ai-agents-its-cutting-off-its-internal-evals-from-the-live-internet-instead/",
+        "reason": "unsupported_legacy_context"
+      }
+    ],
+    "selection_path": "source_conditioned_analysis",
+    "selection_subsets_checked": 0,
+    "metadata_checked": 3,
+    "metadata_enriched": 0,
+    "selected_source_contexts": [
+      {
+        "id": "S1",
+        "title": "AI agent makers are promising privacy — will they deliver?",
+        "url": "https://www.theverge.com/ai-artificial-intelligence/1009051/privacy-ai-agent-promises-openai-meta-muse-dots",
+        "context": null
+      },
+      {
+        "id": "S2",
+        "title": "DistroKid has been quietly taking down songs in response to UMG lawsuit",
+        "url": "https://www.theverge.com/entertainment/1009309/distrokid-take-down-songs-umg-lawsuit",
+        "context": null
+      },
+      {
+        "id": "S3",
+        "title": "Here are the top AI agents that can live in your text messages",
+        "url": "https://techcrunch.com/2026/10/10/all-the-ai-agents-that-can-live-in-your-text-messages/",
+        "context": null
+      }
+    ],
+    "latest_date": "2026-10-10",
     "mode": "source_digest",
-    "updated_at": "2026-10-10T23:41:50.492761+08:00",
-    "news": false,
-    "offline_dictionary_complete": true,
-    "backup": "archived_reading",
-    "requested_date": "2026-10-11"
+    "backup": {
+      "kind": "archived_reading",
+      "date": "2026-10-10",
+      "requested_date": "2026-10-11",
+      "reason": "No reserve passed the strict 60-day <16% originality gate"
+    },
+    "publication": {
+      "date": "2026-10-10",
+      "mode": "source_digest",
+      "updated_at": "2026-10-10T23:41:50.492761+08:00",
+      "news": false,
+      "offline_dictionary_complete": true,
+      "backup": "archived_reading",
+      "requested_date": "2026-10-11"
+    },
+    "news_outcome": "archived_reading",
+    "workflow_run_url": "https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38135573990"
   },
-  "news_outcome": "archived_reading",
-  "workflow_run_url": "https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38135573990"
+  "news_outcome": "no_reading_available"
 }

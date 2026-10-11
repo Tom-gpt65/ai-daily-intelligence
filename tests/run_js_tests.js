@@ -6,7 +6,7 @@ const nodeTests=['cloud_sync_test.js','cloud_integration_test.js','cloud_passwor
   'cloud_account_race_test.js','reading_theme_tokens_v1.js','service_worker_v2_test.js'];
 const browserTests=['browser_regression_v7.js','status_regression_v8.js','browser_layout_v11.js',
   'browser_v12_layout.js','browser_cloud_sync.js','browser_cloud_email.js','browser_cloud_password.js',
-  'browser_reading_theme_v1.js','browser_pwa_offline_final.js','browser_v2_upgrade.js'];
+  'browser_reading_theme_v1.js','browser_pwa_offline_final.js','browser_v2_upgrade.js','browser_s2_safety.js'];
 async function run(file,syntax=false){
   await new Promise((resolve,reject)=>{
     const child=spawn(process.execPath,syntax?['--check',file]:[file],{cwd:root,stdio:'inherit'});
@@ -23,6 +23,8 @@ async function run(file,syntax=false){
       const site=path.join(root,'site');
       server=http.createServer((req,res)=>{
         const relative=decodeURIComponent(new URL(req.url,'http://localhost').pathname).replace(/^\//,'')||'index.html';
+        const fixture=require('./browser_fixture').body(relative);
+        if(fixture!==null){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'}).end(fixture);return;}
         const target=path.resolve(site,relative);
         if(!target.startsWith(site+path.sep)){res.writeHead(403).end();return;}
         const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript','.json':'application/json',

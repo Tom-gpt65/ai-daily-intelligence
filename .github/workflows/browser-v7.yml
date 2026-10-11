@@ -6,6 +6,9 @@ on:
     paths:
       - 'package*.json'
       - 'tests/run_js_tests.js'
+      - 'tests/browser_fixture.js'
+      - 'tests/browser_s2_safety.js'
+      - 'reading-reserve/**'
       - 'tests/fixtures/legacy-sw-*.js'
       - 'site/sw.js'
       - 'site/index.html'
@@ -31,6 +34,9 @@ on:
     paths:
       - 'package*.json'
       - 'tests/run_js_tests.js'
+      - 'tests/browser_fixture.js'
+      - 'tests/browser_s2_safety.js'
+      - 'reading-reserve/**'
       - 'tests/fixtures/legacy-sw-*.js'
       - 'site/release.json'
       - 'site/*glossary.json'
@@ -89,4 +95,4 @@ jobs:
         if: always()
         run: |
           echo "Mobile browser smoke: simulated iPhone widths in Chromium and WebKit." >> "$GITHUB_STEP_SUMMARY"
-          echo "Translation responses are mocked; this does not guarantee live provider capacity." >> "$GITHUB_STEP_SUMMARY"
+          echo "Bundled S2 translation and definitions are tested offline. External translation responses and cloud accounts are mocked; this does not verify provider capacity or real cross-device accounts." >> "$GITHUB_STEP_SUMMARY"

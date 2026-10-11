@@ -1,3 +1,4 @@
+const fixture=require('./browser_fixture');
 /* Real computed-style regression (not a palette mock), Chromium + WebKit.
  * Checks both modes, iPhone / iPad / desktop, word saving, accessible controls,
  * colour contrast, persisted theme, print colours and original reading layout.
@@ -67,7 +68,7 @@ async function inspect(page,label,mode,width){
   assert.ok(reader.lineHeight/reader.fontSize>=1.6,label+' inadequate body line spacing');
   assert.ok(line.width<=reader.width+2,label+' paragraph overflows reader');
   assert.ok(width<650||line.width<=760,label+' reading measure unexpectedly broad');
-  assert.equal(await page.locator('#site-version').innerText(),'S1',label+' release version changed');
+  assert.equal(await page.locator('#site-version').innerText(),'S2',label+' release version changed');
   const dimensions=await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,
     clientWidth:document.documentElement.clientWidth}));
   assert.ok(dimensions.scrollWidth<=dimensions.clientWidth+2,
@@ -97,6 +98,7 @@ async function inspect(page,label,mode,width){
     try{
       for(const width of [390,820,1440]){
         const context=await browser.newContext({viewport:{width,height:900},serviceWorkers:'block'});
+ await fixture.clock(context);
         await context.route('https://api.github.com/**',route=>route.fulfill({
           status:200,contentType:'application/json',
           headers:{'access-control-allow-origin':'*'},

@@ -1,4 +1,4 @@
-name: S1 maintenance — public PWA and cloud safety
+name: S2 maintenance — public PWA and cloud safety
 
 on:
   schedule:
@@ -30,8 +30,8 @@ jobs:
         if: failure()
         run: |
           {
-            echo '### V2 health check failed'
-            echo '- Follow the read-only troubleshooting steps in docs/V2_STABILITY.md.'
+            echo '### S2 health check failed'
+            echo '- Follow the preservation and failure guidance in README.md and docs/S2_RELEASE_AUDIT.md.'
             echo '- Check the morning audit and recovery workflow runs.'
             echo '- Do not delete Supabase users, overwrite the database, or clear iOS app storage.'
             echo '- The scheduled check does not contain any user passwords or private learning backups.'

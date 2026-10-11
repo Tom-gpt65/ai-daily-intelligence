@@ -52,6 +52,8 @@ jobs:
           node --check site/cloud-sync.js
           node --check site/sw.js
       - name: Ensure dated offline-complete educational passage
+        id: reading
+        continue-on-error: true
         run: python scripts/reading_backup.py --if-missing
       # Validate today's ACTUAL newly generated reserve, not just yesterday's
       # archive: prevents handing an invalid 07:05 state to the 07:40 job.
@@ -70,4 +72,9 @@ jobs:
         id: deploy
         uses: actions/deploy-pages@v4
       - name: Verify the accepted reading is actually public
-        run: python scripts/verify_publication.py --live
+        run: python scripts/verify_publication.py --live --require-reading
+      - name: Report failed preparation after publishing its honest status
+        if: steps.reading.outcome == 'failure'
+        run: |
+          echo "::error title=S2 reading preparation failed::No newly accepted prepared reading was available. Check the published status."
+          exit 1

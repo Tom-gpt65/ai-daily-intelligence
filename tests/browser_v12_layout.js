@@ -1,3 +1,4 @@
+const fixture=require('./browser_fixture');
 /* v12 layout regression: actual Chromium/WebKit viewport, reset and cache controls */
 const assert=require('node:assert/strict');
 const {chromium,webkit}=require('playwright');
@@ -11,12 +12,13 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
   try{
    for(const width of [375,768,1024]){
     const ctx=await browser.newContext({viewport:{width,height:900},isMobile:width<500,hasTouch:width<500});
+ await fixture.clock(ctx);
     try{
      const page=await ctx.newPage(),errors=[];
      page.on('pageerror',e=>errors.push(e.message));
      await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
-     assert.equal(await page.locator('#site-version').innerText(),'S1');
+     assert.equal(await page.locator('#site-version').innerText(),'S2');
      await page.locator('[data-view="words"]').click();
      if(cloudConfigured){
        await page.locator('#sync-login').waitFor({state:'visible',timeout:15000});
@@ -97,20 +99,20 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      // Archive regression: missing 8 October entry must open inside V2
      // without overwriting the current dated news report.
      await page.locator('[data-view="archive"]').click();
-     const history=page.locator('#archive-list .archive-card').filter({hasText:'8 October 2026'});
+     const history=page.locator('#archive-list .archive-card').filter({hasText:'7 October 2026'});
      await history.waitFor({state:'visible',timeout:8000});
      await history.click();
      // Today's backup can ALSO start with "AI literacy:"; wait for
      // the selected article DATE so this cannot pass before navigation.
-     await page.waitForFunction(()=>document.querySelector('#report-metadata')?.textContent?.includes('8 October 2026'),null,{timeout:12000});
-     assert.match(await page.locator('#report-metadata').innerText(),/8 October 2026/,'Historical reading did not open');
+     await page.waitForFunction(()=>document.querySelector('#report-metadata')?.textContent?.includes('7 October 2026'),null,{timeout:12000});
+     assert.match(await page.locator('#report-metadata').innerText(),/7 October 2026/,'Historical reading did not open');
      assert.ok(await page.locator('#freshness-note').isHidden(),'Historical reading should not claim the latest edition is missing');
      assert.match(await page.locator('#schedule-text').innerText(),/歷史文章/,'Historical reading must not be labelled as a failed daily schedule');
      // A Safari bfcache return checks freshness without redirecting a reader
      // away from an intentionally opened historical edition.
      await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));
      await page.waitForTimeout(350);
-     assert.match(await page.locator('#report-metadata').innerText(),/8 October 2026/,
+     assert.match(await page.locator('#report-metadata').innerText(),/7 October 2026/,
        'A background daily refresh must not interrupt historical reading');
      assert.ok(await page.locator('#reader .essay-paragraph').count()>=10,'Historical passage paragraphs missing');
      assert.ok(await page.locator('#question-list').count()===1,'Historical practice panel missing');
@@ -129,8 +131,8 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      await page.locator('#question-list .question-answer').first().fill('The author contrasts confidence with verifiable evidence.');
      let persisted=await page.evaluate(()=>({
        word:JSON.parse(localStorage.getItem('ai-daily-saved-v2')||'{}').evidence,
-       quiz:JSON.parse(localStorage.getItem('ai-daily-quiz-v6')||'{}')['2026-10-08-v7-Q1'],
-       writing:JSON.parse(localStorage.getItem('ai-daily-answers-v1')||'{}')['2026-10-08-v7-Q4']
+       quiz:JSON.parse(localStorage.getItem('ai-daily-quiz-v6')||'{}')['2026-10-07-v7-Q1'],
+       writing:JSON.parse(localStorage.getItem('ai-daily-answers-v1')||'{}')['2026-10-07-v7-Q4']
      }));
      assert.ok(persisted.word?.translation,'Saved vocabulary meaning was not persisted');
      assert.equal(persisted.quiz?.selected,0,'Multiple-choice answer was not persisted');
@@ -139,12 +141,12 @@ const cloudConfigured=Boolean(cloudConfig.supabase_url&&cloudConfig.anon_key);
      await page.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:20000});
      persisted=await page.evaluate(()=>({
        word:JSON.parse(localStorage.getItem('ai-daily-saved-v2')||'{}').evidence,
-       quiz:JSON.parse(localStorage.getItem('ai-daily-quiz-v6')||'{}')['2026-10-08-v7-Q1'],
-       writing:JSON.parse(localStorage.getItem('ai-daily-answers-v1')||'{}')['2026-10-08-v7-Q4']
+       quiz:JSON.parse(localStorage.getItem('ai-daily-quiz-v6')||'{}')['2026-10-07-v7-Q1'],
+       writing:JSON.parse(localStorage.getItem('ai-daily-answers-v1')||'{}')['2026-10-07-v7-Q4']
      }));
      assert.ok(persisted.word?.translation && persisted.quiz && persisted.writing,
        'A reload must not erase saved words or practice answers');
-     assert.equal(await page.locator('#site-version').innerText(),'S1','Routine archive testing must not change published V2 version');
+     assert.equal(await page.locator('#site-version').innerText(),'S2','Routine archive testing must not change published V2 version');
      const ui=await page.evaluate(()=>{
        const reader=document.querySelector('#reader');
        return {font:getComputedStyle(reader).fontFamily,

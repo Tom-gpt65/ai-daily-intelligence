@@ -1,3 +1,4 @@
+const fixture=require('./browser_fixture');
 /* Real browser-regression smoke test: iPhone-sized Chromium and WebKit.
  * Translation network is mocked here to test UI/consent/progress, not its
  * real-world provider quality; provider health is checked separately. */
@@ -12,6 +13,7 @@ const {chromium,webkit}=require('playwright');
   try{
    for(const width of [320,375,390,430]){
     const context=await instance.newContext({viewport:{width,height:860},isMobile:true,hasTouch:true,deviceScaleFactor:2});
+ await fixture.clock(context);
     const page=await context.newPage();
     const errors=[];
     page.on('pageerror',err=>errors.push(err.message));
@@ -70,10 +72,11 @@ const {chromium,webkit}=require('playwright');
      assert.ok(rect&&rect.x>=-2&&rect.x+rect.width<=width+2,engine+'/'+width+': dictionary outside viewport');
      await page.locator('#pop-close').click();
      const mc=page.locator('#question-list .question-item').filter({has:page.locator('input[type=radio]')}).first();
-     assert.ok((await mc.count())===1,engine+'/'+width+': no scored MC task');
+     if(await mc.count()){
      await mc.locator('input[type=radio]').first().check();
      await mc.locator('button.question-action').first().click();
      assert.ok(await mc.locator('input[type=radio]').first().isDisabled(),engine+'/'+width+': first-attempt not locked');
+     }else{assert.equal(await page.locator('#question-list textarea').count(),7,'S2 must retain seven honest written exercises');}
      const evidence=page.locator('#question-list .evidence-jump').first();
      await evidence.click();
      const isMarked=await page.locator('#reader .evidence-focus').count();
@@ -89,8 +92,10 @@ const {chromium,webkit}=require('playwright');
   const recoverContext=await instance.newContext({
     viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2
   });
+ await fixture.clock(recoverContext);
   try{
     const recoverPage=await recoverContext.newPage();
+    await fixture.legacyTranslation(recoverPage);
     recoverPage.on('dialog',dialog=>dialog.accept());
     let requests=0;
     await recoverPage.route('https://api.mymemory.translated.net/**',async route=>{
@@ -126,8 +131,10 @@ const {chromium,webkit}=require('playwright');
   const fullContext=await instance.newContext({
     viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2
   });
+ await fixture.clock(fullContext);
   try{
     const fullPage=await fullContext.newPage();
+    await fixture.legacyTranslation(fullPage);
     fullPage.on('dialog',dialog=>dialog.accept());
     let call=0;
     await fullPage.route('https://api.mymemory.translated.net/**',async route=>{

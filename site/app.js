@@ -2,6 +2,26 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
+  const REMOVED_DATES=new Set(['2026-10-08','2026-10-09','2026-10-10','2026-10-11']);
+  function visibleIndex(rows){
+    if(!Array.isArray(rows)||rows.length>400||!rows.every(x=>x&&/^\d{4}-\d{2}-\d{2}$/.test(x.date||'')))throw Error('日期索引無效');
+    return rows.filter(x=>!REMOVED_DATES.has(x.date)&&x.date<=hkDate());
+  }
+  function renderNoEdition(){
+    ++requestSerial;cancelArticleTranslation();state.report=null;state.showTranslation=false;
+    $('status-banner').classList.remove('hidden');$('status-banner').textContent='8–11 日文章已移除';
+    $('report-headline').textContent='S2 正在準備新一期閱讀';
+    $('report-subtitle').textContent='8–11 日文章已撤下；尚無可公開閱讀的新稿';
+    $('report-metadata').textContent='目前沒有文章';
+    $('freshness-note').classList.add('hidden');$('resume-reading').classList.add('hidden');
+    $('reading-state').textContent='';$('overview-stories').textContent='沒有可用文章';$('overview-vocab').textContent='—';
+    $('reading-quality').textContent='文章通過原創性、英文品質、翻譯、詞義與題目檢查後才會發布。';
+    closePopover();
+    $('reader').textContent='8–11 日文章已依要求從網站撤下。新一期文章通過完整品質檢查後才會提供；生字庫、私人帳戶及學習備份仍可使用。';
+    for(const id of ['source-list','question-list','vocab-spotlight','reader-navigator'])$(id)?.replaceChildren();
+    $('translate-toggle').disabled=true;
+    renderArchive();refreshDashboard();
+  }
   const state = { report: null, index: [], dictCache: new Map(), showTranslation: false, largeText: false, fontScale: 0, view: 'today', lookup: '' };
   const safeStorage = {
     get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } },
@@ -435,7 +455,12 @@
       if(state.report?.date&&state.index?.[0]?.date!==state.report.date)return;
       const el=$('pipeline-alert');
       el.classList.remove('pipeline-success');
-      if(info.state==='feed_error'){el.textContent='新聞來源目前無法讀取；沒有證據表示今天沒有重要新聞。請檢查網絡或 GitHub Actions。';el.classList.remove('hidden');}
+      if(info.state==='editions_withdrawn'){
+        el.textContent='8–11 日文章已撤下。'+(Array.isArray(info.prepared_dates)&&info.prepared_dates.length?'已驗證的下一期閱讀日期：'+info.prepared_dates.join('、')+'；預定香港時間 07:05 發布，仍取決於排程及網站服務。':'新一期閱讀尚待完整驗證。');
+        el.classList.remove('hidden');
+      }else if(info.state==='reading_preparation_failed'){
+        el.textContent='⚠ 本日新閱讀未能完成驗證或預先備妥。'+(state.report?'目前保留 '+state.report.date+' 的已驗證閱讀。':'暫時沒有可用文章。')+' 請查看生成與發布工作紀錄。';el.classList.remove('hidden');
+      }else if(info.state==='feed_error'){el.textContent='新聞來源目前無法讀取；沒有證據表示今天沒有重要新聞。請檢查網絡或 GitHub Actions。';el.classList.remove('hidden');}
       else if(info.state==='no_new_stories'){
         el.textContent='最後檢查：'+new Date(info.checked_at).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong'})+'。在可讀取的來源中未發現適合發布的新消息，現保留上一份報告。';
         el.classList.remove('hidden');
@@ -453,7 +478,7 @@
         el.textContent='⚠ 今日新閱讀未能通過嚴格原創性驗證，或歷史資料無法完整核對。現提供 '+(info.backup?.date||state.report?.date||'既有')+' 的留存閱讀，並非今日新聞或今日新稿。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='repetitive_content'){
-        el.textContent='⚠ 新聞來源已收集，但新文章與近期內容、開首或結論過於相似；S1 已拒絕重複稿件，保留已驗證的閱讀文章。';
+        el.textContent='⚠ 新聞來源已收集，但新文章與近期內容、開首或結論過於相似；S2 已拒絕重複稿件，保留已驗證的閱讀文章。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='incomplete_dictionary'){
         // A green Actions workflow can mean only that the dated reading
@@ -692,7 +717,11 @@
   }
   let translationConsent=false;
   let translationCancel=false;
+  let translationEpoch=0;
   const paragraphOpen=new Set();
+  function cancelArticleTranslation(){
+    translationEpoch++;translationBusy=false;translationCancel=false;paragraphOpen.clear();
+  }
   function validTranslations(english,translations){
     return Array.isArray(translations)&&translations.length===english.length&&translations.every(v=>typeof v==='string'&&/[\u3400-\u9fff]/.test(v));
   }
@@ -731,7 +760,7 @@
   function translatedChunkKey(report,index){
     return translationCacheKey(report)+'-chunks-'+index;
   }
-  async function resumeTranslationChunks(report,index){
+  async function resumeTranslationChunks(report,index,epoch=translationEpoch){
     // Cache is keyed by the complete article hash AND exact chunk text; a
     // re-edited passage cannot accidentally reuse a previous translation.
     const chunks=translationPieces(report.essay[index]);
@@ -741,7 +770,7 @@
       record.chunks.every((chunk,i)=>chunk===chunks[i]);
     const results=matches&&Array.isArray(record.results)?record.results.slice(0,chunks.length):[];
     for(let i=0;i<chunks.length;i++){
-      if(translationCancel)return null;
+      if(translationCancel||epoch!==translationEpoch)return null;
       if(typeof results[i]==='string'&&/[\u3400-\u9fff]/.test(results[i]))continue;
       const translated=await publicTranslationSegment(chunks[i]);
       results[i]=translated;
@@ -787,6 +816,7 @@
     const total=report.essay.length;
     button.textContent=translationBusy?'停止翻譯（已完成 '+partial+'/'+total+' 段）':
        state.showTranslation&&partial===total?'隱藏繁體中文譯文':
+       partial===total?'顯示離線繁體中文譯文':
        partial>0?'繼續翻譯全文（已完成 '+partial+'/'+total+' 段）':
        state.showTranslation?'重試全文翻譯（免費・需連線）':'翻譯全文（免費・需連線）';
     button.title='可先譯單一段落；全部翻譯會分段保存，失敗後可再嘗試。';
@@ -800,17 +830,18 @@
       renderReader();return;
     }
     if(!agreeToTranslation())return;
+    const epoch=translationEpoch;
     translationBusy=true;translationCancel=false;syncTranslationButton();
     try{
-      const translated=await resumeTranslationChunks(report,index);
-      if(!translationCancel&&translated){
+      const translated=await resumeTranslationChunks(report,index,epoch);
+      if(epoch===translationEpoch&&!translationCancel&&translated){
         partial[index]=translated;
         storeTranslationProgress(report,partial);
         paragraphOpen.add(index);
       }
     }catch(error){
       toast('翻譯未完成：'+String(error.message||error).slice(0,60));
-    }finally{translationBusy=false;translationCancel=false;renderReader();syncTranslationButton();}
+    }finally{if(epoch===translationEpoch){translationBusy=false;translationCancel=false;renderReader();syncTranslationButton();}}
   }
   async function toggleWholeTranslation(){
     const report=state.report;if(!report)return;
@@ -823,14 +854,15 @@
       state.showTranslation=true;renderReader();syncTranslationButton();return;
     }
     if(!agreeToTranslation())return;
+    const epoch=translationEpoch;
     translationBusy=true;translationCancel=false;
     state.showTranslation=true;syncTranslationButton();
     try{
       for(let i=0;i<report.essay.length;i++){
-        if(translationCancel)break;
+        if(translationCancel||epoch!==translationEpoch)break;
         if(partial[i])continue;
-        const translated=await resumeTranslationChunks(report,i);
-        if(translationCancel||!translated)break;
+        const translated=await resumeTranslationChunks(report,i,epoch);
+        if(epoch!==translationEpoch||translationCancel||!translated)break;
         partial[i]=translated;
         storeTranslationProgress(report,partial);
         paragraphOpen.add(i);
@@ -839,7 +871,7 @@
       }
     }catch(error){
       toast('暫停在已完成段落：'+String(error.message||error).slice(0,60));
-    }finally{translationBusy=false;translationCancel=false;renderReader();syncTranslationButton();}
+    }finally{if(epoch===translationEpoch){translationBusy=false;translationCancel=false;renderReader();syncTranslationButton();}}
   }
   function setModeBanner(mode){
     const el=$('status-banner'),notice=mode==='demo'||mode==='reading_feature';
@@ -1137,14 +1169,14 @@
   }
   async function loadReport(date){
     const serial=++requestSerial;
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||REMOVED_DATES.has(date)||date>hkDate())return;
     try{
       const response=await fetchPublic(`./reports/${date}.json?rev=${Date.now()}`,{cache:'no-store'});
       if(!response.ok) throw new Error('missing report');
       if(response.headers.get('X-AI-Daily-Cache')==='offline')showConnectivity(true);
       const r=await response.json();if(!isValidReport(r,date))throw new Error('invalid report');
       if(serial!==requestSerial)return;
-      state.report=r;state.showTranslation=false;renderReport();setView('today');
+      cancelArticleTranslation();state.report=r;state.showTranslation=false;$('translate-toggle').disabled=false;renderReport();setView('today');
       if(state.index?.[0]?.date!==r.date)$('pipeline-alert').classList.add('hidden');
       if(state.index?.[0]?.date && state.index[0].date!==r.date){
         renderScheduleHealth();
@@ -1152,18 +1184,20 @@
     }catch{if(serial===requestSerial)toast('載入報告失敗，請檢查網絡或離線快取。');}
   }
   function isValidReport(r, date){
-    return r && r.date===date && ['demo','editorial','source_digest','reading_feature'].includes(r.mode) &&
+    return !REMOVED_DATES.has(date) && r && r.date===date && ['editorial','source_digest','reading_feature'].includes(r.mode) &&
       Array.isArray(r.essay) && r.essay.length>0 && r.essay.length<=15 &&
       r.essay.every(p=>typeof p==='string'&&p.length<=5000) &&
       Array.isArray(r.stories) && r.stories.length<=8 &&
       r.stories.every(s=>typeof s==='object' && ['http:','https:'].includes((()=>{try{return new URL(s.url).protocol;}catch{return ''}})()));
   }
+  let offlineCacheWarning=false;
   function showConnectivity(failed=false){
     const el=$('connection-alert');
     if(!el)return;
-    const offline=failed||!navigator.onLine;
+    const offline=failed||!navigator.onLine||offlineCacheWarning;
     el.classList.toggle('hidden',!offline);
-    el.textContent=!navigator.onLine?'目前離線。若已快取文章仍可閱讀；最新新聞及線上查字暫不可用。':'無法確認最新資料，可能正在使用瀏覽器快取。';
+    el.textContent=!navigator.onLine?'目前離線。若已快取文章仍可閱讀；最新新聞及線上查字暫不可用。':offlineCacheWarning?
+      '離線快取更新未完成，請保持連線並稍後更新網站。既有學習資料仍保留。':'無法確認最新資料，可能正在使用瀏覽器快取。';
   }
   function exportBriefing(){
     if(!state.report)return;
@@ -1216,8 +1250,8 @@
       const res=await fetchPublic('./reports/index.json?check='+Date.now(),{cache:'no-store'});
       if(!res.ok)throw Error('HTTP '+res.status);
       if(res.headers.get('X-AI-Daily-Cache')==='offline')showConnectivity(true);
-      const idx=await res.json();
-      if(!Array.isArray(idx)||!idx.length||!/^\d{4}-\d{2}-\d{2}$/.test(idx[0].date||''))throw Error('日期索引無效');
+      const idx=visibleIndex(await res.json());
+      if(!idx.length){state.index=idx;renderNoEdition();await Promise.allSettled([renderPipelineStatus(),renderScheduleHealth()]);return;}
       const next=idx[0].date;
       const top=idx[0];
       const isHistorical=Boolean(state.report?.date && state.index?.[0]?.date &&
@@ -1398,17 +1432,24 @@
     preloadOfflineGlossary();
     $('refresh-schedule').addEventListener('click',()=>refreshLatestReport({force:true}));
     if('serviceWorker' in navigator && location.protocol==='https:'){
-      navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{
-        const alert=$('connection-alert');alert.classList.remove('hidden');
-        alert.textContent='離線快取安裝未完成，請保持連線並稍後更新網站。既有學習資料仍保留。';
-      });
+      const warn=()=>{offlineCacheWarning=true;showConnectivity();};
+      navigator.serviceWorker.addEventListener('message',event=>{if(event.data?.type==='OFFLINE_CACHE_WARNING')warn();});
+      navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(registration=>{
+        const watch=()=>{
+          const installing=registration.installing;
+          if(!installing)return;
+          const check=()=>{if(installing.state==='redundant')warn();};
+          installing.addEventListener('statechange',check);check();
+        };
+        registration.addEventListener('updatefound',watch);watch();
+      }).catch(warn);
     }
     try{
       const response=await fetchPublic('./reports/index.json',{cache:'no-store'});if(!response.ok)throw new Error('No report index');
       if(response.headers.get('X-AI-Daily-Cache')==='offline')showConnectivity(true);
-      state.index=await response.json();if(!Array.isArray(state.index)||state.index.length>400||!state.index.every(x=>/^\d{4}-\d{2}-\d{2}$/.test(x.date||'')))throw new Error('Invalid index');
-      if(!state.index.length)throw new Error('Empty index');
-      await loadReport(state.index[0].date);
+      state.index=visibleIndex(await response.json());
+      if(!state.index.length)renderNoEdition();
+      else await loadReport(state.index[0].date);
       renderScheduleHealth();
     }catch{
       showConnectivity(true);

@@ -1,4 +1,4 @@
-name: S1 release contract and failure simulations
+name: S2 release contract and failure simulations
 
 on:
   pull_request:
@@ -35,5 +35,5 @@ jobs:
           python scripts/validate_site.py
       - name: Consecutive future mornings and year boundary
         run: |
-          python scripts/morning_canary.py --first-day 2026-10-11
+          python scripts/morning_canary.py --first-day 2026-10-12
           python scripts/morning_canary.py --first-day 2026-12-31

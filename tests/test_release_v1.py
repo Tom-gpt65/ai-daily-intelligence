@@ -9,14 +9,14 @@ class FirstReleaseTests(unittest.TestCase):
     def test_public_version_and_asset_cache(self):
         html=(SITE/"index.html").read_text(encoding="utf-8")
         worker=(SITE/"sw.js").read_text(encoding="utf-8")
-        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">S1',html)
-        self.assertIn('./v1.css?v=s1-4',html)
-        self.assertIn('./app.js?v=s1-4',html)
+        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">S2',html)
+        self.assertIn('./v1.css?v=s2-1',html)
+        self.assertIn('./app.js?v=s2-1',html)
         self.assertNotIn('v16.css',html)
-        self.assertIn("ai-daily-S1-4-reading",worker)
+        self.assertIn("ai-daily-S2-1-reading",worker)
         self.assertIn("'./v1.css'",worker)
         self.assertIn("'./reading-theme-v1.css'",worker)
-        self.assertIn('./reading-theme-v1.css?v=s1-4',html)
+        self.assertIn('./reading-theme-v1.css?v=s2-1',html)
         self.assertTrue((SITE/'reading-theme-v1.css').is_file())
         self.assertTrue((SITE/"v1.css").is_file())
         self.assertNotIn('id="reading-speed"',html)
@@ -32,7 +32,7 @@ class FirstReleaseTests(unittest.TestCase):
         self.assertIn("'/auth/v1/token?grant_type=password'",auth)
         self.assertIn("'/auth/v1/user'",auth)
         self.assertNotIn('localStorage.setItem(SESSION,JSON.stringify(password))',auth)
-        self.assertIn("./cloud-sync.js?v=s1-4",html)
+        self.assertIn("./cloud-sync.js?v=s2-1",html)
         self.assertIn("'./cloud-sync.js'",worker)
         settings=__import__("json").loads((SITE/"cloud-config.json").read_text(encoding="utf-8"))
         self.assertIsInstance(settings["supabase_url"],str)
@@ -53,9 +53,9 @@ class FirstReleaseTests(unittest.TestCase):
                     "ai-daily-answers-v1","ai-daily-learning-backup"):
             with self.subTest(key=key):
                 self.assertIn(key,app)
-    def test_current_docs_describe_s1_and_preserve_legacy_documents(self):
+    def test_current_docs_describe_s2_and_preserve_legacy_documents(self):
         readme=(ROOT/"README.md").read_text(encoding="utf-8")
-        self.assertIn("S1 正式版",readme)
+        self.assertIn("AI Daily Intelligence — S2",readme)
         self.assertIn("嚴格 <16%",readme)
         self.assertTrue((ROOT/"docs"/"S1_RELEASE_AUDIT.md").exists())
         self.assertIn("V1",readme)

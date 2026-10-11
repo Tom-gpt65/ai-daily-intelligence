@@ -1,4 +1,4 @@
-name: Historical reconstruction preview (preserves published articles)
+name: Historical preservation audit and legacy reconstruction preview
 
 on:
   workflow_dispatch:
@@ -15,12 +15,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Reconstruct only in a disposable preview copy
+      - name: Verify S2 protected withdrawal or reconstruct a legacy disposable preview
         run: python scripts/rebuild_v3_history.py
       - name: Retain generated preview for review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: historical-preview
-          path: .cache/history-preview/
+          path: |
+            .cache/history-preview/
+            content-history/retired/withdrawn-manifest.json
           if-no-files-found: warn

@@ -94,7 +94,8 @@ class DSEV7Tests(unittest.TestCase):
         self.assertFalse(any(x["type"]=="mc" for x in book["items"] if x["id"] in ("Q1","Q2","Q3")))
     def test_actual_published_article_generates_grounded_exercise(self):
         index=json.loads((ROOT/"site/reports/index.json").read_text(encoding="utf-8"))
-        report=json.loads((ROOT/"site/reports"/(index[0]["date"]+".json")).read_text(encoding="utf-8"))
+        from history_support import all_readings
+        report=all_readings()[0]
         book=make_exam(report["essay"],report["stories"],report["date"])
         self.assertEqual(7,len(book["items"]))
         self.assertTrue(any(item["type"]=="extended" for item in book["items"]))
