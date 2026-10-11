@@ -154,10 +154,29 @@ class SourceGenerationTests(unittest.TestCase):
         sources,plan=self.plan()
         sources[0]['excerpt']+=' ConfidentialBrand secretly bought an unrelated company.'
         prompts=[]
-        source_analysis.generate(sources,[{'essay':['Past confidential news narrative.']}],request=lambda prompt,schema:prompts.append(prompt) or plan)
+        def response(prompt,schema):
+            prompts.append(prompt)
+            if 'analysis' in schema['properties']:
+                sid=schema['properties']['id']['enum'][0]
+                return next(s for s in plan['sections'] if s['id']==sid)
+            return {'sentences':plan['introduction']}
+        produced=source_analysis.generate(sources,[{'essay':['Past confidential news narrative.']}],request=response)
+        self.assertEqual(produced['sections'],plan['sections'])
+        self.assertEqual(len(prompts),len(sources)+2)
         self.assertNotIn('ConfidentialBrand',prompts[0])
         self.assertNotIn('secretly bought an unrelated company',prompts[0])
         self.assertNotIn('Past confidential news narrative',prompts[0])
+        self.assertNotIn('SOURCE CONCEPT DATA: '+json.dumps(source_analysis.model_topic(sources[1],source_analysis.source_names(sources)),ensure_ascii=False),prompts[0])
+
+    def test_focused_generation_stops_on_overlong_part_without_splicing(self):
+        sources,plan=self.plan();calls=[]
+        invalid=copy.deepcopy(plan['sections'][0])
+        invalid['analysis'][0]='A reader could '+('consider ' * 60)+'evidence.'
+        with self.assertRaises(source_analysis.AnalysisResponseError) as caught:
+            source_analysis.generate(sources,[],request=lambda prompt,schema:calls.append(prompt) or invalid)
+        self.assertEqual(caught.exception.code,'invalid_analysis_sentence_length')
+        self.assertEqual(len(calls),1)
+        self.assertIn(invalid['analysis'][0],caught.exception.response)
 
     def test_topic_input_removes_possessive_brand_and_noisy_excerpt_words(self):
         sources,_=self.plan()
@@ -204,7 +223,7 @@ class SourceGenerationTests(unittest.TestCase):
         shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
         before={str(p.relative_to(self.reports)):p.read_bytes() for p in self.reports.rglob('*.json')}
         rejected={'unqualified':'exact model response'}
-        with patch.object(build,'ROOT',Path(self.temp.name)),patch.object(build,'REPORTS',self.reports),patch.object(build,'STATUS_PATH',Path(self.temp.name)/'status.json'),patch.dict('os.environ',{'ANALYSIS_ENABLED':'1','GENERATION_EVIDENCE':'1'}),patch.object(source_analysis,'request_plan',return_value=rejected):
+        with patch.object(build,'ROOT',Path(self.temp.name)),patch.object(build,'REPORTS',self.reports),patch.object(build,'STATUS_PATH',Path(self.temp.name)/'status.json'),patch.dict('os.environ',{'ANALYSIS_ENABLED':'1','GENERATION_EVIDENCE':'1'}),patch.object(source_analysis,'generate',return_value=rejected):
             self.assertFalse(build.build_live(self.now,None,sources=self.snapshot['stories']))
         captured=list((Path(self.temp.name)/'.cache/generation-drafts').glob('analysis-draft-*.json'))
         self.assertEqual(len(captured),2)

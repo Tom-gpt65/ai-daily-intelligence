@@ -24,9 +24,10 @@ def replay(snapshot_path,out):
         site=Path(directory)/'site';shutil.copytree(ROOT/'site',site)
         health={**snapshot['diagnostics'],'source_capture_at':snapshot['at']}
         original_request=source_analysis.request_plan
-        counts={'analysis-draft':0,'analysis-review':0}
+        original_generate=source_analysis.generate
+        counts={'analysis-draft':0,'analysis-review':0,'analysis-part':0}
         def captured_request(prompt,output_schema):
-            kind='analysis-review' if 'approved' in output_schema.get('properties',{}) else 'analysis-draft'
+            kind='analysis-review' if 'approved' in output_schema.get('properties',{}) else 'analysis-part'
             counts[kind]+=1
             try:
                 plan=original_request(prompt,output_schema)
@@ -35,9 +36,14 @@ def replay(snapshot_path,out):
                 raise
             build.atomic_json(out/(kind+'-'+str(counts[kind])+'.json'),plan)
             return plan
+        def captured_generate(*args,**kwargs):
+            plan=original_generate(*args,**kwargs)
+            counts['analysis-draft']+=1
+            build.atomic_json(out/('analysis-draft-'+str(counts['analysis-draft'])+'.json'),plan)
+            return plan
         with patch.object(build,'REPORTS',site/'reports'),patch.object(build,'STATUS_PATH',site/'system-status.json'),patch.object(validate_site,'SITE',site):
             sources=select(snapshot.get('pool',snapshot['stories']),now,build.REPORTS,health)
-            with patch.object(source_analysis,'request_plan',captured_request):
+            with patch.object(source_analysis,'request_plan',captured_request),patch.object(source_analysis,'generate',captured_generate):
                 passed=build.build_live(now,ROOT/'.cache/ecdict.csv',sources=sources,diagnostics=health)
             shutil.copy2(build.STATUS_PATH,out/'system-status.json')
             if not passed:
