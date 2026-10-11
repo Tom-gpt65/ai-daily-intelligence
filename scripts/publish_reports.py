@@ -28,9 +28,9 @@ def read_json(path, default):
     except (FileNotFoundError,ValueError):
         return default
 
-def read_index(path):
+def read_index(path, allow_empty=False):
     rows=json.loads(Path(path).read_text(encoding='utf-8'))
-    if (not isinstance(rows,list) or not rows or any(not isinstance(row,dict) or
+    if (not isinstance(rows,list) or (not rows and not allow_empty) or any(not isinstance(row,dict) or
             not re.fullmatch(r'\d{4}-\d{2}-\d{2}',str(row.get('date',''))) for row in rows)
             or len({row['date'] for row in rows})!=len(rows)):
         raise ValueError('Invalid history index; refusing to replace it')
@@ -62,10 +62,10 @@ def incoming_is_newer(existing, incoming):
     return proposed is not None and proposed>=previous
 
 
-def select_edition(existing, incoming):
+def select_edition(existing, incoming, reports=None):
     """A complete same-day news edition wins over an emergency reserve."""
     from edition_contract import issues as edition_issues
-    usable=bool(existing) and not edition_issues(existing)
+    usable=bool(existing) and not edition_issues(existing,reports=reports)
     preserve_news=(existing.get("mode") in ("editorial","source_digest")
                    and incoming.get("mode")=="reading_feature" and usable)
     return existing if usable and (preserve_news or not incoming_is_newer(existing,incoming)) else incoming
@@ -81,11 +81,17 @@ def reconcile_status(current,proposed,index,actual_report):
     previous_check=utc_instant(current.get('checked_at'))
     proposed_check=utc_instant(proposed.get('checked_at'))
     use_proposed=proposed_check and (previous_check is None or proposed_check>=previous_check)
-    info={**(proposed if use_proposed else current),'latest_date':index[0]['date'],'mode':index[0]['mode']}
+    info={**(proposed if use_proposed else current),'latest_date':index[0]['date'] if index else None,
+          'mode':index[0]['mode'] if index else 'unavailable'}
+    if not index:
+        from s2_reserve import release_for, WITHDRAWN
+        if release_for(REPORTS).get('removed_dates')!=WITHDRAWN:
+            raise ValueError('Empty publication lacks an authorised withdrawal')
+        info['withdrawal']={'dates':WITHDRAWN}
     checked=(proposed_check if use_proposed else previous_check) or datetime.now(timezone.utc)
-    accepted=publication_outcome(index,actual_report,checked.astimezone(HK).date().isoformat(),allow_archived=True)
+    accepted=publication_outcome(index,actual_report,checked.astimezone(HK).date().isoformat(),allow_archived=True,withdrawn=not index)
     info['publication']=accepted
-    info['news_outcome']='current_news_available' if accepted['news'] else 'archived_reading' if accepted.get('backup') else 'educational_fallback'
+    info['news_outcome']='no_reading_available' if not index else 'current_news_available' if accepted['news'] else 'archived_reading' if accepted.get('backup') else 'educational_fallback'
     if accepted.get('backup'):
         info['backup']={**info.get('backup',{}),'kind':'archived_reading','date':accepted['date'],'requested_date':accepted['requested_date']}
         if info.get('state')=='published':info['state']='reading_reserve_reused'
@@ -113,7 +119,8 @@ def publish(max_attempts=5):
         backup=Path(tmp)
         shutil.copytree(REPORTS,backup/"reports")
         status_backup=STATUS.read_bytes() if STATUS.exists() else b""
-        report_index=read_index(backup/"reports"/"index.json")
+        from s2_reserve import release_for
+        report_index=read_index(backup/"reports"/"index.json",allow_empty=release_for(REPORTS).get('version')=='S2')
         # Only replay the newly produced edition files and this run's status.
         # Never restore old copies of all reports over newer remote files.
         current_date=next(iter(generated_dates),None)
@@ -122,16 +129,18 @@ def publish(max_attempts=5):
         for attempt in range(1,max_attempts+1):
             git("fetch","origin","main")
             git("reset","--hard","origin/main")
-            remote=read_index(REPORTS/"index.json")
+            remote=read_index(REPORTS/"index.json",allow_empty=release_for(REPORTS).get('version')=='S2')
             REPORTS.mkdir(parents=True,exist_ok=True)
             # Do not regress a report already published for the same date:
             # last completed generation wins if it has a newer update timestamp.
             incoming=read_json(backup/"reports"/f"{current_date}.json",{}) if current_date else {}
+            if current_date in release_for(REPORTS).get('removed_dates',[]):
+                raise RuntimeError('Refusing to replay a withdrawn edition after a concurrent release')
             existing=read_json(REPORTS/f"{current_date}.json",{})
             # An already verified sourced news article outranks a later
             # emergency educational reserve for the same Hong Kong date.
             # Updating content in a slow retry must not downgrade the edition.
-            chosen=select_edition(existing,incoming) if current_date else {}
+            chosen=select_edition(existing,incoming,reports=REPORTS) if current_date else {}
             if not current_date or chosen is existing:
                 preserve_remote_status=True
             else:
@@ -163,7 +172,7 @@ def publish(max_attempts=5):
             # because the selected reading file did not change.
             proposed_status=json.loads(status_backup) if status_backup else {}
             current_status=read_json(STATUS,{})
-            actual_report=read_json(REPORTS/(combined[0]['date']+'.json'),{})
+            actual_report=read_json(REPORTS/(combined[0]['date']+'.json'),{}) if combined else None
             info=reconcile_status(current_status,proposed_status,combined,actual_report)
             STATUS.write_text(json.dumps(info,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
             # Fetch/reset may have brought new code, assets and glossary rules.
@@ -184,7 +193,7 @@ def publish(max_attempts=5):
             if not git("diff","--cached","--name-only").stdout.strip():
                 print("[publish] Already up to date")
                 return
-            git("commit","-m",f"Update AI daily edition/status {current_date or combined[0]['date']}")
+            git("commit","-m",f"Update AI daily edition/status {current_date or (combined[0]['date'] if combined else 'withdrawal')}")
             try:
                 git("push","origin","HEAD:main")
                 print(f"[publish] Updated {current_date} on attempt {attempt}")

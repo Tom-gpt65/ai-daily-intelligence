@@ -1,14 +1,16 @@
+const fixture=require('./browser_fixture');
 /* Layout, zoom and state-reset regression tests for real Chromium and WebKit. */
 const assert=require('node:assert/strict');
 const {chromium,webkit}=require('playwright');
 const fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..');
-const reportIndex=JSON.parse(fs.readFileSync(path.join(root,'site/reports/index.json'),'utf8'));
+const reportIndex=fixture.index();
 const date=reportIndex[0].date;
 let passes=0;
 async function check(engine,browser,width){
  const instance=await browser.launch({headless:true});
  const ctx=await instance.newContext({viewport:{width,height:844},isMobile:width<=430,hasTouch:width<=430,deviceScaleFactor:2,reducedMotion:'reduce'});
+ await fixture.clock(ctx);
  try{
   const page=await ctx.newPage();
   const failures=[];page.on('pageerror',e=>failures.push(e.message));
@@ -71,7 +73,7 @@ async function check(engine,browser,width){
  const sw=fs.readFileSync(path.join(root,'site/sw.js'),'utf8');
  assert.ok(sw.includes("boundedFetch(event.request,{cache:'no-cache'})"),'Service worker still serves stale CSS or JavaScript without first checking the network');
  assert.ok(sw.includes("url.search=''")&&sw.includes('dataKey(event.request)'),'Offline shell cache does not canonicalize version-busting queries');
- assert.ok(fs.readFileSync(path.join(root,'site/index.html'),'utf8').includes('app.js?v=s1-4'),
+ assert.ok(fs.readFileSync(path.join(root,'site/index.html'),'utf8').includes('app.js?v=s2-1'),
    'HTML does not break old iPhone JavaScript URL');
  console.log('RESULT:',passes,'/ 10 responsive browser layouts plus PWA freshness invariants passed');
 })().catch(e=>{console.error(e);process.exit(1)});

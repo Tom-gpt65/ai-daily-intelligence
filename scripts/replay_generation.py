@@ -21,7 +21,11 @@ def replay(snapshot_path,out):
         raise ValueError('Replay capture must be from the current Hong Kong day')
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='source-analysis-replay-') as directory:
-        site=Path(directory)/'site';shutil.copytree(ROOT/'site',site)
+        sandbox=Path(directory)
+        site=sandbox/'site';shutil.copytree(ROOT/'site',site)
+        shutil.copytree(ROOT/'content-history',sandbox/'content-history')
+        if (ROOT/'reading-reserve').exists():
+            shutil.copytree(ROOT/'reading-reserve',sandbox/'reading-reserve')
         health={**snapshot['diagnostics'],'source_capture_at':snapshot['at']}
         original_request=source_analysis.request_plan
         original_generate=source_analysis.generate

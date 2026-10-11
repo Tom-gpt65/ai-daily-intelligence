@@ -15,7 +15,7 @@ from morning_canary import canary_sources
 
 
 def prior(day):
-    return json.loads((ROOT/"site/reports"/(day+".json")).read_text(encoding="utf-8"))
+    return json.loads((ROOT/"content-history/retired"/(day+".json")).read_text(encoding="utf-8"))
 
 
 def legacy_duplicate(day):
@@ -92,13 +92,14 @@ class V3OriginalityTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="v3-cross-day-") as name:
             dest=Path(name)/"site"
             shutil.copytree(ROOT/"site",dest)
+            shutil.copytree(ROOT/'content-history',Path(name)/'content-history')
             saved=(build.REPORTS,build.STATUS_PATH,validate_site.SITE)
             try:
                 build.REPORTS=dest/"reports"
                 build.STATUS_PATH=dest/"system-status.json"
                 validate_site.SITE=dest
                 reports=[]
-                for number,day in enumerate(("2026-10-11","2026-10-12")):
+                for number,day in enumerate(("2026-10-12","2026-10-13")):
                     now=datetime.fromisoformat(day+"T07:40:00+08:00")
                     rows=canary_sources(now)
                     if number:

@@ -39,7 +39,15 @@ def verified_retired_history(reports: Path) -> Path:
             raise ValueError('Empty protected history manifest')
         if required and set(records['dates']) != set(metadata['removed_dates']):
             raise ValueError('Withdrawal dates do not match the release')
-        for item in files.values():
+        if required:
+            expected={'site/reports/'+day+'.json' for day in metadata['removed_dates'] if day!='2026-10-11'}
+            expected.update('site/reports/archive-revisions/s1-original/'+day+'.json' for day in ('2026-10-09','2026-10-10'))
+            if set(files)!=expected:raise ValueError('Protected history manifest lost or added a revision')
+        for original,item in files.items():
+            if required:
+                suffix='-original' if '/archive-revisions/s1-original/' in original else ''
+                expected_backup='content-history/retired/'+Path(original).stem+suffix+'.json'
+                if item.get('backup')!=expected_backup:raise ValueError('Protected revision points to the wrong backup')
             backup = (root / item['backup']).resolve()
             if not backup.is_relative_to(history.resolve()) or not backup.is_file():
                 raise ValueError('Protected history file missing or outside its directory')

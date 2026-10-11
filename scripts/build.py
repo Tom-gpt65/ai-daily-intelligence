@@ -368,18 +368,22 @@ def collect(now: datetime, feed_list=FEEDS, get=None, recent: list[dict] | None 
 
 def recent_report_stories(today: str, days: int = 2) -> list[dict]:
     """Prevent accidentally reissuing yesterday's RSS stories as today's discoveries."""
+    from content_novelty import verified_retired_history
+    history=verified_retired_history(REPORTS)
     out = []
     try:
         today_dt = datetime.fromisoformat(today).date()
         index = json.loads((REPORTS / "index.json").read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError):
         return out
-    for entry in index[:8]:
+    paths=[REPORTS/(entry['date']+'.json') for entry in index[:8]]
+    paths.extend(history.glob('????-??-??*.json'))
+    for path in paths:
         try:
-            d = datetime.fromisoformat(entry["date"]).date()
+            report = json.loads(path.read_text(encoding="utf-8"))
+            d = datetime.fromisoformat(report['date']).date()
             if not 0 <= (today_dt - d).days <= days:
                 continue
-            report = json.loads((REPORTS / f"{d.isoformat()}.json").read_text(encoding="utf-8"))
             if not report.get("demo"):
                 out.extend(report.get("stories", []))
         except (OSError, ValueError, KeyError, TypeError):
@@ -630,6 +634,9 @@ def put_status(stage: str, now: datetime | None = None, **details):
 
 def put_report(report: dict):
     from report_lock import lock
+    from s2_reserve import release_for
+    if report.get('date') in release_for(REPORTS).get('removed_dates',[]):
+        raise ValueError('Refusing to republish a withdrawn public edition')
     with lock(REPORTS):
         REPORTS.mkdir(parents=True, exist_ok=True)
         target = REPORTS / (report["date"] + ".json")
@@ -680,6 +687,12 @@ def source_evidence_metrics(sources: list[dict]) -> dict:
 
 def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None = None, diagnostics: dict | None = None):
     date = now.astimezone(TZ).date().isoformat()
+    from s2_reserve import release_for
+    release=release_for(REPORTS)
+    if date in release.get('removed_dates',[]):
+        put_status('editions_withdrawn',now,latest_date=None,mode='unavailable',
+                   withdrawal={'dates':release['removed_dates']},news_outcome='no_reading_available')
+        return False
     diagnostics = diagnostics or {}
     if sources is None:
         pool=[]

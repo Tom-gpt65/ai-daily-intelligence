@@ -89,7 +89,8 @@ async function count(page,n){
    for(const page of [a,b,c])page.on('pageerror',error=>errs.push(error.message));
    await a.goto(ORIGIN);
    await a.locator('#reader .essay-paragraph').first().waitFor({state:'visible',timeout:15000});
-   await a.locator('#reader .word').filter({hasText:/^evidence$/i}).first().click();
+   await a.locator('#reader .word').first().click();
+   const selectedWord=(await a.locator('#lookup-word').innerText()).trim().toLowerCase();
    await a.locator('#save-word').click();
    await a.locator('#pop-close').click();
    await count(a,1);
@@ -100,11 +101,11 @@ async function count(page,n){
    await a.locator('#sync-import-local').click();
    await count(a,1);
    await a.waitForFunction(()=>document.querySelector('#sync-status')?.textContent.includes('同步完成 · 1 個'),null,{timeout:15000});
-   assert.ok(events.some(e=>e.word==='evidence'&&!e.deleted),'Migration must upload original word');
+   assert.ok(events.some(e=>e.word===selectedWord&&!e.deleted),'Migration must upload the actual selected word');
    await login(b,'user-one');
    await count(b,1);
    await b.locator('[data-view="words"]').click();
-   await b.locator('#word-list .word-card').filter({hasText:'evidence'})
+   await b.locator('#word-list .word-card').filter({hasText:selectedWord})
      .getByRole('button',{name:'移除'}).click();
    await count(b,0);
    await b.waitForFunction(()=>document.querySelector('#sync-status')?.textContent.includes('同步完成 · 0 個'),null,{timeout:15000});

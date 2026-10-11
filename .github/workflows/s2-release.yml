@@ -1,0 +1,110 @@
+name: S2 verified production release
+
+on:
+  push:
+    branches: [main]
+    paths: ['site/release.json', '.github/workflows/s2-release.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ai-daily-news
+  queue: max
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify the exact release revision before any publication
+        env:
+          EXPECTED_COMMIT: ${{ github.sha }}
+        run: |
+          git merge-base --is-ancestor "$EXPECTED_COMMIT" HEAD
+          git diff --exit-code "$EXPECTED_COMMIT" HEAD -- . ':!site/reports/**' ':!site/system-status.json' ':!reading-reserve/**'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          release=json.loads(Path('site/release.json').read_text())
+          assert release['version']=='S2' and release['asset_revision']=='s2-1'
+          PY
+      - name: Install pinned acceptance dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          npm ci --ignore-scripts
+          npx playwright install --with-deps chromium webkit
+      - name: Run the complete release acceptance
+        run: |
+          python -m unittest discover -s tests -v
+          node tests/run_js_tests.js
+          python scripts/s2_reserve.py --validate
+          python scripts/validate_site.py
+          python scripts/morning_canary.py
+          python scripts/morning_canary.py --first-day 2026-12-31
+          node tests/run_js_tests.js --browser
+      - name: Publish only the current Hong Kong date's accepted reading
+        run: |
+          python scripts/reading_backup.py --if-missing
+          python scripts/validate_site.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python scripts/publish_reports.py
+      - name: Refuse concurrent untested code changes before deployment
+        env:
+          EXPECTED_COMMIT: ${{ github.sha }}
+        run: |
+          git diff --exit-code "$EXPECTED_COMMIT" HEAD -- . ':!site/reports/**' ':!site/system-status.json' ':!reading-reserve/**'
+          python scripts/s2_reserve.py --validate
+          python scripts/validate_site.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+      - name: Deploy verified S2
+        id: deploy
+        uses: actions/deploy-pages@v4
+      - name: Verify actual public assets, reading and withdrawn URLs
+        run: python scripts/verify_publication.py --live --require-reading
+      - name: Create the immutable S2 release after public verification
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo}=context.repo;
+            const tag='S2';
+            let existing;
+            try {
+              existing=(await github.rest.repos.getReleaseByTag({owner,repo,tag})).data;
+            } catch (error) {
+              if (error.status!==404) throw error;
+            }
+            if (existing) {
+              const ref=(await github.rest.git.getRef({owner,repo,ref:'tags/'+tag})).data;
+              if (ref.object.sha!==context.sha) throw new Error('Existing S2 tag points to another commit; refusing to retarget it');
+              core.notice('Verified existing immutable S2 release: '+existing.html_url);
+            } else {
+              const created=(await github.rest.repos.createRelease({
+                owner,repo,tag_name:tag,target_commitish:context.sha,name:'S2',
+                draft:false,prerelease:false,
+                body:'S2: automatically generated and reviewed educational reading, complete offline translation and definitions, seven reading tasks, protected withdrawal of 8–11 October, and compatible private vocabulary/PWA migration.\n\nThe complete Python, Node/JS, Chromium/WebKit, reserve, site and morning canary checks ran before this deployment. Public assets and withdrawn URLs were checked after deployment. Education is clearly labelled as non-news; strict five-word overlap against 60 days remains below 16%.\n\nExternal models, RSS and GitHub schedules can still fail. See docs/S2_RELEASE_AUDIT.md for evidence and limitations.\n\nVerification run: https://github.com/'+owner+'/'+repo+'/actions/runs/'+context.runId
+              })).data;
+              core.notice('Published verified S2 release: '+created.html_url);
+            }

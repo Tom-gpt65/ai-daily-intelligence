@@ -1,66 +1,56 @@
-# AI Daily Intelligence — S1 正式版
+# AI Daily Intelligence — S2
 
-[English News App](https://tom-gpt65.github.io/ai-daily-intelligence/) · 繁體中文介面 · 英文長篇閱讀 · 離線詞義 · 私人生字與複習
+正式網站：[English News App](https://tom-gpt65.github.io/ai-daily-intelligence/)。S2 保留既有私人生字庫、localStorage、Supabase 身分、待送事件與備份格式。版本及資源修訂由 `site/release.json`、頁面及 Service Worker 共同核驗。
 
-S1（2026-10-10）統一前端、release.json、Service Worker、發布驗收與巡檢的版本。保留 V1／V2／V3 的 localStorage 鍵、個人生字、答案、閱讀進度、Supabase 身分、雲端事件格式與備份相容性。網站發布版本與儲存 schema 是不同用途，升級 S1 不會重新編號使用者資料。
+## 每日流程（香港時間）
 
-2026-10-08 保持原始位元組；09／10 經授權由程式修正重複問題，原始版完整保留於 archive-revisions/s1-original 及 S1 tag，並繼續納入原創性比較。保護清單見 [S1_PRESERVED_FILES.json](docs/S1_PRESERVED_FILES.json)。一般歷史重製工作僅產生預覽，不能直接改動正式文章。
-
-## 每日行為與誠實狀態
-
-| 香港時間 | 工作 | 未能完成時 |
+| 時間 | 工作 | 驗收與降級 |
 |---|---|---|
-| 06:25 | 首發 canary：在臨時站點連續模擬未來日期 | Actions 顯示失敗；不改正式內容 |
-| 07:05 | 自動生成並核驗教育閱讀備援 | 若沒有新稿通過，保留原日期的合格留存閱讀，明確標示 |
-| 07:40 | 收集 RSS，以來源摘要自動編成英文閱讀分析 | 證據、詞庫或原創性不足時拒稿；先發布安全備援，再讓新聞驗收顯示失敗 |
-| 08:05／09:17／13:17 | 公開網站、文章與排程巡檢 | 顯示缺稿、過期或失敗，不以備援冒充新聞 |
-| 08:20／09:40／10:25／12:25 | 補救檢查 | 沒有正在生成的工作時，07:40 後每日最多兩次新聞重試；午夜嘗試不佔早上限額 |
-| 14:35／15:05／15:20 | 公開健康、Python／Node、瀏覽器回歸檢查 | 保留可追查的 Actions 結果 |
+| 14:00、20:00 | 自動預備未來三日教育閱讀，各日獨立生成 | 英文、完整繁體中文譯文、離線詞義、七題練習、原創性及語義審查全部通過才保留；不提前列入公開文章 |
+| 06:25 | 首次發布 canary 與 RSS 可讀性 | 在隔離資料夾模擬跨日、重複來源、RSS 中斷、缺詞、長期及跨年情境 |
+| 07:05 | 發布當日已驗證備稿 | 重新核驗備稿及最新歷史；失敗時保留明確標日期的舊閱讀，沒有可用文章則顯示故障 |
+| 07:40 | 收集 RSS 並嘗試當日新聞分析 | 足夠新來源、引用、詞義、原創性及品質均合格才升級；教育閱讀清楚標示「非即時新聞」 |
+| 08:20–12:25 | 有限補救 | 新聞時段後每日最多兩次補救；已有執行中的生成時不重複啟動 |
+| 發布後及每日巡檢 | 公開網站、PWA、匿名雲端隔離及瀏覽器回歸 | 網站實際位元組與閱讀結果必須吻合；發布完成不能冒充當日新聞生成成功 |
 
-GitHub 排程指定 `Asia/Hong_Kong`，但仍可能延遲或略過。08:00 可閱讀是目標，並非交付保證。所有正式內容由程式生成，沒有人工撰寫日報；不保證每日都能取得足夠新新聞。
+GitHub 排程可能延遲或略過，RSS、模型下載、字典、套件及網站服務亦可能中斷。每天有合格新稿是運行目標；未取得新稿時顯示明確備援或故障，不宣稱零故障或每日必有真實新聞。
 
-## 正式稿驗收
+## 內容驗收
 
-- 1,000–1,550 英文字、5–15 段、至少 7 題原創閱讀理解題；題目引用必須存在於指定段落。
-- 每個可點擊英文詞都必須附有實際中文離線詞義；缺詞時拒稿，不以「待查」填充。
-- 新聞至少有三個不同來源項目、有效連結、時間與足夠摘要；引用 ID 必須與文章一致。RSS 摘要不是獨立事實核查。
-- 對近 60 天已出版文章及未列入索引的 dated JSON 核對五詞片語；**重複率必須嚴格 <16%**，16% 本身亦拒絕。另檢查長段落、導言結論、標題、來源與寫作方式重用。
-- 備援的新稿同樣通過原創性檢查；有限教育詞庫耗盡時，不重新標日期或把舊文章當成新稿。
-- 歷史資料損壞時停止原創性驗收，顯示故障。發布、巡檢與補救使用同一份閱讀契約。
-- s1-4 優先選擇尚未用過的來源與分析；舊固定題材無法生成新稿時，由 runner 內免費模型按來源自動產生假設論證及比較方法，再另外審查全文語義、文法與來源歸屬。報道式模型草稿仍不得公開；來源標題與短引文由程式歸屬及組裝。每句假設語氣、來源順序、原創性、重複段落、詞義與題目均重新核驗，審查結果綁定文章內容雜湊。模型與機械檢查不能保證語義完全正確；下載或驗收失敗時保留明確標示的舊閱讀。2026-10-11 的十三輪真實生成均未取得合格新稿，程式／瀏覽器測試通過不等於生成成功；此版本仍須以保留原日期閱讀安全降級。詳見 [11 日拒稿修正及實跑證據](docs/S1_OCT11_GENERATION.md)。
+所有正式文章由程式自動生成，不人工撰寫日報。S2 教育閱讀使用自然英文及不同主題、論證結構；例子明確屬虛構，不冒充當日事實。每段生成後先攔截複製、重複句子、段落開頭及過量的例子轉折，再用完整段落比較相鄰及最相似的前文。只更換人物、書籍種類或用詞仍是重複，必須新增實質推論才可續寫。全文再檢查 1,000–1,550 英文字、發展及重複內容。拒稿保留原因，不直接把拒稿改成合格稿。
 
-## 資料安全與離線升級
+原創性採五詞片語，對近 60 天文章、未列索引的文章、撤下版本及較早備稿重新計算；**未四捨五入的重複率必須嚴格 <16%**，16% 本身拒絕。另拒絕重用完整段落、長分析片段及導言結論。教育閱讀的相鄰主題及結構輪替，72 種主題／論點安排避免在 60 日窗口重派完全相同的寫作任務；這不是語義原創保證。撤稿不縮小核驗語料。
 
-保留私人生字庫、各帳戶的未送出同步事件、登入身分、備份 version 3／4／5 與詞庫備份 version 1。帳戶切換或登出後，舊網絡回應不能寫入新帳戶或恢復已登出的憑證。
+每個可點擊詞須有實際中文離線詞義，不以待查字樣填充。S2 備稿附完整離線繁體中文譯文；英文預審、逐段比較、翻譯及七題閱讀練習另經模型審查，結果以內容雜湊綁定。題目採誠實的讀者／教師判讀方式，不猜製選擇題答案。模型審查與程式檢查不能取代獨立事實核查或教師判斷。
 
-S1 快取名稱為 `ai-daily-S1-4-reading`；僅遷移本網站的 V1／V2／V3／S1-2／S1-3 公開文章快取。42 篇 dated 文章上限不包含索引與狀態，刷新參數共用一個快取鍵。HTTP 錯誤或損壞回應保留可用快取，介面標示離線；快取額滿亦不阻擋正常線上閱讀。雲端端點及私人備份不由 Service Worker 快取。
+新聞仍需至少三個不同來源項目、有效連結、足夠摘要及有效時間；所有來源 ID 必須存在。免費來源及模型無法驗收時保留教育／歷史閱讀，並讓新聞驗收顯示失敗。
 
-不要以清除網站資料作為一般升級或故障處理方式。真實兩帳戶／兩裝置登入與 RLS 隔離仍需使用者持有的測試帳戶驗證；自動化瀏覽器的模擬登入不能代替此項檢查。
+## 8–11 日撤稿及資料安全
+
+依使用者要求，2026-10-08／09／10／11 不再出現在 Pages、索引及本網站的舊 PWA 文章快取中；11 日原本沒有成功發布的文章。五份原始／重製 JSON 已保留在 Pages 目錄之外的 `content-history/retired`，並由 [撤稿檔案清單](docs/S2_WITHDRAWN_FILES.json) 記錄雜湊。這是網站撤稿，不是刪除 Git 歷史。發布重試不得恢復撤下日期。
+
+S2 快取為 `ai-daily-S2-1-reading`；只遷移本網站 V1／V2／V3／S1 的公開文章，撤下日期一律回傳 410，其他已訪問歷史仍可保留。雲端端點、登入憑證及私人備份不加入 Service Worker 快取。升級保留裝置與各帳戶生字、答案、閱讀進度、未送事件及備份 version 3／4／5、詞庫備份 version 1。
+
+延遲的文章翻譯回應不能寫入另一篇文章；帳戶切換或登出後的舊雲端回應不能寫入新帳戶。一般故障處理不要清除網站資料。真實 iPhone 安裝、真實兩帳戶／兩裝置同步仍需持有測試帳戶的使用者驗證；瀏覽器模擬不能代替該項檢查。
 
 ## 執行與驗證
 
-Python 3.11+、Node 22+。預覽保留正式資料快照及每篇文章日期，不會自動變成當日新聞。
+Python 3.11+、Node 22+。本機預覽保留實際文章日期，不會自動成為當日新聞。
 
 ```bash
-python scripts/preview.py
 python -m pip install -r requirements.txt
+npm ci
 python -m unittest discover -s tests -v
 node tests/run_js_tests.js
-python scripts/validate_site.py
-python scripts/morning_canary.py --first-day 2026-10-11
-python scripts/morning_canary.py --first-day 2026-12-31
-npm ci --ignore-scripts
-npx playwright install --with-deps chromium webkit
 node tests/run_js_tests.js --browser
+python scripts/validate_site.py
+python scripts/s2_reserve.py --validate
+python scripts/morning_canary.py --first-day 2026-10-12
+python scripts/morning_canary.py --first-day 2026-12-31
 python scripts/verify_publication.py --live
+python scripts/v1_final_health.py
 ```
 
-測試涵蓋連續日期、年末跨日、重複來源、RSS 中斷、字典缺詞、原創性邊界、並行寫入、Git 部署衝突、帳戶非同步切換、兩種瀏覽器及 V1／V2／V3 升級。合成新聞輸入只留在臨時測試站點，不會發布。詳細修正、實際測試紀錄與維運處置見 [S1 工程審查與維運](docs/S1_RELEASE_AUDIT.md)。
+模型備稿需 runner 內的 Ollama、指定免費模型及 pinned ECDICT 字典；正式排程自動安裝。`s2_reading.py` 只接受本機 HTTP 模型端點，產生的備稿先存放在 `reading-reserve`，07:05 再使用。日報及備稿發布均取回最新 main、重新驗收並重試一般 push，不 force push；拒絕重設含有無關修改的工作目錄。
 
-## 發布與維運
-
-GitHub Pages 使用 Actions。兩個發布 workflow 共用 `ai-daily-news` 排隊，待執行工作不互相取消；每次開始讀取最新 main。報告提交先合併遠端歷史，保留有效新聞的優先權，驗證合併後的實際檔案，再以一般 push 提交，不 force push。code push 經回歸測試後發布介面，沒有自動改寫既有文章。
-
-[每日生成](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/daily.yml) · [備援](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/early-reading.yml) · [巡檢](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/audit.yml) · [補救](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/workflows/recovery.yml)
-
-有限模板、免費 RSS／詞典、GitHub Actions／Pages、瀏覽器儲存與 Supabase 都有可用性限制。S1 提供可維運的驗收與降級機制，不能宣稱零故障、每日真實新聞或已達成商業 SLA。舊版歷史詳見 [V3](docs/V3_EDITORIAL_NOVELTY.md)、[V2](docs/V2_STABILITY.md)、[V1](docs/FINALISE_WEBSITE_V1.md)。
+瀏覽器測試只在隔離本機 origin 使用實際已接受的 S2 備稿及模擬時鐘；舊選擇題相容性另用明確的歷史 UI fixture，不能當成生成成效證據。完整實跑與遺留限制記錄於 [S2 發布審查](docs/S2_RELEASE_AUDIT.md)。S1 歷史審查文件保留，沒有改寫先前失敗紀錄。

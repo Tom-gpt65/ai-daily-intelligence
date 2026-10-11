@@ -22,7 +22,7 @@ ASSETS = (
     "index.html", "app.js", "cloud-sync.js", "sw.js", "manifest.webmanifest",
     "style.css", "v1.css", "reading-theme-v1.css", "icon-192.png",
     "icon-512.png", "offline-glossary.json", "reading-glossary.json",
-    "news-glossary.json", "news-template-glossary.json", "release.json", "reports/index.json",
+    "news-glossary.json", "news-template-glossary.json", "release.json", "reports/index.json", "system-status.json",
 )
 
 def public_get(url: str, headers: dict | None = None) -> tuple[int, bytes]:
@@ -80,9 +80,9 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
         else:
             checks.append("iPhone/iPad standalone manifest and icons")
 
-        if ('id="site-version"' not in html or '>S1<' not in html or
-            "./reading-theme-v1.css?v=s1-4" not in html or
-            "ai-daily-S1-4-reading" not in worker or
+        if ('id="site-version"' not in html or '>S2<' not in html or
+            "./reading-theme-v1.css?v=s2-1" not in html or
+            "ai-daily-S2-1-reading" not in worker or
             "const SHELL=" not in worker or
             "'./reports/index.json'" not in worker or
             "'./reading-theme-v1.css'" not in worker or
@@ -92,9 +92,16 @@ def evaluate(snapshot: dict, expected: str) -> tuple[list[str], list[str], list[
             "ai-daily-saved-v2" not in app):
             errors.append("Public reading app, offline cache, theme or login is out of date")
         else:
-            checks.append("S1 code, paper/night themes and offline shell")
+            checks.append("S2 code, paper/night themes and offline shell")
 
-        if not isinstance(index, list) or not index or not isinstance(index[0], dict):
+        if index==[] and expected in release.get('removed_dates',[]):
+            status=read_json(assets['system-status.json'][1])
+            if status.get('withdrawal',{}).get('dates')!=release.get('removed_dates'):
+                errors.append('Empty index lacks authorised withdrawal status')
+            else:
+                warnings.append('No reading is public: these dates were explicitly withdrawn; this is not a successful daily article')
+                checks.append('Explicit withdrawal and private-data preservation state')
+        elif not isinstance(index, list) or not index or not isinstance(index[0], dict):
             errors.append("Public daily article index is missing or invalid")
         elif index[0].get("date") != expected:
             errors.append(f"Public daily article is stale: expected {expected}")
@@ -201,7 +208,7 @@ def run() -> int:
         time.sleep(8)
     errors, warnings, checks = outcome
     lines = [
-        "### S1 maintenance health (Hong Kong)",
+        "### S2 maintenance health (Hong Kong)",
         f"- Expected article date: {today}",
         f"- Public site: {BASE}",
         f"- Outcome: {'PASS' if not errors else 'FAIL'}",

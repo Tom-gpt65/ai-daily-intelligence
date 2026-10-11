@@ -1,3 +1,4 @@
+const fixture=require('./browser_fixture');
 /* Regression tests for live-schedule failure versus successful recovery.
  * Public GitHub and the report date are mocked; claims are tested independently
  * of the date on which CI happens to execute. */
@@ -8,12 +9,7 @@ const {chromium,webkit}=require('playwright');
 
 const root=path.resolve(__dirname,'..');
 const reports=path.join(root,'site','reports');
-const index=JSON.parse(fs.readFileSync(path.join(reports,'index.json'),'utf8'));
-const original=JSON.parse(fs.readFileSync(path.join(reports,index[0].date+'.json'),'utf8'));
-const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-const dateParts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
-const part=k=>dateParts.find(p=>p.type===k)?.value;
-const hkToday=part('year')+'-'+part('month')+'-'+part('day');
+const index=fixture.index(),original=fixture.latest(),hkToday=fixture.clockDay;
 const scheduled={id:71001,event:'schedule',status:'completed',conclusion:'failure',
   created_at:new Date(hkToday+'T07:41:00+08:00').toISOString(),
   html_url:'https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/71001'};
@@ -27,6 +23,7 @@ async function scenario(engine,browser,scenarioName,scheduledRuns,manualRuns,rep
  const instance=await browser.launch({headless:true});
  try{
   const context=await instance.newContext({viewport:{width:1024,height:768},deviceScaleFactor:2});
+ await fixture.clock(context);
   const page=await context.newPage();
   const errors=[];
   page.on('pageerror',err=>errors.push(err.message));
@@ -75,6 +72,7 @@ async function dictionaryGateDiagnostic(engine,browser){
  const instance=await browser.launch({headless:true});
  try{
   const context=await instance.newContext({viewport:{width:1024,height:768}});
+ await fixture.clock(context);
   const page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   const archivedRow=index[1];
@@ -131,6 +129,7 @@ async function historicalRace(engine,browser){
  const instance=await browser.launch({headless:true});
  try{
   const context=await instance.newContext({viewport:{width:1024,height:768}});
+ await fixture.clock(context);
   const page=await context.newPage(),errors=[];
   page.on('pageerror',err=>errors.push(err.message));
   await page.route(url=>url.href.includes('/actions/workflows/daily.yml/runs?'),async route=>{
@@ -143,9 +142,9 @@ async function historicalRace(engine,browser){
   await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
   await requested;
   await page.locator('[data-view="archive"]').click();
-  const historical=page.locator('#archive-list .archive-card').filter({hasText:'8 October 2026'});
+  const historical=page.locator('#archive-list .archive-card').filter({hasText:'7 October 2026'});
   await historical.click();
-  await page.waitForFunction(()=>document.querySelector('#report-metadata')?.textContent.includes('8 October 2026'),null,{timeout:12000});
+  await page.waitForFunction(()=>document.querySelector('#report-metadata')?.textContent.includes('7 October 2026'),null,{timeout:12000});
   await page.waitForTimeout(1500);
   assert.match(await page.locator('#schedule-text').innerText(),/歷史文章/,
     engine+' delayed scheduled failure overwrote an intentionally opened historical article');

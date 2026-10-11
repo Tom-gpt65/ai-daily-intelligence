@@ -14,23 +14,21 @@ class ArchiveBackfillTests(unittest.TestCase):
     def setUp(self):
         folder = ROOT / "site" / "reports"
         self.index = json.loads((folder / "index.json").read_text(encoding="utf-8"))
-        self.archive = json.loads((folder / "2026-10-08.json").read_text(encoding="utf-8"))
-        self.today = json.loads((folder / "2026-10-09.json").read_text(encoding="utf-8"))
+        from history_support import historical
+        self.archive = historical('2026-10-08')
+        self.today = historical('2026-10-09')
 
     def test_backfill_is_archived_without_replacing_todays_article(self):
         dates=[row["date"] for row in self.index]
         self.assertEqual(dates,sorted(dates,reverse=True))
         self.assertEqual(len(dates),len(set(dates)))
-        self.assertIn("2026-10-08",dates)
-        self.assertIn("2026-10-09",dates)
+        self.assertNotIn("2026-10-08",dates)
+        self.assertNotIn("2026-10-09",dates)
         self.assertEqual(self.today["date"], "2026-10-09")
-        by_date={row["date"]:row for row in self.index}
-        october_ninth=by_date["2026-10-09"]
-        self.assertEqual(october_ninth["headline"], self.today["headline"])
-        self.assertEqual(october_ninth["word_count"], self.today["word_count"])
-        self.assertEqual(october_ninth["updated_at"], self.today["updated_at"])
-        # Tomorrow and all subsequent days must not break the daily generation.
-        self.assertGreaterEqual(self.index[0]["date"],"2026-10-09")
+        from content_novelty import recent_articles
+        corpus=recent_articles(ROOT/'site/reports','2026-10-12')
+        self.assertIn(self.today,corpus)
+        self.assertIn(self.archive,corpus)
 
     def test_backfill_is_clearly_educational_and_not_false_historical_news(self):
         self.assertEqual(self.archive["date"], "2026-10-08")
@@ -61,9 +59,9 @@ class ArchiveBackfillTests(unittest.TestCase):
     def test_routine_news_validation_does_not_change_site_version(self):
         html = (ROOT / "site" / "index.html").read_text(encoding="utf-8")
         sw = (ROOT / "site" / "sw.js").read_text(encoding="utf-8")
-        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">S1', html)
-        self.assertIn('app.js?v=s1-4', html)
-        self.assertIn('ai-daily-S1-4-reading', sw)
+        self.assertIn('id="site-version" class="site-version" aria-label="網站版本">S2', html)
+        self.assertIn('app.js?v=s2-1', html)
+        self.assertIn('ai-daily-S2-1-reading', sw)
 
 if __name__ == "__main__":
     unittest.main()

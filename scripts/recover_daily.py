@@ -93,6 +93,12 @@ def should_dispatch(latest_date,runs,updated_at=None,quality_ok=True):
     return True,"No refreshed report, no active workflow and retries remain"
 
 def main():
+    from pathlib import Path
+    from s2_reserve import release_for
+    release=release_for(Path(__file__).resolve().parents[1]/'site/reports')
+    if TODAY in release.get('removed_dates',[]):
+        print('Requested date is explicitly withdrawn; no recovery may recreate it')
+        return 0
     local=datetime.now(ZoneInfo('Asia/Hong_Kong'))
     if (local.hour,local.minute)<(7,40):
         print('Morning news window has not started; preserving the 07:05 reserve and retry budget')

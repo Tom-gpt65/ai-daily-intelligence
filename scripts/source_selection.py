@@ -18,7 +18,7 @@ def select(pool,now,reports,diagnostics):
         return {('url',p.netloc.lower(),p.path),('title',title_signature(s['title']))}
     used=set()
     history_paths=(list(reports.glob('????-??-??.json'))+list((reports/'archive-revisions').glob('*/*.json'))
-                   +list((reports.parent.parent/'content-history/retired').glob('*.json')))
+                   +list((reports.parent.parent/'content-history/retired').glob('????-??-??*.json')))
     for path in history_paths:
         previous=json.loads(path.read_text('utf-8'))
         if previous.get('date','')<day:

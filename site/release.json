@@ -1,9 +1,10 @@
 {
-  "version": "S1",
-  "asset_revision": "s1-4",
-  "cache_namespace": "ai-daily-S1-4-reading",
+  "version": "S2",
+  "asset_revision": "s2-1",
+  "cache_namespace": "ai-daily-S2-1-reading",
+  "removed_dates": ["2026-10-08", "2026-10-09", "2026-10-10", "2026-10-11"],
   "legacy_editions_through": "2026-10-10",
-  "content_generation_profile": "source_analysis_v3",
+  "content_generation_profile": "educational_model_s2",
   "originality": {
     "phrase_words": 5,
     "lookback_days": 60,
@@ -11,6 +12,7 @@
   },
   "compatible_generation_profiles": [
     "source_outline_v2",
-    "source_analysis_v3"
+    "source_analysis_v3",
+    "educational_model_s2"
   ]
 }

@@ -1,3 +1,4 @@
+const fixture=require('./browser_fixture');
 /* Final PWA resilience: actual CacheStorage with origin server shut down,
  * article + dictionary + local words, complete private JSON backup.
  * Offline cold-start navigation on iOS still needs a real-device test.
@@ -15,6 +16,8 @@ function staticServer(){
     const pathname=new URL(request.url,'http://localhost').pathname;
     const target=path.resolve(ROOT,'.'+decodeURIComponent(pathname==='/'?'/index.html':pathname));
     if(!target.startsWith(ROOT+path.sep)){response.writeHead(403).end();return;}
+    const virtual=fixture.body(pathname.replace(/^\//,'')||'index.html');
+    if(virtual!==null){response.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'}).end(virtual);return;}
     const ext=path.extname(target);
     const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript',
       '.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json',
@@ -52,6 +55,7 @@ async function exercise(browserType,engine,width){
     acceptDownloads:true,
     serviceWorkers:'allow'
   });
+ await fixture.clock(context);
   try{
     // Do not install Playwright request routes: they can bypass Service Worker fetch handling.
     const page=await context.newPage();
@@ -94,25 +98,25 @@ async function exercise(browserType,engine,width){
     // Add both an old bank and the current repaired bank to a real exported
     // backup, import it through the UI, then export again. Nothing is dropped
     // and old answers must never lock or overwrite a changed question.
-    const latest=JSON.parse(fs.readFileSync(path.join(ROOT,'reports/index.json'),'utf8'))[0].date;
-    const edition=JSON.parse(fs.readFileSync(path.join(ROOT,'reports/'+latest+'.json'),'utf8'));
+    const latest=fixture.clockDay;
+    const edition=fixture.latest();
     if(edition.practice_revision){
       const legacy=latest+'-v7-',current=latest+'-s1-'+edition.practice_revision+'-';
       data.writtenAnswers[legacy+'Q4']='Retained original written answer';
-      data.writtenAnswers[current+'Q4']='Answer to the repaired question';
+      data.writtenAnswers[current+'Q1']='Answer to the repaired question';
       data.quizSelections[legacy+'Q1']={selected:0,correct:true,submittedAt:'2026-10-09T08:00:00+08:00'};
       data.quizSelections[current+'Q1']={selected:1,correct:false,submittedAt:'2026-10-10T23:40:00+08:00'};
       const imported=path.join(path.dirname(localFile),'repaired-question-backup.json');
       fs.writeFileSync(imported,JSON.stringify(data));
       await page.locator('#import-all-file').setInputFiles(imported);
-      await page.waitForFunction(key=>JSON.parse(localStorage.getItem('ai-daily-answers-v1')||'{}')[key]==='Answer to the repaired question',current+'Q4');
+      await page.waitForFunction(key=>JSON.parse(localStorage.getItem('ai-daily-answers-v1')||'{}')[key]==='Answer to the repaired question',current+'Q1');
       const [roundTrip]=await Promise.all([page.waitForEvent('download'),page.locator('#export-all').click()]);
       const restored=JSON.parse(fs.readFileSync(await roundTrip.path(),'utf8'));
-      for(const key of [legacy+'Q4',current+'Q4'])assert.equal(restored.writtenAnswers[key],data.writtenAnswers[key]);
+      for(const key of [legacy+'Q4',current+'Q1'])assert.equal(restored.writtenAnswers[key],data.writtenAnswers[key]);
       for(const key of [legacy+'Q1',current+'Q1'])assert.deepEqual(restored.quizSelections[key],data.quizSelections[key]);
       await page.locator('[data-view="today"]').click();
       assert.equal(await page.locator('#question-list textarea').first().inputValue(),'Answer to the repaired question');
-      assert.equal(await page.locator('#question-list input[type=radio]').nth(1).isChecked(),true);
+      assert.equal(await page.locator('#question-list input[type=radio]').count(),0,'S2 reader-marked tasks must not invent scored answer keys');
       await page.locator('[data-view="words"]').click();
       console.log('PASS',engine,'old/new question banks survive private backup round-trip independently');
     }
@@ -127,7 +131,7 @@ async function exercise(browserType,engine,width){
     await page.waitForFunction(async()=>{
       if(!navigator.serviceWorker?.controller)return false;
       const keys=await caches.keys();
-      if(!keys.includes('ai-daily-S1-4-reading-reports'))return false;
+      if(!keys.includes('ai-daily-S2-1-reading-reports'))return false;
       const names=await caches.keys();
       const match=await Promise.all(names.map(async name=>{
         const cache=await caches.open(name);

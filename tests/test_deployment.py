@@ -27,7 +27,11 @@ class DeploymentTests(unittest.TestCase):
             self.assertTrue((SITE / "reports" / (item["date"] + ".json")).is_file())
     def test_index_tracks_article_revision(self):
         entries=json.loads((SITE / "reports" / "index.json").read_text(encoding="utf-8"))
-        self.assertTrue(entries)
+        if not entries:
+            status=json.loads((SITE/'system-status.json').read_text('utf-8'))
+            self.assertIn('withdrawal',status)
+            self.assertEqual(status['news_outcome'],'no_reading_available')
+            return
         latest=entries[0]
         report=json.loads((SITE / "reports" / (latest["date"] + ".json")).read_text(encoding="utf-8"))
         self.assertTrue(latest.get("updated_at"))
@@ -36,7 +40,10 @@ class DeploymentTests(unittest.TestCase):
         self.assertIn("Boolean(top.updated_at)",javascript)
     def test_report_mode_is_accurately_labelled(self):
         entries=json.loads((SITE / "reports" / "index.json").read_text(encoding="utf-8"))
-        self.assertTrue(entries)
+        if not entries:
+            from verify_publication import publication_outcome
+            result=publication_outcome([],None,'2026-10-11',withdrawn=True)
+            self.assertFalse(result['news']);self.assertFalse(result['reading_available'])
         for row in entries:
             with self.subTest(date=row["date"]):
                 article=json.loads((SITE / "reports" / (row["date"] + ".json")).read_text(encoding="utf-8"))

@@ -169,12 +169,15 @@ jobs:
         # transient RSS/model failures; do not bypass genuine validation errors.
         if: ${{ always() && github.event_name != 'push' && steps.site-preflight.outcome == 'success' }}
         id: passage
+        continue-on-error: true
         run: |
-          python scripts/reading_backup.py --if-missing
+          result=0
+          python scripts/reading_backup.py --if-missing || result=$?
           echo "generated=true" >> "$GITHUB_OUTPUT"
+          exit "$result"
 
       - name: Preserve the actual news attempt and accepted reading outcome
-        if: ${{ github.event_name != 'push' && steps.passage.outcome == 'success' }}
+        if: ${{ always() && github.event_name != 'push' && steps.passage.outputs.generated == 'true' }}
         env:
           FEED_OUTCOME: ${{ steps.preflight.outcome }}
           BUILD_OUTCOME: ${{ steps.build.outcome }}
@@ -193,7 +196,7 @@ jobs:
           retention-days: 14
 
       - name: Validate FINAL dated article before publishing
-        if: ${{ github.event_name != 'push' && steps.passage.outcome == 'success' }}
+        if: ${{ always() && github.event_name != 'push' && steps.passage.outputs.generated == 'true' }}
         run: |
           python scripts/validate_site.py
           python scripts/verify_publication.py
@@ -267,7 +270,7 @@ jobs:
 
       # A failed news job still leaves the safe dated reading publicly deployed.
       # The final failure enables normal GitHub Actions failure notifications.
-      - name: Verify public S1 deployment and require current news for news runs
+      - name: Verify public S2 deployment and require current news for news runs
         env:
           PUBLICATION_EVENT: ${{ github.event_name }}
         run: |

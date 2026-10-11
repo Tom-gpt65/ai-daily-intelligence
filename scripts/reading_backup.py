@@ -81,6 +81,10 @@ def ensure_reading(today, now=None):
     now = now or datetime.now(timezone.utc)
     from build import STATUS_PATH, REPORTS, atomic_json
     from edition_contract import issues as edition_issues
+    from s2_reserve import load as load_prepared, release_for
+    release=release_for(REPORTS)
+    if today in release.get('removed_dates',[]):
+        raise ValueError('Requested edition has been withdrawn; refusing to recreate it')
     try:
         existing=json.loads((REPORTS/(today+'.json')).read_text(encoding='utf-8'))
         if not edition_issues(existing,reports=REPORTS):
@@ -98,7 +102,26 @@ def ensure_reading(today, now=None):
         "feed_error", "no_new_stories", "insufficient_evidence",
         "incomplete_dictionary", "editorial_quality_rejected", "build_failed",
         "repetitive_content", "history_unavailable"}
-    for variant in range(24):
+    try:
+        prepared=load_prepared(today,REPORTS)
+        if prepared:
+            prepared['updated_at']=now.astimezone(HK).isoformat()
+            prepared['novelty']=audit_history(prepared,REPORTS)
+            if edition_issues(prepared,reports=REPORTS):raise ValueError('Prepared reading failed publication revalidation')
+            put_report(prepared)
+            if failed:
+                atomic_json(STATUS_PATH,{**previous,'latest_date':today,'mode':'reading_feature',
+                                        'published_reading_at':prepared['updated_at']})
+            else:
+                put_status('published',now,latest_date=today,mode='reading_feature',source_count=0,
+                           content_generation_profile='educational_model_s2',prepared_at=prepared['prepared_at'])
+            return prepared
+    except (OSError,ValueError,TypeError,KeyError) as exc:
+        previous={**previous,'state':'reading_preparation_failed','failure_reason':str(exc)}
+        failed=True
+    # The finite S1 paragraph bank is retained for historical compatibility,
+    # but S2 does not relabel shuffled library sections as a new daily essay.
+    for variant in range(0 if release.get('version')=='S2' else 24):
         candidate = build_reading(today, now, variant=variant)
         try:
             novelty = audit_history(candidate, REPORTS)
@@ -121,7 +144,11 @@ def ensure_reading(today, now=None):
     # Keep the original article date and all user progress/answer anchors.
     index = json.loads((REPORTS/"index.json").read_text(encoding="utf-8"))
     if not index:
-        raise ValueError("No validated archived reading available")
+        atomic_json(STATUS_PATH,{**previous,'schema':1,'checked_at':now.astimezone(HK).isoformat(),
+                                 'state':'reading_preparation_failed','latest_date':None,'mode':'unavailable',
+                                 'withdrawal':{'dates':release.get('removed_dates',[])},
+                                 'failure_reason':previous.get('failure_reason','No accepted prepared or archived reading is available')})
+        return None
     original = json.loads((REPORTS/(index[0]["date"]+".json")).read_text(encoding="utf-8"))
     if edition_issues(original, index[0]):
         raise ValueError("Archived backup failed reading/dictionary/questions contract")
@@ -129,7 +156,7 @@ def ensure_reading(today, now=None):
             "state": previous.get("state") if failed else "reading_reserve_reused",
             "latest_date": original["date"], "mode": original["mode"],
             "backup": {"kind": "archived_reading", "date": original["date"],
-                       "requested_date": today, "reason": "No reserve passed the strict 60-day <16% originality gate"}}
+                       "requested_date": today, "reason": previous.get('failure_reason','No complete, reviewed, novel reading is prepared for this date')}}
     atomic_json(STATUS_PATH, info)
     print("[safe downgrade] No novel reserve accepted; archived reading retained:", original["date"])
     return original
@@ -141,6 +168,11 @@ def main():
     parser.add_argument("--if-missing",action="store_true")
     args=parser.parse_args()
     today=args.date
+    from s2_reserve import release_for
+    if today in release_for(REPORTS).get('removed_dates',[]):
+        raise ValueError('Requested edition has been withdrawn; refusing to recreate it')
+    if today!=datetime.now(HK).date().isoformat():
+        raise ValueError('Public reading publication requires the current Hong Kong date; use the reserve generator for future dates')
     if args.if_missing:
         existing=REPORTS/(today+".json")
         try:
@@ -151,10 +183,7 @@ def main():
                 return 0
         except (OSError,ValueError,TypeError,AttributeError):
             pass
-    if today!=datetime.now(HK).date().isoformat() and not args.date:
-        raise ValueError("A past date requires an explicit date argument")
-    ensure_reading(today)
-    return 0
+    return 0 if ensure_reading(today) else 1
 
 if __name__=="__main__":
     raise SystemExit(main())

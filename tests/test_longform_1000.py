@@ -21,7 +21,7 @@ class LongFormTests(unittest.TestCase):
         for count in (3,4,5):
             with self.subTest(count=count):
                 data=(canary_sources(datetime.fromisoformat('2026-10-11T07:40:00+08:00')) if count==3 else
-                      json.loads((ROOT/'site/reports/2026-10-09.json').read_text('utf-8'))['stories'][:count])
+                      json.loads((ROOT/'content-history/retired/2026-10-09.json').read_text('utf-8'))['stories'][:count])
                 essay=compose_briefing(data)
                 self.assertGreaterEqual(word_count(' '.join(essay)),1000)
                 self.assertLessEqual(word_count(' '.join(essay)),1550)
@@ -73,7 +73,7 @@ class LongFormTests(unittest.TestCase):
     def test_insufficient_excerpt_does_not_invent_evidence(self):
         self.assertEqual(attributed_excerpt({"excerpt":"New AI."}),"")
     def test_no_generic_padding_claims_fact_checking(self):
-        sample=json.loads((ROOT/'site/reports/2026-10-09.json').read_text('utf-8'))['stories']
+        sample=json.loads((ROOT/'content-history/retired/2026-10-09.json').read_text('utf-8'))['stories']
         result=" ".join(compose_briefing(sample))
         self.assertNotIn("independently verified",result)
         self.assertIn("attributed",result)

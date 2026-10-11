@@ -75,7 +75,7 @@ class RecoveryTests(unittest.TestCase):
         import re
         date=recover_daily.TODAY
         import json
-        report=json.loads((ROOT/'site/reports/2026-10-10.json').read_text(encoding='utf-8'))
+        report=json.loads((ROOT/'content-history/retired/2026-10-10.json').read_text(encoding='utf-8'))
         report.update(date=date,updated_at=date+'T08:10:00+08:00',validation_profile='s1',historical_rebuild=False)
         report['novelty']={'pass':True,'max_overlap':0,'threshold':0.16}
         for story in report['stories']:story['published']=date+'T07:00:00+08:00'

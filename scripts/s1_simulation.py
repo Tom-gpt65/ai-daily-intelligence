@@ -25,6 +25,8 @@ def simulate(first_day, sources_factory):
     with tempfile.TemporaryDirectory(prefix="s1-sequential-") as name:
         site = Path(name)/"site"
         shutil.copytree(ROOT/"site", site)
+        shutil.copytree(ROOT/'content-history',Path(name)/'content-history')
+        if (ROOT/'reading-reserve').exists():shutil.copytree(ROOT/'reading-reserve',Path(name)/'reading-reserve')
         with patch.object(build,"REPORTS",site/"reports"), patch.object(build,"STATUS_PATH",site/"system-status.json"), patch.object(validate_site,"SITE",site), patch.dict(os.environ,{"OLLAMA_ENABLED":"0","TRANSLATE_ENABLED":"0"}):
             previous_news = None
             # One continuous archive, including immediately adjacent days,
@@ -75,6 +77,7 @@ def simulate(first_day, sources_factory):
                 if not accepted and actual['news'] and not retained:
                     raise ValueError("Failed new-day generation labelled current news")
                 rows.append({'date':day,'reading_date':report['date'],
+                             'morning_reading_date':reserve['date'] if reserve else None,
                              'news_accepted':accepted,'mode':report['mode'],
                              'archive_backup':bool(actual.get('backup'))})
             # Actual missing surface word, with no history to mask this
