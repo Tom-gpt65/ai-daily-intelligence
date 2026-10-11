@@ -761,7 +761,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         nonlocal analysis_plan,model_seconds
         yield essay_fallback(sources,date,0,recent_prose),False,0
         if os.environ.get('ANALYSIS_ENABLED','0')!='1': return
-        from source_analysis import generate,compose,plan_issues
+        from source_analysis import generate,compose,plan_issues,AnalysisResponseError
         # At most one corrective regeneration. Every output still undergoes
         # the same full acceptance gates; never splice or pad a rejected draft.
         for attempt in range(2):
@@ -775,6 +775,10 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
                     continue
                 analysis_plan=plan
                 yield compose(sources,plan),False,attempt+1
+            except AnalysisResponseError as exc:
+                last_reasons[:]=[exc.code]
+                analysis_attempts.append({'attempt':attempt+1,'issues':last_reasons[:]})
+                continue
             except (OSError,ValueError,TypeError,KeyError) as exc:
                 last_reasons[:]=['analysis_model_unavailable:'+type(exc).__name__]
                 analysis_attempts.append({'attempt':attempt+1,'issues':last_reasons[:]})

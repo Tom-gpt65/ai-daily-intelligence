@@ -119,6 +119,7 @@ async function generationGateDiagnostic(engine,browser){
    assert.ok(await alert.isVisible());
    assert.ok(!label.includes('來源目前無法讀取'),'Healthy RSS was falsely labelled unavailable');
    assert.ok(!label.includes('analysis_'),'Internal issue IDs should not replace a readable explanation');
+   assert.ok(label.includes('最近一輪'),'A failed attempt must not falsely deny another accepted same-day publication');
    assert.ok(!await alert.evaluate(el=>el.classList.contains('pipeline-success')));
    await page.unroute(statusRoute);
   }

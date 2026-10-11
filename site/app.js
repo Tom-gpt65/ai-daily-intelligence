@@ -447,7 +447,7 @@
           '新聞來源已讀取，但所選題材未能組成不重複的完整分析':
           codes.includes('analysis_completed_after_snapshot_expiry')?
           '生成期間來源已過期或跨過香港午夜':'可用來源資訊不足以支持合格長篇';
-        el.textContent='⚠ '+reason+'；本日新稿未發布，現保留上一份已驗證的閱讀。';
+        el.textContent='⚠ '+reason+'；最近一輪新稿未發布，現保留已驗證的閱讀。';
         el.classList.remove('hidden');el.classList.remove('pipeline-success');
       } else if(info.state==='reading_reserve_reused'||info.state==='history_unavailable'){
         el.textContent='⚠ 今日新閱讀未能通過嚴格原創性驗證，或歷史資料無法完整核對。現提供 '+(info.backup?.date||state.report?.date||'既有')+' 的留存閱讀，並非今日新聞或今日新稿。';
@@ -477,7 +477,7 @@
           [/non_hypothetical|unsupported_analysis|analysis_not_source_specific|copied_source_analysis/,'分析未能遵守來源及假設標示'],
           [/repeated|duplicate|reused/,'內容重複'],[/limited_complex/,'句式深度不足']]
           .filter(([pattern])=>pattern.test(codes)).map(([,label])=>label);
-        el.textContent='⚠ 本日新稿未通過內容品質檢查：'+(labels.join('、')||'內容未達標')+'。現保留上一份已驗證的閱讀；詳情見工作紀錄。';
+        el.textContent='⚠ 最近一輪新稿未通過內容品質檢查：'+(labels.join('、')||'內容未達標')+'。現保留已驗證的閱讀；詳情見工作紀錄。';
         el.classList.remove('hidden','pipeline-success');
       } else if(info.state==='published'){
         el.textContent=info.mode==='reading_feature'?

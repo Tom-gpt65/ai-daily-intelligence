@@ -108,6 +108,33 @@ class SourceGenerationTests(unittest.TestCase):
         with patch.dict('os.environ',{'OLLAMA_URL':'https://external-model.example.com'}),patch.object(source_analysis,'urlopen',side_effect=AssertionError('Must reject before request')):
             with self.assertRaises(ValueError):source_analysis.request_plan('test',{})
 
+    def test_sentence_initial_common_words_are_not_source_names(self):
+        sources,_=self.plan()
+        sources[0]['title']='Artists discuss privacy'
+        sources[0]['excerpt']='At a meeting Microsoft discussed privacy. Artists might compare controls after the proposal.'
+        names=source_analysis.source_names(sources)
+        self.assertNotIn('artists',names);self.assertNotIn('at',names)
+        self.assertIn('microsoft',names)
+        sources[0]['excerpt']='A label describes a "pipeline." Artists discuss notice.'
+        self.assertNotIn('artists',source_analysis.source_names(sources))
+
+    def test_decoder_allows_natural_words_but_not_named_company_or_question(self):
+        import re
+        sources,plan=self.plan()
+        pattern=source_analysis.schema(sources)['properties']['introduction']['items']['pattern']
+        self.assertIsNotNone(re.fullmatch(pattern,plan['introduction'][0]))
+        self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('A reader','Microsoft')))
+        self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('a response','a Microsoft response')))
+        self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('A reader could','Could a reader')))
+
+    def test_incomplete_response_is_identified_and_retained(self):
+        from unittest.mock import MagicMock
+        response=MagicMock();response.__enter__.return_value.read.return_value=json.dumps({'done':True,'done_reason':'length','response':'unfinished draft'}).encode()
+        with patch.object(source_analysis,'urlopen',return_value=response):
+            with self.assertRaises(source_analysis.AnalysisResponseError) as caught:source_analysis.request_plan('test',{})
+        self.assertEqual(caught.exception.code,'incomplete_analysis_response')
+        self.assertEqual(caught.exception.response,'unfinished draft')
+
     def test_current_named_entities_use_reviewed_news_senses_not_acronym_homonyms(self):
         from edition_guarantee import fill_dictionary
         dictionary,missing=fill_dictionary(['UMG Satya Nadella DistroKid Huxe'],

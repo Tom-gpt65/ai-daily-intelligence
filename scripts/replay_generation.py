@@ -28,7 +28,11 @@ def replay(snapshot_path,out):
         def captured_request(prompt,output_schema):
             nonlocal draft_count
             draft_count+=1
-            plan=original_request(prompt,output_schema)
+            try:
+                plan=original_request(prompt,output_schema)
+            except source_analysis.AnalysisResponseError as exc:
+                build.atomic_json(out/('analysis-error-'+str(draft_count)+'.json'),{'issue':exc.code,'response':exc.response})
+                raise
             build.atomic_json(out/('analysis-draft-'+str(draft_count)+'.json'),plan)
             return plan
         with patch.object(build,'REPORTS',site/'reports'),patch.object(build,'STATUS_PATH',site/'system-status.json'),patch.object(validate_site,'SITE',site):
