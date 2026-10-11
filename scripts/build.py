@@ -263,7 +263,7 @@ def feed_entries(xml_bytes: bytes) -> list[dict]:
 
 
 def collect(now: datetime, feed_list=FEEDS, get=None, recent: list[dict] | None = None,
-            diagnostics: dict | None = None) -> list[dict]:
+            diagnostics: dict | None = None, candidate_pool: list | None = None) -> list[dict]:
     """Concurrent RSS processing, deterministic ranking and explicit feed-health measurements."""
     started = time.perf_counter()
     get = get or fetch_feed
@@ -334,6 +334,11 @@ def collect(now: datetime, feed_list=FEEDS, get=None, recent: list[dict] | None 
                                       "published": candidate["published"]})
     stats["event_clusters"] = len(clustered)
     stats["multi_source_events"] = sum(len(row["coverage"]) >= 2 for row in clustered)
+    if candidate_pool is not None:
+        # Keep alternative EVENTS, not cosmetic variants of identical prose.
+        # Copies prevent the legacy five-item selector from mutating scores.
+        candidate_pool.extend({**row,'id':f'S{i}','coverage_count':len(row['coverage'])}
+                              for i,row in enumerate(clustered[:30],1))
     selected, counts, topics = [], {}, set()
     remaining = clustered[:]
     while remaining and len(selected) < 5:
@@ -677,7 +682,11 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     date = now.astimezone(TZ).date().isoformat()
     diagnostics = diagnostics or {}
     if sources is None:
-        sources = collect(now, recent=recent_report_stories(date), diagnostics=diagnostics)
+        pool=[]
+        sources = collect(now, recent=recent_report_stories(date), diagnostics=diagnostics,candidate_pool=pool)
+        if pool:
+            from source_selection import select
+            sources=select(pool,now,REPORTS,diagnostics)
     if not sources:
         stage = "feed_error" if diagnostics.get("feeds_total") and not diagnostics.get("feeds_ok") else "no_new_stories"
         put_status(stage, now, source_count=0, **diagnostics)
@@ -701,9 +710,8 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         print("[evidence warning] Fewer than two substantial source descriptions "
               "or too little attributed information; retaining previous edition.", file=sys.stderr)
         return False
-    model_started = time.perf_counter()
-    model_draft = generate_essay(sources) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "0") == "1" else None
-    model_seconds = round(time.perf_counter() - model_started, 3) if evidence_adequate and os.environ.get("OLLAMA_ENABLED", "0") == "1" else 0
+    model_draft = None
+    model_seconds = 0
     if len(sources) < 3:
         put_status("insufficient_evidence", now, source_count=len(sources), evidence_word_count=total_evidence_words, **diagnostics)
         print("[no new long-form] Fewer than three reliable story anchors; retaining previous edition.", file=sys.stderr)
@@ -748,8 +756,35 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     if model_draft:
         atomic_json(ROOT/'.cache/model-draft.json',{'date':date,'essay':model_draft,
                     'published':False,'reason':'Unverified model factual claims cannot enter the formal release'})
-    candidates = ((essay_fallback(sources,date,variant,recent_prose), False, variant)
-                  for variant in range(1))
+    from source_outline import context_key
+    diagnostics['selected_source_contexts']=[{'id':s['id'],'title':s['title'],'url':s['url'],
+                                            'context':context_key(s)} for s in sources]
+    analysis_plan=None
+    analysis_attempts=[]
+    def candidates():
+        nonlocal analysis_plan,model_seconds
+        yield essay_fallback(sources,date,0,recent_prose),False,0
+        if os.environ.get('ANALYSIS_ENABLED','0')!='1': return
+        from source_analysis import generate,compose,plan_issues
+        # At most one corrective regeneration. Every output still undergoes
+        # the same full acceptance gates; never splice or pad a rejected draft.
+        for attempt in range(2):
+            started=time.perf_counter()
+            try:
+                plan=generate(sources,archive,feedback=', '.join(last_reasons[:10]))
+                errors=plan_issues(plan,sources)
+                if errors:
+                    last_reasons[:]=errors
+                    analysis_attempts.append({'attempt':attempt+1,'issues':errors})
+                    continue
+                analysis_plan=plan
+                yield compose(sources,plan),False,attempt+1
+            except (OSError,ValueError,TypeError,KeyError) as exc:
+                last_reasons[:]=['analysis_model_unavailable:'+type(exc).__name__]
+                analysis_attempts.append({'attempt':attempt+1,'issues':last_reasons[:]})
+                break
+            finally:
+                model_seconds+=round(time.perf_counter()-started,3)
     essay = None
     good = False
     quality = None
@@ -760,12 +795,10 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     style_label = None
     focus_category = None
     last_reasons = []
-    for candidate, model_written, variant in candidates:
+    for candidate, model_written, variant in candidates():
         if not candidate:
-            put_status('insufficient_evidence',now,source_count=len(sources),
-                       failure_reason='No coherent source-specific outline: unsupported or repeated analytical contexts',
-                       generation_issues=['unsupported_or_repeated_analytical_context'],**diagnostics)
-            return False
+            last_reasons=['unsupported_or_repeated_analytical_context']
+            continue
         this_quality = inspect_editorial_quality(candidate, sources)
         if critical.intersection(this_quality["issues"]):
             last_reasons = this_quality["issues"]
@@ -774,10 +807,13 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         lead = sources[0]
         focus_category = story_category(lead)
         lead_title = str(lead.get("title","")).strip().replace("\n"," ")
-        from source_outline import RULES, context_key
-        first_focus=RULES[context_key(sources[0])][1].split(':')[0].lower()
-        last_focus=RULES[context_key(sources[-1])][1].split(':')[0].lower()
-        headline = 'AI evidence review: from '+first_focus+' to '+last_focus
+        if analysis_plan is None:
+            from source_outline import RULES
+            first_focus=RULES[context_key(sources[0])][1].split(':')[0].lower()
+            last_focus=RULES[context_key(sources[-1])][1].split(':')[0].lower()
+            headline = 'AI evidence review: from '+first_focus+' to '+last_focus
+        else:
+            headline='Questions behind the headlines: '+sources[0]['title'][:90]
         subtitle = style_label+" · "+str(len(sources))+" linked RSS reports · Critical English reading"
         preview = {"date":date, "mode":"editorial" if model_written else "source_digest",
                    "headline":headline, "essay":candidate, "stories":sources,
@@ -785,12 +821,16 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         candidate_novelty = audit_novelty(preview, archive)
         if not candidate_novelty["pass"]:
             last_reasons = candidate_novelty["issues"]
+            if analysis_plan is not None: analysis_attempts.append({'attempt':variant,'issues':last_reasons})
             continue
         essay, good, quality, novelty = candidate, model_written, this_quality, candidate_novelty
         break
     if essay is None:
-        put_status("repetitive_content",now,source_count=len(sources),
-                   novelty_issues=last_reasons[:12], **diagnostics)
+        unsupported='unsupported_or_repeated_analytical_context' in last_reasons
+        put_status('insufficient_evidence' if unsupported else 'repetitive_content',now,source_count=len(sources),
+                   failure_reason='No candidate passed source analysis, quality and strict originality',
+                   generation_issues=last_reasons[:12],novelty_issues=last_reasons[:12],
+                   analysis_attempts=analysis_attempts,**diagnostics)
         print("[originality gate] No sufficiently new source-grounded article; "
               "retaining clearly labelled educational reading.",file=sys.stderr)
         return False
@@ -819,7 +859,7 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     report = {
         "schema": 4,
         "validation_profile": "s1",
-        "content_generation_profile": "source_outline_v2",
+        "content_generation_profile": "source_analysis_v3" if analysis_plan is not None else "source_outline_v2",
         "date": date,
         "updated_at": now.astimezone(TZ).isoformat(),
         "headline": headline,
@@ -849,6 +889,11 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
         "questions": make_questions(sources),
         "practice": make_exam(essay, sources, date),
     }
+    if analysis_plan is not None:
+        report['analysis_plan']=analysis_plan
+        report['analysis_model']=os.environ.get('ANALYSIS_MODEL','qwen3:4b-instruct-2507-q4_K_M')
+        report['editorial_notice']='Attributed RSS anchors followed by automatically generated hypothetical questions and tests; not additional reporting or independently fact-checked news.'
+        report['quality_note']='來源事實僅限明確歸屬的標題及短引文；其餘為程式生成的假設分析與評估方法，並非已發生的事件。機械檢查不能證明語義完全正確。'
     report['practice_revision']=assessment_revision(report['practice']['items'])
     report["editorial_quality"] = quality
     if not report["editorial_quality"]["training_structure_pass"]:
@@ -916,11 +961,17 @@ def main():
     cache = ROOT / ".cache" / "candidates.json"
     if args.prefetch:
         health = {}
-        stories = collect(now, recent=recent_report_stories(now.astimezone(TZ).date().isoformat()), diagnostics=health)
+        pool=[]
+        stories = collect(now, recent=recent_report_stories(now.astimezone(TZ).date().isoformat()), diagnostics=health,candidate_pool=pool)
         if stories:
+            from source_selection import select
+            stories=select(pool,now,REPORTS,health)
             if os.environ.get("ENRICH_ENABLED", "0") == "1":
                 health.update(enrich_source_metadata(stories))
-            atomic_json(cache, {"at": now.isoformat(), "stories": stories, "diagnostics": health})
+                enriched={s['url']:s for s in stories}
+                pool=[{**s,**enriched.get(s['url'],{}),'id':s['id']} for s in pool]
+            health['stories_selected']=len(stories)
+            atomic_json(cache, {"at": now.isoformat(), "stories": stories, "pool":pool,"diagnostics": health})
             put_status("new_stories_found", now, source_count=len(stories), **health)
             print(f"[preflight] {len(stories)} fresh, relevant stories")
         else:
@@ -941,10 +992,15 @@ def main():
             diagnostics = snapshot.get("diagnostics", {}) if isinstance(snapshot.get("diagnostics", {}), dict) else {}
             if not validate_candidate_sources(sources):
                 raise ValueError("Invalid or untrusted preflight sources")
+            if 'pool' in snapshot:
+                from source_selection import select
+                sources=select(snapshot['pool'],now,REPORTS,diagnostics)
         except (OSError, KeyError, TypeError, ValueError) as exc:
             print(f"[error] No valid preflight sources: {exc}", file=sys.stderr)
             return 1
     live = build_live(now, ROOT / args.dictionary, sources=sources, diagnostics=diagnostics)
+    if STATUS_PATH.exists():
+        atomic_json(ROOT/'.cache/generation-diagnostics.json',json.loads(STATUS_PATH.read_text('utf-8')))
     if not live:
         return 0  # No fresh news is not a publishing error.
     return 0

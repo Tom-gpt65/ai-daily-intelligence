@@ -41,7 +41,7 @@ class RecoveryTests(unittest.TestCase):
         self.assertFalse(decision)
     def test_completed_recovery_attempts_capped_per_day(self):
         run={"status":"completed","event":"workflow_dispatch",
-             "created_at":recover_daily.TODAY+"T01:00:00+08:00"}
+             "created_at":recover_daily.TODAY+"T08:20:00+08:00"}
         allowed,reason=recover_daily.should_dispatch("2000-01-01",[run])
         self.assertTrue(allowed)
         allowed,reason=recover_daily.should_dispatch("2000-01-01",[run,run])
@@ -51,7 +51,12 @@ class RecoveryTests(unittest.TestCase):
         run={"status":"completed","event":"workflow_dispatch",
              "created_at":recover_daily.TODAY+"T06:00:00+08:00"}
         denied,_=recover_daily.should_dispatch("2000-01-01",[run,run])
-        self.assertFalse(denied)
+        self.assertTrue(denied)
+    def test_overnight_dispatch_does_not_consume_morning_retry_budget(self):
+        night={'event':'workflow_dispatch','status':'completed','created_at':recover_daily.TODAY+'T00:12:00+08:00'}
+        morning={'event':'workflow_dispatch','status':'completed','created_at':recover_daily.TODAY+'T08:46:00+08:00'}
+        self.assertTrue(recover_daily.should_dispatch('2000-01-01',[night,morning])[0])
+        self.assertFalse(recover_daily.should_dispatch('2000-01-01',[night,morning,morning])[0])
     def test_missing_timestamp_must_be_regenerated(self):
         allowed,_=recover_daily.should_dispatch(recover_daily.TODAY,[],None)
         self.assertTrue(allowed)
