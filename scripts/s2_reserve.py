@@ -82,7 +82,10 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--validate',action='store_true');parser.add_argument('--publish')
     args=parser.parse_args()
     if args.publish:publish(args.publish)
-    else:print('S2 reserve validation PASS:',[r['date'] for r in validate_all()])
+    else:
+        packs=validate_all()
+        if not packs:raise ValueError('S2 readiness failed: no automatically accepted reserves')
+        print('S2 reserve validation PASS:',[r['date'] for r in packs])
     return 0
 
 if __name__=='__main__':raise SystemExit(main())

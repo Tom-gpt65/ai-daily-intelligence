@@ -8,6 +8,7 @@ Legacy V1/V2 archives are not modified or retroactively failed.
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 from datetime import date as Date
 from pathlib import Path
@@ -17,6 +18,37 @@ STYLES = ("evidence_audit", "comparative_study", "consequence_map",
           "question_driven_review")
 MAX_FIVE_GRAM_OVERLAP = 0.16
 LOOKBACK_DAYS = 60
+
+
+def verified_retired_history(reports: Path) -> Path:
+    """Fail closed when a protected revision disappears, even with an empty index."""
+    root = Path(reports).parent.parent
+    history = root / 'content-history' / 'retired'
+    manifest = history / 'withdrawn-manifest.json'
+    release = root / 'site' / 'release.json'
+    metadata = json.loads(release.read_text('utf-8')) if release.exists() else {}
+    required = metadata.get('version') == 'S2' and bool(metadata.get('removed_dates'))
+    if not manifest.exists():
+        if required:
+            raise ValueError('Protected originality history manifest missing')
+        return history
+    try:
+        records = json.loads(manifest.read_text('utf-8'))
+        files = records['files']
+        if not isinstance(files, dict) or not files:
+            raise ValueError('Empty protected history manifest')
+        if required and set(records['dates']) != set(metadata['removed_dates']):
+            raise ValueError('Withdrawal dates do not match the release')
+        for item in files.values():
+            backup = (root / item['backup']).resolve()
+            if not backup.is_relative_to(history.resolve()) or not backup.is_file():
+                raise ValueError('Protected history file missing or outside its directory')
+            checksum = hashlib.sha256(backup.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+            if checksum != item['sha256']:
+                raise ValueError('Protected history checksum changed: ' + backup.name)
+    except (OSError, KeyError, TypeError, ValueError) as exc:
+        raise ValueError('Protected originality history unavailable: ' + str(exc)) from exc
+    return history
 
 
 def normal(text: str) -> str:
@@ -81,8 +113,8 @@ def recent_articles(reports: Path, today: str, window: int = LOOKBACK_DAYS):
     # Withdrawal from Pages must not erase the 60-day comparison corpus.
     # Resolve relative to the supplied repository (also used by simulations),
     # never silently read another checkout's history.
-    history = reports.parent.parent / 'content-history' / 'retired'
-    preserved.extend(history.glob('*.json'))
+    history = verified_retired_history(reports)
+    preserved.extend(history.glob('????-??-??*.json'))
     for path in sorted(preserved):
         try:
             article=json.loads(path.read_text(encoding='utf-8'))

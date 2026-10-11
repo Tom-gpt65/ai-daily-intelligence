@@ -102,7 +102,7 @@ jobs:
         id: prepare
         env:
           START: ${{ steps.selected.outputs.start }}
-        run: python scripts/s2_reading.py --start "$START" --days 1 --attempts 2
+        run: python scripts/s2_reading.py --start "$START" --days 1 --attempts 3
       - name: Publish accepted reserves against the latest main branch
         if: always() && github.ref == 'refs/heads/main'
         run: |
