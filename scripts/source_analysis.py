@@ -17,7 +17,7 @@ from source_outline import clean_excerpt
 from editorial_quality import WORDS, contains_machine_artifacts
 
 PROFILE = 'source_analysis_v3'
-MODEL = 'qwen2.5:14b-instruct-q4_K_M'
+MODEL = 'qwen2.5:7b-instruct-q4_K_M'
 REVIEW_PROFILE = 's1_semantic_review_v1'
 MODAL = re.compile(r'\b(could|would|might|should)\b', re.I)
 REPORTING = re.compile(r'\b(has|had|announced|confirmed|revealed|reported|proved|demonstrated|launched|yesterday|today|tomorrow)\b', re.I)
@@ -108,6 +108,16 @@ def model_topic(story,names):
     return {'id':story['id'],'topic_terms':terms}
 
 
+def anonymised_context(story,names):
+    def clean(value):
+        for name in sorted(names,key=len,reverse=True):
+            value=re.sub(r'\b'+re.escape(name)+r"(?:['’]s)?\b",'the named entity',value,flags=re.I)
+        return value
+    # Context is untrusted interpretation input, never a publishable model
+    # fact. The attributed anchor, copied-prose and reporting gates remain.
+    return {'title':clean(story['title']),'extract':clean(clean_excerpt(story))}
+
+
 def reporting_sentence(sentence):
     # A present-tense premise inside an explicit imaginary conditional is
     # grammatical analysis, not an assertion about an actual provider.
@@ -119,6 +129,13 @@ def reporting_sentence(sentence):
     # reporting claim. Permit have only governed by a modal in that clause.
     hypothetical=re.sub(r'\b(could|would|might|should)(?:\s+(?:also|still|not|never|potentially)){0,2}\s+have\b','modal possession',sentence,flags=re.I)
     return bool(re.search(r'\bhave\b',hypothetical,re.I))
+
+
+def paragraph_topic_issues(section,story,names):
+    terms=topical_words(story)-names
+    return ['analysis_not_source_specific:'+story['id']+':'+field
+            for field in ('analysis','comparison')
+            if len(topic_tokens(paragraph_text(section[field])) & terms)<2]
 
 
 def source_names(stories):
@@ -193,9 +210,7 @@ def plan_issues(plan, stories):
         if sum(len(used & terms)>=2 for terms in topics)<minimum:
             errors.append('analysis_scope_missing_distinct_sources:'+label)
     for section,story in zip(sections,stories):
-        used=topic_tokens(paragraph_text(section['analysis']+section['comparison']))
-        if len(used & (topical_words(story)-provided_names))<2:
-            errors.append('analysis_not_source_specific:'+story['id'])
+        errors.extend(paragraph_topic_issues(section,story,provided_names))
         # Model prose may not recycle an abstract as its own analysis.
         a=[w.lower() for w in WORDS.findall(clean_excerpt(story))]
         b=[w.lower() for w in WORDS.findall(paragraph_text(section['analysis']+section['comparison']))]
@@ -230,7 +245,7 @@ def request_plan(prompt, output_schema, deadline=None):
     # Small focused requests bound attention and latency. Keep the legacy
     # whole-plan request limit for callers, but new authoring uses parts.
     limit=700 if reviewer else (3200 if whole_plan else (800 if 'analysis' in properties else 500))
-    timeout=180 if reviewer else (720 if whole_plan else (240 if 'analysis' in properties else 180))
+    timeout=240 if reviewer else (840 if whole_plan else (300 if 'analysis' in properties else 180))
     if deadline is not None:
         remaining=deadline-time.monotonic()
         if remaining<1:raise AnalysisResponseError('analysis_model_unavailable:generation_budget_exhausted')
@@ -251,7 +266,7 @@ def request_plan(prompt, output_schema, deadline=None):
 
 
 def generate(stories, archive, request=None, feedback=''):
-    deadline=time.monotonic()+720
+    deadline=time.monotonic()+840
     request=request or (lambda prompt,output:request_plan(prompt,output,deadline=deadline))
     count=sentence_count(len(stories))
     provided=source_names(stories)
@@ -285,17 +300,25 @@ Every sentence must contain could, would, might or should and end with a full st
         output['properties']['id']['enum']=[topic['id']]
         openings=[p[k][0].split()[:7] for p in sections for k in ('analysis','comparison')]
         instruction=f'''Write ONLY the two connected paragraphs for this ONE source. The id must be {topic['id']}.
-Analysis: exactly {count} sentences developing a specific tradeoff, a plausible alternative explanation and their consequences. Comparison: exactly {count} sentences proposing ONE imaginary experiment that directly tests THAT SAME tradeoff, with ONE controlled difference and ONE common measurable outcome, explaining a discriminating observation and a limit on generalising the result. Do not switch to a loosely related subject: a copyright dispute concerns permission and ownership, not whether lyrics are explicit. Name the actual observation to record, not a vague privacy metric or system performance; keep the SAME outcome throughout the experiment. Comparable conditions are a strength, not a limitation. Do not predict a result as already known; explain how different possible observations would distinguish alternatives.
-Focus exclusively on this source's concepts. Include at least TWO distinct topic_terms exactly spelled across the pair. Do not import another source's subject, repeat an argument, or describe an actual action or claim. Vary sentence openings and experiment design.
+Analysis: exactly {count} sentences developing a specific tradeoff, a plausible alternative explanation and their consequences. Comparison: exactly {count} sentences proposing ONE imaginary experiment that directly tests THAT SAME tradeoff, with ONE controlled difference and ONE common measurable outcome, explaining a discriminating observation and a limit on generalising the result. Do not switch to a loosely related subject. Name the concrete observation to record rather than a vague metric; keep the SAME outcome throughout the experiment. Comparable conditions are a strength, not a limitation. Do not predict a result as already known; explain how different possible observations would distinguish alternatives.
+Focus exclusively on this source's concepts. Include at least TWO distinct topic_terms exactly spelled in EACH paragraph. Do not import another source's subject, repeat an argument, or describe an actual action or claim. Vary sentence openings and experiment design.
 SOURCE CONCEPT DATA: {json.dumps(topic,ensure_ascii=False)}
+UNTRUSTED SOURCE CONTEXT: {json.dumps(anonymised_context(stories[len(sections)],provided),ensure_ascii=False)}
+Use the context ONLY to identify the real subject and meaning of the concepts. Do not copy it or paraphrase its factual assertions; develop an explicitly imaginary inquiry about that subject. No source assertion or company conduct may become a model-created fact.
 AVOID PRIOR OPENINGS DATA: {json.dumps(openings)}'''
+        print('[analysis author] source='+topic['id']+' started',flush=True)
         section=ask(instruction,output)
         if section['id']!=topic['id']:raise AnalysisResponseError('invalid_analysis_source_order')
+        problems=paragraph_topic_issues(section,stories[len(sections)],provided)
+        if problems:raise AnalysisResponseError(','.join(problems),json.dumps(section,ensure_ascii=False))
         sections.append(section)
+        print('[analysis author] source='+topic['id']+' completed',flush=True)
     output={'type':'object','additionalProperties':False,'properties':{'sentences':contract['properties']['introduction']},'required':['sentences']}
     synthesis=json.dumps({'topics':data,'arguments':sections},ensure_ascii=False)
+    print('[analysis author] introduction started',flush=True)
     introduction=ask('''Write the introduction paragraph as exactly THREE connected sentences. Preview the inquiry in source order, covering at least THREE distinct topics with at least TWO exact topic_terms from each. Explain why different tradeoffs require different tests; never invent causal links between unrelated subjects. Do not draw a conclusion yet.
 ESSAY DATA: '''+synthesis,output)['sentences']
+    print('[analysis author] conclusion started',flush=True)
     conclusion=ask('''Write the final conclusion as exactly THREE connected sentences. Compare at least TWO distinct source issues using their exact topic_terms, consider a counterargument and reach a qualified provisional judgment. Follow the supplied arguments without restating the introduction or inventing relationships between unrelated subjects.
 ESSAY DATA: '''+synthesis,output)['sentences']
     return {'introduction':introduction,'sections':sections,'conclusion':conclusion}

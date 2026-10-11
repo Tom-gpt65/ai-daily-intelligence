@@ -138,7 +138,7 @@ jobs:
             curl -fsS http://localhost:11434/api/tags >/dev/null && break
             sleep 2
           done
-          timeout 480 ollama pull qwen2.5:14b-instruct-q4_K_M
+          timeout 480 ollama pull qwen2.5:7b-instruct-q4_K_M
 
       - name: Generate daily briefing
         if: steps.preflight.outputs.news == 'true'
@@ -148,7 +148,7 @@ jobs:
         id: build
         env:
           ANALYSIS_ENABLED: ${{ steps.ollama.outcome == 'success' && '1' || '0' }}
-          ANALYSIS_MODEL: qwen2.5:14b-instruct-q4_K_M
+          ANALYSIS_MODEL: qwen2.5:7b-instruct-q4_K_M
           GENERATION_EVIDENCE: '1'
           TRANSLATE_ENABLED: '0'
         run: |

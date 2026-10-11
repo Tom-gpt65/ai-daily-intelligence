@@ -33,7 +33,7 @@ jobs:
             curl -fsS http://127.0.0.1:11434/api/tags >/dev/null && break
             sleep 2
           done
-          timeout 480 ollama pull qwen2.5:14b-instruct-q4_K_M
+          timeout 480 ollama pull qwen2.5:7b-instruct-q4_K_M
       - name: Download optional pinned dictionary
         timeout-minutes: 3
         run: |

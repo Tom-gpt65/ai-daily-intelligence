@@ -22,7 +22,7 @@ class SourceGenerationTests(unittest.TestCase):
         p='A reader could compare the relevant assumptions before choosing a response, while a specified hypothetical observation might distinguish competing interpretations through evidence about purposes, costs and uncertainties.'
         count=source_analysis.sentence_count(len(sources))
         topic=[p[:-1]+' involving '+ ' and '.join(sorted(source_analysis.topical_words(s))[:3])+'.' for s in sources]
-        return sources,{'introduction':topic[:3],'conclusion':topic[:3],'sections':[{'id':s['id'],'analysis':[topic[i]]+[p]*(count-1),'comparison':[p]*count} for i,s in enumerate(sources)]}
+        return sources,{'introduction':topic[:3],'conclusion':topic[:3],'sections':[{'id':s['id'],'analysis':[topic[i]]+[p]*(count-1),'comparison':[topic[i]]+[p]*(count-1)} for i,s in enumerate(sources)]}
 
     def test_actual_capture_reproduces_unsupported_batch_without_rss_failure(self):
         self.assertEqual(self.snapshot['diagnostics']['feeds_ok'],6)
@@ -38,6 +38,14 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertEqual(health['selection_path'],'unused_legacy_analysis')
         self.assertTrue(compose(chosen))
         self.assertTrue(any(s['reason']=='unsupported_legacy_context' for s in health['selection_rejections']))
+
+    def test_open_ended_analysis_bounds_three_informative_sources(self):
+        pool=copy.deepcopy(self.snapshot['stories'])
+        for story in pool:story['published']=self.now.isoformat()
+        health={};chosen=select(pool,self.now,self.reports,health)
+        self.assertEqual(health['selection_path'],'source_conditioned_analysis')
+        self.assertEqual(len(chosen),3)
+        self.assertTrue(build.source_evidence_metrics(chosen)['sufficient'])
 
     def test_history_reuse_is_excluded_before_generating_more_padding(self):
         shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
@@ -172,6 +180,16 @@ class SourceGenerationTests(unittest.TestCase):
         from content_novelty import normal
         self.assertNotEqual(normal('emergency brakes'),normal('emergency brake'))
 
+    def test_actual_copyright_paragraph_cannot_be_replaced_by_privacy_analysis(self):
+        captured=json.loads((ROOT/'tests/fixtures/oct11-rejected-context-part.json').read_text('utf-8'))
+        sources,plan=self.plan()
+        extra=copy.deepcopy(sources[0]);extra['id']='S4';sources.append(extra)
+        plan['sections'].append(copy.deepcopy(plan['sections'][0]));plan['sections'][-1]['id']='S4'
+        for section in plan['sections']:
+            for key in ('analysis','comparison'):section[key]=section[key][:5]
+        sources[1]=captured['story'];plan['sections'][1]=captured['part']
+        self.assertIn('analysis_not_source_specific:S2:analysis',source_analysis.plan_issues(plan,sources))
+
     def test_author_deadline_rejects_before_starting_another_model_request(self):
         with patch.object(source_analysis,'urlopen',side_effect=AssertionError('Must not start after budget')):
             with self.assertRaises(source_analysis.AnalysisResponseError) as caught:
@@ -186,7 +204,7 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertEqual(caught.exception.code,'incomplete_analysis_response')
         self.assertEqual(caught.exception.response,'unfinished draft')
 
-    def test_model_receives_topics_without_source_prose_or_past_reporting(self):
+    def test_model_receives_focused_anonymised_context_without_past_or_other_sources(self):
         sources,plan=self.plan()
         sources[0]['excerpt']+=' ConfidentialBrand secretly bought an unrelated company.'
         prompts=[]
@@ -200,7 +218,9 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertEqual(produced['sections'],plan['sections'])
         self.assertEqual(len(prompts),len(sources)+2)
         self.assertNotIn('ConfidentialBrand',prompts[0])
-        self.assertNotIn('secretly bought an unrelated company',prompts[0])
+        self.assertIn('secretly bought an unrelated company',prompts[0])
+        self.assertIn('UNTRUSTED SOURCE CONTEXT:',prompts[0])
+        self.assertIn('Do not copy it or paraphrase its factual assertions',prompts[0])
         self.assertNotIn('Past confidential news narrative',prompts[0])
         self.assertNotIn('SOURCE CONCEPT DATA: '+json.dumps(source_analysis.model_topic(sources[1],source_analysis.source_names(sources)),ensure_ascii=False),prompts[0])
 

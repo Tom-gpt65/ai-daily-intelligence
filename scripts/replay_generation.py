@@ -4,7 +4,7 @@ Artifacts contain public sources and staged output only. A failed attempt exits
 nonzero and leaves every production article and private store untouched.
 """
 from __future__ import annotations
-import argparse,json,shutil,tempfile
+import argparse,json,shutil,tempfile,time
 from datetime import datetime,timezone
 from pathlib import Path
 from unittest.mock import patch
@@ -26,16 +26,31 @@ def replay(snapshot_path,out):
         original_request=source_analysis.request_plan
         original_generate=source_analysis.generate
         counts={'analysis-draft':0,'analysis-review':0,'analysis-part':0}
+        events=[]
         def captured_request(prompt,output_schema,**kwargs):
             kind='analysis-review' if 'approved' in output_schema.get('properties',{}) else 'analysis-part'
             counts[kind]+=1
+            started=time.perf_counter()
+            event={'kind':kind,'number':counts[kind],
+                   'source_ids':output_schema.get('properties',{}).get('id',{}).get('enum',[])}
             try:
                 plan=original_request(prompt,output_schema,**kwargs)
+                build.atomic_json(out/(kind+'-'+str(counts[kind])+'.json'),plan)
+                event['outcome']='response_received'
+                return plan
             except source_analysis.AnalysisResponseError as exc:
                 build.atomic_json(out/(kind+'-error-'+str(counts[kind])+'.json'),{'issue':exc.code,'response':exc.response})
+                event['outcome']=exc.code
                 raise
-            build.atomic_json(out/(kind+'-'+str(counts[kind])+'.json'),plan)
-            return plan
+            except OSError as exc:
+                event['outcome']='request_failed:'+type(exc).__name__
+                build.atomic_json(out/(kind+'-error-'+str(counts[kind])+'.json'),
+                                  {'issue':event['outcome'],'source_ids':event['source_ids'],'raw_response_available':False})
+                raise
+            finally:
+                event['elapsed_seconds']=round(time.perf_counter()-started,3)
+                events.append(event)
+                build.atomic_json(out/'request-diagnostics.json',events)
         def captured_generate(*args,**kwargs):
             plan=original_generate(*args,**kwargs)
             counts['analysis-draft']+=1

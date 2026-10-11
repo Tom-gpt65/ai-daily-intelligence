@@ -66,7 +66,9 @@ def select(pool,now,reports,diagnostics):
     for s in valid:
         if counts.get(s['publisher'],0)>=2: continue
         chosen.append(s);counts[s['publisher']]=counts.get(s['publisher'],0)+1
-        if len(chosen)==5: break
+        # Three informative sources support eight developed paragraphs and
+        # seven questions while bounding CPU authoring on the free runner.
+        if len(chosen)==3: break
     diagnostics['selection_path']='source_conditioned_analysis'
     diagnostics['selection_subsets_checked']=tries
     return numbered(chosen)
