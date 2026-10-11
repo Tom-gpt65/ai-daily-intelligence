@@ -733,18 +733,18 @@ def build_live(now: datetime, dict_path: Path | None, sources: list[dict] | None
     # Source identity does not become fresh merely because 60 days elapse or
     # a query parameter/timestamp is changed. The 60-day prose gate remains
     # separate; source reuse is checked against the full dated archive.
-    def identity(s):
+    def identity_keys(s):
         url=urlsplit(safe_url(s.get('url','')))
-        return (url.netloc.lower(),url.path,title_signature(str(s.get('title',''))))
-    incoming={identity(s) for s in sources}
+        return {('url',url.netloc.lower(),url.path),('title',title_signature(str(s.get('title',''))))}
+    incoming=[identity_keys(s) for s in sources]
     try:
         all_paths=list(REPORTS.glob('????-??-??.json'))+list((REPORTS/'archive-revisions').glob('*/*.json'))
         for path in all_paths:
             if path.stem>=date:
                 continue
             old=json.loads(path.read_text(encoding='utf-8'))
-            known={identity(s) for s in old.get('stories',[]) if isinstance(s,dict)}
-            if len(incoming & known)>=3:
+            known=set().union(*(identity_keys(s) for s in old.get('stories',[]) if isinstance(s,dict)))
+            if sum(bool(keys & known) for keys in incoming)>=3:
                 put_status('repetitive_content',now,source_count=len(sources),novelty_issues=['reissued_existing_source_snapshots'],**diagnostics)
                 return False
     except (OSError, ValueError, TypeError, KeyError) as exc:

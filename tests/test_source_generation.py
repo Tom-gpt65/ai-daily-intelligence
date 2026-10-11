@@ -56,6 +56,27 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertEqual(select(sources,self.now,self.reports,health),[])
         self.assertEqual({s['reason'] for s in health['selection_rejections']},{'expired_or_future_source'})
 
+    def test_rewritten_headline_cannot_make_an_old_source_url_fresh(self):
+        shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
+        old=json.loads((self.reports/'2026-10-09.json').read_text('utf-8'))
+        pool=copy.deepcopy(old['stories'])
+        for i,s in enumerate(pool):
+            s['published']=self.now.isoformat()
+            s['url']+='?updated=again'
+            s['title']=f'Revised privacy and evaluation analysis for source {i}'
+        health={}
+        self.assertEqual(select(pool,self.now,self.reports,health),[])
+        self.assertTrue(all(s['reason']=='reissued_source_identity' for s in health['selection_rejections']))
+
+    def test_identical_title_at_changed_url_is_also_reissued(self):
+        shutil.copytree(ROOT/'site/reports',self.reports,dirs_exist_ok=True)
+        pool=copy.deepcopy(json.loads((self.reports/'2026-10-09.json').read_text('utf-8'))['stories'])
+        for i,s in enumerate(pool):
+            s['published']=self.now.isoformat();s['url']=f'https://example.com/new-article-{i}'
+        health={}
+        self.assertEqual(select(pool,self.now,self.reports,health),[])
+        self.assertTrue(all(s['reason']=='reissued_source_identity' for s in health['selection_rejections']))
+
     def test_source_order_missing_sections_and_changed_anchors_fail_closed(self):
         sources,plan=self.plan()
         self.assertEqual(source_analysis.plan_issues(plan,sources),[])
@@ -135,6 +156,8 @@ class SourceGenerationTests(unittest.TestCase):
         self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('a response','a Microsoft response')))
         self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('A reader could','Could a reader')))
         self.assertIsNone(re.fullmatch(pattern,plan['introduction'][0].replace('could','can').replace('might','may')))
+        self.assertIsNone(re.fullmatch(pattern,'Alternatively could suggest an approach that might offer sufficient privacy while still producing useful insights for readers.'))
+        self.assertIsNotNone(re.fullmatch(pattern,'Alternatively, readers could compare the relevant assumptions before choosing a response, while evidence might distinguish competing interpretations about purposes and costs.'))
 
     def test_modal_possession_is_allowed_but_indicative_claim_stays_rejected(self):
         self.assertFalse(source_analysis.reporting_sentence('The system could have a measurable cost.'))

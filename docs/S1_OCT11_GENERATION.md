@@ -30,7 +30,7 @@
 
 文法、原創性及程式核驗不能證明模型分析的語義或每則來源絕對正確。來源仍未獲獨立事實核查；需要持續抽查。模型在 GitHub runner 執行，不使用付費 API，但須下載約 4.7GB，受網路、Actions 執行時間及配額影響。來源段落請求最多 240 秒，引言／結論及全文審查各最多 180 秒；每次完整撰寫共用十二分鐘預算，最多兩份完整草稿。隔離驗收上限四十五分鐘，正式流程五十五分鐘，失敗時安全降級。
 
-模型介面：[Ollama 結構輸出](https://docs.ollama.com/capabilities/structured-outputs)；使用 [Qwen2.5 7B Instruct Q4_K_M](https://ollama.com/library/qwen2.5:7b-instruct-q4_K_M)，該頁記錄 Apache 2.0 授權及下載大小。前六輪測試使用 Qwen3 4B，全部未發布。
+模型介面：[Ollama 結構輸出](https://docs.ollama.com/capabilities/structured-outputs)；第十一輪起使用 [Qwen2.5 14B Instruct Q4_K_M](https://ollama.com/library/qwen2.5:14b-instruct-q4_K_M)，該頁記錄 Apache 2.0 授權及約 9GB 下載大小。前六輪使用 Qwen3 4B，第七至第十輪使用 Qwen2.5 7B，全部未發布。
 
 此次新增的專有名詞離線詞義以官方資料核對：[DevDay 開發者活動](https://openai.com/devday/)、[DistroKid 音樂發行服務](https://distrokid.com/)、[Huxe 個人化音訊產品名稱](https://huxe.com/)。詞義只辨認名稱，不宣稱產品仍在提供服務或已完成某項交易。這是詞典補齊，不是人工撰寫日報；陌生未核實名稱仍須拒稿。
 
@@ -58,4 +58,8 @@
 
 尚未驗證：實體 iPhone 安裝後離線冷啟動、真實兩帳戶／兩裝置的 Supabase 登入及 RLS 寫入隔離。瀏覽器的模擬登入與離線已開啟頁面測試不能代替這些實機驗證。本站外部依賴與模型可能繼續拒稿；備援保留原日期且顯示故障。
 
-待取得逐來源生成與公開部署結果後更新；此文件目前不宣稱 11 日已通過或 s1-4 已部署。
+第十輪（提交 `6b0d57c0db308885253b25c3a7cd0a9446625c04`）本機完整 Python 230／230 通過、零 skipped，GitHub 四項程式／瀏覽器／canary 驗證全部通過；但[真實生成](https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38131539676)失敗。原始段落含獨立的 `has` 前提、缺少主詞及從版權偏向歌詞審查的實驗；未發布。已核對 artifact `11699271657` SHA-256 `1e7f99cbc65da29052f560a7f1c072268c28fa31738b4562b4cd22eed2d98475`。
+
+另外實跑發現，來源識別把 URL 與標題組成同一組合，導致舊 URL 改標題後逃過歷史排除。先新增改標題／保留 URL 的測試並確認失敗，再改為 URL 與標題各自識別；任一重合均屬重發。生成前與直接發布入口都修正，五詞與 60 日重複率規則維持原樣。
+
+第十一輪調整為較大模型、保留明確主詞並容許正常轉折逗號，明確要求實驗檢驗前段同一論點。待取得實際生成與公開部署結果後更新；此文件目前不宣稱 11 日已通過或 s1-4 已部署。

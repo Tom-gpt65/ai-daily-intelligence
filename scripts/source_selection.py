@@ -13,24 +13,24 @@ def select(pool,now,reports,diagnostics):
         raise ValueError('Invalid bounded candidate pool')
     day=now.astimezone(TZ).date().isoformat()
     archive=recent_articles(reports,day)
-    def identity(s):
+    def identity_keys(s):
         p=urlsplit(safe_url(s['url']))
-        return p.netloc.lower(),p.path,title_signature(s['title'])
+        return {('url',p.netloc.lower(),p.path),('title',title_signature(s['title']))}
     used=set()
     for path in list(reports.glob('????-??-??.json'))+list((reports/'archive-revisions').glob('*/*.json')):
         if path.stem<day:
-            used.update(identity(s) for s in json.loads(path.read_text('utf-8')).get('stories',[]))
+            for s in json.loads(path.read_text('utf-8')).get('stories',[]):used.update(identity_keys(s))
     valid=[];rejected=[];seen=set();unused=[];keys=set()
     for s in pool:
         candidate={**s,'id':'S1'}
         candidate.pop('score',None)
         if not validate_candidate_sources([candidate]): raise ValueError('Malformed candidate pool source')
-        name=identity(s)
+        names=identity_keys(s)
         age=(now-parse_entry_date({'published':s['published']})).total_seconds()
         reason=None
         if not -1800<=age<=36*3600: reason='expired_or_future_source'
-        elif name in used or name in seen: reason='reissued_source_identity'
-        seen.add(name)
+        elif names & (used|seen): reason='reissued_source_identity'
+        seen.update(names)
         key=context_key(s)
         if reason:
             rejected.append({'title':s['title'],'url':s['url'],'reason':reason});continue

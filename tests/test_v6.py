@@ -108,6 +108,6 @@ class DseStudentTests(unittest.TestCase):
         flow=(ROOT/".github/workflows/daily.yml").read_text(encoding="utf-8")
         self.assertIn("cron: '40 7 * * *'",flow)
         self.assertNotIn("OPENAI_API_KEY",flow)
-        self.assertIn("ollama pull qwen2.5:7b-instruct-q4_K_M",flow)
+        self.assertIn("ollama pull qwen2.5:14b-instruct-q4_K_M",flow)
 
 if __name__=="__main__":unittest.main()
