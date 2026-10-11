@@ -42,9 +42,10 @@ class SourceGenerationTests(unittest.TestCase):
     def test_open_ended_analysis_bounds_three_informative_sources(self):
         pool=copy.deepcopy(self.snapshot['stories'])
         for story in pool:story['published']=self.now.isoformat()
-        health={};chosen=select(pool,self.now,self.reports,health)
+        health={'stories_selected':5};chosen=select(pool,self.now,self.reports,health)
         self.assertEqual(health['selection_path'],'source_conditioned_analysis')
         self.assertEqual(len(chosen),3)
+        self.assertEqual(health['stories_selected'],len(chosen))
         self.assertTrue(build.source_evidence_metrics(chosen)['sufficient'])
 
     def test_history_reuse_is_excluded_before_generating_more_padding(self):

@@ -41,7 +41,11 @@ def select(pool,now,reports,diagnostics):
             reason='legacy_analysis_already_published'
         if reason: rejected.append({'title':s['title'],'url':s['url'],'reason':reason})
         else: unused.append(candidate);keys.add(key)
-    def numbered(rows): return [{**s,'id':f'S{i}'} for i,s in enumerate(rows,1)]
+    if 'stories_selected' in diagnostics:
+        diagnostics['rss_initial_stories_selected']=diagnostics['stories_selected']
+    def numbered(rows):
+        diagnostics['stories_selected']=len(rows)
+        return [{**s,'id':f'S{i}'} for i,s in enumerate(rows,1)]
     diagnostics['candidate_pool_count']=len(pool)
     diagnostics['selection_rejections']=rejected
     # Evaluate at most 80 genuinely different event subsets. There is no
