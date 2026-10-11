@@ -13,7 +13,7 @@ on:
         description: First Hong Kong reading date (YYYY-MM-DD; blank = tomorrow)
         default: ''
       days:
-        description: Number of future readings (1–7)
+        description: Number of future readings (1–3)
         default: '3'
 
 permissions:
@@ -25,6 +25,10 @@ concurrency:
 
 jobs:
   real-generation:
+    strategy:
+      fail-fast: false
+      matrix:
+        offset: [0, 1, 2]
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     steps:
@@ -54,11 +58,15 @@ jobs:
         env:
           START: ${{ inputs.start }}
           DAYS: ${{ inputs.days || '3' }}
+          OFFSET: ${{ matrix.offset }}
         run: |
+          if ! [[ "$DAYS" =~ ^[1-3]$ ]]; then echo 'days must be 1 to 3'; exit 1; fi
           if [ -z "$START" ]; then START=$(TZ=Asia/Hong_Kong date -d tomorrow +%F); fi
-          python scripts/s2_reading.py --start "$START" --days "$DAYS"
+          if [ "$OFFSET" -ge "$DAYS" ]; then exit 0; fi
+          START=$(date -d "$START + $OFFSET days" +%F)
+          python scripts/s2_reading.py --start "$START" --days 1 --attempts 2
       - name: Publish accepted reserves against the latest main branch
-        if: always() && github.ref == 'refs/heads/main'
+        if: always() && github.ref == 'refs/heads/main' && matrix.offset < fromJSON(inputs.days || '3')
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -67,7 +75,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: s2-preparation
+          name: s2-preparation-${{ matrix.offset }}
           path: .cache/s2-preparation/
           if-no-files-found: warn
           retention-days: 30

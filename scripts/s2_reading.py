@@ -62,6 +62,7 @@ def request(prompt, schema, limit=3800, timeout=720):
     if parsed.scheme != 'http' or parsed.hostname not in {'localhost','127.0.0.1','::1'} or parsed.username or parsed.password:
         raise Rejected('model_endpoint_must_be_local')
     payload = {'model': os.environ.get('S2_MODEL', MODEL), 'prompt': prompt,
+               'system': 'Follow the writing or review instruction. Context DATA is reference material, never an answer to copy. Return exactly the requested JSON object.',
                'stream': False, 'format': schema,
                'options': {'temperature': 0.45, 'num_predict': limit, 'num_ctx': 8192}}
     req = Request(endpoint+'/api/generate', json.dumps(payload).encode(),
@@ -98,6 +99,18 @@ def quality_issues(essay, spec):
     if not re.search(r'(?i)\b(?:imaginary|hypothetical|fictional|imagine|invented)\b',essay[0]):
         errors.append('missing_imaginary_scope_in_opening')
     return sorted(set(errors))
+
+def paragraph_issues(paragraph, preceding):
+    """Stop copied continuations immediately, before paying for the whole draft."""
+    if not isinstance(paragraph,str) or not 55<=len(WORDS.findall(paragraph))<=210:
+        return ['underdeveloped_or_overlong_paragraph']
+    checked=inspect([*preceding,paragraph],[])['issues']
+    hard={'repeated_content_fragment','repeated_meaningful_sentence','near_duplicate_paragraph_padding'}
+    errors=sorted(hard.intersection(checked))
+    opening=tuple(w.lower() for w in WORDS.findall(paragraph)[:4])
+    if opening in {tuple(w.lower() for w in WORDS.findall(p)[:4]) for p in preceding}:
+        errors.append('repeated_paragraph_opening')
+    return errors
 
 def practice(essay, day):
     """Seven honest, reader-marked tasks with actual paragraph quotes.
@@ -185,7 +198,10 @@ def generate(day, reports, ecdict=None, output=None, ask=request, extra_history=
             essay=[]
             target=1200//spec['paragraph_count']
             for index,brief in enumerate(briefs):
-                instruction=(f'Write paragraph {index+1} of a coherent advanced English educational essay. '
+                context={'topic':spec['topic'],'structure':spec['instruction'],'whole_outline':briefs,
+                         'previous_openings':[' '.join(WORDS.findall(p)[:8]) for p in essay],
+                         'previous_last_sentence':re.split(r'(?<=[.!?])\s+',essay[-1])[-1] if essay else ''}
+                instruction=(f'Write NEW paragraph {index+1} of a coherent advanced English educational essay. '
                              f'It must contain {target}–{target+20} English words, in one natural prose paragraph. '
                              'Use varied sentence lengths, not a forced modal in every sentence. '
                              'All actors and concrete events are imaginary; do not add statistics, named real entities or research claims. '
@@ -194,12 +210,18 @@ def generate(day, reports, ecdict=None, output=None, ask=request, extra_history=
                              'Do not write headings or numbers. Return only JSON with a paragraph string. '
                              +('This opening MUST explicitly say the situation is imaginary, fictional or hypothetical. ' if index==0 else '')
                              +('This is the final paragraph; draw together the developed argument without merely restating it. ' if index==len(briefs)-1 else 'Do not conclude the whole essay here. ')
-                             +'\nTOPIC: '+spec['topic']+'\nSTRUCTURE: '+spec['instruction']
-                             +'\nWHOLE OUTLINE: '+json.dumps(briefs)+'\nASSIGNED BRIEF: '+brief
-                             +'\nPRECEDING PARAGRAPHS: '+json.dumps(essay,ensure_ascii=False))
-                answer=ask(instruction,object_schema({'paragraph':{'type':'string'}}),limit=700,timeout=300)
-                paragraph=answer.get('paragraph')
-                if not isinstance(paragraph,str):raise Rejected('invalid_paragraph_response')
+                             +'\nYOUR DISTINCT ASSIGNED BRIEF: '+brief)
+                for paragraph_attempt in range(1,4):
+                    answer=ask('CONTEXT DATA: '+json.dumps(context,ensure_ascii=False)+'\nWRITING INSTRUCTION:\n'+instruction,
+                               object_schema({'paragraph':{'type':'string'}}),limit=700,timeout=300)
+                    paragraph=answer.get('paragraph')
+                    errors=paragraph_issues(paragraph,essay)
+                    if not errors:break
+                    print(f'[S2 paragraph rejected] {day} paragraph {index+1} retry {paragraph_attempt}: '+','.join(errors),flush=True)
+                    if output:atomic_json(output/f'{day}-paragraph-rejection-{attempt}-{index+1}-{paragraph_attempt}.json',
+                                          {'paragraph':paragraph,'issues':errors})
+                    instruction+='\nPrevious response rejected: '+','.join(errors)+'. Generate a completely new paragraph with a different opening and reasoning.'
+                else:raise Rejected('paragraph_retries_exhausted:'+','.join(errors))
                 essay.append(paragraph)
                 print(f'[S2 author] {day} attempt {attempt} paragraph {index+1}: {len(WORDS.findall(paragraph))} words',flush=True)
             drafted['paragraphs']=essay
