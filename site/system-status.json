@@ -1,27 +1,27 @@
 {
   "schema": 1,
-  "checked_at": "2026-10-12T07:55:17.848702+08:00",
+  "checked_at": "2026-10-12T08:56:27.801517+08:00",
   "state": "editorial_quality_rejected",
   "source_count": 3,
   "failure_reason": "No candidate passed source analysis, quality and strict originality",
   "generation_issues": [
-    "invalid_analysis_sentence_length"
+    "non_hypothetical_analysis_sentence"
   ],
   "novelty_issues": [],
   "quality_issues": [
-    "invalid_analysis_sentence_length"
+    "non_hypothetical_analysis_sentence"
   ],
   "analysis_attempts": [
     {
       "attempt": 1,
       "issues": [
-        "non_hypothetical_analysis_sentence"
+        "analysis_not_source_specific:S2:comparison"
       ]
     },
     {
       "attempt": 2,
       "issues": [
-        "invalid_analysis_sentence_length"
+        "non_hypothetical_analysis_sentence"
       ]
     }
   ],
@@ -33,7 +33,7 @@
   "feed_failures": [],
   "event_clusters": 12,
   "multi_source_events": 0,
-  "rss_duration_seconds": 0.43,
+  "rss_duration_seconds": 0.404,
   "stories_selected": 3,
   "rss_initial_stories_selected": 3,
   "candidate_pool_count": 12,
@@ -141,5 +141,5 @@
     "requested_date": "2026-10-12"
   },
   "news_outcome": "archived_reading",
-  "workflow_run_url": "https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38185593101"
+  "workflow_run_url": "https://github.com/Tom-gpt65/ai-daily-intelligence/actions/runs/38189461155"
 }
